@@ -23,6 +23,12 @@ public class InputEvents
     public event Action OnAimTriggered;
     public event Action OnAimReleased;
 
+    // Événements d'inventaire
+    public event Action OnInteractTriggered;
+    /// <summary>0 ou 1 = emplacement d'arme, -1 = mains nues.</summary>
+    public event Action<int> OnWeaponSlotTriggered;
+    public event Action OnInventoryToggleTriggered;
+
     // Événements de souris
     public event Action<Vector2> OnMouseMotionChanged;
     public event Action<int, bool> OnMouseButtonStateChanged;
@@ -117,6 +123,21 @@ public class InputEvents
     {
         OnSwitchWeaponDownTriggered?.Invoke();
         //GD.Print("[InputEvents] TriggerSwitchWeaponDown appelé");
+    }
+
+    public void TriggerInteract()
+    {
+        OnInteractTriggered?.Invoke();
+    }
+
+    public void TriggerWeaponSlot(int slot)
+    {
+        OnWeaponSlotTriggered?.Invoke(slot);
+    }
+
+    public void TriggerInventoryToggle()
+    {
+        OnInventoryToggleTriggered?.Invoke();
     }
 
     public void TriggerInGameMenuToggle(bool isEnabled)

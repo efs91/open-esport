@@ -48,9 +48,11 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="TextureRect" type="TextureRect" parent="UI/MenuManager/MenuCenterContainer/MenuVBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 texture = ExtResource("4_85g3d")
-stretch_mode = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Title" type="Label" parent="UI/MenuManager/MenuCenterContainer/MenuVBoxContainer"]
 layout_mode = 2

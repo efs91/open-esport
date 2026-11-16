@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "M_Alien_Eyes"
+cull_mode = 2
+albedo_color = Color(0.3, 0.6, 0.5, 1)

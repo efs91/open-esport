@@ -1,0 +1,4084 @@
+{
+"mega|Alien_Cyclop": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Aliens/Alien_Cyclop.gltf",
+"pos": [
+-0.54,
+-1.09,
+-0.58
+],
+"size": [
+1.07,
+2.01,
+1.22
+]
+},
+"mega|Alien_Oculichrysalis": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Aliens/Alien_Oculichrysalis.gltf",
+"pos": [
+-0.4,
+-0.87,
+-0.42
+],
+"size": [
+0.81,
+1.53,
+0.82
+]
+},
+"mega|Alien_Scolitex": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Aliens/Alien_Scolitex.gltf",
+"pos": [
+-1.72,
+-1.08,
+-0.77
+],
+"size": [
+3.43,
+3.36,
+3.23
+]
+},
+"mega|BottomMetal_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomMetal_Corner_Round_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+0.02,
+4.0
+]
+},
+"mega|BottomMetal_Corner_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomMetal_Corner_Round_Outer.gltf",
+"pos": [
+-4.6,
+0.0,
+-4.6
+],
+"size": [
+4.6,
+0.02,
+4.6
+]
+},
+"mega|BottomMetal_Corner_Square_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomMetal_Corner_Square_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+0.02,
+4.0
+]
+},
+"mega|BottomMetal_Corner_Square_Outer_1": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomMetal_Corner_Square_Outer_1.gltf",
+"pos": [
+-4.6,
+0.0,
+-4.6
+],
+"size": [
+0.6,
+0.02,
+0.6
+]
+},
+"mega|BottomMetal_Corner_Square_Outer_2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomMetal_Corner_Square_Outer_2.gltf",
+"pos": [
+-4.6,
+0.0,
+-4.6
+],
+"size": [
+0.6,
+0.02,
+0.6
+]
+},
+"mega|BottomMetal_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomMetal_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.6,
+0.02,
+4.0
+]
+},
+"mega|BottomSimple_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomSimple_Corner_Round_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+0.02,
+4.0
+]
+},
+"mega|BottomSimple_Corner_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomSimple_Corner_Round_Outer.gltf",
+"pos": [
+-4.6,
+0.0,
+-4.6
+],
+"size": [
+4.6,
+0.02,
+4.6
+]
+},
+"mega|BottomSimple_Corner_Square_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomSimple_Corner_Square_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+0.02,
+4.0
+]
+},
+"mega|BottomSimple_Corner_Square_Outer_1": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomSimple_Corner_Square_Outer_1.gltf",
+"pos": [
+-4.6,
+0.0,
+-4.6
+],
+"size": [
+0.6,
+0.02,
+0.6
+]
+},
+"mega|BottomSimple_Corner_Square_Outer_2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomSimple_Corner_Square_Outer_2.gltf",
+"pos": [
+-4.6,
+0.0,
+-4.6
+],
+"size": [
+0.6,
+0.02,
+0.6
+]
+},
+"mega|BottomSimple_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/BottomSimple_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.6,
+0.02,
+4.0
+]
+},
+"mega|Column_Astra": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Astra.gltf",
+"pos": [
+-0.16,
+-0.01,
+-0.84
+],
+"size": [
+0.33,
+3.03,
+1.21
+]
+},
+"mega|Column_Hollow": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Hollow.gltf",
+"pos": [
+-0.6,
+0.0,
+-0.6
+],
+"size": [
+1.21,
+5.0,
+1.21
+]
+},
+"mega|Column_Large_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Large_Straight.gltf",
+"pos": [
+-0.7,
+0.0,
+-0.84
+],
+"size": [
+1.4,
+10.0,
+1.96
+]
+},
+"mega|Column_MetalSupport_Curve": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_MetalSupport_Curve.gltf",
+"pos": [
+-4.47,
+-0.02,
+-4.47
+],
+"size": [
+4.47,
+0.04,
+4.47
+]
+},
+"mega|Column_MetalSupport": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_MetalSupport.gltf",
+"pos": [
+-0.47,
+-0.02,
+-2.0
+],
+"size": [
+0.96,
+0.04,
+4.0
+]
+},
+"mega|Column_Pipes": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Pipes.gltf",
+"pos": [
+-0.44,
+0.0,
+-0.44
+],
+"size": [
+0.87,
+5.0,
+0.87
+]
+},
+"mega|Column_Round": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Round.gltf",
+"pos": [
+-0.5,
+0.0,
+-0.5
+],
+"size": [
+1.0,
+5.0,
+1.0
+]
+},
+"mega|Column_Simple": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Simple.gltf",
+"pos": [
+-0.25,
+0.0,
+-0.51
+],
+"size": [
+0.51,
+5.0,
+0.97
+]
+},
+"mega|Decal_0": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_0.gltf",
+"pos": [
+-0.38,
+0.0,
+-0.64
+],
+"size": [
+0.77,
+0.0,
+1.27
+]
+},
+"mega|Decal_1": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_1.gltf",
+"pos": [
+-0.29,
+0.0,
+-0.64
+],
+"size": [
+0.58,
+0.0,
+1.27
+]
+},
+"mega|Decal_2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_2.gltf",
+"pos": [
+-0.4,
+0.0,
+-0.64
+],
+"size": [
+0.8,
+0.0,
+1.27
+]
+},
+"mega|Decal_3": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_3.gltf",
+"pos": [
+-0.39,
+0.0,
+-0.64
+],
+"size": [
+0.78,
+0.0,
+1.27
+]
+},
+"mega|Decal_4": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_4.gltf",
+"pos": [
+-0.41,
+0.0,
+-0.64
+],
+"size": [
+0.81,
+0.0,
+1.27
+]
+},
+"mega|Decal_5": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_5.gltf",
+"pos": [
+-0.38,
+0.0,
+-0.64
+],
+"size": [
+0.77,
+0.0,
+1.27
+]
+},
+"mega|Decal_6": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_6.gltf",
+"pos": [
+-0.39,
+0.0,
+-0.64
+],
+"size": [
+0.78,
+0.0,
+1.27
+]
+},
+"mega|Decal_7": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_7.gltf",
+"pos": [
+-0.39,
+0.0,
+-0.64
+],
+"size": [
+0.79,
+0.0,
+1.27
+]
+},
+"mega|Decal_8": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_8.gltf",
+"pos": [
+-0.42,
+0.0,
+-0.64
+],
+"size": [
+0.83,
+0.0,
+1.27
+]
+},
+"mega|Decal_9": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_9.gltf",
+"pos": [
+-0.38,
+0.0,
+-0.64
+],
+"size": [
+0.77,
+0.0,
+1.27
+]
+},
+"mega|Decal_A": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_A.gltf",
+"pos": [
+-0.44,
+0.0,
+-0.61
+],
+"size": [
+0.89,
+0.0,
+1.21
+]
+},
+"mega|Decal_Dashes": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Dashes.gltf",
+"pos": [
+-0.54,
+0.0,
+-0.17
+],
+"size": [
+1.07,
+0.0,
+0.33
+]
+},
+"mega|Decal_K": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_K.gltf",
+"pos": [
+-0.45,
+0.0,
+-0.61
+],
+"size": [
+0.9,
+0.0,
+1.21
+]
+},
+"mega|Decal_Line_90_Round_Large": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Line_90_Round_Large.gltf",
+"pos": [
+-0.07,
+0.0,
+-0.07
+],
+"size": [
+3.07,
+0.0,
+3.07
+]
+},
+"mega|Decal_Line_90_Round": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Line_90_Round.gltf",
+"pos": [
+-0.07,
+0.0,
+-0.07
+],
+"size": [
+2.07,
+0.0,
+2.07
+]
+},
+"mega|Decal_Line_Bend1_L": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Line_Bend1_L.gltf",
+"pos": [
+-2.07,
+0.0,
+-2.0
+],
+"size": [
+2.14,
+0.0,
+4.0
+]
+},
+"mega|Decal_Line_Bend1_R": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Line_Bend1_R.gltf",
+"pos": [
+-0.07,
+0.0,
+-2.0
+],
+"size": [
+2.14,
+0.0,
+4.0
+]
+},
+"mega|Decal_Line_Bend2_L": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Line_Bend2_L.gltf",
+"pos": [
+-1.07,
+0.0,
+-2.0
+],
+"size": [
+1.14,
+0.0,
+4.0
+]
+},
+"mega|Decal_Line_Bend2_R": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Line_Bend2_R.gltf",
+"pos": [
+-0.07,
+0.0,
+-2.0
+],
+"size": [
+1.14,
+0.0,
+4.0
+]
+},
+"mega|Decal_Line_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Line_Straight.gltf",
+"pos": [
+-0.07,
+0.0,
+-2.0
+],
+"size": [
+0.14,
+0.0,
+4.0
+]
+},
+"mega|Decal_Logo_Letters": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Logo_Letters.gltf",
+"pos": [
+-1.45,
+0.0,
+-0.29
+],
+"size": [
+2.9,
+0.0,
+0.59
+]
+},
+"mega|Decal_Logo_Small": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Logo_Small.gltf",
+"pos": [
+-0.38,
+0.0,
+-0.24
+],
+"size": [
+0.76,
+0.0,
+0.48
+]
+},
+"mega|Decal_Logo": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Logo.gltf",
+"pos": [
+-1.17,
+0.0,
+-0.79
+],
+"size": [
+2.29,
+0.0,
+1.42
+]
+},
+"mega|Decal_Sign": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Sign.gltf",
+"pos": [
+-0.34,
+0.0,
+-0.31
+],
+"size": [
+0.69,
+0.0,
+0.62
+]
+},
+"mega|Decal_V": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_V.gltf",
+"pos": [
+-0.43,
+0.0,
+-0.61
+],
+"size": [
+0.87,
+0.0,
+1.21
+]
+},
+"mega|Decal_XSign": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_XSign.gltf",
+"pos": [
+-0.18,
+0.0,
+-0.17
+],
+"size": [
+0.36,
+0.0,
+0.34
+]
+},
+"mega|Decal_X": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_X.gltf",
+"pos": [
+-0.43,
+0.0,
+-0.61
+],
+"size": [
+0.86,
+0.0,
+1.21
+]
+},
+"mega|Decal_Z": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Decals/Decal_Z.gltf",
+"pos": [
+-0.36,
+0.0,
+-0.61
+],
+"size": [
+0.72,
+0.0,
+1.21
+]
+},
+"mega|Door_DarkMetal": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_DarkMetal.gltf",
+"pos": [
+-2.11,
+0.0,
+-0.1
+],
+"size": [
+2.11,
+4.05,
+0.2
+]
+},
+"mega|Door_Frame_A": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Frame_A.gltf",
+"pos": [
+-2.44,
+-0.12,
+-0.46
+],
+"size": [
+4.87,
+5.16,
+0.93
+]
+},
+"mega|Door_Frame_SquareTall": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Frame_SquareTall.gltf",
+"pos": [
+-2.42,
+-0.01,
+-0.25
+],
+"size": [
+4.84,
+5.01,
+0.51
+]
+},
+"mega|Door_Frame_Square_Blocked": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Frame_Square_Blocked.gltf",
+"pos": [
+-2.43,
+0.0,
+-0.25
+],
+"size": [
+4.85,
+5.0,
+0.51
+]
+},
+"mega|Door_Frame_Square": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Frame_Square.gltf",
+"pos": [
+-2.43,
+-0.01,
+-0.25
+],
+"size": [
+4.85,
+5.01,
+0.51
+]
+},
+"mega|Door_Metal": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Metal.gltf",
+"pos": [
+-2.11,
+0.0,
+0.0
+],
+"size": [
+2.11,
+4.05,
+0.1
+]
+},
+"mega|Door_Simple": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Simple.gltf",
+"pos": [
+-2.11,
+0.0,
+0.0
+],
+"size": [
+2.11,
+4.05,
+0.14
+]
+},
+"mega|Platform_3Plates": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_3Plates.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_CenterPlate_Curve": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_CenterPlate_Curve.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_CenterPlate": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_CenterPlate.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_DarkPlates_Curves": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_DarkPlates_Curves.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_DarkPlates": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_DarkPlates.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Metal2_Curve": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Metal2_Curve.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Metal2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Metal2.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Metal_Curve": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Metal_Curve.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Metal": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Metal.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Rails_2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Rails_2.gltf",
+"pos": [
+-1.18,
+0.0,
+0.04
+],
+"size": [
+2.36,
+1.7,
+1.89
+]
+},
+"mega|Platform_Rails_4WideTall": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Rails_4WideTall.gltf",
+"pos": [
+-2.12,
+0.0,
+0.1
+],
+"size": [
+4.25,
+3.72,
+5.73
+]
+},
+"mega|Platform_Rails_4Wide": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Rails_4Wide.gltf",
+"pos": [
+-2.12,
+0.0,
+0.1
+],
+"size": [
+4.25,
+2.72,
+3.8
+]
+},
+"mega|Platform_Rails_4": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Rails_4.gltf",
+"pos": [
+-1.18,
+0.0,
+0.1
+],
+"size": [
+2.36,
+2.72,
+3.8
+]
+},
+"mega|Platform_Ramp_2Short": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Ramp_2Short.gltf",
+"pos": [
+-1.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+1.0,
+1.5
+]
+},
+"mega|Platform_Ramp_2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Ramp_2.gltf",
+"pos": [
+-1.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+1.0,
+2.0
+]
+},
+"mega|Platform_Ramp_4Wide": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Ramp_4Wide.gltf",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|Platform_Ramp_4": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Ramp_4.gltf",
+"pos": [
+-1.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+2.0,
+4.0
+]
+},
+"mega|Platform_Round1": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Round1.gltf",
+"pos": [
+-3.0,
+-0.03,
+-3.0
+],
+"size": [
+5.99,
+0.17,
+5.99
+]
+},
+"mega|Platform_Simple2_Curve": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Simple2_Curve.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Simple2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Simple2.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Simple_Curve": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Simple_Curve.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Simple": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Simple.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Squares_Curve": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Squares_Curve.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Squares": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Squares.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Platform_Stairs_2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Stairs_2.gltf",
+"pos": [
+-1.0,
+-0.01,
+0.0
+],
+"size": [
+2.0,
+1.01,
+2.07
+]
+},
+"mega|Platform_Stairs_4WideTall": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Stairs_4WideTall.gltf",
+"pos": [
+-2.0,
+-0.01,
+0.0
+],
+"size": [
+4.0,
+3.01,
+6.08
+]
+},
+"mega|Platform_Stairs_4Wide": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Stairs_4Wide.gltf",
+"pos": [
+-2.0,
+-0.01,
+0.0
+],
+"size": [
+4.0,
+2.01,
+4.08
+]
+},
+"mega|Platform_Stairs_4": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Stairs_4.gltf",
+"pos": [
+-1.0,
+-0.01,
+0.0
+],
+"size": [
+2.0,
+2.01,
+4.08
+]
+},
+"mega|Platform_Window_Thin": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Window_Thin.gltf",
+"pos": [
+-1.44,
+-0.41,
+-2.0
+],
+"size": [
+2.88,
+0.41,
+4.0
+]
+},
+"mega|Platform_Window_Wide": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Window_Wide.gltf",
+"pos": [
+-2.0,
+-0.41,
+-2.0
+],
+"size": [
+4.0,
+0.41,
+4.0
+]
+},
+"mega|Platform_X": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_X.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+4.0,
+0.0,
+4.0
+]
+},
+"mega|Prop_AccessPoint": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_AccessPoint.gltf",
+"pos": [
+-0.22,
+1.11,
+-0.66
+],
+"size": [
+0.44,
+0.47,
+1.3
+]
+},
+"mega|Prop_Barrel_Large": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Barrel_Large.gltf",
+"pos": [
+-0.25,
+0.01,
+-0.27
+],
+"size": [
+0.51,
+1.1,
+0.53
+]
+},
+"mega|Prop_Cable_1": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Cable_1.gltf",
+"pos": [
+-0.49,
+-0.02,
+-0.58
+],
+"size": [
+1.02,
+0.15,
+1.65
+]
+},
+"mega|Prop_Cable_3": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Cable_3.gltf",
+"pos": [
+-0.15,
+-0.01,
+-2.83
+],
+"size": [
+1.56,
+0.12,
+5.73
+]
+},
+"mega|Prop_Chest": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Chest.gltf",
+"pos": [
+-0.75,
+0.0,
+-0.36
+],
+"size": [
+1.5,
+0.73,
+0.75
+]
+},
+"mega|Prop_Clamp": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Clamp.gltf",
+"pos": [
+-0.2,
+0.0,
+-0.24
+],
+"size": [
+0.56,
+0.16,
+0.46
+]
+},
+"mega|Prop_Computer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Computer.gltf",
+"pos": [
+-0.37,
+0.0,
+-0.22
+],
+"size": [
+0.74,
+1.59,
+0.56
+]
+},
+"mega|Prop_Crate3": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Crate3.gltf",
+"pos": [
+-0.5,
+-0.5,
+-0.5
+],
+"size": [
+1.0,
+1.0,
+1.0
+]
+},
+"mega|Prop_Crate4": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Crate4.gltf",
+"pos": [
+-0.56,
+-0.56,
+-0.56
+],
+"size": [
+1.12,
+1.12,
+1.12
+]
+},
+"mega|Prop_Fan_Small": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Fan_Small.gltf",
+"pos": [
+-0.84,
+-0.05,
+-0.84
+],
+"size": [
+1.68,
+0.44,
+1.68
+]
+},
+"mega|Prop_ItemHolder": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_ItemHolder.gltf",
+"pos": [
+-0.57,
+0.0,
+-0.51
+],
+"size": [
+1.04,
+0.44,
+1.07
+]
+},
+"mega|Prop_Light_Corner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Light_Corner.gltf",
+"pos": [
+-4.22,
+-0.15,
+-4.21
+],
+"size": [
+4.12,
+0.18,
+4.21
+]
+},
+"mega|Prop_Light_Floor": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Light_Floor.gltf",
+"pos": [
+-0.67,
+0.0,
+-0.26
+],
+"size": [
+1.33,
+0.21,
+0.52
+]
+},
+"mega|Prop_Light_Small": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Light_Small.gltf",
+"pos": [
+-0.86,
+-0.15,
+-0.22
+],
+"size": [
+0.86,
+0.18,
+0.45
+]
+},
+"mega|Prop_Light_Wide": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Light_Wide.gltf",
+"pos": [
+-1.32,
+-0.15,
+-0.22
+],
+"size": [
+1.32,
+0.18,
+0.45
+]
+},
+"mega|Prop_PipeHolder": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_PipeHolder.gltf",
+"pos": [
+-2.06,
+0.01,
+-0.58
+],
+"size": [
+4.12,
+0.93,
+1.16
+]
+},
+"mega|Prop_Rail_2": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_2.gltf",
+"pos": [
+-0.04,
+0.0,
+-1.97
+],
+"size": [
+0.07,
+0.86,
+1.95
+]
+},
+"mega|Prop_Rail_3": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_3.gltf",
+"pos": [
+-0.04,
+0.0,
+-2.98
+],
+"size": [
+0.07,
+0.86,
+2.97
+]
+},
+"mega|Prop_Rail_4": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_4.gltf",
+"pos": [
+-0.03,
+0.0,
+-3.96
+],
+"size": [
+0.07,
+0.86,
+3.93
+]
+},
+"mega|Prop_Rail_Incline_Long_L": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_Incline_Long_L.gltf",
+"pos": [
+-0.22,
+0.0,
+0.1
+],
+"size": [
+0.25,
+2.72,
+3.8
+]
+},
+"mega|Prop_Rail_Incline_Long_R": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_Incline_Long_R.gltf",
+"pos": [
+-0.03,
+0.0,
+0.1
+],
+"size": [
+0.25,
+2.72,
+3.8
+]
+},
+"mega|Prop_Rail_Incline_Short_L": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_Incline_Short_L.gltf",
+"pos": [
+-0.23,
+0.0,
+0.04
+],
+"size": [
+0.25,
+1.7,
+1.89
+]
+},
+"mega|Prop_Rail_Incline_Short_R": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_Incline_Short_R.gltf",
+"pos": [
+-0.03,
+-0.32,
+-0.29
+],
+"size": [
+0.25,
+2.3,
+2.6
+]
+},
+"mega|Prop_Rail_Round_Big": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_Round_Big.gltf",
+"pos": [
+0.04,
+0.0,
+-4.03
+],
+"size": [
+4.0,
+0.86,
+4.05
+]
+},
+"mega|Prop_Rail_Round_Small": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Rail_Round_Small.gltf",
+"pos": [
+0.03,
+0.0,
+-2.03
+],
+"size": [
+1.99,
+0.86,
+1.97
+]
+},
+"mega|Prop_Vent_Big": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Vent_Big.gltf",
+"pos": [
+-1.0,
+-0.07,
+-0.5
+],
+"size": [
+2.0,
+0.07,
+0.98
+]
+},
+"mega|Prop_Vent_Small": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Vent_Small.gltf",
+"pos": [
+-0.5,
+0.0,
+-0.31
+],
+"size": [
+1.0,
+0.04,
+0.62
+]
+},
+"mega|Prop_Vent_Wide": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Vent_Wide.gltf",
+"pos": [
+-0.97,
+0.0,
+-0.13
+],
+"size": [
+1.94,
+0.06,
+0.29
+]
+},
+"mega|ShortWall_AccentStrip_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_AccentStrip_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_AccentStrip_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_AccentStrip_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_AccentStrip_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_AccentStrip_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Band2_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Band2_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_Band2_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Band2_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_Band2_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Band2_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.01,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_DarkMetal2_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_DarkMetal2_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_DarkMetal2_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_DarkMetal2_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_DarkMetal2_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_DarkMetal2_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_DarkPlastic_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_DarkPlastic_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_DarkPlastic_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_DarkPlastic_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_DarkPlastic_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_DarkPlastic_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Metal2_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Metal2_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_Metal2_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Metal2_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_Metal2_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Metal2_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_MetalPlates_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_MetalPlates_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_MetalPlates_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_MetalPlates_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_MetalPlates_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_MetalPlates_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Simple1_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Simple1_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Simple1_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Simple1_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Simple1_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Simple1_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Simple2_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Simple2_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Simple2_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Simple2_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Simple2_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Simple2_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Triangles_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Triangles_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Triangles_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Triangles_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_Triangles_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Triangles_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+1.0,
+4.0
+]
+},
+"mega|ShortWall_WhitePlate2_Corner_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_WhitePlate2_Corner_Inner.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_WhitePlate2_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_WhitePlate2_Corner_Outer.gltf",
+"pos": [
+-4.0,
+0.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|ShortWall_WhitePlate2_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_WhitePlate2_Straight.gltf",
+"pos": [
+-2.0,
+0.0,
+-2.0
+],
+"size": [
+0.0,
+2.0,
+4.0
+]
+},
+"mega|TopAstra_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopAstra_Corner_Round_Inner.gltf",
+"pos": [
+-4.0,
+3.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|TopAstra_Curve_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopAstra_Curve_Round_Outer.gltf",
+"pos": [
+-4.0,
+3.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|TopAstra_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopAstra_Straight.gltf",
+"pos": [
+-2.0,
+3.0,
+-2.0
+],
+"size": [
+0.09,
+2.0,
+4.0
+]
+},
+"mega|TopCables_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopCables_Corner_Round_Inner.gltf",
+"pos": [
+-4.16,
+3.0,
+-4.16
+],
+"size": [
+4.16,
+2.0,
+4.16
+]
+},
+"mega|TopCables_Corner_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopCables_Corner_Round_Outer.gltf",
+"pos": [
+-4.22,
+3.0,
+-4.22
+],
+"size": [
+4.22,
+2.0,
+4.22
+]
+},
+"mega|TopCables_Corner_Square_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopCables_Corner_Square_Inner.gltf",
+"pos": [
+-4.17,
+3.0,
+-4.17
+],
+"size": [
+4.17,
+2.0,
+4.17
+]
+},
+"mega|TopCables_Corner_Square_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopCables_Corner_Square_Outer.gltf",
+"pos": [
+-4.22,
+3.0,
+-4.22
+],
+"size": [
+4.22,
+2.0,
+4.22
+]
+},
+"mega|TopCables_Straight_Hanging": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopCables_Straight_Hanging.gltf",
+"pos": [
+-2.17,
+0.06,
+-2.0
+],
+"size": [
+0.44,
+4.94,
+4.0
+]
+},
+"mega|TopCables_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopCables_Straight.gltf",
+"pos": [
+-2.17,
+3.0,
+-2.0
+],
+"size": [
+0.38,
+2.0,
+4.0
+]
+},
+"mega|TopPlastic_Corner_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopPlastic_Corner_Outer.gltf",
+"pos": [
+-4.57,
+3.5,
+-4.57
+],
+"size": [
+0.57,
+1.5,
+0.57
+]
+},
+"mega|TopPlastic_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopPlastic_Corner_Round_Inner.gltf",
+"pos": [
+-4.0,
+3.0,
+-4.0
+],
+"size": [
+4.0,
+2.02,
+4.0
+]
+},
+"mega|TopPlastic_Corner_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopPlastic_Corner_Round_Outer.gltf",
+"pos": [
+-4.57,
+3.0,
+-4.57
+],
+"size": [
+4.57,
+2.02,
+4.57
+]
+},
+"mega|TopPlastic_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopPlastic_Straight.gltf",
+"pos": [
+-2.0,
+3.0,
+-2.0
+],
+"size": [
+0.57,
+2.02,
+4.0
+]
+},
+"mega|TopSimple_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopSimple_Corner_Round_Inner.gltf",
+"pos": [
+-4.0,
+3.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|TopSimple_Corner_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopSimple_Corner_Round_Outer.gltf",
+"pos": [
+-4.0,
+3.0,
+-4.0
+],
+"size": [
+4.0,
+2.0,
+4.0
+]
+},
+"mega|TopSimple_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopSimple_Straight.gltf",
+"pos": [
+-2.0,
+3.0,
+-2.0
+],
+"size": [
+0.0,
+2.0,
+4.0
+]
+},
+"mega|TopWindow_Corner_Curve_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopWindow_Corner_Curve_Inner.gltf",
+"pos": [
+-4.1,
+3.0,
+-4.1
+],
+"size": [
+4.1,
+2.02,
+4.1
+]
+},
+"mega|TopWindow_Corner_Curve_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopWindow_Corner_Curve_Outer.gltf",
+"pos": [
+-4.57,
+3.0,
+-4.57
+],
+"size": [
+4.57,
+2.02,
+4.57
+]
+},
+"mega|TopWindow_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/TopWindow_Straight.gltf",
+"pos": [
+-2.1,
+3.0,
+-2.0
+],
+"size": [
+0.67,
+2.02,
+4.0
+]
+},
+"mega|WallAstra_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Corner_Round_Inner.gltf",
+"pos": [
+-4.47,
+-0.01,
+-4.47
+],
+"size": [
+4.47,
+3.04,
+4.47
+]
+},
+"mega|WallAstra_Corner_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Corner_Round_Outer.gltf",
+"pos": [
+-4.1,
+-0.01,
+-4.1
+],
+"size": [
+4.1,
+3.04,
+4.1
+]
+},
+"mega|WallAstra_Corner_Square_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Corner_Square_Inner.gltf",
+"pos": [
+-4.77,
+-0.01,
+-4.77
+],
+"size": [
+4.77,
+3.03,
+4.77
+]
+},
+"mega|WallAstra_Corner_Square_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Corner_Square_Outer.gltf",
+"pos": [
+-4.44,
+-0.01,
+-4.44
+],
+"size": [
+4.44,
+3.03,
+4.44
+]
+},
+"mega|WallAstra_Straight_Broken": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight_Broken.gltf",
+"pos": [
+-2.77,
+-0.01,
+-2.0
+],
+"size": [
+1.45,
+3.03,
+4.0
+]
+},
+"mega|WallAstra_Straight_Divided": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight_Divided.gltf",
+"pos": [
+-2.77,
+-0.01,
+-2.0
+],
+"size": [
+1.21,
+3.03,
+4.0
+]
+},
+"mega|WallAstra_Straight_Flat_Window": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight_Flat_Window.gltf",
+"pos": [
+-2.5,
+0.0,
+-2.0
+],
+"size": [
+0.5,
+3.0,
+4.0
+]
+},
+"mega|WallAstra_Straight_Flat": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight_Flat.gltf",
+"pos": [
+-2.1,
+0.0,
+-2.0
+],
+"size": [
+0.1,
+3.0,
+4.0
+]
+},
+"mega|WallAstra_Straight_Window": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight_Window.gltf",
+"pos": [
+-2.5,
+0.0,
+-2.0
+],
+"size": [
+0.5,
+3.0,
+4.0
+]
+},
+"mega|WallAstra_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight.gltf",
+"pos": [
+-2.77,
+-0.01,
+-2.0
+],
+"size": [
+1.21,
+3.03,
+4.0
+]
+},
+"mega|WallBand_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallBand_Corner_Round_Inner.gltf",
+"pos": [
+-4.2,
+0.0,
+-4.2
+],
+"size": [
+4.2,
+3.0,
+4.2
+]
+},
+"mega|WallBand_Corner_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallBand_Corner_Round_Outer.gltf",
+"pos": [
+-4.01,
+0.0,
+-4.0
+],
+"size": [
+4.01,
+3.0,
+4.0
+]
+},
+"mega|WallBand_Corner_Square_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallBand_Corner_Square_Inner.gltf",
+"pos": [
+-4.2,
+0.0,
+-4.2
+],
+"size": [
+4.2,
+3.0,
+4.2
+]
+},
+"mega|WallBand_Corner_Square_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallBand_Corner_Square_Outer.gltf",
+"pos": [
+-4.01,
+0.0,
+-4.01
+],
+"size": [
+4.01,
+3.0,
+4.01
+]
+},
+"mega|WallBand_Straight_Broken": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallBand_Straight_Broken.gltf",
+"pos": [
+-2.2,
+-0.01,
+-2.82
+],
+"size": [
+0.68,
+3.01,
+4.82
+]
+},
+"mega|WallBand_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallBand_Straight.gltf",
+"pos": [
+-2.2,
+0.0,
+-2.0
+],
+"size": [
+0.21,
+3.0,
+4.0
+]
+},
+"mega|WallWindow_Cap_A": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Cap_A.gltf",
+"pos": [
+-2.13,
+0.87,
+-2.2
+],
+"size": [
+0.2,
+0.4,
+0.4
+]
+},
+"mega|WallWindow_Cap_B": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Cap_B.gltf",
+"pos": [
+-2.13,
+0.87,
+1.8
+],
+"size": [
+0.2,
+0.4,
+0.4
+]
+},
+"mega|WallWindow_Corner_Round_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Corner_Round_Inner.gltf",
+"pos": [
+-4.2,
+0.0,
+-4.2
+],
+"size": [
+4.2,
+3.17,
+4.2
+]
+},
+"mega|WallWindow_Corner_Round_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Corner_Round_Outer.gltf",
+"pos": [
+-4.01,
+0.0,
+-4.01
+],
+"size": [
+4.01,
+3.16,
+4.01
+]
+},
+"mega|WallWindow_Corner_Square_Inner": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Corner_Square_Inner.gltf",
+"pos": [
+-4.2,
+0.0,
+-4.2
+],
+"size": [
+4.2,
+3.19,
+4.2
+]
+},
+"mega|WallWindow_Corner_Square_Outer": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Corner_Square_Outer.gltf",
+"pos": [
+-4.12,
+0.0,
+-4.12
+],
+"size": [
+4.12,
+3.19,
+4.12
+]
+},
+"mega|WallWindow_Straight": {
+"path": "assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Straight.gltf",
+"pos": [
+-2.2,
+0.0,
+-2.0
+],
+"size": [
+0.32,
+3.19,
+4.0
+]
+},
+"starter|Air_Grid_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Air_Grid_01.FBX",
+"pos": [
+-0.14,
+-0.37,
+-0.59
+],
+"size": [
+0.14,
+0.85,
+1.19
+]
+},
+"starter|Airing_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Props/Airing_01.FBX",
+"pos": [
+-4.25,
+-1.5,
+-4.25
+],
+"size": [
+8.5,
+1.5,
+8.5
+]
+},
+"starter|Beam_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Beam_01.FBX",
+"pos": [
+-0.13,
+0.0,
+-2.21
+],
+"size": [
+0.25,
+4.0,
+4.42
+]
+},
+"starter|Beam_02": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Beam_02.FBX",
+"pos": [
+-0.2,
+0.0,
+-2.14
+],
+"size": [
+2.41,
+4.0,
+2.26
+]
+},
+"starter|Beam_03": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Beam_03.FBX",
+"pos": [
+-0.13,
+0.0,
+-0.2
+],
+"size": [
+0.25,
+4.0,
+0.4
+]
+},
+"starter|Column_01_Big": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Column_01_Big.FBX",
+"pos": [
+-4.5,
+0.0,
+-0.25
+],
+"size": [
+4.0,
+4.0,
+0.5
+]
+},
+"starter|Crate_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Props/Crate_01.FBX",
+"pos": [
+-0.5,
+0.0,
+-1.0
+],
+"size": [
+1.0,
+0.75,
+2.0
+]
+},
+"starter|DoorWay_01_Large": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Doors/DoorWay_01_Large.FBX",
+"pos": [
+-5.0,
+0.0,
+0.0
+],
+"size": [
+5.0,
+4.0,
+1.0
+]
+},
+"starter|DoorWay_01_Ramp": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Doors/DoorWay_01_Ramp.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+6.0,
+0.08,
+1.0
+]
+},
+"starter|DoorWay_01_Up": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Doors/DoorWay_01_Up.FBX",
+"pos": [
+-6.0,
+-0.25,
+0.0
+],
+"size": [
+6.0,
+0.25,
+1.0
+]
+},
+"starter|Door_Left_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Doors/Door_Left_01.FBX",
+"pos": [
+0.25,
+0.0,
+0.25
+],
+"size": [
+4.75,
+3.94,
+0.5
+]
+},
+"starter|Door_Right_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Doors/Door_Right_01.FBX",
+"pos": [
+-5.25,
+0.0,
+0.24
+],
+"size": [
+5.0,
+3.94,
+0.53
+]
+},
+"starter|Door_Vert_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Doors/Door_Vert_01.FBX",
+"pos": [
+0.96,
+0.0,
+0.44
+],
+"size": [
+0.82,
+3.36,
+5.13
+]
+},
+"starter|Fence_Long_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Fences/Fence_Long_01.FBX",
+"pos": [
+-0.13,
+0.0,
+0.5
+],
+"size": [
+0.25,
+1.3,
+5.0
+]
+},
+"starter|Fence_Short_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Fences/Fence_Short_01.FBX",
+"pos": [
+-0.13,
+0.0,
+0.0
+],
+"size": [
+0.25,
+1.3,
+2.5
+]
+},
+"starter|Fence_Turn_90_Large_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Fences/Fence_Turn_90_Large_01.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+3.13,
+1.3,
+3.13
+]
+},
+"starter|Fence_Turn_90_Short_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Fences/Fence_Turn_90_Short_01.FBX",
+"pos": [
+-0.13,
+0.57,
+-0.13
+],
+"size": [
+0.63,
+0.73,
+0.63
+]
+},
+"starter|Floor_Angle_01_6x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Angle_01_6x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+6.0,
+0.0,
+6.0
+]
+},
+"starter|Floor_Coin_01_Small": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Coin_01_Small.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+0.0,
+2.0
+]
+},
+"starter|Floor_Descent_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Descent_01.FBX",
+"pos": [
+0.0,
+-5.0,
+-0.02
+],
+"size": [
+6.0,
+5.11,
+12.07
+]
+},
+"starter|Floor_Hole_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Hole_01.FBX",
+"pos": [
+0.0,
+-1.0,
+0.0
+],
+"size": [
+6.0,
+1.0,
+12.0
+]
+},
+"starter|Floor_Pipes_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Pipes_01.FBX",
+"pos": [
+2.3,
+-0.6,
+0.5
+],
+"size": [
+1.48,
+0.47,
+5.0
+]
+},
+"starter|Floor_Squared_01_6x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Squared_01_6x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+6.0,
+0.0,
+6.0
+]
+},
+"starter|Floor_Squared_02_6x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Squared_02_6x6.FBX",
+"pos": [
+0.0,
+-0.75,
+0.0
+],
+"size": [
+6.0,
+0.75,
+6.0
+]
+},
+"starter|Floor_Third_01_Strip_2x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Third_01_Strip_2x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+0.0,
+6.0
+]
+},
+"starter|Floor_Third_02_Strip_2x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Third_02_Strip_2x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+0.0,
+6.0
+]
+},
+"starter|Floor_Third_03_Strip_2x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Third_03_Strip_2x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+0.0,
+6.0
+]
+},
+"starter|Floor_Third_04_Strip_2x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Third_04_Strip_2x6.FBX",
+"pos": [
+0.0,
+-0.75,
+0.0
+],
+"size": [
+6.0,
+0.75,
+6.0
+]
+},
+"starter|Grid_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Grid_01.FBX",
+"pos": [
+-0.06,
+0.0,
+-1.0
+],
+"size": [
+0.13,
+3.25,
+2.0
+]
+},
+"starter|Intercom_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Intercom_01.FBX",
+"pos": [
+-0.07,
+-0.37,
+-0.25
+],
+"size": [
+0.07,
+0.75,
+0.5
+]
+},
+"starter|Intercom_02": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Intercom_02.FBX",
+"pos": [
+-0.07,
+-0.2,
+-0.25
+],
+"size": [
+0.07,
+0.4,
+0.5
+]
+},
+"starter|Light_Corridor_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Lights/Light_Corridor_01.FBX",
+"pos": [
+-0.5,
+-0.28,
+-1.75
+],
+"size": [
+1.0,
+0.28,
+3.5
+]
+},
+"starter|Light_Corridor_02": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Lights/Light_Corridor_02.FBX",
+"pos": [
+-0.25,
+-0.28,
+-1.75
+],
+"size": [
+0.5,
+0.28,
+3.5
+]
+},
+"starter|Light_SideLight_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Lights/Light_SideLight_01.FBX",
+"pos": [
+-0.09,
+-0.1,
+-0.44
+],
+"size": [
+0.09,
+0.19,
+0.89
+]
+},
+"starter|Light_SideLight_02": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Lights/Light_SideLight_02.FBX",
+"pos": [
+-0.09,
+-0.1,
+-0.08
+],
+"size": [
+0.09,
+0.19,
+0.16
+]
+},
+"starter|Light_SideLight_03": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Lights/Light_SideLight_03.FBX",
+"pos": [
+-0.09,
+-0.1,
+-0.08
+],
+"size": [
+0.09,
+0.19,
+0.16
+]
+},
+"starter|Light_SideLight_04": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Lights/Light_SideLight_04.FBX",
+"pos": [
+-0.09,
+-0.1,
+-0.08
+],
+"size": [
+0.09,
+0.19,
+0.16
+]
+},
+"starter|Light_SideLight_05": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Lights/Light_SideLight_05.FBX",
+"pos": [
+-0.09,
+-0.1,
+-0.08
+],
+"size": [
+0.09,
+0.19,
+0.16
+]
+},
+"starter|Num_0": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_0.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_1": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_1.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_2": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_2.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_3": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_3.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_4": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_4.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_5": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_5.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_6.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_7": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_7.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_8": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_8.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Num_9": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Num_9.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.69
+],
+"size": [
+0.0,
+4.0,
+5.39
+]
+},
+"starter|Pipes_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Pipes_01.FBX",
+"pos": [
+-1.11,
+-0.5,
+-2.59
+],
+"size": [
+1.11,
+0.99,
+5.18
+]
+},
+"starter|Pipes_02": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Pipes_02.FBX",
+"pos": [
+-0.38,
+0.0,
+-0.63
+],
+"size": [
+0.55,
+4.0,
+1.46
+]
+},
+"starter|Pipes_03": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stuff/Pipes_03.FBX",
+"pos": [
+-0.37,
+0.0,
+-0.84
+],
+"size": [
+0.71,
+4.0,
+1.67
+]
+},
+"starter|Porthole_01_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Porthole_01_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+3.65,
+4.0,
+6.0
+]
+},
+"starter|Roof_Angle_01_6x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Roofs/Roof_Angle_01_6x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+6.0,
+0.5,
+6.0
+]
+},
+"starter|Roof_Glass_01_6x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Roofs/Roof_Glass_01_6x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+6.0,
+1.9,
+6.0
+]
+},
+"starter|Roof_Squared_01_6x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Roofs/Roof_Squared_01_6x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+6.0,
+0.5,
+6.0
+]
+},
+"starter|Roof_Squared_02_6x6": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Roofs/Roof_Squared_02_6x6.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+6.0,
+0.0,
+6.0
+]
+},
+"starter|Sign_Caution_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Sign_Caution_01.FBX",
+"pos": [
+0.0,
+-2.0,
+-4.28
+],
+"size": [
+0.0,
+4.0,
+8.56
+]
+},
+"starter|Sign_Caution_02": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Sign_Caution_02.FBX",
+"pos": [
+0.0,
+-2.16,
+-4.28
+],
+"size": [
+0.0,
+4.32,
+8.56
+]
+},
+"starter|Sign_Danger_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Sign_Danger_01.FBX",
+"pos": [
+0.0,
+-2.16,
+-4.28
+],
+"size": [
+0.0,
+4.32,
+8.56
+]
+},
+"starter|Sign_Danger_02": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Sign_Danger_02.FBX",
+"pos": [
+0.0,
+-2.16,
+-4.28
+],
+"size": [
+0.0,
+4.32,
+8.56
+]
+},
+"starter|Stairway_Angle_Right_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Angle_Right_01.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+1.45,
+6.0
+]
+},
+"starter|Stairway_PillarAngle_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_PillarAngle_01.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+0.25,
+1.5,
+0.25
+]
+},
+"starter|Stairway_Plateform_00": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_00.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+0.15,
+6.0
+]
+},
+"starter|Stairway_Plateform_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_01.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+1.45,
+6.0
+]
+},
+"starter|Stairway_Plateform_02": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_02.FBX",
+"pos": [
+0.0,
+-0.06,
+-0.25
+],
+"size": [
+6.38,
+1.45,
+6.25
+]
+},
+"starter|Stairway_Plateform_03": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_03.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+1.45,
+6.0
+]
+},
+"starter|Stairway_Plateform_04": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_04.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+1.45,
+6.0
+]
+},
+"starter|Stairway_Plateform_05": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_05.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+1.45,
+6.0
+]
+},
+"starter|Stairway_Plateform_06": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_06.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+1.45,
+6.0
+]
+},
+"starter|Stairway_Plateform_07": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_07.FBX",
+"pos": [
+-0.37,
+-0.06,
+-0.25
+],
+"size": [
+6.75,
+1.45,
+6.25
+]
+},
+"starter|Stairway_Plateform_08": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_08.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+1.45,
+6.0
+]
+},
+"starter|Stairway_Plateform_09": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_09.FBX",
+"pos": [
+-0.38,
+-0.06,
+-0.25
+],
+"size": [
+6.75,
+1.45,
+6.5
+]
+},
+"starter|Stairway_Plateform_10": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_10.FBX",
+"pos": [
+-0.37,
+-0.06,
+-0.25
+],
+"size": [
+6.38,
+1.45,
+6.25
+]
+},
+"starter|Stairway_Plateform_11": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Plateform_11.FBX",
+"pos": [
+0.0,
+-0.06,
+0.0
+],
+"size": [
+6.0,
+1.45,
+6.0
+]
+},
+"starter|Stairway_Slope_45_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Slope_45_01.FBX",
+"pos": [
+0.0,
+-4.0,
+0.0
+],
+"size": [
+6.0,
+5.38,
+6.0
+]
+},
+"starter|Stairway_Step_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Stairways/Stairway_Step_01.FBX",
+"pos": [
+-2.25,
+-0.06,
+0.0
+],
+"size": [
+8.25,
+4.06,
+6.0
+]
+},
+"starter|Symb_Arrow": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Symb_Arrow.FBX",
+"pos": [
+0.0,
+-2.0,
+-2.01
+],
+"size": [
+0.0,
+4.0,
+4.02
+]
+},
+"starter|Wall_Bed_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Bed_01.FBX",
+"pos": [
+-1.0,
+0.74,
+0.25
+],
+"size": [
+2.41,
+0.58,
+5.5
+]
+},
+"starter|Wall_Console_01_Half": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Console_01_Half.FBX",
+"pos": [
+0.03,
+0.74,
+0.25
+],
+"size": [
+1.47,
+2.77,
+2.75
+]
+},
+"starter|Wall_Console_01_Large": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Console_01_Large.FBX",
+"pos": [
+0.03,
+0.74,
+0.25
+],
+"size": [
+1.47,
+2.77,
+5.5
+]
+},
+"starter|Wall_Cube_01_Coin": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Cube_01_Coin.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+1.0,
+2.0
+]
+},
+"starter|Wall_Cube_01_Flat": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Cube_01_Flat.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+1.0,
+6.0
+]
+},
+"starter|Wall_Cube_01_InvertCoin": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Cube_01_InvertCoin.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+2.0
+]
+},
+"starter|Wall_Cube_01_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Cube_01_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Cube_01_Round": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Cube_01_Round.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+2.0
+]
+},
+"starter|Wall_Cube_01_Thin": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Cube_01_Thin.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+2.0
+]
+},
+"starter|Wall_Cube_02_Flat": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Cube_02_Flat.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+1.0,
+4.0
+]
+},
+"starter|Wall_Down_01_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Down_01_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Gear_01_Half": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Gear_01_Half.FBX",
+"pos": [
+0.16,
+0.74,
+0.25
+],
+"size": [
+1.34,
+2.77,
+2.75
+]
+},
+"starter|Wall_Gear_02_Half": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Gear_02_Half.FBX",
+"pos": [
+0.18,
+0.74,
+0.25
+],
+"size": [
+1.32,
+2.77,
+2.75
+]
+},
+"starter|Wall_Gear_03_Half": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Gear_03_Half.FBX",
+"pos": [
+0.2,
+0.74,
+0.25
+],
+"size": [
+1.3,
+2.77,
+2.75
+]
+},
+"starter|Wall_Inclined_01_CoinLeft_Half": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_01_CoinLeft_Half.FBX",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+4.0
+]
+},
+"starter|Wall_Inclined_01_CoinLeft": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_01_CoinLeft.FBX",
+"pos": [
+-6.0,
+0.0,
+-2.0
+],
+"size": [
+6.0,
+4.0,
+4.0
+]
+},
+"starter|Wall_Inclined_01_CoinRight_Half": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_01_CoinRight_Half.FBX",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+4.0
+]
+},
+"starter|Wall_Inclined_01_CoinRight": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_01_CoinRight.FBX",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Inclined_01_Coin": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_01_Coin.FBX",
+"pos": [
+0.0,
+0.0,
+-2.0
+],
+"size": [
+2.0,
+4.0,
+2.0
+]
+},
+"starter|Wall_Inclined_01_Half": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_01_Half.FBX",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+4.0
+]
+},
+"starter|Wall_Inclined_01_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_01_Long.FBX",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Inclined_02_CoinLeft": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_02_CoinLeft.FBX",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Inclined_02_CoinRight": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_02_CoinRight.FBX",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Inclined_02_Coin": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_02_Coin.FBX",
+"pos": [
+-4.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+4.0
+]
+},
+"starter|Wall_Inclined_02_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Inclined_02_Long.FBX",
+"pos": [
+-2.0,
+0.0,
+0.0
+],
+"size": [
+4.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Pipes_01_Large": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Pipes_01_Large.FBX",
+"pos": [
+0.43,
+1.34,
+0.25
+],
+"size": [
+1.07,
+1.57,
+5.5
+]
+},
+"starter|Wall_Pipes_02_Large": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Pipes_02_Large.FBX",
+"pos": [
+0.32,
+1.34,
+0.25
+],
+"size": [
+1.18,
+1.57,
+5.5
+]
+},
+"starter|Wall_Simple_01_Coin": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_01_Coin.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+2.0
+]
+},
+"starter|Wall_Simple_01_Half": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_01_Half.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+4.0
+]
+},
+"starter|Wall_Simple_01_InvertCoin": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_01_InvertCoin.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+2.0
+]
+},
+"starter|Wall_Simple_01_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_01_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Simple_01_Squared": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_01_Squared.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+2.0
+]
+},
+"starter|Wall_Simple_01_TurnLarge_90": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_01_TurnLarge_90.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+8.0,
+4.0,
+8.0
+]
+},
+"starter|Wall_Simple_01_TurnShort_90": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_01_TurnShort_90.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+6.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Simple_02_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_02_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Simple_03_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_03_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+6.0
+]
+},
+"starter|Wall_Simple_04_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_04_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.05,
+4.0,
+6.0
+]
+},
+"starter|Wall_Simple_05_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_05_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.38,
+4.0,
+6.0
+]
+},
+"starter|Wall_Table_01": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Table_01.FBX",
+"pos": [
+-1.61,
+0.0,
+1.5
+],
+"size": [
+2.87,
+1.35,
+3.0
+]
+},
+"starter|Wall_Up_01_Long": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Up_01_Long.FBX",
+"pos": [
+0.0,
+0.0,
+0.0
+],
+"size": [
+2.0,
+4.0,
+6.0
+]
+},
+"starter|Word_Area": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Word_Area.FBX",
+"pos": [
+0.0,
+-2.0,
+-11.1
+],
+"size": [
+0.0,
+4.0,
+22.19
+]
+},
+"starter|Word_Deck": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Word_Deck.FBX",
+"pos": [
+0.0,
+-2.0,
+-11.1
+],
+"size": [
+0.0,
+4.0,
+22.2
+]
+},
+"starter|Word_Exit": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Word_Exit.FBX",
+"pos": [
+0.0,
+-2.0,
+-9.13
+],
+"size": [
+0.0,
+4.0,
+18.26
+]
+},
+"starter|Word_Lab": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Word_Lab.FBX",
+"pos": [
+0.0,
+-2.0,
+-7.96
+],
+"size": [
+0.0,
+4.0,
+15.92
+]
+},
+"starter|Word_Level": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Word_Level.FBX",
+"pos": [
+0.0,
+-2.0,
+-13.88
+],
+"size": [
+0.0,
+4.0,
+27.77
+]
+},
+"starter|Word_Tech": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Word_Tech.FBX",
+"pos": [
+0.0,
+-2.0,
+-10.97
+],
+"size": [
+0.0,
+4.0,
+21.95
+]
+},
+"starter|Word_Warning": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Word_Warning.FBX",
+"pos": [
+0.0,
+-2.0,
+-18.55
+],
+"size": [
+0.0,
+4.0,
+37.09
+]
+},
+"starter|Word_Zone": {
+"path": "assets/environement/3D Scifi Starter Kit Free/_Meshes/Symbols/Word_Zone.FBX",
+"pos": [
+0.0,
+-2.0,
+-10.97
+],
+"size": [
+0.0,
+4.0,
+21.95
+]
+}
+}

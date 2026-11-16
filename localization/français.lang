@@ -1,4 +1,11 @@
 {
+    "MENU_CHARACTER": "Personnage",
+    "MENU_RESUME": "Reprendre",
+    "MENU_LEAVE_GAME": "Quitter la partie",
+    "LEAVE_GAME_CONFIRM": "Quitter la partie en cours et revenir au menu principal ?",
+    "LEAVE_GAME_YES": "Quitter",
+    "LEAVE_GAME_NO": "Annuler",
+    "MENU_ONLINE_GAMES": "Multijoueur",
     "MENU_STANDARD_GAMES": "Parties Standards",
     "MENU_RANKED_GAMES": "Parties Classées",
     "MENU_RANKINGS": "Classements",

@@ -1,0 +1,247 @@
+// Réglages du jeu. Modifie les valeurs puis relance le serveur : il les envoie à tous les joueurs à la connexion.
+// Supprime une ligne (ou tout le fichier) pour retrouver la valeur par défaut. Les « // » sont des commentaires.
+{
+  // ---- Déplacement
+  // Vitesse de déplacement normale (sans sprint). [m/s] (défaut : 4)
+  "movement.baseSpeed": 4,
+  // Multiplicateur de vitesse en sprint (4 x 1,7 = 6,8 m/s). [x] (défaut : 1.7)
+  "movement.sprintMultiplier": 1.7,
+  // Multiplicateur de vitesse accroupi. [x] (défaut : 0.7)
+  "movement.crouchMultiplier": 0.7,
+  // Multiplicateur de vitesse quand on n'a aucune arme en main (à mains nues on court plus vite). [x] (défaut : 1.2)
+  "movement.unarmedMultiplier": 1.2,
+  // Rapidité pour atteindre la vitesse voulue (plus grand = plus nerveux). [1/s] (défaut : 8)
+  "movement.acceleration": 8,
+  // Rapidité pour s'arrêter ou changer de direction. [1/s] (défaut : 10)
+  "movement.deceleration": 10,
+  // Gravité des joueurs. [m/s²] (défaut : 29.4)
+  "movement.gravity": 29.4,
+  // Vitesse verticale au saut (hauteur = vitesse² / (2 x gravité)). [m/s] (défaut : 10)
+  "movement.jumpSpeed": 10,
+
+  // ---- Glissade
+  // Coup de vitesse au début d'une glissade, par rapport à la vitesse de course (même sur terrain plat). [x] (défaut : 1.45)
+  "slide.startMultiplier": 1.45,
+  // Vitesse maximale d'une glissade, en multiple de la vitesse de sprint (en descente). [x] (défaut : 2)
+  "slide.maxMultiplier": 2,
+  // Délai avant de pouvoir glisser de nouveau. [s] (défaut : 1)
+  "slide.cooldown": 1,
+  // Perte de vitesse de la glissade sur terrain plat (plus petit = glisse plus longtemps). [m/s²] (défaut : 6)
+  "slide.flatDeceleration": 6,
+  // Gain de vitesse de la glissade en descente (à pente maximale). [m/s²] (défaut : 4)
+  "slide.downAcceleration": 4,
+  // Perte de vitesse de la glissade en montée (à pente maximale). [m/s²] (défaut : 16)
+  "slide.upDeceleration": 16,
+
+  // ---- Balles
+  // Vitesse des balles. [m/s] (défaut : 250)
+  "bullet.speed": 250,
+  // Chute des balles. [m/s²] (défaut : 9.8)
+  "bullet.gravity": 9.8,
+
+  // ---- Zones touchées
+  // Multiplicateur de dégâts à la tête. [x] (défaut : 2)
+  "hit.headMultiplier": 2,
+  // Multiplicateur de dégâts au torse. [x] (défaut : 1)
+  "hit.torsoMultiplier": 1,
+  // Multiplicateur de dégâts aux membres. [x] (défaut : 0.9)
+  "hit.limbMultiplier": 0.9,
+
+  // ---- Armes
+  // Dégâts par balle (knife). [PV] (défaut : 40)
+  "weapon.knife.damage": 40,
+  // Cadence de tir (knife). [coups/min] (défaut : 90)
+  "weapon.knife.roundsPerMinute": 90,
+  // Portée (knife). [m] (défaut : 2.2)
+  "weapon.knife.range": 2.2,
+  // Dégâts par balle (c19). [PV] (défaut : 22)
+  "weapon.c19.damage": 22,
+  // Cadence de tir (c19). [coups/min] (défaut : 450)
+  "weapon.c19.roundsPerMinute": 450,
+  // Taille du chargeur (c19). [balles] (défaut : 19)
+  "weapon.c19.magazine": 19,
+  // Portée (c19). [m] (défaut : 120)
+  "weapon.c19.range": 120,
+  // Dispersion (c19). [°] (défaut : 0.5)
+  "weapon.c19.spread": 0.5,
+  // Durée du rechargement (c19). [s] (défaut : 1.6)
+  "weapon.c19.reloadSeconds": 1.6,
+  // Dégâts par balle (smg45). [PV] (défaut : 13)
+  "weapon.smg45.damage": 13,
+  // Cadence de tir (smg45). [coups/min] (défaut : 900)
+  "weapon.smg45.roundsPerMinute": 900,
+  // Taille du chargeur (smg45). [balles] (défaut : 25)
+  "weapon.smg45.magazine": 25,
+  // Portée (smg45). [m] (défaut : 150)
+  "weapon.smg45.range": 150,
+  // Dispersion (smg45). [°] (défaut : 1.2)
+  "weapon.smg45.spread": 1.2,
+  // Durée du rechargement (smg45). [s] (défaut : 1.8)
+  "weapon.smg45.reloadSeconds": 1.8,
+  // Dégâts par balle (ak). [PV] (défaut : 19)
+  "weapon.ak.damage": 19,
+  // Cadence de tir (ak). [coups/min] (défaut : 600)
+  "weapon.ak.roundsPerMinute": 600,
+  // Taille du chargeur (ak). [balles] (défaut : 30)
+  "weapon.ak.magazine": 30,
+  // Portée (ak). [m] (défaut : 400)
+  "weapon.ak.range": 400,
+  // Dispersion (ak). [°] (défaut : 0.8)
+  "weapon.ak.spread": 0.3,
+  // Durée du rechargement (ak). [s] (défaut : 2.3)
+  "weapon.ak.reloadSeconds": 2.3,
+  // Dégâts par balle (lmg63). [PV] (défaut : 17)
+  "weapon.lmg63.damage": 17,
+  // Cadence de tir (lmg63). [coups/min] (défaut : 700)
+  "weapon.lmg63.roundsPerMinute": 700,
+  // Taille du chargeur (lmg63). [balles] (défaut : 100)
+  "weapon.lmg63.magazine": 100,
+  // Portée (lmg63). [m] (défaut : 400)
+  "weapon.lmg63.range": 400,
+  // Dispersion (lmg63). [°] (défaut : 2)
+  "weapon.lmg63.spread": 0.5,
+  // Durée du rechargement (lmg63). [s] (défaut : 4.5)
+  "weapon.lmg63.reloadSeconds": 4.5,
+  // Dégâts par balle (sawnoff). [PV] (défaut : 11)
+  "weapon.sawnoff.damage": 11,
+  // Cadence de tir (sawnoff). [coups/min] (défaut : 120)
+  "weapon.sawnoff.roundsPerMinute": 120,
+  // Taille du chargeur (sawnoff). [balles] (défaut : 2)
+  "weapon.sawnoff.magazine": 2,
+  // Portée (sawnoff). [m] (défaut : 40)
+  "weapon.sawnoff.range": 40,
+  // Dispersion (sawnoff). [°] (défaut : 4)
+  "weapon.sawnoff.spread": 4,
+  // Nombre de plombs par tir (sawnoff). [plombs] (défaut : 8)
+  "weapon.sawnoff.pellets": 8,
+  // Durée du rechargement (sawnoff). [s] (défaut : 2.4)
+  "weapon.sawnoff.reloadSeconds": 2.4,
+  // Dégâts par balle (fists). [PV] (défaut : 12)
+  "weapon.fists.damage": 12,
+  // Cadence de tir (fists). [coups/min] (défaut : 140)
+  "weapon.fists.roundsPerMinute": 140,
+  // Portée (fists). [m] (défaut : 1.8)
+  "weapon.fists.range": 1.8,
+
+  // ---- Niveaux d'équipement (blanc / bleu / violet / rouge)
+  // Chance qu'une arme tombe au niveau classique (poids relatif : 55 / 28 / 13 / 4 = environ 55 %, 28 %, 13 %, 4 %). [poids] (défaut : 55)
+  "tier.chance.classic": 55,
+  // Multiplicateur de dégâts des armes de niveau classique. [x] (défaut : 1)
+  "tier.damage.classic": 1,
+  // Multiplicateur de la taille du chargeur, niveau classique. [x] (défaut : 1)
+  "tier.magazine.classic": 1,
+  // Multiplicateur de la durée de rechargement, niveau classique (plus petit = plus rapide). [x] (défaut : 1)
+  "tier.reload.classic": 1,
+  // Multiplicateur de la dispersion des tirs, niveau classique (plus petit = plus précis). [x] (défaut : 1)
+  "tier.spread.classic": 1,
+  // Chance qu'une arme tombe au niveau rare (poids relatif : 55 / 28 / 13 / 4 = environ 55 %, 28 %, 13 %, 4 %). [poids] (défaut : 28)
+  "tier.chance.rare": 28,
+  // Multiplicateur de dégâts des armes de niveau rare. [x] (défaut : 1.08)
+  "tier.damage.rare": 1.08,
+  // Multiplicateur de la taille du chargeur, niveau rare. [x] (défaut : 1.1)
+  "tier.magazine.rare": 1.1,
+  // Multiplicateur de la durée de rechargement, niveau rare (plus petit = plus rapide). [x] (défaut : 0.93)
+  "tier.reload.rare": 0.93,
+  // Multiplicateur de la dispersion des tirs, niveau rare (plus petit = plus précis). [x] (défaut : 0.9)
+  "tier.spread.rare": 0.9,
+  // Chance qu'une arme tombe au niveau épique (poids relatif : 55 / 28 / 13 / 4 = environ 55 %, 28 %, 13 %, 4 %). [poids] (défaut : 13)
+  "tier.chance.epic": 13,
+  // Multiplicateur de dégâts des armes de niveau épique. [x] (défaut : 1.16)
+  "tier.damage.epic": 1.16,
+  // Multiplicateur de la taille du chargeur, niveau épique. [x] (défaut : 1.2)
+  "tier.magazine.epic": 1.2,
+  // Multiplicateur de la durée de rechargement, niveau épique (plus petit = plus rapide). [x] (défaut : 0.86)
+  "tier.reload.epic": 0.86,
+  // Multiplicateur de la dispersion des tirs, niveau épique (plus petit = plus précis). [x] (défaut : 0.8)
+  "tier.spread.epic": 0.8,
+  // Chance qu'une arme tombe au niveau légendaire (poids relatif : 55 / 28 / 13 / 4 = environ 55 %, 28 %, 13 %, 4 %). [poids] (défaut : 4)
+  "tier.chance.legendary": 4,
+  // Multiplicateur de dégâts des armes de niveau légendaire. [x] (défaut : 1.25)
+  "tier.damage.legendary": 1.25,
+  // Multiplicateur de la taille du chargeur, niveau légendaire. [x] (défaut : 1.35)
+  "tier.magazine.legendary": 1.35,
+  // Multiplicateur de la durée de rechargement, niveau légendaire (plus petit = plus rapide). [x] (défaut : 0.78)
+  "tier.reload.legendary": 0.78,
+  // Multiplicateur de la dispersion des tirs, niveau légendaire (plus petit = plus précis). [x] (défaut : 0.7)
+  "tier.spread.legendary": 0.7,
+
+  // ---- Bouclier
+  // Points de bouclier d'un bouclier de niveau classique. [PS] (défaut : 50)
+  "shield.max.classic": 50,
+  // Points de bouclier d'un bouclier de niveau rare. [PS] (défaut : 75)
+  "shield.max.rare": 75,
+  // Points de bouclier d'un bouclier de niveau épique. [PS] (défaut : 100)
+  "shield.max.epic": 100,
+  // Points de bouclier d'un bouclier de niveau légendaire. [PS] (défaut : 2)
+  "shield.max.legendary": 125,
+
+  // ---- Soins
+  // Petit soin : vie rendue (999 = tout remplir). [PV] (défaut : 25)
+  "consumable.healSmall.heal": 25,
+  // Petit soin : bouclier rendu (999 = tout remplir). [PS] (défaut : 0)
+  "consumable.healSmall.shield": 0,
+  // Petit soin : durée d'utilisation. [s] (défaut : 3)
+  "consumable.healSmall.seconds": 3,
+  // Grand soin : vie rendue (999 = tout remplir). [PV] (défaut : 999)
+  "consumable.healBig.heal": 999,
+  // Grand soin : bouclier rendu (999 = tout remplir). [PS] (défaut : 0)
+  "consumable.healBig.shield": 0,
+  // Grand soin : durée d'utilisation. [s] (défaut : 6)
+  "consumable.healBig.seconds": 6,
+  // Petit bouclier : vie rendue (999 = tout remplir). [PV] (défaut : 0)
+  "consumable.shieldSmall.heal": 0,
+  // Petit bouclier : bouclier rendu (999 = tout remplir). [PS] (défaut : 25)
+  "consumable.shieldSmall.shield": 25,
+  // Petit bouclier : durée d'utilisation. [s] (défaut : 3)
+  "consumable.shieldSmall.seconds": 3,
+  // Grand bouclier : vie rendue (999 = tout remplir). [PV] (défaut : 0)
+  "consumable.shieldBig.heal": 0,
+  // Grand bouclier : bouclier rendu (999 = tout remplir). [PS] (défaut : 999)
+  "consumable.shieldBig.shield": 999,
+  // Grand bouclier : durée d'utilisation. [s] (défaut : 6)
+  "consumable.shieldBig.seconds": 6,
+  // Petit bouclier + vie : vie rendue (999 = tout remplir). [PV] (défaut : 50)
+  "consumable.bothSmall.heal": 50,
+  // Petit bouclier + vie : bouclier rendu (999 = tout remplir). [PS] (défaut : 50)
+  "consumable.bothSmall.shield": 50,
+  // Petit bouclier + vie : durée d'utilisation. [s] (défaut : 5)
+  "consumable.bothSmall.seconds": 5,
+  // Grand bouclier + vie : vie rendue (999 = tout remplir). [PV] (défaut : 999)
+  "consumable.bothBig.heal": 999,
+  // Grand bouclier + vie : bouclier rendu (999 = tout remplir). [PS] (défaut : 999)
+  "consumable.bothBig.shield": 999,
+  // Grand bouclier + vie : durée d'utilisation. [s] (défaut : 10)
+  "consumable.bothBig.seconds": 10,
+
+  // ---- Butin
+  // Probabilité qu'un coffre contienne deux armes (sinon une seule). [0-1] (défaut : 0.2)
+  "loot.chestSecondWeaponChance": 0.2,
+  // Probabilité qu'un coffre contienne un bouclier ou un soin (en plus des armes, de l'accessoire et des munitions). [0-1] (défaut : 0.55)
+  "loot.chestSupplyChance": 0.55,
+  // Poids de tirage dans le butin et les coffres : bouclier (son niveau est tiré avec tier.chance.*) (shield). Plus petit = plus rare. [poids] (défaut : 22)
+  "loot.weight.shield": 22,
+  // Poids de tirage dans le butin et les coffres : soin (healSmall). Plus petit = plus rare. [poids] (défaut : 30)
+  "loot.weight.healSmall": 30,
+  // Poids de tirage dans le butin et les coffres : soin (healBig). Plus petit = plus rare. [poids] (défaut : 8)
+  "loot.weight.healBig": 8,
+  // Poids de tirage dans le butin et les coffres : soin (shieldSmall). Plus petit = plus rare. [poids] (défaut : 24)
+  "loot.weight.shieldSmall": 24,
+  // Poids de tirage dans le butin et les coffres : soin (shieldBig). Plus petit = plus rare. [poids] (défaut : 6)
+  "loot.weight.shieldBig": 6,
+  // Poids de tirage dans le butin et les coffres : soin (bothSmall). Plus petit = plus rare. [poids] (défaut : 12)
+  "loot.weight.bothSmall": 12,
+  // Poids de tirage dans le butin et les coffres : soin (bothBig). Plus petit = plus rare. [poids] (défaut : 3)
+  "loot.weight.bothBig": 3,
+  // Probabilité qu'un coffre contienne un accessoire (viseur ou sac à dos). [0-1] (défaut : 0.7)
+  "loot.chestAccessoryChance": 0.7,
+
+  // ---- Bots
+  // Bots « easy » : proportion du temps où la visée est juste. [0-1] (défaut : 0.05)
+  "bot.accuracy.easy": 0.05,
+  // Bots « normal ». [0-1] (défaut : 0.3)
+  "bot.accuracy.normal": 0.3,
+  // Bots « hard ». [0-1] (défaut : 0.6)
+  "bot.accuracy.hard": 0.6,
+  // Bots « expert ». [0-1] (défaut : 0.97)
+  "bot.accuracy.expert": 0.97
+}

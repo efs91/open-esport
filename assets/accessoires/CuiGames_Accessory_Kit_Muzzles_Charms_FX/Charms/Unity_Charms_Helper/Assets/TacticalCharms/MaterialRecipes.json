@@ -1,0 +1,1327 @@
+{
+  "assets": [
+    {
+      "id": "CH_TERM_01",
+      "materials": [
+        {
+          "name": "TERM | warm ivory static marking",
+          "baseColor": [
+            0.6899999976158142,
+            0.6499999761581421,
+            0.47999998927116394,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.6499999761581421,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits"
+            },
+            "name": "TERM | warm ivory static marking",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.6899999976158142,
+                0.6499999761581421,
+                0.47999998927116394,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.6499999761581421
+            }
+          }
+        },
+        {
+          "name": "TERM | graphite cast guards",
+          "baseColor": [
+            0.02199999988079071,
+            0.027000000700354576,
+            0.027000000700354576,
+            1
+          ],
+          "metallic": 1,
+          "roughness": 1,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "Textures/CH_TERM_01_01_MetallicSmoothness.png",
+          "normalTexture": "Textures/CH_TERM_01_01_NormalGL.png",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits",
+              "M02_surface": "Saved seamless ORM + OpenGL tangent normal; existing active UV, no UV edits"
+            },
+            "name": "TERM | graphite cast guards",
+            "normalTexture": {
+              "index": 0
+            },
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.02199999988079071,
+                0.027000000700354576,
+                0.027000000700354576,
+                1
+              ],
+              "metallicRoughnessTexture": {
+                "index": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "TERM | charcoal elastomer",
+          "baseColor": [
+            0.009999999776482582,
+            0.014000000432133675,
+            0.013000000268220901,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.7400000095367432,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits"
+            },
+            "name": "TERM | charcoal elastomer",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.009999999776482582,
+                0.014000000432133675,
+                0.013000000268220901,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.7400000095367432
+            }
+          }
+        },
+        {
+          "name": "TERM | edge anodized copper",
+          "baseColor": [
+            0.18000000715255737,
+            0.03099999949336052,
+            0.006000000052154064,
+            1
+          ],
+          "metallic": 0.25,
+          "roughness": 0.46000000834465027,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits"
+            },
+            "name": "TERM | edge anodized copper",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.18000000715255737,
+                0.03099999949336052,
+                0.006000000052154064,
+                1
+              ],
+              "metallicFactor": 0.25,
+              "roughnessFactor": 0.46000000834465027
+            }
+          }
+        },
+        {
+          "name": "TERM | dark warm steel",
+          "baseColor": [
+            0.06499999761581421,
+            0.06400000303983688,
+            0.05400000140070915,
+            1
+          ],
+          "metallic": 0.8999999761581421,
+          "roughness": 0.4300000071525574,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits"
+            },
+            "name": "TERM | dark warm steel",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.06499999761581421,
+                0.06400000303983688,
+                0.05400000140070915,
+                1
+              ],
+              "metallicFactor": 0.8999999761581421,
+              "roughnessFactor": 0.4300000071525574
+            }
+          }
+        },
+        {
+          "name": "TERM | burnt orange enamel",
+          "baseColor": [
+            0.4000000059604645,
+            0.08299999684095383,
+            0.009999999776482582,
+            1
+          ],
+          "metallic": 1,
+          "roughness": 1,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "Textures/CH_TERM_01_05_MetallicSmoothness.png",
+          "normalTexture": "Textures/CH_TERM_01_05_NormalGL.png",
+          "normalScale": 1,
+          "clearcoat": 0.2800000011920929,
+          "clearcoatRoughness": 0.2800000011920929,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatFactor": 0.2800000011920929,
+                "clearcoatRoughnessFactor": 0.2800000011920929
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits",
+              "M02_surface": "Saved seamless ORM + OpenGL tangent normal; existing active UV, no UV edits"
+            },
+            "name": "TERM | burnt orange enamel",
+            "normalTexture": {
+              "index": 2
+            },
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.4000000059604645,
+                0.08299999684095383,
+                0.009999999776482582,
+                1
+              ],
+              "metallicRoughnessTexture": {
+                "index": 3
+              }
+            }
+          }
+        },
+        {
+          "name": "TERM | orange button enamel",
+          "baseColor": [
+            0.5799999833106995,
+            0.12999999523162842,
+            0.017999999225139618,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.27000001072883606,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0.23999999463558197,
+          "clearcoatRoughness": 0.20000000298023224,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatFactor": 0.23999999463558197,
+                "clearcoatRoughnessFactor": 0.20000000298023224
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits"
+            },
+            "name": "TERM | orange button enamel",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.5799999833106995,
+                0.12999999523162842,
+                0.017999999225139618,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.27000001072883606
+            }
+          }
+        },
+        {
+          "name": "TERM | braided black textile",
+          "baseColor": [
+            0.00800000037997961,
+            0.008999999612569809,
+            0.007000000216066837,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.8999999761581421,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits"
+            },
+            "name": "TERM | braided black textile",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.00800000037997961,
+                0.008999999612569809,
+                0.007000000216066837,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.8999999761581421
+            }
+          }
+        },
+        {
+          "name": "TERM | static mint phosphor glyph",
+          "baseColor": [
+            0.3400000035762787,
+            0.6200000047683716,
+            0.4300000071525574,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.4399999976158142,
+          "emission": [
+            0.1189999992251396,
+            0.21699999797344205,
+            0.1504999999403953
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "emissiveFactor": [
+              0.1189999992251396,
+              0.21699999797344205,
+              0.1504999999403953
+            ],
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits"
+            },
+            "name": "TERM | static mint phosphor glyph",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.3400000035762787,
+                0.6200000047683716,
+                0.4300000071525574,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.4399999976158142
+            }
+          }
+        },
+        {
+          "name": "TERM | dark olive screen glass",
+          "baseColor": [
+            0.006000000052154064,
+            0.01899999938905239,
+            0.010999999940395355,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.20000000298023224,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "extras": {
+              "material_version": "M02",
+              "material_role": "Static collectible charm PBR; material-only patch, no geometry/UV edits"
+            },
+            "name": "TERM | dark olive screen glass",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.006000000052154064,
+                0.01899999938905239,
+                0.010999999940395355,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.20000000298023224
+            }
+          }
+        }
+      ],
+      "sourceGLBSha256": "27f1a84a648b076763c9d52a789b57fb5f5e8f418173d8d76f38bb85c888cc07",
+      "fbxSha256": "0bc2b46141239fc4ad44adb9ca32a1d8c18d69de9ba359c0aff24852c0a1b978"
+    },
+    {
+      "id": "CH_BEAR_01",
+      "materials": [
+        {
+          "name": "Vinyl • warm honey yellow",
+          "baseColor": [
+            0.7799999713897705,
+            0.5,
+            0.006000000052154064,
+            1
+          ],
+          "metallic": 1,
+          "roughness": 1,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "Textures/CH_BEAR_01_00_MetallicSmoothness.png",
+          "normalTexture": "Textures/CH_BEAR_01_00_NormalGL.png",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Vinyl • warm honey yellow",
+            "normalTexture": {
+              "index": 0
+            },
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.7799999713897705,
+                0.5,
+                0.006000000052154064,
+                1
+              ],
+              "metallicRoughnessTexture": {
+                "index": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "Vinyl • apricot blush",
+          "baseColor": [
+            0.9300000071525574,
+            0.3700000047683716,
+            0.23000000417232513,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.6100000143051147,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Vinyl • apricot blush",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.9300000071525574,
+                0.3700000047683716,
+                0.23000000417232513,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.6100000143051147
+            }
+          }
+        },
+        {
+          "name": "Cord • warm ivory braid",
+          "baseColor": [
+            0.800000011920929,
+            0.7300000190734863,
+            0.5699999928474426,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.800000011920929,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Cord • warm ivory braid",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.800000011920929,
+                0.7300000190734863,
+                0.5699999928474426,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.800000011920929
+            }
+          }
+        },
+        {
+          "name": "Vinyl • soft inner ear",
+          "baseColor": [
+            0.8600000143051147,
+            0.6800000071525574,
+            0.3499999940395355,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.5299999713897705,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Vinyl • soft inner ear",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.8600000143051147,
+                0.6800000071525574,
+                0.3499999940395355,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.5299999713897705
+            }
+          }
+        },
+        {
+          "name": "Glasslike vinyl • espresso black eyes",
+          "baseColor": [
+            0.008999999612569809,
+            0.004999999888241291,
+            0.003000000026077032,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.10000000149011612,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Glasslike vinyl • espresso black eyes",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.008999999612569809,
+                0.004999999888241291,
+                0.003000000026077032,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.10000000149011612
+            }
+          }
+        },
+        {
+          "name": "Hardware • satin gold",
+          "baseColor": [
+            0.6600000262260437,
+            0.3799999952316284,
+            0.09000000357627869,
+            1
+          ],
+          "metallic": 0.7599999904632568,
+          "roughness": 0.3100000023841858,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Hardware • satin gold",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.6600000262260437,
+                0.3799999952316284,
+                0.09000000357627869,
+                1
+              ],
+              "metallicFactor": 0.7599999904632568,
+              "roughnessFactor": 0.3100000023841858
+            }
+          }
+        },
+        {
+          "name": "Honey cap • creamy golden drip",
+          "baseColor": [
+            0.9399999976158142,
+            0.6399999856948853,
+            0.11999999731779099,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.3100000023841858,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Honey cap • creamy golden drip",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.9399999976158142,
+                0.6399999856948853,
+                0.11999999731779099,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.3100000023841858
+            }
+          }
+        },
+        {
+          "name": "Honey jar • glazed amber",
+          "baseColor": [
+            0.4300000071525574,
+            0.13199999928474426,
+            0.012000000104308128,
+            1
+          ],
+          "metallic": 1,
+          "roughness": 1,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "Textures/CH_BEAR_01_07_MetallicSmoothness.png",
+          "normalTexture": "Textures/CH_BEAR_01_07_NormalGL.png",
+          "normalScale": 1,
+          "clearcoat": 0.25999999046325684,
+          "clearcoatRoughness": 0.1599999964237213,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatFactor": 0.25999999046325684,
+                "clearcoatRoughnessFactor": 0.1599999964237213
+              }
+            },
+            "name": "Honey jar • glazed amber",
+            "normalTexture": {
+              "index": 2
+            },
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.4300000071525574,
+                0.13199999928474426,
+                0.012000000104308128,
+                1
+              ],
+              "metallicRoughnessTexture": {
+                "index": 3
+              }
+            }
+          }
+        },
+        {
+          "name": "Honey jar • warm shoulder glaze",
+          "baseColor": [
+            0.6700000166893005,
+            0.25,
+            0.02199999988079071,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.20999999344348907,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0.2199999988079071,
+          "clearcoatRoughness": 0.17000000178813934,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatFactor": 0.2199999988079071,
+                "clearcoatRoughnessFactor": 0.17000000178813934
+              }
+            },
+            "name": "Honey jar • warm shoulder glaze",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.6700000166893005,
+                0.25,
+                0.02199999988079071,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.20999999344348907
+            }
+          }
+        },
+        {
+          "name": "Vinyl • buttercream muzzle and paw pads",
+          "baseColor": [
+            0.9300000071525574,
+            0.8799999952316284,
+            0.6800000071525574,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.5,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Vinyl • buttercream muzzle and paw pads",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.9300000071525574,
+                0.8799999952316284,
+                0.6800000071525574,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.5
+            }
+          }
+        },
+        {
+          "name": "Vinyl • cocoa nose and smile",
+          "baseColor": [
+            0.10000000149011612,
+            0.03099999949336052,
+            0.013000000268220901,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.2800000011920929,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "Vinyl • cocoa nose and smile",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.10000000149011612,
+                0.03099999949336052,
+                0.013000000268220901,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.2800000011920929
+            }
+          }
+        }
+      ],
+      "sourceGLBSha256": "46b4bddbde1e751b5cf8a158db75c57b589ed2dbff91419fa472c0c4e1d211c5",
+      "fbxSha256": "877aa4e5c9de57d257fdf11d2d4ea1d329539078a574183f72a2ab6c9e4bdd96"
+    },
+    {
+      "id": "CH_STAR_01",
+      "materials": [
+        {
+          "name": "Charcoal_BraidedCord",
+          "baseColor": [
+            0.01899999938905239,
+            0.020999999716877937,
+            0.019999999552965164,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.7799999713897705,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "name": "Charcoal_BraidedCord",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.01899999938905239,
+                0.020999999716877937,
+                0.019999999552965164,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.7799999713897705
+            }
+          }
+        },
+        {
+          "name": "AntiqueGold_Hardware",
+          "baseColor": [
+            0.2199999988079071,
+            0.15000000596046448,
+            0.06599999964237213,
+            1
+          ],
+          "metallic": 0.8600000143051147,
+          "roughness": 0.3199999928474426,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0.03999999910593033,
+          "clearcoatRoughness": 0.30000001192092896,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatFactor": 0.03999999910593033,
+                "clearcoatRoughnessFactor": 0.30000001192092896
+              }
+            },
+            "name": "AntiqueGold_Hardware",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.2199999988079071,
+                0.15000000596046448,
+                0.06599999964237213,
+                1
+              ],
+              "metallicFactor": 0.8600000143051147,
+              "roughnessFactor": 0.3199999928474426
+            }
+          }
+        },
+        {
+          "name": "Amber_StarSculpt",
+          "baseColor": [
+            0.8500000238418579,
+            0.3199999928474426,
+            0.02500000037252903,
+            1
+          ],
+          "metallic": 0.2199999988079071,
+          "roughness": 0.2199999988079071,
+          "emission": [
+            0.800000011920929,
+            0.19199999856948846,
+            0.009600000226497651
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "emissiveFactor": [
+              0.800000011920929,
+              0.19199999856948846,
+              0.009600000226497651
+            ],
+            "name": "Amber_StarSculpt",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.8500000238418579,
+                0.3199999928474426,
+                0.02500000037252903,
+                1
+              ],
+              "metallicFactor": 0.2199999988079071,
+              "roughnessFactor": 0.2199999988079071
+            }
+          }
+        },
+        {
+          "name": "Star_BevelGold",
+          "baseColor": [
+            0.949999988079071,
+            0.47999998927116394,
+            0.04500000178813934,
+            1
+          ],
+          "metallic": 0.5,
+          "roughness": 0.20000000298023224,
+          "emission": [
+            0.550000011920929,
+            0.15949999886751165,
+            0.00824999999441206
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "emissiveFactor": [
+              0.550000011920929,
+              0.15949999886751165,
+              0.00824999999441206
+            ],
+            "name": "Star_BevelGold",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.949999988079071,
+                0.47999998927116394,
+                0.04500000178813934,
+                1
+              ],
+              "metallicFactor": 0.5,
+              "roughnessFactor": 0.20000000298023224
+            }
+          }
+        },
+        {
+          "name": "Ivory_CeramicCap",
+          "baseColor": [
+            0.800000011920929,
+            0.75,
+            0.6499999761581421,
+            1
+          ],
+          "metallic": 1,
+          "roughness": 1,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "Textures/CH_STAR_01_04_MetallicSmoothness.png",
+          "normalTexture": "Textures/CH_STAR_01_04_NormalGL.png",
+          "normalScale": 1,
+          "clearcoat": 0.09000000357627869,
+          "clearcoatRoughness": 0.3199999928474426,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatFactor": 0.09000000357627869,
+                "clearcoatRoughnessFactor": 0.3199999928474426
+              }
+            },
+            "extras": {
+              "M02_surface": "Saved seamless ORM + OpenGL tangent normal; existing active UV, no UV edits"
+            },
+            "name": "Ivory_CeramicCap",
+            "normalTexture": {
+              "index": 0
+            },
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.800000011920929,
+                0.75,
+                0.6499999761581421,
+                1
+              ],
+              "metallicRoughnessTexture": {
+                "index": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "BurntOrange_AnodizedCollar",
+          "baseColor": [
+            0.6000000238418579,
+            0.10999999940395355,
+            0.019999999552965164,
+            1
+          ],
+          "metallic": 0.3799999952316284,
+          "roughness": 0.3199999928474426,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 0,
+          "doubleSided": true,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0.11999999731779099,
+          "clearcoatRoughness": 0.2800000011920929,
+          "sourceGLTFMaterial": {
+            "doubleSided": true,
+            "extensions": {
+              "KHR_materials_clearcoat": {
+                "clearcoatFactor": 0.11999999731779099,
+                "clearcoatRoughnessFactor": 0.2800000011920929
+              }
+            },
+            "name": "BurntOrange_AnodizedCollar",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.6000000238418579,
+                0.10999999940395355,
+                0.019999999552965164,
+                1
+              ],
+              "metallicFactor": 0.3799999952316284,
+              "roughnessFactor": 0.3199999928474426
+            }
+          }
+        },
+        {
+          "name": "SmokeTeal_Physical_ClosedShell",
+          "baseColor": [
+            0.20000000298023224,
+            0.3799999952316284,
+            0.41999998688697815,
+            1
+          ],
+          "metallic": 0,
+          "roughness": 0.09000000357627869,
+          "emission": [
+            0,
+            0,
+            0
+          ],
+          "transmission": 1,
+          "doubleSided": false,
+          "baseTexture": "",
+          "metallicSmoothnessTexture": "",
+          "normalTexture": "",
+          "normalScale": 1,
+          "clearcoat": 0,
+          "clearcoatRoughness": 0,
+          "sourceGLTFMaterial": {
+            "doubleSided": false,
+            "extensions": {
+              "KHR_materials_transmission": {
+                "transmissionFactor": 1
+              },
+              "KHR_materials_volume": {
+                "attenuationColor": [
+                  0.3799999952316284,
+                  0.5,
+                  0.5299999713897705
+                ],
+                "attenuationDistance": 0.00125,
+                "thicknessFactor": 0.0005000000237487257
+              },
+              "KHR_materials_specular": {
+                "specularFactor": 0.5199999809265137
+              },
+              "KHR_materials_ior": {
+                "ior": 1.4299999475479126
+              }
+            },
+            "extras": {
+              "physical_wall_thickness": 0.0005,
+              "note": "Actual inner and outer surfaces; alpha 1; transmission, IOR and volume exported natively in GLB.",
+              "M02_note": "Clean physical glass, subtler native specular factor, smoke-teal volume. No normal/roughness texture and no alpha transparency."
+            },
+            "name": "SmokeTeal_Physical_ClosedShell",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.20000000298023224,
+                0.3799999952316284,
+                0.41999998688697815,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.09000000357627869
+            }
+          }
+        }
+      ],
+      "sourceGLBSha256": "5901783b605b8e4678e8fe6357a275e1ced7b16068affb14c9ae67d4eedd5e6a",
+      "fbxSha256": "289ba77bce45885bb6a3059801df7ca6b5b7744827aaf2d863485a39b0fde70e"
+    }
+  ],
+  "notes": [
+    "Actual exported M02 materials and images",
+    "Glass is alpha preview approximation in native Unity helper; source/GLB retain transmission/IOR/volume/specular",
+    "Low clearcoat uses URP Complex Lit when available; otherwise disclosed fallback",
+    "Unity import/menu/shaders/PlayMode not executed in this environment"
+  ]
+}

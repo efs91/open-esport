@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Wall_04_Dif_Style_02_Alb.png" id="1_fmggs"]
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Wall_04_Dif_Style_02_AO.png" id="2_4mspa"]
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Wall_04_Dif_Style_02_Illum.png" id="3_wpd3k"]
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Wall_04_Dif_Style_02_Norm.png" id="4_w5i83"]
+
+[resource]
+resource_name = "Wall_04"
+cull_mode = 2
+albedo_texture = ExtResource("1_fmggs")
+metallic = 0.35
+roughness = 0.7
+emission_enabled = true
+emission_texture = ExtResource("3_wpd3k")
+normal_enabled = true
+normal_texture = ExtResource("4_w5i83")
+ao_enabled = true
+ao_texture = ExtResource("2_4mspa")

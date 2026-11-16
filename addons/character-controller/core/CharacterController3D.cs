@@ -132,6 +132,8 @@ public partial class CharacterController3D : CharacterBody3D
 	private float Gravity;
 	// Collision of character controller.
 	private CollisionShape3D Collision;
+	/// <summary>Hauteur actuelle de la capsule (elle rétrécit accroupi ou en glissade) : les pieds sont à origine - hauteur / 2.</summary>
+	public float ColliderHeight => Collision?.Shape != null ? (float)Collision.Shape.Get("height") : 2f;
 	// Above head collision checker, used for crouching and jumping.
 	private RayCast3D HeadCheck;
 	// Basic movement ability.
@@ -157,6 +159,8 @@ public partial class CharacterController3D : CharacterBody3D
 	private float _defaultHeight;
 	// True if sprint is toggled on
 	private bool _isSprintToggled = false;
+	/// <summary>Le joueur veut courir (touche tenue, ou sprint enclenché en mode bascule). Le mode en ligne l'envoie au serveur.</summary>
+	public bool WantsSprint { get; private set; }
 	// Time of last sprint toggle
 	private float _lastSprintToggleTime = 0f;
 	// Minimum time between sprint toggles (in seconds)
@@ -278,6 +282,7 @@ public partial class CharacterController3D : CharacterBody3D
 		
 		// Gestion du slide
 		bool isSprinting = SprintModeType == SprintMode.Hold ? inputSprint : _isSprintToggled;
+		WantsSprint = isSprinting;
 		SlideAbility.SetActive(isSprinting && inputCrouch && IsOnFloor() && !IsFloating() && !IsSubmerged() && !IsFlyMode());
 
 		float multiplier = 1.0f;

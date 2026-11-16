@@ -1,0 +1,7 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://scripts/online/LootPoint.cs" id="1_loot"]
+
+[node name="CoffreButin" type="Marker3D"]
+script = ExtResource("1_loot")
+Kind = 1

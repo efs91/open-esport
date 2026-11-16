@@ -1,0 +1,6 @@
+**/bin/
+**/obj/
+OpenEsport.Tests/
+OpenEsport.LoadTest/
+.gdignore
+*.sln

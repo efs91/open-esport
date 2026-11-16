@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_Trim_03_Cables.png" id="1_7oaxu"]
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_Trim_03_ORM.png" id="2_70827"]
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_Trim_03_Normal.png" id="3_oj0iq"]
+
+[resource]
+resource_name = "MI_Trim_03_Cables"
+cull_mode = 2
+albedo_texture = ExtResource("1_7oaxu")
+metallic = 1.0
+metallic_texture = ExtResource("2_70827")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("2_70827")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("3_oj0iq")
+ao_enabled = true
+ao_texture = ExtResource("2_70827")

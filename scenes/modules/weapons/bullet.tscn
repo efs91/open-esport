@@ -4,8 +4,10 @@
 [ext_resource type="Script" uid="uid://3e5rdgnx8oq0" path="res://scripts/modules/weapons/Bullet.cs" id="1_qk30p"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_xq81x"]
+radius = 0.1
 
 [node name="Bullet" type="RigidBody3D"]
+gravity_scale = 0.0
 continuous_cd = true
 script = ExtResource("1_qk30p")
 
@@ -14,5 +16,4 @@ shape = SubResource("SphereShape3D_xq81x")
 
 [node name="amo" type="CSGSphere3D" parent="."]
 material_override = ExtResource("1_2cda5")
-use_collision = true
 radius = 0.1

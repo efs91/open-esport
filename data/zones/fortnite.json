@@ -1,0 +1,48 @@
+{
+  "name": "fortnite",
+  "reference": "diagonal",
+  "firstRadius": 100,
+  "tickSeconds": 1,
+  "finalDamage": 10,
+  "ignoreShield": false,
+  "containment": "overlap",
+  "maxShift": 0.9,
+  "revisitChance": 0.25,
+  "stages": [
+    {
+      "idle": 60,
+      "warning": 60,
+      "shrink": 90,
+      "radius": 62,
+      "damage": 1
+    },
+    {
+      "idle": 0,
+      "warning": 45,
+      "shrink": 75,
+      "radius": 42,
+      "damage": 1
+    },
+    {
+      "idle": 0,
+      "warning": 40,
+      "shrink": 60,
+      "radius": 30,
+      "damage": 2
+    },
+    {
+      "idle": 0,
+      "warning": 35,
+      "shrink": 55,
+      "radius": 22,
+      "damage": 5
+    }
+  ],
+  "cycle": true,
+  "cycleWarning": 25,
+  "cycleShrink": 45,
+  "cycleDamage": 8,
+  "cycleRatio": 0.85,
+  "cycleMinRadius": 9,
+  "cycleResetRadius": 34
+}

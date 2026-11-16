@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>OpenEsport.LoadTest</RootNamespace>
+    <AssemblyName>OpenEsport.LoadTest</AssemblyName>
+    <RollForward>Major</RollForward>
+    <ServerGarbageCollector>false</ServerGarbageCollector>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenEsport.Core\OpenEsport.Core.csproj" />
+  </ItemGroup>
+</Project>

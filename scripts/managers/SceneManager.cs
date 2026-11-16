@@ -105,6 +105,16 @@ public partial class SceneManager : Node
 		}
 	}
 
+	/// <summary>Décharge la scène en cours (retour au menu principal).</summary>
+	public void UnloadScene()
+	{
+		if (_currentScene == null) return;
+		_logManager.Info("[SceneManager] Déchargement de la scène en cours");
+		_currentScene.QueueFree();
+		_currentScene = null;
+		EmitSignal(SignalName.SceneUnloaded);
+	}
+
 	public Node GetCurrentScene()
 	{
 		return _currentScene;

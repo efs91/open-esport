@@ -1,3 +1,34 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+logs/
+server_lag.log
+
+# Godot / .NET : caches et compilations
+.mono/
+.vs/
+.vscode/
+*.tmp
+*.TMP
+~*
+**/bin/
+**/obj/
+!addons/terrain_3d/bin/
+!addons/terrain_3d/bin/**
+TestResults/
+
+# Fichiers sources lourds (Blender, HDRI 8K) : à garder hors du dépôt (limite GitHub 100 Mo par fichier)
+*.blend1
+*.exr
+*.hdr
+
+# Résultats locaux
+*.log
+*.old
+
+# Packs de sources trop lourds (textures 8K, fichiers > 100 Mo refusés par GitHub), non utilisés directement par les scènes
+assets/environement/pine_forest/
+assets/environement/namaqualand/
+tools/meshy/raw/
+*.psd

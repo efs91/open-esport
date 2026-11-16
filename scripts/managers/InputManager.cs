@@ -36,6 +36,15 @@ public partial class InputManager : Node
 		public const string MOVE_FLY_MODE = "move_fly_mode";
 		public const string FLY = "fly";
 		public const string AIM = "aim";
+		public const string INTERACT = "interact";
+		public const string WEAPON_SLOT_1 = "weapon_slot_1";
+		public const string WEAPON_SLOT_2 = "weapon_slot_2";
+		public const string HOLSTER = "holster";
+		public const string INVENTORY = "inventory";
+		public const string USE_HEAL = "use_heal";
+		public const string USE_SHIELD = "use_shield";
+		public const string USE_BOTH = "use_both";
+		public const string DROP_SHIELD = "drop_shield";
 	}
 
 	// Configuration par défaut des touches
@@ -71,9 +80,18 @@ public partial class InputManager : Node
 		InitializeInputMap();
 	}
 
+	/// <summary>
+	/// Vrai tant qu'un clic commencé hors du jeu (menu, inventaire) n'est pas relâché : ce clic ne doit pas devenir un tir ou une visée.
+	/// Cliquer « Reprendre » recapture la souris alors que le bouton est encore enfoncé.
+	/// </summary>
+	public static bool ClickGuard { get; private set; }
+	/// <summary>En l'air (avion, chute libre) : TAB sert à passer le commandement du saut, pas à ouvrir l'inventaire.</summary>
+	public static bool AirborneLock { get; set; }
+
 	private void OnGameStateChanged(int newState)
 	{
 		var state = (GameManager.GameState)newState;
+		ClickGuard = true;
 		
 		switch (state)
 		{
@@ -98,6 +116,9 @@ public partial class InputManager : Node
 		{
 			if (mouseButton.Pressed)
 			{
+				// pas de clic « de jeu » quand un menu est ouvert
+				if (_gameManager.GetCurrentState() != GameManager.GameState.Gameplay)
+					return;
 				_inputEvents.UpdateMouseButton((int)mouseButton.ButtonIndex, true);
 				
 				// Gestion de la molette de souris
@@ -241,10 +262,15 @@ public partial class InputManager : Node
 	private void UpdateActionInputs()
 	{
 		// Gestion du tir, rechargement et changement d'arme
-		bool isShooting = Input.IsActionPressed(Actions.SHOOT);
+		bool menuOpen = _gameManager.GetCurrentState() != GameManager.GameState.Gameplay;
+		if (ClickGuard && !Input.IsActionPressed(Actions.SHOOT) && !Input.IsActionPressed(Actions.AIM))
+			ClickGuard = false; // le clic du menu est relâché
+		bool blocked = menuOpen || ClickGuard;
+
+		bool isShooting = !blocked && Input.IsActionPressed(Actions.SHOOT);
 		_inputEvents.UpdateShootState(isShooting);
 
-		bool isAiming = Input.IsActionPressed(Actions.AIM);
+		bool isAiming = !blocked && Input.IsActionPressed(Actions.AIM);
 		_inputEvents.UpdateAimState(isAiming);
 
 		bool isReloading = Input.IsActionPressed(Actions.RELOAD);
@@ -260,7 +286,7 @@ public partial class InputManager : Node
 			_inputEvents.TriggerSwitchWeapon();
 		}
 
-		if (Input.IsActionJustPressed("aim"))
+		if (Input.IsActionJustPressed("aim") && !blocked)
 		{
 			_inputEvents.TriggerAim();
 		}
@@ -268,6 +294,32 @@ public partial class InputManager : Node
 		if (Input.IsActionJustReleased("aim"))
 		{
 			_inputEvents.ReleaseAim();
+		}
+
+		// Inventaire
+		if (Input.IsActionJustPressed(Actions.INTERACT))
+		{
+			_inputEvents.TriggerInteract();
+		}
+
+		if (Input.IsActionJustPressed(Actions.WEAPON_SLOT_1))
+		{
+			_inputEvents.TriggerWeaponSlot(0);
+		}
+
+		if (Input.IsActionJustPressed(Actions.WEAPON_SLOT_2))
+		{
+			_inputEvents.TriggerWeaponSlot(1);
+		}
+
+		if (Input.IsActionJustPressed(Actions.HOLSTER))
+		{
+			_inputEvents.TriggerWeaponSlot(-1);
+		}
+
+		if (Input.IsActionJustPressed(Actions.INVENTORY) && !AirborneLock)
+		{
+			_inputEvents.TriggerInventoryToggle();
 		}
 	}
 
@@ -319,7 +371,17 @@ public partial class InputManager : Node
 			{ Actions.SWITCH_WEAPON, new InputEventKey { Keycode = Key.A } },
 			{ Actions.UI_CANCEL, new InputEventKey { Keycode = Key.Escape } },
 			{ Actions.DEBUG_F1, new InputEventKey { Keycode = Key.F1 } },
-			{ Actions.INGAME_MENU_F2, new InputEventKey { Keycode = Key.F2 } }
+			{ Actions.INGAME_MENU_F2, new InputEventKey { Keycode = Key.F2 } },
+			{ Actions.INTERACT, new InputEventKey { Keycode = Key.E } },
+			// Touches physiques : la rangée de chiffres fonctionne en AZERTY sans Maj
+			{ Actions.WEAPON_SLOT_1, new InputEventKey { PhysicalKeycode = Key.Key1 } },
+			{ Actions.WEAPON_SLOT_2, new InputEventKey { PhysicalKeycode = Key.Key2 } },
+			{ Actions.HOLSTER, new InputEventKey { PhysicalKeycode = Key.Key3 } },
+			{ Actions.INVENTORY, new InputEventKey { Keycode = Key.Tab } },
+			{ Actions.USE_HEAL, new InputEventKey { PhysicalKeycode = Key.Key4 } },
+			{ Actions.USE_SHIELD, new InputEventKey { PhysicalKeycode = Key.Key5 } },
+			{ Actions.USE_BOTH, new InputEventKey { PhysicalKeycode = Key.Key6 } },
+			{ Actions.DROP_SHIELD, new InputEventKey { Keycode = Key.G } }
 		};
 
 		// Ajouter toutes les actions
@@ -330,6 +392,16 @@ public partial class InputManager : Node
 				InputMap.AddAction(binding.Key);
 			}
 			InputMap.ActionAddEvent(binding.Key, binding.Value);
+		}
+
+		// touches choisies par le joueur dans les réglages : elles remplacent celles par défaut
+		foreach (var custom in Openesport.Utils.GameSettings.KeyOverrides)
+		{
+			var ev = Openesport.Utils.GameSettings.Decode(custom.Value);
+			if (ev == null || !InputMap.HasAction(custom.Key)) continue;
+			InputMap.ActionEraseEvents(custom.Key);
+			bool unbound = ev is InputEventKey k && k.Keycode == Key.None && k.PhysicalKeycode == Key.None;
+			if (!unbound) InputMap.ActionAddEvent(custom.Key, ev);
 		}
 	}
 
@@ -378,7 +450,7 @@ public partial class InputManager : Node
 	{
 		if (inputEvent is InputEventKey keyEvent)
 		{
-			return keyEvent.Keycode.ToString();
+			return (keyEvent.Keycode != Key.None ? keyEvent.Keycode : keyEvent.PhysicalKeycode).ToString();
 		}
 		else if (inputEvent is InputEventMouseButton mouseButton)
 		{

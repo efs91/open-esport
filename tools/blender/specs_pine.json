@@ -1,0 +1,154 @@
+[
+ {
+  "object": "fern_01_b_lod1",
+  "out": "pine_fern_b",
+  "tris": 300,
+  "scale": 3.0
+ },
+ {
+  "object": "fern_01_c_lod1",
+  "out": "pine_fern_c",
+  "tris": 300,
+  "scale": 3.0
+ },
+ {
+  "object": "rock_moss_set_01_a_lod1",
+  "out": "pine_rock_a",
+  "tris": 1200,
+  "scale": 4.0,
+  "sink": 0.05
+ },
+ {
+  "object": "rock_moss_set_01_b_lod1",
+  "out": "pine_rock_b",
+  "tris": 1200,
+  "scale": 4.0,
+  "sink": 0.05
+ },
+ {
+  "object": "rock_moss_set_01_c_lod1",
+  "out": "pine_rock_c",
+  "tris": 1200,
+  "scale": 4.0,
+  "sink": 0.05
+ },
+ {
+  "object": "rock_moss_set_01_d_lod1",
+  "out": "pine_rock_d",
+  "tris": 1200,
+  "scale": 4.0,
+  "sink": 0.05
+ },
+ {
+  "object": "rock_moss_set_01_e_lod1",
+  "out": "pine_rock_e",
+  "tris": 1200,
+  "scale": 4.0,
+  "sink": 0.05
+ },
+ {
+  "object": "rock_moss_set_01_f_lod1",
+  "out": "pine_rock_f",
+  "tris": 1200,
+  "scale": 4.0,
+  "sink": 0.05
+ },
+ {
+  "object": "rock_moss_set_02_rock07_lod1",
+  "out": "pine_rockb_07",
+  "tris": 800,
+  "scale": 4.0,
+  "sink": 0.04
+ },
+ {
+  "object": "rock_moss_set_02_rock08_lod1",
+  "out": "pine_rockb_08",
+  "tris": 800,
+  "scale": 4.0,
+  "sink": 0.04
+ },
+ {
+  "object": "rock_moss_set_02_rock09_lod1",
+  "out": "pine_rockb_09",
+  "tris": 800,
+  "scale": 4.0,
+  "sink": 0.04
+ },
+ {
+  "object": "rock_moss_set_02_rock10_lod1",
+  "out": "pine_rockb_10",
+  "tris": 800,
+  "scale": 4.0,
+  "sink": 0.04
+ },
+ {
+  "object": "rock_moss_set_02_rock11_lod1",
+  "out": "pine_rockb_11",
+  "tris": 800,
+  "scale": 4.0,
+  "sink": 0.04
+ },
+ {
+  "object": "rock_moss_set_02_rock12_lod1",
+  "out": "pine_rockb_12",
+  "tris": 800,
+  "scale": 4.0,
+  "sink": 0.04
+ },
+ {
+  "object": "rock_moss_set_02_rock13_lod1",
+  "out": "pine_rockb_13",
+  "tris": 800,
+  "scale": 4.0,
+  "sink": 0.04
+ },
+ {
+  "object": "dead_tree_lod1",
+  "out": "pine_deadlog",
+  "tris": 4000,
+  "scale": 1.6
+ },
+ {
+  "object": "tree_trunk_lod1",
+  "out": "pine_stump",
+  "tris": 3000,
+  "scale": 3.0,
+  "sink": 0.05
+ },
+ {
+  "object": "dry_branches_medium_01_a_lod1",
+  "out": "pine_branch_a",
+  "tris": 500,
+  "scale": 2.2
+ },
+ {
+  "object": "tree_roots_a_lod1",
+  "out": "pine_roots_a",
+  "tris": 3000,
+  "scale": 3.0
+ },
+ {
+  "object": "grass_medium_01_large_a_lod1",
+  "out": "pine_grass_a",
+  "tris": 900,
+  "scale": 4.0
+ },
+ {
+  "object": "grass_medium_01_mid_a_lod1",
+  "out": "pine_grass_b",
+  "tris": 700,
+  "scale": 4.0
+ },
+ {
+  "object": "fir_proxy_large",
+  "out": "pine_far_large",
+  "tris": 200,
+  "scale": 1.0
+ },
+ {
+  "object": "fir_proxy_medium",
+  "out": "pine_far_medium",
+  "tris": 200,
+  "scale": 1.0
+ }
+]

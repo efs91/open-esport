@@ -1,0 +1,268 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://scripts/online/SimpleMap.cs" id="1_map"]
+[ext_resource type="Script" path="res://scripts/online/CoverBox.cs" id="2_cover"]
+[ext_resource type="Script" path="res://scripts/online/MapMarker.cs" id="3_marker"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.32, 0.5, 0.78, 1)
+sky_horizon_color = Color(0.72, 0.78, 0.86, 1)
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[node name="Drapeau" type="Node3D"]
+script = ExtResource("1_map")
+Size = Vector2(160, 80)
+GroundColor = Color(0.33, 0.36, 0.27, 1)
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.8, -0.35, 0.49, 0, 0.81, 0.58, -0.6, -0.46, 0.65, 0, 20, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+position = Vector3(-64, 0.2, -12)
+
+[node name="Points" type="Node3D" parent="."]
+
+[node name="Marker_01" type="Marker3D" parent="Points"]
+position = Vector3(-72, 0, 0)
+script = ExtResource("3_marker")
+Kind = 4
+Team = 0
+Index = 0
+Radius = 3.0
+
+[node name="Marker_02" type="Marker3D" parent="Points"]
+position = Vector3(72, 0, 0)
+script = ExtResource("3_marker")
+Kind = 4
+Team = 1
+Index = 0
+Radius = 3.0
+
+[node name="Marker_03" type="Marker3D" parent="Points"]
+position = Vector3(-64, 0, -12)
+script = ExtResource("3_marker")
+Kind = 2
+Team = 0
+Index = 0
+Radius = 2.0
+
+[node name="Marker_04" type="Marker3D" parent="Points"]
+position = Vector3(64, 0, -12)
+script = ExtResource("3_marker")
+Kind = 2
+Team = 1
+Index = 0
+Radius = 2.0
+
+[node name="Marker_05" type="Marker3D" parent="Points"]
+position = Vector3(-64, 0, -4)
+script = ExtResource("3_marker")
+Kind = 2
+Team = 0
+Index = 0
+Radius = 2.0
+
+[node name="Marker_06" type="Marker3D" parent="Points"]
+position = Vector3(64, 0, -4)
+script = ExtResource("3_marker")
+Kind = 2
+Team = 1
+Index = 0
+Radius = 2.0
+
+[node name="Marker_07" type="Marker3D" parent="Points"]
+position = Vector3(-64, 0, 4)
+script = ExtResource("3_marker")
+Kind = 2
+Team = 0
+Index = 0
+Radius = 2.0
+
+[node name="Marker_08" type="Marker3D" parent="Points"]
+position = Vector3(64, 0, 4)
+script = ExtResource("3_marker")
+Kind = 2
+Team = 1
+Index = 0
+Radius = 2.0
+
+[node name="Marker_09" type="Marker3D" parent="Points"]
+position = Vector3(-64, 0, 12)
+script = ExtResource("3_marker")
+Kind = 2
+Team = 0
+Index = 0
+Radius = 2.0
+
+[node name="Marker_10" type="Marker3D" parent="Points"]
+position = Vector3(64, 0, 12)
+script = ExtResource("3_marker")
+Kind = 2
+Team = 1
+Index = 0
+Radius = 2.0
+
+[node name="Cover" type="Node3D" parent="."]
+
+[node name="Box_01" type="StaticBody3D" parent="Cover"]
+position = Vector3(0, 0, -39.5)
+script = ExtResource("2_cover")
+Size = Vector3(160, 4, 1.0)
+Color = Color(0.22, 0.24, 0.28, 1)
+
+[node name="Box_02" type="StaticBody3D" parent="Cover"]
+position = Vector3(0, 0, 39.5)
+script = ExtResource("2_cover")
+Size = Vector3(160, 4, 1.0)
+Color = Color(0.22, 0.24, 0.28, 1)
+
+[node name="Box_03" type="StaticBody3D" parent="Cover"]
+position = Vector3(-79.5, 0, 0)
+script = ExtResource("2_cover")
+Size = Vector3(1.0, 4, 80)
+Color = Color(0.22, 0.24, 0.28, 1)
+
+[node name="Box_04" type="StaticBody3D" parent="Cover"]
+position = Vector3(79.5, 0, 0)
+script = ExtResource("2_cover")
+Size = Vector3(1.0, 4, 80)
+Color = Color(0.22, 0.24, 0.28, 1)
+
+[node name="Box_05" type="StaticBody3D" parent="Cover"]
+position = Vector3(0, 0, 0)
+script = ExtResource("2_cover")
+Size = Vector3(8, 3, 8)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_06" type="StaticBody3D" parent="Cover"]
+position = Vector3(25, 0, 12)
+script = ExtResource("2_cover")
+Size = Vector3(6, 2.5, 3)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_07" type="StaticBody3D" parent="Cover"]
+position = Vector3(25, 0, -12)
+script = ExtResource("2_cover")
+Size = Vector3(6, 2.5, 3)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_08" type="StaticBody3D" parent="Cover"]
+position = Vector3(-25, 0, 12)
+script = ExtResource("2_cover")
+Size = Vector3(6, 2.5, 3)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_09" type="StaticBody3D" parent="Cover"]
+position = Vector3(-25, 0, -12)
+script = ExtResource("2_cover")
+Size = Vector3(6, 2.5, 3)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_10" type="StaticBody3D" parent="Cover"]
+position = Vector3(40, 0, 0)
+script = ExtResource("2_cover")
+Size = Vector3(3, 3, 12)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_11" type="StaticBody3D" parent="Cover"]
+position = Vector3(-40, 0, 0)
+script = ExtResource("2_cover")
+Size = Vector3(3, 3, 12)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_12" type="StaticBody3D" parent="Cover"]
+position = Vector3(-55, 0, -15)
+script = ExtResource("2_cover")
+Size = Vector3(4, 2.5, 4)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_13" type="StaticBody3D" parent="Cover"]
+position = Vector3(-55, 0, 15)
+script = ExtResource("2_cover")
+Size = Vector3(4, 2.5, 4)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_14" type="StaticBody3D" parent="Cover"]
+position = Vector3(55, 0, -15)
+script = ExtResource("2_cover")
+Size = Vector3(4, 2.5, 4)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_15" type="StaticBody3D" parent="Cover"]
+position = Vector3(55, 0, 15)
+script = ExtResource("2_cover")
+Size = Vector3(4, 2.5, 4)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_16" type="StaticBody3D" parent="Cover"]
+position = Vector3(12, 0, 26)
+script = ExtResource("2_cover")
+Size = Vector3(3, 2.5, 5)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_17" type="StaticBody3D" parent="Cover"]
+position = Vector3(12, 0, -26)
+script = ExtResource("2_cover")
+Size = Vector3(3, 2.5, 5)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_18" type="StaticBody3D" parent="Cover"]
+position = Vector3(-12, 0, 26)
+script = ExtResource("2_cover")
+Size = Vector3(3, 2.5, 5)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_19" type="StaticBody3D" parent="Cover"]
+position = Vector3(-12, 0, -26)
+script = ExtResource("2_cover")
+Size = Vector3(3, 2.5, 5)
+Color = Color(0.42, 0.47, 0.55, 1)
+
+[node name="Box_20" type="StaticBody3D" parent="Cover"]
+position = Vector3(-77, 0, 0)
+script = ExtResource("2_cover")
+Size = Vector3(2, 4, 16)
+Color = Color(0.22, 0.24, 0.28, 1)
+
+[node name="Box_21" type="StaticBody3D" parent="Cover"]
+position = Vector3(77, 0, 0)
+script = ExtResource("2_cover")
+Size = Vector3(2, 4, 16)
+Color = Color(0.22, 0.24, 0.28, 1)
+
+[node name="Box_22" type="StaticBody3D" parent="Cover"]
+position = Vector3(-70, 0, 10)
+script = ExtResource("2_cover")
+Size = Vector3(6, 2.5, 2)
+Color = Color(0.5, 0.45, 0.35, 1)
+
+[node name="Box_23" type="StaticBody3D" parent="Cover"]
+position = Vector3(70, 0, 10)
+script = ExtResource("2_cover")
+Size = Vector3(6, 2.5, 2)
+Color = Color(0.5, 0.45, 0.35, 1)
+
+[node name="Box_24" type="StaticBody3D" parent="Cover"]
+position = Vector3(-70, 0, -10)
+script = ExtResource("2_cover")
+Size = Vector3(6, 2.5, 2)
+Color = Color(0.5, 0.45, 0.35, 1)
+
+[node name="Box_25" type="StaticBody3D" parent="Cover"]
+position = Vector3(70, 0, -10)
+script = ExtResource("2_cover")
+Size = Vector3(6, 2.5, 2)
+Color = Color(0.5, 0.45, 0.35, 1)
+

@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_Trim_03_Cables.png" id="1_xrghp"]
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_Trim_03_ORM.png" id="2_ic80e"]
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_Trim_03_Normal.png" id="3_utc4k"]
+
+[resource]
+resource_name = "MI_Trim_03_Cables_Blue"
+cull_mode = 2
+albedo_color = Color(0.5, 0.7, 1, 1)
+albedo_texture = ExtResource("1_xrghp")
+metallic = 1.0
+metallic_texture = ExtResource("2_ic80e")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("2_ic80e")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("3_utc4k")
+ao_enabled = true
+ao_texture = ExtResource("2_ic80e")

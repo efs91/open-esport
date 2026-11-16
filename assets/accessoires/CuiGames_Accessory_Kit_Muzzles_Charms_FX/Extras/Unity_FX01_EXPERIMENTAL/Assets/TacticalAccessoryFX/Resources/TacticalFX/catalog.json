@@ -1,0 +1,3732 @@
+{
+ "schemaVersion": 1,
+ "entries": [
+  {
+   "id": "H02_A5_Rail",
+   "asset": "H02",
+   "host": "A5_Rail",
+   "displayName": "H02 holographic / A5_Rail",
+   "modelResource": "TacticalFX/Models/H02_A5_Rail",
+   "kind": "holographic",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.026040006428956985,
+   "reticleDiameter": 0.016144803985953332,
+   "effectColor": [
+    1,
+    0.085,
+    0.035,
+    1
+   ],
+   "exportSha256": "9eb2e09105ead8b898b2bb60b785ae8c18ea47e5d18e0fee8f2e5d1161a2b4bd",
+   "surfaces": [
+    {
+     "objectName": "03 transparent visual pane",
+     "role": "pane"
+    }
+   ],
+   "materials": [
+    {
+     "name": "H02 ADAPTER",
+     "baseColor": [
+      0.04100000113248825,
+      0.05299999937415123,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.41999998688697815,
+     "roughness": 0.4000000059604645,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 AMBER",
+     "baseColor": [
+      0.5699999928474426,
+      0.3100000023841858,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 BODY",
+     "baseColor": [
+      0.03400000184774399,
+      0.04500000178813934,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 FRAME",
+     "baseColor": [
+      0.012000000104308128,
+      0.017999999225139618,
+      0.02199999988079071,
+      1.0
+     ],
+     "metallic": 0.07999999821186066,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 GLASS",
+     "baseColor": [
+      0.054999999701976776,
+      0.23000000417232513,
+      0.25999999046325684,
+      0.23000000417232513
+     ],
+     "metallic": 0.0,
+     "roughness": 0.10000000149011612,
+     "alpha": 0.23000000417232513
+    },
+    {
+     "name": "H02 MARK",
+     "baseColor": [
+      0.5600000023841858,
+      0.6200000047683716,
+      0.6399999856948853,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 RUBBER",
+     "baseColor": [
+      0.017000000923871994,
+      0.020999999716877937,
+      0.023000000044703484,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6299999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 SHELL",
+     "baseColor": [
+      0.054999999701976776,
+      0.06700000166893005,
+      0.07500000298023224,
+      1.0
+     ],
+     "metallic": 0.3400000035762787,
+     "roughness": 0.36000001430511475,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 STEEL",
+     "baseColor": [
+      0.1599999964237213,
+      0.1899999976158142,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6800000071525574,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "H02_X50_Rail",
+   "asset": "H02",
+   "host": "X50_Rail",
+   "displayName": "H02 holographic / X50_Rail",
+   "modelResource": "TacticalFX/Models/H02_X50_Rail",
+   "kind": "holographic",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.026040006428956985,
+   "reticleDiameter": 0.016144803985953332,
+   "effectColor": [
+    1,
+    0.085,
+    0.035,
+    1
+   ],
+   "exportSha256": "068e913ca3a8513f194e62f132559d45b492b4fc8766b01d7b904f8a12469b62",
+   "surfaces": [
+    {
+     "objectName": "03 transparent visual pane",
+     "role": "pane"
+    }
+   ],
+   "materials": [
+    {
+     "name": "H02 ADAPTER",
+     "baseColor": [
+      0.04100000113248825,
+      0.05299999937415123,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.41999998688697815,
+     "roughness": 0.4000000059604645,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 AMBER",
+     "baseColor": [
+      0.5699999928474426,
+      0.3100000023841858,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 BODY",
+     "baseColor": [
+      0.03400000184774399,
+      0.04500000178813934,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 FRAME",
+     "baseColor": [
+      0.012000000104308128,
+      0.017999999225139618,
+      0.02199999988079071,
+      1.0
+     ],
+     "metallic": 0.07999999821186066,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 GLASS",
+     "baseColor": [
+      0.054999999701976776,
+      0.23000000417232513,
+      0.25999999046325684,
+      0.23000000417232513
+     ],
+     "metallic": 0.0,
+     "roughness": 0.10000000149011612,
+     "alpha": 0.23000000417232513
+    },
+    {
+     "name": "H02 MARK",
+     "baseColor": [
+      0.5600000023841858,
+      0.6200000047683716,
+      0.6399999856948853,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 RUBBER",
+     "baseColor": [
+      0.017000000923871994,
+      0.020999999716877937,
+      0.023000000044703484,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6299999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 SHELL",
+     "baseColor": [
+      0.054999999701976776,
+      0.06700000166893005,
+      0.07500000298023224,
+      1.0
+     ],
+     "metallic": 0.3400000035762787,
+     "roughness": 0.36000001430511475,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 STEEL",
+     "baseColor": [
+      0.1599999964237213,
+      0.1899999976158142,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6800000071525574,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "H02_Legacy_K1_Rail_Top",
+   "asset": "H02",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "H02 holographic / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/H02_Legacy_K1_Rail_Top",
+   "kind": "holographic",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.026040006428956985,
+   "reticleDiameter": 0.016144803985953332,
+   "effectColor": [
+    1,
+    0.085,
+    0.035,
+    1
+   ],
+   "exportSha256": "172b52e9a6b977ba3ba366e94499bfa98809f98b89630d0bc23b198cc068ed90",
+   "surfaces": [
+    {
+     "objectName": "03 transparent visual pane",
+     "role": "pane"
+    }
+   ],
+   "materials": [
+    {
+     "name": "H02 ADAPTER",
+     "baseColor": [
+      0.04100000113248825,
+      0.05299999937415123,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.41999998688697815,
+     "roughness": 0.4000000059604645,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 AMBER",
+     "baseColor": [
+      0.5699999928474426,
+      0.3100000023841858,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 BODY",
+     "baseColor": [
+      0.03400000184774399,
+      0.04500000178813934,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 FRAME",
+     "baseColor": [
+      0.012000000104308128,
+      0.017999999225139618,
+      0.02199999988079071,
+      1.0
+     ],
+     "metallic": 0.07999999821186066,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 GLASS",
+     "baseColor": [
+      0.054999999701976776,
+      0.23000000417232513,
+      0.25999999046325684,
+      0.23000000417232513
+     ],
+     "metallic": 0.0,
+     "roughness": 0.10000000149011612,
+     "alpha": 0.23000000417232513
+    },
+    {
+     "name": "H02 MARK",
+     "baseColor": [
+      0.5600000023841858,
+      0.6200000047683716,
+      0.6399999856948853,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 RUBBER",
+     "baseColor": [
+      0.017000000923871994,
+      0.020999999716877937,
+      0.023000000044703484,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6299999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 SHELL",
+     "baseColor": [
+      0.054999999701976776,
+      0.06700000166893005,
+      0.07500000298023224,
+      1.0
+     ],
+     "metallic": 0.3400000035762787,
+     "roughness": 0.36000001430511475,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 STEEL",
+     "baseColor": [
+      0.1599999964237213,
+      0.1899999976158142,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6800000071525574,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "H02_long_A5_Rail",
+   "asset": "H02_long",
+   "host": "A5_Rail",
+   "displayName": "H02 long holographic / A5_Rail",
+   "modelResource": "TacticalFX/Models/H02_long_A5_Rail",
+   "kind": "holographic",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.026040006428956985,
+   "reticleDiameter": 0.016144803985953332,
+   "effectColor": [
+    1,
+    0.085,
+    0.035,
+    1
+   ],
+   "exportSha256": "acc9891eee9cea48e97c3a5744633312fabbbd0a4ba1bc16ad82ad511bfe0d28",
+   "surfaces": [
+    {
+     "objectName": "03 transparent visual pane",
+     "role": "pane"
+    }
+   ],
+   "materials": [
+    {
+     "name": "H02 ADAPTER",
+     "baseColor": [
+      0.04100000113248825,
+      0.05299999937415123,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.41999998688697815,
+     "roughness": 0.4000000059604645,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 AMBER",
+     "baseColor": [
+      0.5699999928474426,
+      0.3100000023841858,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 BODY",
+     "baseColor": [
+      0.03400000184774399,
+      0.04500000178813934,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 FRAME",
+     "baseColor": [
+      0.012000000104308128,
+      0.017999999225139618,
+      0.02199999988079071,
+      1.0
+     ],
+     "metallic": 0.07999999821186066,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 GLASS",
+     "baseColor": [
+      0.054999999701976776,
+      0.23000000417232513,
+      0.25999999046325684,
+      0.23000000417232513
+     ],
+     "metallic": 0.0,
+     "roughness": 0.10000000149011612,
+     "alpha": 0.23000000417232513
+    },
+    {
+     "name": "H02 MARK",
+     "baseColor": [
+      0.5600000023841858,
+      0.6200000047683716,
+      0.6399999856948853,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 RUBBER",
+     "baseColor": [
+      0.017000000923871994,
+      0.020999999716877937,
+      0.023000000044703484,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6299999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 SHELL",
+     "baseColor": [
+      0.054999999701976776,
+      0.06700000166893005,
+      0.07500000298023224,
+      1.0
+     ],
+     "metallic": 0.3400000035762787,
+     "roughness": 0.36000001430511475,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 STEEL",
+     "baseColor": [
+      0.1599999964237213,
+      0.1899999976158142,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6800000071525574,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "H02_long_X50_Rail",
+   "asset": "H02_long",
+   "host": "X50_Rail",
+   "displayName": "H02 long holographic / X50_Rail",
+   "modelResource": "TacticalFX/Models/H02_long_X50_Rail",
+   "kind": "holographic",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.026040006428956985,
+   "reticleDiameter": 0.016144803985953332,
+   "effectColor": [
+    1,
+    0.085,
+    0.035,
+    1
+   ],
+   "exportSha256": "80680a1aa1070a7d439053d5ddfce28e8655cc5a32602c46e5b119638c7bea28",
+   "surfaces": [
+    {
+     "objectName": "03 transparent visual pane",
+     "role": "pane"
+    }
+   ],
+   "materials": [
+    {
+     "name": "H02 ADAPTER",
+     "baseColor": [
+      0.04100000113248825,
+      0.05299999937415123,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.41999998688697815,
+     "roughness": 0.4000000059604645,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 AMBER",
+     "baseColor": [
+      0.5699999928474426,
+      0.3100000023841858,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 BODY",
+     "baseColor": [
+      0.03400000184774399,
+      0.04500000178813934,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 FRAME",
+     "baseColor": [
+      0.012000000104308128,
+      0.017999999225139618,
+      0.02199999988079071,
+      1.0
+     ],
+     "metallic": 0.07999999821186066,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 GLASS",
+     "baseColor": [
+      0.054999999701976776,
+      0.23000000417232513,
+      0.25999999046325684,
+      0.23000000417232513
+     ],
+     "metallic": 0.0,
+     "roughness": 0.10000000149011612,
+     "alpha": 0.23000000417232513
+    },
+    {
+     "name": "H02 MARK",
+     "baseColor": [
+      0.5600000023841858,
+      0.6200000047683716,
+      0.6399999856948853,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 RUBBER",
+     "baseColor": [
+      0.017000000923871994,
+      0.020999999716877937,
+      0.023000000044703484,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6299999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 SHELL",
+     "baseColor": [
+      0.054999999701976776,
+      0.06700000166893005,
+      0.07500000298023224,
+      1.0
+     ],
+     "metallic": 0.3400000035762787,
+     "roughness": 0.36000001430511475,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 STEEL",
+     "baseColor": [
+      0.1599999964237213,
+      0.1899999976158142,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6800000071525574,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "H02_long_Legacy_K1_Rail_Top",
+   "asset": "H02_long",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "H02 long holographic / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/H02_long_Legacy_K1_Rail_Top",
+   "kind": "holographic",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.026040006428956985,
+   "reticleDiameter": 0.016144803985953332,
+   "effectColor": [
+    1,
+    0.085,
+    0.035,
+    1
+   ],
+   "exportSha256": "8a74847a1e66c861e4dc707c9d52f818b8e7eee44e8b0e42e9713f2d521c7546",
+   "surfaces": [
+    {
+     "objectName": "03 transparent visual pane",
+     "role": "pane"
+    }
+   ],
+   "materials": [
+    {
+     "name": "H02 ADAPTER",
+     "baseColor": [
+      0.04100000113248825,
+      0.05299999937415123,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.41999998688697815,
+     "roughness": 0.4000000059604645,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 AMBER",
+     "baseColor": [
+      0.5699999928474426,
+      0.3100000023841858,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 BODY",
+     "baseColor": [
+      0.03400000184774399,
+      0.04500000178813934,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 FRAME",
+     "baseColor": [
+      0.012000000104308128,
+      0.017999999225139618,
+      0.02199999988079071,
+      1.0
+     ],
+     "metallic": 0.07999999821186066,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 GLASS",
+     "baseColor": [
+      0.054999999701976776,
+      0.23000000417232513,
+      0.25999999046325684,
+      0.23000000417232513
+     ],
+     "metallic": 0.0,
+     "roughness": 0.10000000149011612,
+     "alpha": 0.23000000417232513
+    },
+    {
+     "name": "H02 MARK",
+     "baseColor": [
+      0.5600000023841858,
+      0.6200000047683716,
+      0.6399999856948853,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 RUBBER",
+     "baseColor": [
+      0.017000000923871994,
+      0.020999999716877937,
+      0.023000000044703484,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6299999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 SHELL",
+     "baseColor": [
+      0.054999999701976776,
+      0.06700000166893005,
+      0.07500000298023224,
+      1.0
+     ],
+     "metallic": 0.3400000035762787,
+     "roughness": 0.36000001430511475,
+     "alpha": 1.0
+    },
+    {
+     "name": "H02 STEEL",
+     "baseColor": [
+      0.1599999964237213,
+      0.1899999976158142,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6800000071525574,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "L01_A5_Rail",
+   "asset": "L01",
+   "host": "A5_Rail",
+   "displayName": "L01 1–6x / A5_Rail",
+   "modelResource": "TacticalFX/Models/L01_A5_Rail",
+   "kind": "scope",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 6.0,
+   "lensDiameter": 0.05094100162386894,
+   "reticleDiameter": 0.02801755089312792,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "a68e988f827e6ef7f64a8362c97d53d2c7b02fb1b3aae86c5e1dbf92ceb672f2",
+   "surfaces": [
+    {
+     "objectName": "04 FRONT VISUAL PANE",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "04 REAR VISUAL PANE",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "L01 bronze",
+     "baseColor": [
+      0.10499999672174454,
+      0.07500000298023224,
+      0.0560000017285347,
+      1.0
+     ],
+     "metallic": 0.3199999928474426,
+     "roughness": 0.49000000953674316,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 bronze_edge",
+     "baseColor": [
+      0.14499999582767487,
+      0.1080000028014183,
+      0.08399999886751175,
+      1.0
+     ],
+     "metallic": 0.4000000059604645,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 front_glass",
+     "baseColor": [
+      0.017999999225139618,
+      0.06499999761581421,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 graphite",
+     "baseColor": [
+      0.039000000804662704,
+      0.05000000074505806,
+      0.05700000002980232,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 printing",
+     "baseColor": [
+      0.6000000238418579,
+      0.5899999737739563,
+      0.5400000214576721,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.4699999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 rear_glass",
+     "baseColor": [
+      0.017999999225139618,
+      0.054999999701976776,
+      0.06800000369548798,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 ring",
+     "baseColor": [
+      0.06700000166893005,
+      0.08100000023841858,
+      0.08799999952316284,
+      1.0
+     ],
+     "metallic": 0.49000000953674316,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 rubber",
+     "baseColor": [
+      0.009999999776482582,
+      0.014000000432133675,
+      0.017000000923871994,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6499999761581421,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 steel",
+     "baseColor": [
+      0.18000000715255737,
+      0.20000000298023224,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6899999976158142,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "L01_X50_Rail",
+   "asset": "L01",
+   "host": "X50_Rail",
+   "displayName": "L01 1–6x / X50_Rail",
+   "modelResource": "TacticalFX/Models/L01_X50_Rail",
+   "kind": "scope",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 6.0,
+   "lensDiameter": 0.05094100162386894,
+   "reticleDiameter": 0.02801755089312792,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "cc05d1c53aea1f9d712d0ffaa8e14752f79b11bc5feeaca25bc270b15addce5d",
+   "surfaces": [
+    {
+     "objectName": "04 FRONT VISUAL PANE",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "04 REAR VISUAL PANE",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "L01 bronze",
+     "baseColor": [
+      0.10499999672174454,
+      0.07500000298023224,
+      0.0560000017285347,
+      1.0
+     ],
+     "metallic": 0.3199999928474426,
+     "roughness": 0.49000000953674316,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 bronze_edge",
+     "baseColor": [
+      0.14499999582767487,
+      0.1080000028014183,
+      0.08399999886751175,
+      1.0
+     ],
+     "metallic": 0.4000000059604645,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 front_glass",
+     "baseColor": [
+      0.017999999225139618,
+      0.06499999761581421,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 graphite",
+     "baseColor": [
+      0.039000000804662704,
+      0.05000000074505806,
+      0.05700000002980232,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 printing",
+     "baseColor": [
+      0.6000000238418579,
+      0.5899999737739563,
+      0.5400000214576721,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.4699999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 rear_glass",
+     "baseColor": [
+      0.017999999225139618,
+      0.054999999701976776,
+      0.06800000369548798,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 ring",
+     "baseColor": [
+      0.06700000166893005,
+      0.08100000023841858,
+      0.08799999952316284,
+      1.0
+     ],
+     "metallic": 0.49000000953674316,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 rubber",
+     "baseColor": [
+      0.009999999776482582,
+      0.014000000432133675,
+      0.017000000923871994,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6499999761581421,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 steel",
+     "baseColor": [
+      0.18000000715255737,
+      0.20000000298023224,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6899999976158142,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "L01_Legacy_K1_Rail_Top",
+   "asset": "L01",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "L01 1–6x / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/L01_Legacy_K1_Rail_Top",
+   "kind": "scope",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 6.0,
+   "lensDiameter": 0.05094100162386894,
+   "reticleDiameter": 0.02801755089312792,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "29909f581392cc0bd2b9e2d98b067aa7beb1111b6f30904ba79df130f4d5d1a9",
+   "surfaces": [
+    {
+     "objectName": "04 FRONT VISUAL PANE",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "04 REAR VISUAL PANE",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "L01 bronze",
+     "baseColor": [
+      0.10499999672174454,
+      0.07500000298023224,
+      0.0560000017285347,
+      1.0
+     ],
+     "metallic": 0.3199999928474426,
+     "roughness": 0.49000000953674316,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 bronze_edge",
+     "baseColor": [
+      0.14499999582767487,
+      0.1080000028014183,
+      0.08399999886751175,
+      1.0
+     ],
+     "metallic": 0.4000000059604645,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 front_glass",
+     "baseColor": [
+      0.017999999225139618,
+      0.06499999761581421,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.20000000298023224,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 graphite",
+     "baseColor": [
+      0.039000000804662704,
+      0.05000000074505806,
+      0.05700000002980232,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 printing",
+     "baseColor": [
+      0.6000000238418579,
+      0.5899999737739563,
+      0.5400000214576721,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.4699999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 rear_glass",
+     "baseColor": [
+      0.017999999225139618,
+      0.054999999701976776,
+      0.06800000369548798,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 ring",
+     "baseColor": [
+      0.06700000166893005,
+      0.08100000023841858,
+      0.08799999952316284,
+      1.0
+     ],
+     "metallic": 0.49000000953674316,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 rubber",
+     "baseColor": [
+      0.009999999776482582,
+      0.014000000432133675,
+      0.017000000923871994,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6499999761581421,
+     "alpha": 1.0
+    },
+    {
+     "name": "L01 steel",
+     "baseColor": [
+      0.18000000715255737,
+      0.20000000298023224,
+      0.20999999344348907,
+      1.0
+     ],
+     "metallic": 0.6899999976158142,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "P42_A5_Rail",
+   "asset": "P42",
+   "host": "A5_Rail",
+   "displayName": "P42 4x compact C04 / A5_Rail",
+   "modelResource": "TacticalFX/Models/P42_A5_Rail",
+   "kind": "scope",
+   "magnification": 4.0,
+   "minMagnification": 4.0,
+   "maxMagnification": 4.0,
+   "lensDiameter": 0.023569829761981964,
+   "reticleDiameter": 0.012963406369090082,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "cf79eddb8431b8efaff38aeece362d838db74029913c677f1c34dcbb5bc90280",
+   "surfaces": [
+    {
+     "objectName": "06 FRONT | recessed curved visual coating",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "12 REAR | visual glass",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "PBR | amber control index",
+     "baseColor": [
+      0.8999999761581421,
+      0.28999999165534973,
+      0.02800000086426735,
+      1.0
+     ],
+     "metallic": 0.10000000149011612,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | blue coated convex pane",
+     "baseColor": [
+      0.004000000189989805,
+      0.029999999329447746,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.0949999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | dark seam and well",
+     "baseColor": [
+      0.004000000189989805,
+      0.007000000216066837,
+      0.009999999776482582,
+      1.0
+     ],
+     "metallic": 0.11999999731779099,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | fine matte graphite coating",
+     "baseColor": [
+      0.02500000037252903,
+      0.027000000700354576,
+      0.029999999329447746,
+      1.0
+     ],
+     "metallic": 0.18000000715255737,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | graphite machined collars",
+     "baseColor": [
+      0.03500000014901161,
+      0.03999999910593033,
+      0.04500000178813934,
+      1.0
+     ],
+     "metallic": 0.5600000023841858,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | low contrast printed marking",
+     "baseColor": [
+      0.3199999928474426,
+      0.3700000047683716,
+      0.4000000059604645,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6000000238418579,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | restrained blackened hardware",
+     "baseColor": [
+      0.07500000298023224,
+      0.0860000029206276,
+      0.09000000357627869,
+      1.0
+     ],
+     "metallic": 0.7699999809265137,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | soft charcoal grip",
+     "baseColor": [
+      0.009999999776482582,
+      0.012000000104308128,
+      0.014000000432133675,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.7099999785423279,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "P42_X50_Rail",
+   "asset": "P42",
+   "host": "X50_Rail",
+   "displayName": "P42 4x compact C04 / X50_Rail",
+   "modelResource": "TacticalFX/Models/P42_X50_Rail",
+   "kind": "scope",
+   "magnification": 4.0,
+   "minMagnification": 4.0,
+   "maxMagnification": 4.0,
+   "lensDiameter": 0.023569829761981964,
+   "reticleDiameter": 0.012963406369090082,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "dd2abdfe52df92daf0061e632740c08a78cc2913be33a3c1a5ffd505d66041f4",
+   "surfaces": [
+    {
+     "objectName": "06 FRONT | recessed curved visual coating",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "12 REAR | visual glass",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "PBR | amber control index",
+     "baseColor": [
+      0.8999999761581421,
+      0.28999999165534973,
+      0.02800000086426735,
+      1.0
+     ],
+     "metallic": 0.10000000149011612,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | blue coated convex pane",
+     "baseColor": [
+      0.004000000189989805,
+      0.029999999329447746,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.0949999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | dark seam and well",
+     "baseColor": [
+      0.004000000189989805,
+      0.007000000216066837,
+      0.009999999776482582,
+      1.0
+     ],
+     "metallic": 0.11999999731779099,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | fine matte graphite coating",
+     "baseColor": [
+      0.02500000037252903,
+      0.027000000700354576,
+      0.029999999329447746,
+      1.0
+     ],
+     "metallic": 0.18000000715255737,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | graphite machined collars",
+     "baseColor": [
+      0.03500000014901161,
+      0.03999999910593033,
+      0.04500000178813934,
+      1.0
+     ],
+     "metallic": 0.5600000023841858,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | low contrast printed marking",
+     "baseColor": [
+      0.3199999928474426,
+      0.3700000047683716,
+      0.4000000059604645,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6000000238418579,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | restrained blackened hardware",
+     "baseColor": [
+      0.07500000298023224,
+      0.0860000029206276,
+      0.09000000357627869,
+      1.0
+     ],
+     "metallic": 0.7699999809265137,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | soft charcoal grip",
+     "baseColor": [
+      0.009999999776482582,
+      0.012000000104308128,
+      0.014000000432133675,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.7099999785423279,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "P42_Legacy_K1_Rail_Top",
+   "asset": "P42",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "P42 4x compact C04 / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/P42_Legacy_K1_Rail_Top",
+   "kind": "scope",
+   "magnification": 4.0,
+   "minMagnification": 4.0,
+   "maxMagnification": 4.0,
+   "lensDiameter": 0.023569829761981964,
+   "reticleDiameter": 0.012963406369090082,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "bf510ead101c1ab724da52227e1ba3137172233e78b4c8ebb5c05546ccd2d23c",
+   "surfaces": [
+    {
+     "objectName": "06 FRONT | recessed curved visual coating",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "12 REAR | visual glass",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "PBR | amber control index",
+     "baseColor": [
+      0.8999999761581421,
+      0.28999999165534973,
+      0.02800000086426735,
+      1.0
+     ],
+     "metallic": 0.10000000149011612,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | blue coated convex pane",
+     "baseColor": [
+      0.004000000189989805,
+      0.029999999329447746,
+      0.05999999865889549,
+      1.0
+     ],
+     "metallic": 0.2199999988079071,
+     "roughness": 0.0949999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | dark seam and well",
+     "baseColor": [
+      0.004000000189989805,
+      0.007000000216066837,
+      0.009999999776482582,
+      1.0
+     ],
+     "metallic": 0.11999999731779099,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | fine matte graphite coating",
+     "baseColor": [
+      0.02500000037252903,
+      0.027000000700354576,
+      0.029999999329447746,
+      1.0
+     ],
+     "metallic": 0.18000000715255737,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | graphite machined collars",
+     "baseColor": [
+      0.03500000014901161,
+      0.03999999910593033,
+      0.04500000178813934,
+      1.0
+     ],
+     "metallic": 0.5600000023841858,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | low contrast printed marking",
+     "baseColor": [
+      0.3199999928474426,
+      0.3700000047683716,
+      0.4000000059604645,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6000000238418579,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | restrained blackened hardware",
+     "baseColor": [
+      0.07500000298023224,
+      0.0860000029206276,
+      0.09000000357627869,
+      1.0
+     ],
+     "metallic": 0.7699999809265137,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "PBR | soft charcoal grip",
+     "baseColor": [
+      0.009999999776482582,
+      0.012000000104308128,
+      0.014000000432133675,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.7099999785423279,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "R6_A5_Rail",
+   "asset": "R6",
+   "host": "A5_Rail",
+   "displayName": "R6 6x / A5_Rail",
+   "modelResource": "TacticalFX/Models/R6_A5_Rail",
+   "kind": "scope",
+   "magnification": 6.0,
+   "minMagnification": 6.0,
+   "maxMagnification": 6.0,
+   "lensDiameter": 0.044648997485637665,
+   "reticleDiameter": 0.024556948617100716,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "8b56f60966d166361e63f39e86eb53242f459e351a837f9d9858a1cf77038a5d",
+   "surfaces": [
+    {
+     "objectName": "11 FRONT VISUAL PANE",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "11b REAR VISUAL PANE",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "Amber witness marks",
+     "baseColor": [
+      0.6700000166893005,
+      0.28999999165534973,
+      0.054999999701976776,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3100000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "Edge rings and head caps",
+     "baseColor": [
+      0.08500000089406967,
+      0.10400000214576721,
+      0.11699999868869781,
+      1.0
+     ],
+     "metallic": 0.6299999952316284,
+     "roughness": 0.3400000035762787,
+     "alpha": 1.0
+    },
+    {
+     "name": "Graphite anodized exterior",
+     "baseColor": [
+      0.02800000086426735,
+      0.03700000047683716,
+      0.04600000008940697,
+      1.0
+     ],
+     "metallic": 0.6200000047683716,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "Matte graphitic cap faces",
+     "baseColor": [
+      0.02800000086426735,
+      0.03700000047683716,
+      0.04600000008940697,
+      1.0
+     ],
+     "metallic": 0.5,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "Satin architectural mount",
+     "baseColor": [
+      0.07100000232458115,
+      0.08399999886751175,
+      0.09200000017881393,
+      1.0
+     ],
+     "metallic": 0.550000011920929,
+     "roughness": 0.38999998569488525,
+     "alpha": 1.0
+    },
+    {
+     "name": "Satin collars",
+     "baseColor": [
+      0.04800000041723251,
+      0.06199999898672104,
+      0.07199999690055847,
+      1.0
+     ],
+     "metallic": 0.6399999856948853,
+     "roughness": 0.3799999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "Seam elastomer",
+     "baseColor": [
+      0.00800000037997961,
+      0.013000000268220901,
+      0.017999999225139618,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6700000166893005,
+     "alpha": 1.0
+    },
+    {
+     "name": "Visual blue coated pane",
+     "baseColor": [
+      0.006000000052154064,
+      0.03799999877810478,
+      0.0729999989271164,
+      1.0
+     ],
+     "metallic": 0.7799999713897705,
+     "roughness": 0.0949999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "Warm light printing",
+     "baseColor": [
+      0.6200000047683716,
+      0.6800000071525574,
+      0.699999988079071,
+      1.0
+     ],
+     "metallic": 0.05000000074505806,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "R6_X50_Rail",
+   "asset": "R6",
+   "host": "X50_Rail",
+   "displayName": "R6 6x / X50_Rail",
+   "modelResource": "TacticalFX/Models/R6_X50_Rail",
+   "kind": "scope",
+   "magnification": 6.0,
+   "minMagnification": 6.0,
+   "maxMagnification": 6.0,
+   "lensDiameter": 0.044648997485637665,
+   "reticleDiameter": 0.024556948617100716,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "00ac5db277cb5a3999fa694512b80f441d8a99db7dc7325b07aa47c84146224c",
+   "surfaces": [
+    {
+     "objectName": "11 FRONT VISUAL PANE",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "11b REAR VISUAL PANE",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "Amber witness marks",
+     "baseColor": [
+      0.6700000166893005,
+      0.28999999165534973,
+      0.054999999701976776,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3100000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "Edge rings and head caps",
+     "baseColor": [
+      0.08500000089406967,
+      0.10400000214576721,
+      0.11699999868869781,
+      1.0
+     ],
+     "metallic": 0.6299999952316284,
+     "roughness": 0.3400000035762787,
+     "alpha": 1.0
+    },
+    {
+     "name": "Graphite anodized exterior",
+     "baseColor": [
+      0.02800000086426735,
+      0.03700000047683716,
+      0.04600000008940697,
+      1.0
+     ],
+     "metallic": 0.6200000047683716,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "Matte graphitic cap faces",
+     "baseColor": [
+      0.02800000086426735,
+      0.03700000047683716,
+      0.04600000008940697,
+      1.0
+     ],
+     "metallic": 0.5,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "Satin architectural mount",
+     "baseColor": [
+      0.07100000232458115,
+      0.08399999886751175,
+      0.09200000017881393,
+      1.0
+     ],
+     "metallic": 0.550000011920929,
+     "roughness": 0.38999998569488525,
+     "alpha": 1.0
+    },
+    {
+     "name": "Satin collars",
+     "baseColor": [
+      0.04800000041723251,
+      0.06199999898672104,
+      0.07199999690055847,
+      1.0
+     ],
+     "metallic": 0.6399999856948853,
+     "roughness": 0.3799999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "Seam elastomer",
+     "baseColor": [
+      0.00800000037997961,
+      0.013000000268220901,
+      0.017999999225139618,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6700000166893005,
+     "alpha": 1.0
+    },
+    {
+     "name": "Visual blue coated pane",
+     "baseColor": [
+      0.006000000052154064,
+      0.03799999877810478,
+      0.0729999989271164,
+      1.0
+     ],
+     "metallic": 0.7799999713897705,
+     "roughness": 0.0949999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "Warm light printing",
+     "baseColor": [
+      0.6200000047683716,
+      0.6800000071525574,
+      0.699999988079071,
+      1.0
+     ],
+     "metallic": 0.05000000074505806,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "R6_Legacy_K1_Rail_Top",
+   "asset": "R6",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "R6 6x / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/R6_Legacy_K1_Rail_Top",
+   "kind": "scope",
+   "magnification": 6.0,
+   "minMagnification": 6.0,
+   "maxMagnification": 6.0,
+   "lensDiameter": 0.044648997485637665,
+   "reticleDiameter": 0.024556948617100716,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "d3a416759a4117efde4543effcc0bbc9c64a4bcbaa42d16f89404eaa5854a3c8",
+   "surfaces": [
+    {
+     "objectName": "11 FRONT VISUAL PANE",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "11b REAR VISUAL PANE",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "Amber witness marks",
+     "baseColor": [
+      0.6700000166893005,
+      0.28999999165534973,
+      0.054999999701976776,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3100000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "Edge rings and head caps",
+     "baseColor": [
+      0.08500000089406967,
+      0.10400000214576721,
+      0.11699999868869781,
+      1.0
+     ],
+     "metallic": 0.6299999952316284,
+     "roughness": 0.3400000035762787,
+     "alpha": 1.0
+    },
+    {
+     "name": "Graphite anodized exterior",
+     "baseColor": [
+      0.02800000086426735,
+      0.03700000047683716,
+      0.04600000008940697,
+      1.0
+     ],
+     "metallic": 0.6200000047683716,
+     "roughness": 0.3700000047683716,
+     "alpha": 1.0
+    },
+    {
+     "name": "Matte graphitic cap faces",
+     "baseColor": [
+      0.02800000086426735,
+      0.03700000047683716,
+      0.04600000008940697,
+      1.0
+     ],
+     "metallic": 0.5,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "Satin architectural mount",
+     "baseColor": [
+      0.07100000232458115,
+      0.08399999886751175,
+      0.09200000017881393,
+      1.0
+     ],
+     "metallic": 0.550000011920929,
+     "roughness": 0.38999998569488525,
+     "alpha": 1.0
+    },
+    {
+     "name": "Satin collars",
+     "baseColor": [
+      0.04800000041723251,
+      0.06199999898672104,
+      0.07199999690055847,
+      1.0
+     ],
+     "metallic": 0.6399999856948853,
+     "roughness": 0.3799999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "Seam elastomer",
+     "baseColor": [
+      0.00800000037997961,
+      0.013000000268220901,
+      0.017999999225139618,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6700000166893005,
+     "alpha": 1.0
+    },
+    {
+     "name": "Visual blue coated pane",
+     "baseColor": [
+      0.006000000052154064,
+      0.03799999877810478,
+      0.0729999989271164,
+      1.0
+     ],
+     "metallic": 0.7799999713897705,
+     "roughness": 0.0949999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "Warm light printing",
+     "baseColor": [
+      0.6200000047683716,
+      0.6800000071525574,
+      0.699999988079071,
+      1.0
+     ],
+     "metallic": 0.05000000074505806,
+     "roughness": 0.44999998807907104,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "R8_A5_Rail",
+   "asset": "R8",
+   "host": "A5_Rail",
+   "displayName": "R8 8x / A5_Rail",
+   "modelResource": "TacticalFX/Models/R8_A5_Rail",
+   "kind": "scope",
+   "magnification": 8.0,
+   "minMagnification": 8.0,
+   "maxMagnification": 8.0,
+   "lensDiameter": 0.05045699328184128,
+   "reticleDiameter": 0.027751346305012706,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "0d0bf633c5b19f4c69fcc4c54563e14a77eabac043f1c64e2ec87a47b057f911",
+   "surfaces": [
+    {
+     "objectName": "04 FRONT PANE | deep blue coat",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "07 REAR PANE | coating",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "R8 amber",
+     "baseColor": [
+      0.9399999976158142,
+      0.38999998569488525,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 dark",
+     "baseColor": [
+      0.008999999612569809,
+      0.013000000268220901,
+      0.01899999938905239,
+      1.0
+     ],
+     "metallic": 0.019999999552965164,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 glass",
+     "baseColor": [
+      0.01600000075995922,
+      0.09300000220537186,
+      0.20000000298023224,
+      1.0
+     ],
+     "metallic": 0.7799999713897705,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 graphite",
+     "baseColor": [
+      0.04699999839067459,
+      0.05700000002980232,
+      0.0689999982714653,
+      1.0
+     ],
+     "metallic": 0.6499999761581421,
+     "roughness": 0.3100000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 paint",
+     "baseColor": [
+      0.6800000071525574,
+      0.7400000095367432,
+      0.7599999904632568,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.4699999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 rim",
+     "baseColor": [
+      0.09700000286102295,
+      0.11599999666213989,
+      0.13699999451637268,
+      1.0
+     ],
+     "metallic": 0.7200000286102295,
+     "roughness": 0.27000001072883606,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 rubber",
+     "baseColor": [
+      0.017000000923871994,
+      0.023000000044703484,
+      0.03099999949336052,
+      1.0
+     ],
+     "metallic": 0.019999999552965164,
+     "roughness": 0.6399999856948853,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 silver",
+     "baseColor": [
+      0.4300000071525574,
+      0.47999998927116394,
+      0.5199999809265137,
+      1.0
+     ],
+     "metallic": 0.8199999928474426,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "R8_X50_Rail",
+   "asset": "R8",
+   "host": "X50_Rail",
+   "displayName": "R8 8x / X50_Rail",
+   "modelResource": "TacticalFX/Models/R8_X50_Rail",
+   "kind": "scope",
+   "magnification": 8.0,
+   "minMagnification": 8.0,
+   "maxMagnification": 8.0,
+   "lensDiameter": 0.05045699328184128,
+   "reticleDiameter": 0.027751346305012706,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "25e2abbed5d63f05e51b7acb3ce7470662975019047f618e97e10bac8427c0ef",
+   "surfaces": [
+    {
+     "objectName": "04 FRONT PANE | deep blue coat",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "07 REAR PANE | coating",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "R8 amber",
+     "baseColor": [
+      0.9399999976158142,
+      0.38999998569488525,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 dark",
+     "baseColor": [
+      0.008999999612569809,
+      0.013000000268220901,
+      0.01899999938905239,
+      1.0
+     ],
+     "metallic": 0.019999999552965164,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 glass",
+     "baseColor": [
+      0.01600000075995922,
+      0.09300000220537186,
+      0.20000000298023224,
+      1.0
+     ],
+     "metallic": 0.7799999713897705,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 graphite",
+     "baseColor": [
+      0.04699999839067459,
+      0.05700000002980232,
+      0.0689999982714653,
+      1.0
+     ],
+     "metallic": 0.6499999761581421,
+     "roughness": 0.3100000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 paint",
+     "baseColor": [
+      0.6800000071525574,
+      0.7400000095367432,
+      0.7599999904632568,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.4699999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 rim",
+     "baseColor": [
+      0.09700000286102295,
+      0.11599999666213989,
+      0.13699999451637268,
+      1.0
+     ],
+     "metallic": 0.7200000286102295,
+     "roughness": 0.27000001072883606,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 rubber",
+     "baseColor": [
+      0.017000000923871994,
+      0.023000000044703484,
+      0.03099999949336052,
+      1.0
+     ],
+     "metallic": 0.019999999552965164,
+     "roughness": 0.6399999856948853,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 silver",
+     "baseColor": [
+      0.4300000071525574,
+      0.47999998927116394,
+      0.5199999809265137,
+      1.0
+     ],
+     "metallic": 0.8199999928474426,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "R8_Legacy_K1_Rail_Top",
+   "asset": "R8",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "R8 8x / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/R8_Legacy_K1_Rail_Top",
+   "kind": "scope",
+   "magnification": 8.0,
+   "minMagnification": 8.0,
+   "maxMagnification": 8.0,
+   "lensDiameter": 0.05045699328184128,
+   "reticleDiameter": 0.027751346305012706,
+   "effectColor": [
+    1,
+    0.1,
+    0.045,
+    1
+   ],
+   "exportSha256": "d595b99ff868773749ad86f8599dfa6744ffb312d1bbb8f981b5d343d01a00a4",
+   "surfaces": [
+    {
+     "objectName": "04 FRONT PANE | deep blue coat",
+     "role": "frontLens"
+    },
+    {
+     "objectName": "07 REAR PANE | coating",
+     "role": "rearLens"
+    }
+   ],
+   "materials": [
+    {
+     "name": "R8 amber",
+     "baseColor": [
+      0.9399999976158142,
+      0.38999998569488525,
+      0.07999999821186066,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 dark",
+     "baseColor": [
+      0.008999999612569809,
+      0.013000000268220901,
+      0.01899999938905239,
+      1.0
+     ],
+     "metallic": 0.019999999552965164,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 glass",
+     "baseColor": [
+      0.01600000075995922,
+      0.09300000220537186,
+      0.20000000298023224,
+      1.0
+     ],
+     "metallic": 0.7799999713897705,
+     "roughness": 0.1599999964237213,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 graphite",
+     "baseColor": [
+      0.04699999839067459,
+      0.05700000002980232,
+      0.0689999982714653,
+      1.0
+     ],
+     "metallic": 0.6499999761581421,
+     "roughness": 0.3100000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 paint",
+     "baseColor": [
+      0.6800000071525574,
+      0.7400000095367432,
+      0.7599999904632568,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.4699999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 rim",
+     "baseColor": [
+      0.09700000286102295,
+      0.11599999666213989,
+      0.13699999451637268,
+      1.0
+     ],
+     "metallic": 0.7200000286102295,
+     "roughness": 0.27000001072883606,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 rubber",
+     "baseColor": [
+      0.017000000923871994,
+      0.023000000044703484,
+      0.03099999949336052,
+      1.0
+     ],
+     "metallic": 0.019999999552965164,
+     "roughness": 0.6399999856948853,
+     "alpha": 1.0
+    },
+    {
+     "name": "R8 silver",
+     "baseColor": [
+      0.4300000071525574,
+      0.47999998927116394,
+      0.5199999809265137,
+      1.0
+     ],
+     "metallic": 0.8199999928474426,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "FG01_Legacy_K1_Rail_Bottom",
+   "asset": "FG01",
+   "host": "Legacy_K1_Rail_Bottom",
+   "displayName": "FG01 short grip / Legacy_K1_Rail_Bottom",
+   "modelResource": "TacticalFX/Models/FG01_Legacy_K1_Rail_Bottom",
+   "kind": "passive",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "exportSha256": "4418a2d2265cd88cf8a2b531ddd7fb0d1e9e62ecbbd1dd5ab9266d08f6959429",
+   "surfaces": [],
+   "materials": [
+    {
+     "name": "FG01 body",
+     "baseColor": [
+      0.03200000151991844,
+      0.039000000804662704,
+      0.04100000113248825,
+      1.0
+     ],
+     "metallic": 0.05000000074505806,
+     "roughness": 0.41999998688697815,
+     "alpha": 1.0
+    },
+    {
+     "name": "FG01 dark",
+     "baseColor": [
+      0.008999999612569809,
+      0.012000000104308128,
+      0.014000000432133675,
+      1.0
+     ],
+     "metallic": 0.019999999552965164,
+     "roughness": 0.6499999761581421,
+     "alpha": 1.0
+    },
+    {
+     "name": "FG01 edge",
+     "baseColor": [
+      0.05000000074505806,
+      0.05999999865889549,
+      0.06400000303983688,
+      1.0
+     ],
+     "metallic": 0.07999999821186066,
+     "roughness": 0.38999998569488525,
+     "alpha": 1.0
+    },
+    {
+     "name": "FG01 grain",
+     "baseColor": [
+      0.020999999716877937,
+      0.027000000700354576,
+      0.029999999329447746,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6000000238418579,
+     "alpha": 1.0
+    },
+    {
+     "name": "FG01 mount",
+     "baseColor": [
+      0.05900000035762787,
+      0.07400000095367432,
+      0.0820000022649765,
+      1.0
+     ],
+     "metallic": 0.6800000071525574,
+     "roughness": 0.33000001311302185,
+     "alpha": 1.0
+    },
+    {
+     "name": "FG01 printing",
+     "baseColor": [
+      0.5199999809265137,
+      0.5899999737739563,
+      0.6100000143051147,
+      1.0
+     ],
+     "metallic": 0.019999999552965164,
+     "roughness": 0.4699999988079071,
+     "alpha": 1.0
+    }
+   ]
+  },
+  {
+   "id": "FL01_Legacy_K1_Rail_Side",
+   "asset": "FL01",
+   "host": "Legacy_K1_Rail_Side",
+   "displayName": "FL01 flashlight / Legacy_K1_Rail_Side",
+   "modelResource": "TacticalFX/Models/FL01_Legacy_K1_Rail_Side",
+   "kind": "flashlight",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    1,
+    0.94,
+    0.84,
+    1
+   ],
+   "exportSha256": "4f2934c4eb2d446d33600094e5d76bfb5ebaa0d14baa45623d518937d27dae7f",
+   "surfaces": [
+    {
+     "objectName": "06 CLEAR FRONT COVER | alpha blend visual window",
+     "role": "cover"
+    },
+    {
+     "objectName": "06 SMALL WHITE VISUAL CENTER | no circuit",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "FL01 ceramic",
+     "baseColor": [
+      0.699999988079071,
+      0.7200000286102295,
+      0.699999988079071,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.46000000834465027,
+     "alpha": 1.0
+    },
+    {
+     "name": "FL01 edge",
+     "baseColor": [
+      0.07500000298023224,
+      0.0860000029206276,
+      0.0949999988079071,
+      1.0
+     ],
+     "metallic": 0.699999988079071,
+     "roughness": 0.3100000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "FL01 graphite",
+     "baseColor": [
+      0.035999998450279236,
+      0.0430000014603138,
+      0.04899999871850014,
+      1.0
+     ],
+     "metallic": 0.6399999856948853,
+     "roughness": 0.3799999952316284,
+     "alpha": 1.0
+    },
+    {
+     "name": "FL01 grip_satin",
+     "baseColor": [
+      0.024000000208616257,
+      0.029999999329447746,
+      0.03500000014901161,
+      1.0
+     ],
+     "metallic": 0.7200000286102295,
+     "roughness": 0.5400000214576721,
+     "alpha": 1.0
+    },
+    {
+     "name": "FL01 printing",
+     "baseColor": [
+      0.5099999904632568,
+      0.550000011920929,
+      0.5699999928474426,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.4699999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "FL01 recess_silver",
+     "baseColor": [
+      0.25,
+      0.2849999964237213,
+      0.3070000112056732,
+      1.0
+     ],
+     "metallic": 0.8399999737739563,
+     "roughness": 0.2800000011920929,
+     "alpha": 1.0
+    },
+    {
+     "name": "FL01 rubber",
+     "baseColor": [
+      0.012000000104308128,
+      0.01600000075995922,
+      0.01899999938905239,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.6700000166893005,
+     "alpha": 1.0
+    },
+    {
+     "name": "FL01 silver",
+     "baseColor": [
+      0.4000000059604645,
+      0.4350000023841858,
+      0.45500001311302185,
+      1.0
+     ],
+     "metallic": 0.8700000047683716,
+     "roughness": 0.2199999988079071,
+     "alpha": 1.0
+    },
+    {
+     "name": "FL01 window",
+     "baseColor": [
+      0.8700000047683716,
+      0.9200000166893005,
+      0.9399999976158142,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.07000000029802322,
+     "alpha": 0.10999999940395355
+    }
+   ]
+  },
+  {
+   "id": "IM01_A5_Rail",
+   "asset": "IM01",
+   "host": "A5_Rail",
+   "displayName": "IM01 infrared / A5_Rail",
+   "modelResource": "TacticalFX/Models/IM01_A5_Rail",
+   "kind": "infrared",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    0.4,
+    1,
+    0.65,
+    1
+   ],
+   "exportSha256": "1344cabd22ca8822bd5cf6e66f3dd7c5ef4d63ce851bc4e6f5d929f2e55e8811",
+   "surfaces": [
+    {
+     "objectName": "06 BIG GRAPHITE COVER | static surface only",
+     "role": "emitter"
+    },
+    {
+     "objectName": "06 PAIR STATIC COVER 1 | colored ornamental surface",
+     "role": "emitter"
+    },
+    {
+     "objectName": "06 PAIR STATIC COVER 2 | colored ornamental surface",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "IM01 body",
+     "baseColor": [
+      0.0430000014603138,
+      0.054999999701976776,
+      0.06300000101327896,
+      1.0
+     ],
+     "metallic": 0.7300000190734863,
+     "roughness": 0.33000001311302185,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 dark",
+     "baseColor": [
+      0.013000000268220901,
+      0.017000000923871994,
+      0.020999999716877937,
+      1.0
+     ],
+     "metallic": 0.5299999713897705,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 edge",
+     "baseColor": [
+      0.08299999684095383,
+      0.10199999809265137,
+      0.11100000143051147,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 printing",
+     "baseColor": [
+      0.6700000166893005,
+      0.7200000286102295,
+      0.7400000095367432,
+      1.0
+     ],
+     "metallic": 0.10000000149011612,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 rubber",
+     "baseColor": [
+      0.02199999988079071,
+      0.02800000086426735,
+      0.03200000151991844,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.550000011920929,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 silver",
+     "baseColor": [
+      0.25,
+      0.28999999165534973,
+      0.33000001311302185,
+      1.0
+     ],
+     "metallic": 0.8399999737739563,
+     "roughness": 0.25,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 window graphite",
+     "baseColor": [
+      0.054999999701976776,
+      0.08500000089406967,
+      0.10499999672174454,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.12999999523162842,
+     "alpha": 0.6299999952316284
+    },
+    {
+     "name": "IM01 window violet",
+     "baseColor": [
+      0.10499999672174454,
+      0.07000000029802322,
+      0.15000000596046448,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.12999999523162842,
+     "alpha": 0.6299999952316284
+    }
+   ]
+  },
+  {
+   "id": "IM01_X50_Rail",
+   "asset": "IM01",
+   "host": "X50_Rail",
+   "displayName": "IM01 infrared / X50_Rail",
+   "modelResource": "TacticalFX/Models/IM01_X50_Rail",
+   "kind": "infrared",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    0.4,
+    1,
+    0.65,
+    1
+   ],
+   "exportSha256": "ba8ec5a7f1b2d72a3d9e96f1df7e30c84072a29a8d871169618b4f27fcfd060f",
+   "surfaces": [
+    {
+     "objectName": "06 BIG GRAPHITE COVER | static surface only",
+     "role": "emitter"
+    },
+    {
+     "objectName": "06 PAIR STATIC COVER 1 | colored ornamental surface",
+     "role": "emitter"
+    },
+    {
+     "objectName": "06 PAIR STATIC COVER 2 | colored ornamental surface",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "IM01 body",
+     "baseColor": [
+      0.0430000014603138,
+      0.054999999701976776,
+      0.06300000101327896,
+      1.0
+     ],
+     "metallic": 0.7300000190734863,
+     "roughness": 0.33000001311302185,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 dark",
+     "baseColor": [
+      0.013000000268220901,
+      0.017000000923871994,
+      0.020999999716877937,
+      1.0
+     ],
+     "metallic": 0.5299999713897705,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 edge",
+     "baseColor": [
+      0.08299999684095383,
+      0.10199999809265137,
+      0.11100000143051147,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 printing",
+     "baseColor": [
+      0.6700000166893005,
+      0.7200000286102295,
+      0.7400000095367432,
+      1.0
+     ],
+     "metallic": 0.10000000149011612,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 rubber",
+     "baseColor": [
+      0.02199999988079071,
+      0.02800000086426735,
+      0.03200000151991844,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.550000011920929,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 silver",
+     "baseColor": [
+      0.25,
+      0.28999999165534973,
+      0.33000001311302185,
+      1.0
+     ],
+     "metallic": 0.8399999737739563,
+     "roughness": 0.25,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 window graphite",
+     "baseColor": [
+      0.054999999701976776,
+      0.08500000089406967,
+      0.10499999672174454,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.12999999523162842,
+     "alpha": 0.6299999952316284
+    },
+    {
+     "name": "IM01 window violet",
+     "baseColor": [
+      0.10499999672174454,
+      0.07000000029802322,
+      0.15000000596046448,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.12999999523162842,
+     "alpha": 0.6299999952316284
+    }
+   ]
+  },
+  {
+   "id": "IM01_Legacy_K1_Rail_Top",
+   "asset": "IM01",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "IM01 infrared / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/IM01_Legacy_K1_Rail_Top",
+   "kind": "infrared",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    0.4,
+    1,
+    0.65,
+    1
+   ],
+   "exportSha256": "01cbcb2517a4b8e677cec01411d9496f9d1c79c4241c0f6729930e07bd3e26be",
+   "surfaces": [
+    {
+     "objectName": "06 BIG GRAPHITE COVER | static surface only",
+     "role": "emitter"
+    },
+    {
+     "objectName": "06 PAIR STATIC COVER 1 | colored ornamental surface",
+     "role": "emitter"
+    },
+    {
+     "objectName": "06 PAIR STATIC COVER 2 | colored ornamental surface",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "IM01 body",
+     "baseColor": [
+      0.0430000014603138,
+      0.054999999701976776,
+      0.06300000101327896,
+      1.0
+     ],
+     "metallic": 0.7300000190734863,
+     "roughness": 0.33000001311302185,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 dark",
+     "baseColor": [
+      0.013000000268220901,
+      0.017000000923871994,
+      0.020999999716877937,
+      1.0
+     ],
+     "metallic": 0.5299999713897705,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 edge",
+     "baseColor": [
+      0.08299999684095383,
+      0.10199999809265137,
+      0.11100000143051147,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.30000001192092896,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 printing",
+     "baseColor": [
+      0.6700000166893005,
+      0.7200000286102295,
+      0.7400000095367432,
+      1.0
+     ],
+     "metallic": 0.10000000149011612,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 rubber",
+     "baseColor": [
+      0.02199999988079071,
+      0.02800000086426735,
+      0.03200000151991844,
+      1.0
+     ],
+     "metallic": 0.0,
+     "roughness": 0.550000011920929,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 silver",
+     "baseColor": [
+      0.25,
+      0.28999999165534973,
+      0.33000001311302185,
+      1.0
+     ],
+     "metallic": 0.8399999737739563,
+     "roughness": 0.25,
+     "alpha": 1.0
+    },
+    {
+     "name": "IM01 window graphite",
+     "baseColor": [
+      0.054999999701976776,
+      0.08500000089406967,
+      0.10499999672174454,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.12999999523162842,
+     "alpha": 0.6299999952316284
+    },
+    {
+     "name": "IM01 window violet",
+     "baseColor": [
+      0.10499999672174454,
+      0.07000000029802322,
+      0.15000000596046448,
+      1.0
+     ],
+     "metallic": 0.3499999940395355,
+     "roughness": 0.12999999523162842,
+     "alpha": 0.6299999952316284
+    }
+   ]
+  },
+  {
+   "id": "LM01_green_A5_Rail",
+   "asset": "LM01_green",
+   "host": "A5_Rail",
+   "displayName": "LM01 green laser / A5_Rail",
+   "modelResource": "TacticalFX/Models/LM01_green_A5_Rail",
+   "kind": "laser",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    0.08,
+    1,
+    0.2,
+    1
+   ],
+   "exportSha256": "c1be63a24474f3773005a90878ff3b09740475f11da7a0ced7ee4334fb0224d9",
+   "surfaces": [
+    {
+     "objectName": "06 COLORED COVER | red or green appearance only",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "LM01 body",
+     "baseColor": [
+      0.04800000041723251,
+      0.061000000685453415,
+      0.07100000232458115,
+      1.0
+     ],
+     "metallic": 0.7599999904632568,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 dark",
+     "baseColor": [
+      0.014999999664723873,
+      0.019999999552965164,
+      0.02500000037252903,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 edge",
+     "baseColor": [
+      0.09799999743700027,
+      0.11999999731779099,
+      0.13300000131130219,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 printing",
+     "baseColor": [
+      0.6499999761581421,
+      0.7200000286102295,
+      0.75,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 rubber",
+     "baseColor": [
+      0.023000000044703484,
+      0.028999999165534973,
+      0.03400000184774399,
+      1.0
+     ],
+     "metallic": 0.05999999865889549,
+     "roughness": 0.5600000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 silver",
+     "baseColor": [
+      0.30000001192092896,
+      0.3400000035762787,
+      0.3700000047683716,
+      1.0
+     ],
+     "metallic": 0.8500000238418579,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 window",
+     "baseColor": [
+      0.06199999898672104,
+      0.28999999165534973,
+      0.1899999976158142,
+      1.0
+     ],
+     "metallic": 0.33000001311302185,
+     "roughness": 0.1599999964237213,
+     "alpha": 0.5799999833106995
+    }
+   ]
+  },
+  {
+   "id": "LM01_green_X50_Rail",
+   "asset": "LM01_green",
+   "host": "X50_Rail",
+   "displayName": "LM01 green laser / X50_Rail",
+   "modelResource": "TacticalFX/Models/LM01_green_X50_Rail",
+   "kind": "laser",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    0.08,
+    1,
+    0.2,
+    1
+   ],
+   "exportSha256": "ddc824033547b7825188b56a84bbe1ac811bcf0d327576d4e39d98a3a438f4d8",
+   "surfaces": [
+    {
+     "objectName": "06 COLORED COVER | red or green appearance only",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "LM01 body",
+     "baseColor": [
+      0.04800000041723251,
+      0.061000000685453415,
+      0.07100000232458115,
+      1.0
+     ],
+     "metallic": 0.7599999904632568,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 dark",
+     "baseColor": [
+      0.014999999664723873,
+      0.019999999552965164,
+      0.02500000037252903,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 edge",
+     "baseColor": [
+      0.09799999743700027,
+      0.11999999731779099,
+      0.13300000131130219,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 printing",
+     "baseColor": [
+      0.6499999761581421,
+      0.7200000286102295,
+      0.75,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 rubber",
+     "baseColor": [
+      0.023000000044703484,
+      0.028999999165534973,
+      0.03400000184774399,
+      1.0
+     ],
+     "metallic": 0.05999999865889549,
+     "roughness": 0.5600000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 silver",
+     "baseColor": [
+      0.30000001192092896,
+      0.3400000035762787,
+      0.3700000047683716,
+      1.0
+     ],
+     "metallic": 0.8500000238418579,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 window",
+     "baseColor": [
+      0.06199999898672104,
+      0.28999999165534973,
+      0.1899999976158142,
+      1.0
+     ],
+     "metallic": 0.33000001311302185,
+     "roughness": 0.1599999964237213,
+     "alpha": 0.5799999833106995
+    }
+   ]
+  },
+  {
+   "id": "LM01_green_Legacy_K1_Rail_Top",
+   "asset": "LM01_green",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "LM01 green laser / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/LM01_green_Legacy_K1_Rail_Top",
+   "kind": "laser",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    0.08,
+    1,
+    0.2,
+    1
+   ],
+   "exportSha256": "39091e878ffa1a1ba3dc8cb480b5646505088d5caeff9ccb9dd5a3f7402a6a94",
+   "surfaces": [
+    {
+     "objectName": "06 COLORED COVER | red or green appearance only",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "LM01 body",
+     "baseColor": [
+      0.04800000041723251,
+      0.061000000685453415,
+      0.07100000232458115,
+      1.0
+     ],
+     "metallic": 0.7599999904632568,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 dark",
+     "baseColor": [
+      0.014999999664723873,
+      0.019999999552965164,
+      0.02500000037252903,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 edge",
+     "baseColor": [
+      0.09799999743700027,
+      0.11999999731779099,
+      0.13300000131130219,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 printing",
+     "baseColor": [
+      0.6499999761581421,
+      0.7200000286102295,
+      0.75,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 rubber",
+     "baseColor": [
+      0.023000000044703484,
+      0.028999999165534973,
+      0.03400000184774399,
+      1.0
+     ],
+     "metallic": 0.05999999865889549,
+     "roughness": 0.5600000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 silver",
+     "baseColor": [
+      0.30000001192092896,
+      0.3400000035762787,
+      0.3700000047683716,
+      1.0
+     ],
+     "metallic": 0.8500000238418579,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 window",
+     "baseColor": [
+      0.06199999898672104,
+      0.28999999165534973,
+      0.1899999976158142,
+      1.0
+     ],
+     "metallic": 0.33000001311302185,
+     "roughness": 0.1599999964237213,
+     "alpha": 0.5799999833106995
+    }
+   ]
+  },
+  {
+   "id": "LM01_red_A5_Rail",
+   "asset": "LM01_red",
+   "host": "A5_Rail",
+   "displayName": "LM01 red laser / A5_Rail",
+   "modelResource": "TacticalFX/Models/LM01_red_A5_Rail",
+   "kind": "laser",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    1,
+    0.045,
+    0.02,
+    1
+   ],
+   "exportSha256": "3bfc24ef31ebd48a4c62c369d1822af9df3a0ab90bf5996a87fffd1b7baf29f1",
+   "surfaces": [
+    {
+     "objectName": "06 COLORED COVER | red or green appearance only",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "LM01 body",
+     "baseColor": [
+      0.04800000041723251,
+      0.061000000685453415,
+      0.07100000232458115,
+      1.0
+     ],
+     "metallic": 0.7599999904632568,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 dark",
+     "baseColor": [
+      0.014999999664723873,
+      0.019999999552965164,
+      0.02500000037252903,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 edge",
+     "baseColor": [
+      0.09799999743700027,
+      0.11999999731779099,
+      0.13300000131130219,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 printing",
+     "baseColor": [
+      0.6499999761581421,
+      0.7200000286102295,
+      0.75,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 rubber",
+     "baseColor": [
+      0.023000000044703484,
+      0.028999999165534973,
+      0.03400000184774399,
+      1.0
+     ],
+     "metallic": 0.05999999865889549,
+     "roughness": 0.5600000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 silver",
+     "baseColor": [
+      0.30000001192092896,
+      0.3400000035762787,
+      0.3700000047683716,
+      1.0
+     ],
+     "metallic": 0.8500000238418579,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 window",
+     "baseColor": [
+      0.3700000047683716,
+      0.061000000685453415,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.33000001311302185,
+     "roughness": 0.1599999964237213,
+     "alpha": 0.5799999833106995
+    }
+   ]
+  },
+  {
+   "id": "LM01_red_X50_Rail",
+   "asset": "LM01_red",
+   "host": "X50_Rail",
+   "displayName": "LM01 red laser / X50_Rail",
+   "modelResource": "TacticalFX/Models/LM01_red_X50_Rail",
+   "kind": "laser",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    1,
+    0.045,
+    0.02,
+    1
+   ],
+   "exportSha256": "46011c6f80bf51b4bc1dd05e8ec099f702a716fec19bd1be92ad5692e61bdf59",
+   "surfaces": [
+    {
+     "objectName": "06 COLORED COVER | red or green appearance only",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "LM01 body",
+     "baseColor": [
+      0.04800000041723251,
+      0.061000000685453415,
+      0.07100000232458115,
+      1.0
+     ],
+     "metallic": 0.7599999904632568,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 dark",
+     "baseColor": [
+      0.014999999664723873,
+      0.019999999552965164,
+      0.02500000037252903,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 edge",
+     "baseColor": [
+      0.09799999743700027,
+      0.11999999731779099,
+      0.13300000131130219,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 printing",
+     "baseColor": [
+      0.6499999761581421,
+      0.7200000286102295,
+      0.75,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 rubber",
+     "baseColor": [
+      0.023000000044703484,
+      0.028999999165534973,
+      0.03400000184774399,
+      1.0
+     ],
+     "metallic": 0.05999999865889549,
+     "roughness": 0.5600000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 silver",
+     "baseColor": [
+      0.30000001192092896,
+      0.3400000035762787,
+      0.3700000047683716,
+      1.0
+     ],
+     "metallic": 0.8500000238418579,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 window",
+     "baseColor": [
+      0.3700000047683716,
+      0.061000000685453415,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.33000001311302185,
+     "roughness": 0.1599999964237213,
+     "alpha": 0.5799999833106995
+    }
+   ]
+  },
+  {
+   "id": "LM01_red_Legacy_K1_Rail_Top",
+   "asset": "LM01_red",
+   "host": "Legacy_K1_Rail_Top",
+   "displayName": "LM01 red laser / Legacy_K1_Rail_Top",
+   "modelResource": "TacticalFX/Models/LM01_red_Legacy_K1_Rail_Top",
+   "kind": "laser",
+   "magnification": 1.0,
+   "minMagnification": 1.0,
+   "maxMagnification": 1.0,
+   "lensDiameter": 0.0,
+   "reticleDiameter": 0.0,
+   "effectColor": [
+    1,
+    0.045,
+    0.02,
+    1
+   ],
+   "exportSha256": "0e539f061b797baa9a3aa0a4610631ba413067144b3623ac959e13b39dafaa15",
+   "surfaces": [
+    {
+     "objectName": "06 COLORED COVER | red or green appearance only",
+     "role": "emitter"
+    }
+   ],
+   "materials": [
+    {
+     "name": "LM01 body",
+     "baseColor": [
+      0.04800000041723251,
+      0.061000000685453415,
+      0.07100000232458115,
+      1.0
+     ],
+     "metallic": 0.7599999904632568,
+     "roughness": 0.3199999928474426,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 dark",
+     "baseColor": [
+      0.014999999664723873,
+      0.019999999552965164,
+      0.02500000037252903,
+      1.0
+     ],
+     "metallic": 0.44999998807907104,
+     "roughness": 0.3499999940395355,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 edge",
+     "baseColor": [
+      0.09799999743700027,
+      0.11999999731779099,
+      0.13300000131130219,
+      1.0
+     ],
+     "metallic": 0.7099999785423279,
+     "roughness": 0.28999999165534973,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 printing",
+     "baseColor": [
+      0.6499999761581421,
+      0.7200000286102295,
+      0.75,
+      1.0
+     ],
+     "metallic": 0.15000000596046448,
+     "roughness": 0.4300000071525574,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 rubber",
+     "baseColor": [
+      0.023000000044703484,
+      0.028999999165534973,
+      0.03400000184774399,
+      1.0
+     ],
+     "metallic": 0.05999999865889549,
+     "roughness": 0.5600000023841858,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 silver",
+     "baseColor": [
+      0.30000001192092896,
+      0.3400000035762787,
+      0.3700000047683716,
+      1.0
+     ],
+     "metallic": 0.8500000238418579,
+     "roughness": 0.23999999463558197,
+     "alpha": 1.0
+    },
+    {
+     "name": "LM01 window",
+     "baseColor": [
+      0.3700000047683716,
+      0.061000000685453415,
+      0.052000001072883606,
+      1.0
+     ],
+     "metallic": 0.33000001311302185,
+     "roughness": 0.1599999964237213,
+     "alpha": 0.5799999833106995
+    }
+   ]
+  }
+ ]
+}

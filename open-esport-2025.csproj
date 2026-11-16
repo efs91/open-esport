@@ -1,7 +1,16 @@
-<Project Sdk="Godot.NET.Sdk/4.4.0">
+<Project Sdk="Godot.NET.Sdk/4.7.2">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>openesport2025</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- Scripts Unity livrés avec le pack d'accessoires : ils ne doivent pas être compilés par Godot -->
+    <Compile Remove="assets/accessoires/**/*.cs" />
+    <!-- Le code réseau (noyau partagé, serveur, tests) est compilé à part ; le jeu n'utilise que le noyau -->
+    <Compile Remove="netcode/**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="netcode/OpenEsport.Core/OpenEsport.Core.csproj" />
+  </ItemGroup>
 </Project>

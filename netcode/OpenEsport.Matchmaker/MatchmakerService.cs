@@ -1,0 +1,256 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
+using LiteNetLib;
+using OpenEsport.Core;
+
+namespace OpenEsport.Matchmaker
+{
+	public sealed class MatchmakerOptions
+	{
+		/// <summary>Port UDP sur lequel le service écoute les demandes des joueurs.</summary>
+		public int Port = Matchmaking.DefaultPort;
+		/// <summary>Adresse donnée aux joueurs pour rejoindre un serveur de partie (le nom ou l'IP de la machine, vu d'internet).</summary>
+		public string PublicHost = "127.0.0.1";
+		/// <summary>Adresse à laquelle le service interroge ses serveurs (par défaut la même ; « host.docker.internal » si le service tourne lui-même dans Docker).</summary>
+		public string ProbeHost;
+		/// <summary>Ports UDP des serveurs de partie (un par partie en cours ou en attente).</summary>
+		public int PortFirst = 27100, PortLast = 27199;
+		/// <summary>Joueurs par partie (humains + bots) et humains nécessaires pour la lancer.</summary>
+		public int Players = 30, MinPlayers = 1;
+		public float LobbyCountdown = 5f;
+		/// <summary>Un serveur dont la salle d'attente reste vide ce nombre de secondes s'arrête tout seul.</summary>
+		public float IdleExitSeconds = 120f;
+		/// <summary>Combien de temps (s) un serveur lancé a pour répondre avant d'être détruit.</summary>
+		public double StartTimeoutSeconds = 90;
+		/// <summary>Tableau de bord web et API d'administration : port (0 = désactivé), adresse d'écoute et jeton nécessaire pour arrêter un serveur.</summary>
+		/// <summary>Zones du battle royale : nom d'un préréglage (apex, fortnite) ou fichier JSON créé avec le panneau Godot (data/zones/*.json).</summary>
+		public string Zones = "apex";
+		public string ZonesFile;
+		public int AdminPort = 27080;
+		public string AdminBind = "127.0.0.1";
+		public string AdminToken;
+		public string ProbeHostOrPublic => string.IsNullOrEmpty(ProbeHost) ? PublicHost : ProbeHost;
+	}
+
+	/// <summary>Ce qu'il faut pour lancer un serveur de partie.</summary>
+	public sealed class ServerSpec
+	{
+		public string Name;
+		public int Port, TeamSize, Players, MinPlayers;
+		/// <summary>Mode de jeu du serveur (la carte et les règles en dépendent).</summary>
+		public GameMode Mode = GameMode.BattleRoyale;
+		public float LobbyCountdown, IdleExitSeconds;
+		/// <summary>Valeur de « --zones » passée au serveur (nom d'un préréglage, ou chemin du fichier vu depuis le serveur).</summary>
+		public string Zones;
+	}
+
+	/// <summary>Lance et arrête des serveurs de partie : dans des conteneurs Docker (<see cref="DockerLauncher"/>) ou, pour le développement, en processus.</summary>
+	public interface IServerLauncher
+	{
+		/// <summary>Démarre le serveur (retourne dès que la commande de lancement est acceptée).</summary>
+		void Launch(ServerSpec spec);
+		void Stop(string name);
+		/// <summary>Supprime les serveurs restés d'une exécution précédente.</summary>
+		void CleanupLeftovers();
+	}
+
+	public sealed class GameServerInfo
+	{
+		public ServerSpec Spec;
+		public DateTime LaunchedAt = DateTime.UtcNow;
+		public DateTime LastReply = DateTime.MinValue;
+		public bool Ready;
+		public MatchPhase Phase;
+		public int Humans, Needed, Max;
+		/// <summary>Dernier rapport de télémétrie du serveur (JSON) et instant de sa réception.</summary>
+		public string TelemetryJson;
+		public DateTime TelemetryAt = DateTime.MinValue;
+		public readonly List<DateTime> Pending = new List<DateTime>();
+		public int PendingCount { get { Pending.RemoveAll(t => (DateTime.UtcNow - t).TotalSeconds > 20); return Pending.Count; } }
+	}
+
+	/// <summary>
+	/// Le service qui tourne en permanence : il reçoit les demandes des joueurs, les range dans une salle d'attente existante du bon mode
+	/// (solo, 2, 3, 4 ou 5) ou lance un nouveau serveur de partie, et surveille tous ses serveurs.
+	/// </summary>
+	public sealed class MatchmakerService
+	{
+		private readonly MatchmakerOptions _opt;
+		private readonly IServerLauncher _launcher;
+		private readonly EventBasedNetListener _listener = new EventBasedNetListener();
+		private readonly NetManager _net;
+		private readonly List<GameServerInfo> _servers = new List<GameServerInfo>();
+		private DateTime _nextProbe = DateTime.MinValue;
+		public Action<string> Log = s => Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {s}");
+
+		public int ServerCount { get { lock (_servers) return _servers.Count; } }
+		public IReadOnlyList<GameServerInfo> Servers { get { lock (_servers) return _servers.ToList(); } }
+
+		public MatchmakerService(MatchmakerOptions options, IServerLauncher launcher)
+		{
+			_opt = options;
+			_launcher = launcher;
+			_net = new NetManager(_listener) { UnconnectedMessagesEnabled = true, UnsyncedEvents = false };
+			_listener.NetworkReceiveUnconnectedEvent += OnMessage;
+		}
+
+		public void Run(CancellationToken ct)
+		{
+			if (!_net.Start(_opt.Port)) throw new InvalidOperationException($"Impossible d'ouvrir le port UDP {_opt.Port} (déjà utilisé ?)");
+			Log($"Matchmaking démarré : port {_opt.Port}, serveurs de partie sur les ports {_opt.PortFirst}-{_opt.PortLast}, adresse publique {_opt.PublicHost}");
+			try { _launcher.CleanupLeftovers(); } catch (Exception e) { Log("Nettoyage impossible : " + e.Message); }
+			while (!ct.IsCancellationRequested)
+			{
+				_net.PollEvents();
+				Probe();
+				Thread.Sleep(10);
+			}
+			_net.Stop();
+			Log("Matchmaking arrêté");
+		}
+
+		/// <summary>Arrête un serveur de partie (administration) : les joueurs connectés sont déconnectés. Retourne faux si le nom est inconnu.</summary>
+		public bool StopServer(string name)
+		{
+			GameServerInfo found;
+			lock (_servers)
+			{
+				found = _servers.FirstOrDefault(s => s.Spec.Name == name);
+				if (found == null) return false;
+				_servers.Remove(found);
+			}
+			try { _launcher.Stop(name); } catch (Exception e) { Log($"Arrêt de {name} : {e.Message}"); }
+			Log($"Serveur {name} arrêté (administration)");
+			return true;
+		}
+
+		/// <summary>Arrête tous les serveurs lancés (à la fermeture du service).</summary>
+		public void StopAll()
+		{
+			lock (_servers)
+			{
+				foreach (var s in _servers) { try { _launcher.Stop(s.Spec.Name); } catch { } }
+				_servers.Clear();
+			}
+		}
+
+		// ------------------------------------------------------------------ surveillance des serveurs
+
+		private void Probe()
+		{
+			var now = DateTime.UtcNow;
+			if (now < _nextProbe) return;
+			_nextProbe = now.AddSeconds(1);
+			List<GameServerInfo> snapshot;
+			lock (_servers) snapshot = _servers.ToList();
+			var status = Encoding.ASCII.GetBytes("STATUS");
+			var telemetry = Encoding.ASCII.GetBytes("TELEMETRY");
+			foreach (var s in snapshot)
+			{
+				try
+				{
+					var ep = NetUtils.MakeEndPoint(_opt.ProbeHostOrPublic, s.Spec.Port);
+					_net.SendUnconnectedMessage(status, 0, status.Length, ep);
+					_net.SendUnconnectedMessage(telemetry, 0, telemetry.Length, ep);
+				}
+				catch { }
+				double sinceLaunch = (now - s.LaunchedAt).TotalSeconds;
+				double sinceReply = (now - s.LastReply).TotalSeconds;
+				bool dead = s.Ready ? sinceReply > 10 : sinceLaunch > _opt.StartTimeoutSeconds;
+				if (dead)
+				{
+					Log($"Serveur {s.Spec.Name} {(s.Ready ? "ne répond plus" : "n'a pas démarré")} : retiré");
+					try { _launcher.Stop(s.Spec.Name); } catch { }
+					lock (_servers) _servers.Remove(s);
+				}
+			}
+		}
+
+		// ------------------------------------------------------------------ messages
+
+		private void OnMessage(IPEndPoint remote, NetPacketReader reader, UnconnectedMessageType type)
+		{
+			string text;
+			try { text = Encoding.UTF8.GetString(reader.RawData, reader.UserDataOffset, reader.UserDataSize); }
+			catch (Exception) { return; }
+			if (text.StartsWith("OE|", StringComparison.Ordinal)) { OnServerStatus(remote, text); return; }
+			if (text.StartsWith("{", StringComparison.Ordinal))
+			{
+				lock (_servers) { var s = _servers.FirstOrDefault(x => x.Spec.Port == remote.Port); if (s != null) { s.TelemetryJson = text; s.TelemetryAt = DateTime.UtcNow; } }
+				return;
+			}
+			if (!text.StartsWith(Matchmaking.RequestTag, StringComparison.Ordinal)) return;
+			string reply;
+			try { reply = HandleRequest(text); }
+			catch (Exception e) { Log("Demande invalide : " + e.Message); reply = Matchmaking.ReplyTag + "ERR|Demande invalide"; }
+			var bytes = Encoding.UTF8.GetBytes(reply);
+			_net.SendUnconnectedMessage(bytes, 0, bytes.Length, remote);
+		}
+
+		private void OnServerStatus(IPEndPoint remote, string text)
+		{
+			var p = text.Split('|');
+			if (p.Length < 7) return;
+			lock (_servers)
+			{
+				var s = _servers.FirstOrDefault(x => x.Spec.Port == remote.Port);
+				if (s == null) return;
+				s.Ready = true;
+				s.LastReply = DateTime.UtcNow;
+				s.Phase = (MatchPhase)int.Parse(p[1]);
+				s.Humans = int.Parse(p[2]); s.Needed = int.Parse(p[3]); s.Max = int.Parse(p[5]);
+			}
+		}
+
+		/// <summary>Une demande de partie : salle d'attente du bon mode avec de la place, sinon lancement d'un serveur.</summary>
+		public string HandleRequest(string text)
+		{
+			var p = text.Split('|');
+			if (p.Length < 3 || p[0] != Matchmaking.RequestTag) return Matchmaking.ReplyTag + "ERR|Demande invalide";
+			if (int.Parse(p[1]) != Protocol.Version) return Matchmaking.ReplyTag + "ERR|Version du jeu différente de celle du service";
+			GameMode mode = GameMode.BattleRoyale;
+			if (p.Length >= 4 && !Modes.TryParse(p[3], out mode)) return Matchmaking.ReplyTag + "ERR|Mode de jeu inconnu";
+			int teamSize = Modes.ValidTeamSize(mode, Math.Clamp(int.Parse(p[2]), MatchConfig.MinTeamSize, MatchConfig.MaxTeamSize));
+			string label = Modes.Label(mode, teamSize);
+
+			lock (_servers)
+			{
+				// 1) une salle d'attente du bon mode, prête, avec de la place : on remplit la plus pleine
+				var open = _servers.Where(s => s.Ready && s.Phase == MatchPhase.Lobby && s.Spec.Mode == mode && s.Spec.TeamSize == teamSize && s.Humans + s.PendingCount < s.Max)
+					.OrderByDescending(s => s.Humans + s.PendingCount).FirstOrDefault();
+				if (open != null)
+				{
+					open.Pending.Add(DateTime.UtcNow);
+					return $"{Matchmaking.ReplyTag}OK|{_opt.PublicHost}|{open.Spec.Port}|{open.Humans + open.PendingCount}|{open.Needed}|{teamSize}";
+				}
+				// 2) un serveur du bon mode est déjà en train de démarrer : on attend
+				if (_servers.Any(s => !s.Ready && s.Spec.Mode == mode && s.Spec.TeamSize == teamSize))
+					return Matchmaking.ReplyTag + "WAIT|Préparation d'une partie " + label + "…";
+				// 3) sinon on en lance un
+				int port = FreePort();
+				if (port < 0) return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant";
+				var spec = new ServerSpec
+				{
+					Name = $"open-esport-{Modes.Name(mode, teamSize)}-{port}", Port = port, Mode = mode, TeamSize = teamSize, Players = mode == GameMode.BattleRoyale ? _opt.Players : Modes.Get(mode).PlayersFor(teamSize),
+					MinPlayers = _opt.MinPlayers, LobbyCountdown = _opt.LobbyCountdown, IdleExitSeconds = _opt.IdleExitSeconds, Zones = _opt.Zones
+				};
+				try { _launcher.Launch(spec); }
+				catch (Exception e) { Log($"Lancement de {spec.Name} impossible : {e.Message}"); return Matchmaking.ReplyTag + "ERR|Impossible de lancer un serveur de partie : " + e.Message.Replace('|', '/'); }
+				_servers.Add(new GameServerInfo { Spec = spec });
+				Log($"Serveur lancé : {spec.Name} ({label}, {spec.Players} joueurs)");
+				return Matchmaking.ReplyTag + "WAIT|Lancement d'une partie " + label + "…";
+			}
+		}
+
+		private int FreePort()
+		{
+			for (int port = _opt.PortFirst; port <= _opt.PortLast; port++)
+				if (_servers.All(s => s.Spec.Port != port)) return port;
+			return -1;
+		}
+	}
+}

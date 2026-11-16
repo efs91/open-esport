@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_PaddedWall_BaseColor.png" id="1_ddoad"]
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_PaddedWall_ORM.png" id="2_yhg3y"]
+[ext_resource type="Texture2D" path="res://assets/environement/Modular SciFi MegaKit[Standard]/Textures/T_PaddedWall_Normal.png" id="3_37kg0"]
+
+[resource]
+resource_name = "MI_PaddedWall"
+cull_mode = 2
+albedo_texture = ExtResource("1_ddoad")
+metallic = 1.0
+metallic_texture = ExtResource("2_yhg3y")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("2_yhg3y")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("3_37kg0")
+ao_enabled = true
+ao_texture = ExtResource("2_yhg3y")

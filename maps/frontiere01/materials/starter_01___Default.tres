@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Floor_01_Dif_Style_02_Alb.png" id="1_ksxd5"]
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Floor_01_Dif_Style_02_AO.png" id="2_7n44b"]
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Floor_01_Dif_Style_02_Norm.png" id="3_amwnk"]
+
+[resource]
+resource_name = "01 - Default"
+cull_mode = 2
+albedo_texture = ExtResource("1_ksxd5")
+metallic = 0.35
+roughness = 0.7
+normal_enabled = true
+normal_texture = ExtResource("3_amwnk")
+ao_enabled = true
+ao_texture = ExtResource("2_7n44b")

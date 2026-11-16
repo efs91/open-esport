@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using Openesport.Utils;
 using Openesport.Modules;
 using Openesport.Managers;
+using Openesport.Inventory;
 
+/// <summary>
+/// Affiche et fait fonctionner l'arme tenue en main (tir, rechargement, visée, viseur monté).
+/// Le choix de l'arme tenue est piloté par <see cref="PlayerInventory"/> via <see cref="SetHeldWeapon"/>.
+/// </summary>
 public partial class WeaponManager : Node3D
 {
 	// Signaux
 	[Signal]
 	public delegate void GiveDamageEventHandler(Node3D obj, float damage, Vector3 point);
-	
+
 	[Signal]
 	public delegate void UpdateAmmoEventHandler(int magazine, int inventoryAmmo, string ammoType);
 
-	// Variables exportées
-	[Export]
-	public Godot.Collections.Dictionary Inventory = new Godot.Collections.Dictionary
-	{
-		{ "weapons", new Godot.Collections.Array { new Godot.Collections.Array { 0, -1 }, new Godot.Collections.Array { 1, -1 }, new Godot.Collections.Array { 2, -1 }, new Godot.Collections.Array { 3, -1 }, new Godot.Collections.Array { 4, -1 }, new Godot.Collections.Array { 5, -1 } } },
-		{ "ammo", new Godot.Collections.Dictionary { { "none", 0 }, { "9mm", 0 }, { "rifle", 0 }, { "shell", 0 } } }
-	};
+	/// <summary>Réserve de munitions : le sac à dos du joueur.</summary>
+	public PlayerInventory AmmoSource;
 
 	[Export]
 	public float MeleeDamage = 100;
@@ -78,41 +78,58 @@ public partial class WeaponManager : Node3D
 	[Export]
 	public float DamageMultiplier = 1.0f;
 
-	// Actions
+	/// <summary>Vitesse de transition du zoom en visée.</summary>
 	[Export]
-	public string ActionFire = "shoot";
+	public float ZoomSpeed = 24.0f;
+	/// <summary>Vitesse de montée de l'arme en visée (par seconde) : plus grand = plus rapide. Indépendant du nombre d'images par seconde.</summary>
+	[Export]
+	public float AdsSpeed = 26.0f;
 
-	[Export]
-	public string ActionReload = "reload";
+	/// <summary>En ligne : le serveur compte les munitions et décide des tirs ; ici on ne joue que les animations.</summary>
+	public bool Online;
 
-	[Export]
-	public string ActionMelee = "melee";
+	public bool IsAiming => _ads;
 
-	[Export]
-	public string ActionAds = "aim";
+	/// <summary>Chargeur de l'arme en main, tel que le serveur le compte.</summary>
+	public void SetServerMagazine(int magazine)
+	{
+		if (_weapon == null || magazine == _magazine) return;
+		_magazine = magazine;
+		EmitAmmo();
+	}
 
+	/// <summary>Remplace les bras du kit par ceux du personnage du joueur (peau et manche).</summary>
 	[Export]
-	public string ActionNextWeapon = "switch_weapon";
+	public bool UseCharacterArms = true;
 
+	/// <summary>Distance à laquelle la balle rejoint la ligne de visée quand rien n'est visé.</summary>
 	[Export]
-	public string ActionPreviousWeapon = "switch_weapon";
+	public float AimDistance = 1000.0f;
 
 	// Scènes
-	private PackedScene _bulletholeScene;
-	private PackedScene _scratchScene;
-	private PackedScene _muzzleFlashScene;
-	private PackedScene _muzzleSmokeScene;
 	private PackedScene _bulletScene;
 
-	// Armes
-	private Godot.Collections.Array<PackedScene> _weapons;
-	private int _weaponIndex;
-	private int _weaponChange;
+	// Arme tenue
+	private WeaponSlotState _state;
 	private Node3D _weapon;
 	private AnimationTree _animation;
 	private AnimationNodeStateMachinePlayback _stateMachine;
 	private Node3D _muzzlePoint;
+
+	/// <summary>Position monde de la bouche du canon de l'arme en main (vue FPS), ou null.</summary>
+	public Vector3? MuzzleGlobalPosition => _muzzlePoint != null && GodotObject.IsInstanceValid(_muzzlePoint) && _muzzlePoint.IsInsideTree() ? _muzzlePoint.GlobalPosition : null;
 	private bool _isReloading;
+	private bool _isMelee;
+
+	// Changement d'arme
+	private WeaponSlotState _pending;
+	private bool _switching;
+	private int _switchToken;
+
+	// Viseur monté
+	private Node3D _opticNode;
+	private bool _opticPlaced;
+	private Vector3 _adsPosOptic;
 
 	private Vector3 _startPos;
 	private Vector3 _adsPos;
@@ -124,390 +141,639 @@ public partial class WeaponManager : Node3D
 	private int _maxMagazine;
 	private int _magazine;
 
-	private Vector3 _swayRotationTarget;
-	private bool _recoiling;
-	private Vector2 _recoilTarget;
-	private float _shakeCurrent;
+	// Zoom
+	private float _baseFov = 75.0f;
+	private float _zoom = 1.0f;
+	private HeadMovement3D _head;
+	private bool _sensitivityOverridden;
+	private float _savedSensitivity;
+
+	// FOV du shader de vue FPS (arme, bras, viseur) : resserré en visée avec une lunette grossissante
+	private readonly List<(ShaderMaterial material, float baseFov)> _viewMaterials = new();
+	private readonly List<ShaderMaterial> _opticMaterials = new();
+	private float _viewmodelFov = 75.0f;
+	private float _adsViewmodelFov;
+	private float _adsBlend;
+	private float _appliedFovBlend = -1.0f;
+
+	/// <summary>Part de la hauteur d'écran occupée par le corps de la lunette en visée (diamètre extérieur).</summary>
+	private const float ScopeScreenFraction = 0.58f;
 
 	private LogManager _logManager;
 
-	private double _lastFireTime;
-	private double _fireRate = 0.1; // 10 tirs par seconde par défaut
-
 	private bool _canShoot = true;
 	private bool _wasShooting = false;
+
+	/// <summary>Arme actuellement en main (null = mains nues).</summary>
+	public WeaponSlotState HeldWeapon => _state;
 
 	public override void _Ready()
 	{
 		_logManager = GetNode<LogManager>(GlobalPaths.Managers.LOG_MANAGER);
 		_logManager.Info("WeaponManager initialisé");
-		
-		// Log de la hiérarchie
-		_logManager.Debug($"WeaponManager parent: {GetParent().Name}");
-		_logManager.Debug($"WeaponManager parent parent: {GetParent().GetParent().Name}");
-		_logManager.Debug($"WeaponManager parent parent parent: {GetParent().GetParent().GetParent().Name}");
-		
-		// Log des positions relatives
-		_logManager.Debug($"Position du WeaponManager (Local): {Position}, Rotation (Local): {Rotation}");
-		_logManager.Debug($"Position du WeaponManager (Global): {GlobalPosition}, Rotation (Global): {GlobalRotation}");
-		
-		// Vérification du type du parent pour accéder aux propriétés 3D
-		if (GetParent() is Node3D parent3D)
-		{
-			_logManager.Debug($"Position du parent (Camera): {parent3D.GlobalPosition}, Rotation: {parent3D.GlobalRotation}");
-		}
-		else
-		{
-			_logManager.Warning($"Le parent n'est pas un Node3D, c'est un {GetParent().GetType().Name}");
-		}
 
-		// Récupérer l'InputManager et s'abonner aux événements
 		var inputManager = GetNode<InputManager>(GlobalPaths.Managers.INPUT_MANAGER);
 		if (inputManager != null)
 		{
 			var inputEvents = inputManager.GetInputEvents();
-			
-			// Gestion de la visée
 			inputEvents.OnAimTriggered += OnAimTriggered;
 			inputEvents.OnAimReleased += OnAimReleased;
-			
-			// Gestion du tir
 			inputEvents.OnShootStateChanged += OnShootStateChanged;
-			
-			// Gestion du rechargement
 			inputEvents.OnReloadTriggered += OnReloadTriggered;
-			
-			// Gestion du changement d'arme
-			inputEvents.OnSwitchWeaponUpTriggered += OnSwitchWeaponUpTriggered;
-			inputEvents.OnSwitchWeaponDownTriggered += OnSwitchWeaponDownTriggered;
 		}
-		
-		InitializeScenes();
-		InitializeComponents();
-		
-		// Attendre le prochain frame avant de créer l'arme
-		GetTree().CreateTimer(0.1f).Timeout += () => TakeWeapon(0);
+
+		_bulletScene = GD.Load<PackedScene>("res://scenes/modules/weapons/bullet.tscn");
+
+		if (Sway && Camera != null)
+		{
+			TopLevel = true;
+		}
+
+		// mains nues visibles à la première personne quand aucune arme n'est en main
+		if (Camera != null)
+		{
+			_fists = new FistsViewmodel { Name = "Fists" };
+			Camera.CallDeferred(Node.MethodName.AddChild, _fists); // la caméra monte encore ses enfants
+		}
+
+		if (Camera != null)
+		{
+			_baseFov = Camera.Fov;
+			_head = Camera.GetParent() as HeadMovement3D;
+		}
+
+		// Le joueur commence à mains nues
+		EmitAmmo();
+	}
+
+	public override void _ExitTree()
+	{
+		var inputManager = GetNodeOrNull<InputManager>(GlobalPaths.Managers.INPUT_MANAGER);
+		if (inputManager != null)
+		{
+			var inputEvents = inputManager.GetInputEvents();
+			inputEvents.OnAimTriggered -= OnAimTriggered;
+			inputEvents.OnAimReleased -= OnAimReleased;
+			inputEvents.OnShootStateChanged -= OnShootStateChanged;
+			inputEvents.OnReloadTriggered -= OnReloadTriggered;
+		}
+	}
+
+	// ------------------------------------------------------------------
+	// Arme tenue
+	// ------------------------------------------------------------------
+
+	/// <summary>
+	/// Change l'arme tenue en main. <c>null</c> = mains nues.
+	/// L'arme actuelle est rangée (animation « hide ») avant de sortir la nouvelle.
+	/// </summary>
+	public void SetHeldWeapon(WeaponSlotState state)
+	{
+		Openesport.Diagnostics.LagTracer.Event($"arme en main : {state?.ItemId ?? "mains nues"} (niveau {state?.Tier})");
+		using var _trace = Openesport.Diagnostics.LagTracer.Scope("WeaponManager.SetHeldWeapon");
+		if (!_switching && state == _state)
+			return;
+
+		_pending = state;
+
+		if (_switching)
+			return;
+
+		if (_weapon == null)
+		{
+			ShowPending();
+			return;
+		}
+
+		_switching = true;
+		_ads = false;
+		_isReloading = false;
+
+		int token = ++_switchToken;
+		// Sécurité si l'animation « hide » ne se termine pas
+		GetTree().CreateTimer(1.0f).Timeout += () =>
+		{
+			if (IsInstanceValid(this) && IsInsideTree() && _switching && token == _switchToken)
+				FinishHide();
+		};
+
+		if (_stateMachine != null)
+			_stateMachine.Travel("hide");
+		else
+			FinishHide();
+	}
+
+	private void FinishHide()
+	{
+		if (!_switching)
+			return;
+
+		_switching = false;
+		_switchToken++;
+		RemoveWeapon();
+		ShowPending();
+	}
+
+	private void ShowPending()
+	{
+		var state = _pending;
+		_pending = null;
+
+		if (state != null)
+			ShowWeapon(state);
+		else
+			EmitAmmo();
+	}
+
+	private void RemoveWeapon()
+	{
+		ClearOptic();
+		SetViewmodelFovBlend(0.0f);
+		_viewMaterials.Clear();
+		_adsBlend = 0.0f;
+
+		if (_animation != null)
+		{
+			_animation.AnimationFinished -= OnAnimationFinished;
+			_animation.AnimationStarted -= OnAnimationStarted;
+		}
+
+		if (_weapon != null)
+		{
+			RemoveChild(_weapon);
+			_weapon.QueueFree();
+		}
+
+		_weapon = null;
+		_state = null;
+		_animation = null;
+		_stateMachine = null;
+		_muzzlePoint = null;
+		_isReloading = false;
+		_ads = false;
+		_maxMagazine = 0;
+		_magazine = 0;
+	}
+
+	/// <summary>
+	/// Précharge toutes les armes et accessoires (chargement des modèles, des textures et compilation des shaders) tant qu'on n'en a pas besoin :
+	/// la première arme ramassée ou sortie d'un coffre ne fige plus le jeu pendant une seconde.
+	/// </summary>
+	/// <summary>Vrai quand le préchargement des armes et des objets est terminé (l'écran de chargement peut disparaître).</summary>
+	public bool WarmUpDone { get; private set; }
+
+	public async void WarmUp()
+	{
+		Openesport.Diagnostics.LagTracer.Event("préchargement des armes : début");
+		var holder = new Node3D { Position = new Vector3(0, 0, -2f), Scale = Vector3.One * 0.02f };
+		AddChild(holder);
+		foreach (var id in ItemDatabase.Ids)
+		{
+			var def = ItemDatabase.Get(id);
+			if (def == null || string.IsNullOrEmpty(def.ScenePath)) continue;
+			var scene = Openesport.Inventory.ItemVisuals.LoadCached(def.ScenePath);
+			if (scene == null) continue;
+			var node = scene.Instantiate<Node3D>();
+			holder.AddChild(node);
+			if (def.Type == ItemType.Weapon && UseCharacterArms) FpsArms.Apply(node);
+			await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);   // une image visible : les shaders se compilent maintenant
+			if (!IsInstanceValid(node)) continue;
+			node.QueueFree();
+		}
+		holder.QueueFree();
+		WarmUpDone = true;
+		Openesport.Diagnostics.LagTracer.Event("préchargement des armes : fini");
+	}
+
+	private void ShowWeapon(WeaponSlotState state)
+	{
+		using var _trace = Openesport.Diagnostics.LagTracer.Scope("WeaponManager.ShowWeapon " + state?.ItemId);
+		var def = state.Definition;
+		var scene = def != null ? Openesport.Inventory.ItemVisuals.LoadCached(def.ScenePath) : null;
+		if (scene == null)
+		{
+			_logManager.Error($"Scène d'arme introuvable pour '{state.ItemId}'");
+			EmitAmmo();
+			return;
+		}
+
+		_state = state;
+		_weapon = scene.Instantiate<Node3D>();
+		_weapon.Visible = true;
+		AddChild(_weapon);
+		if (UseCharacterArms)
+			FpsArms.Apply(_weapon);
+		_logManager.Debug($"Arme en main : {def.DisplayName}");
+
+		_animation = _weapon.GetNodeOrNull<AnimationTree>("AnimationTree");
+		if (_animation != null)
+		{
+			_animation.AnimationFinished += OnAnimationFinished;
+			_animation.AnimationStarted += OnAnimationStarted;
+			_stateMachine = _animation.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
+		}
+		else
+		{
+			_logManager.Warning("AnimationTree non trouvé dans l'arme");
+		}
+
+		// Point de départ des balles
+		_muzzlePoint = _weapon.FindChild("Marker3D") as Node3D;
+		_isMelee = _weapon.GetMeta("melee", false).AsBool();
+		if (_muzzlePoint == null && !_isMelee)
+			_logManager.Error("Marker3D non trouvé dans l'arme");
+
+		_startPos = _weapon.Position;
+		_adsPos = _weapon.GetMeta("ads_pos", _startPos).As<Vector3>();
+		_isAuto = _weapon.GetMeta("auto", false).As<bool>();
+		_delta = _weapon.GetMeta("delta", 1.0f).As<float>();
+
+		_maxMagazine = _weapon.GetMeta("max_magazine", 0).As<int>();
+		// le niveau de l'arme agrandit le chargeur (comme sur le serveur) : sans cela on ne pourrait pas remplir au-delà de la valeur de base
+		if (_maxMagazine > 0 && state.Tier > 0)
+			_maxMagazine = Mathf.Max(1, Mathf.RoundToInt(_maxMagazine * OpenEsport.Core.GameBalance.TierMagazine[Mathf.Clamp(state.Tier, 0, 3)]));
+		_magazine = state.Magazine < 0 ? _maxMagazine : Mathf.Min(state.Magazine, _maxMagazine);
+		state.Magazine = _magazine;
+
+		_canShoot = true;
+		_isReloading = false;
+		_ads = false;
+
+		_viewMaterials.Clear();
+		_appliedFovBlend = -1.0f;
+		CollectViewMaterials(_weapon);
+		_viewmodelFov = _viewMaterials.Count > 0 ? _viewMaterials[0].baseFov : 75.0f;
+
+		// L'arme est mise en pose de repos tout de suite : le viseur est posé dessus immédiatement
+		if (_stateMachine != null)
+		{
+			_stateMachine.Start("idle");
+			_animation.Advance(0);
+		}
+		RefreshAttachments(true);
+
+		if (!state.TakePlayed && _stateMachine != null)
+		{
+			// Animation de prise en main : uniquement la première fois que l'arme est prise
+			state.TakePlayed = true;
+			_stateMachine.Start("take");
+			_animation.Advance(0);
+		}
+		else
+		{
+			// Les fois suivantes, l'arme remonte simplement en position
+			_weapon.Position = _startPos + new Vector3(0, -0.3f, 0);
+		}
+
+		EmitAmmo();
+	}
+
+	private void CollectViewMaterials(Node node)
+	{
+		if (node is MeshInstance3D mi && mi.Mesh != null)
+		{
+			for (int i = 0; i < mi.Mesh.GetSurfaceCount(); i++)
+			{
+				if (mi.GetActiveMaterial(i) is not ShaderMaterial sm)
+					continue;
+				var value = sm.GetShaderParameter("fov");
+				if (value.VariantType != Variant.Type.Float || _viewMaterials.Exists(m => m.material == sm))
+					continue;
+				_viewMaterials.Add((sm, value.AsSingle()));
+			}
+		}
+
+		foreach (var child in node.GetChildren())
+			CollectViewMaterials(child);
+	}
+
+	/// <summary>
+	/// Resserre le FOV de la vue FPS : 0 = FOV normal, 1 = FOV de visée à la lunette.
+	/// Les matériaux des armes sont des ressources partagées : on revient toujours à 0 avant de ranger l'arme.
+	/// </summary>
+	private void SetViewmodelFovBlend(float blend)
+	{
+		if (_adsViewmodelFov <= 0.0f)
+			blend = 0.0f;
+		if (Mathf.IsEqualApprox(blend, _appliedFovBlend))
+			return;
+		_appliedFovBlend = blend;
+
+		foreach (var (material, baseFov) in _viewMaterials)
+			material.SetShaderParameter("fov", Mathf.Lerp(baseFov, _adsViewmodelFov, blend));
+		foreach (var material in _opticMaterials)
+			material.SetShaderParameter("fov", Mathf.Lerp(_viewmodelFov, _adsViewmodelFov, blend));
+	}
+
+	private string CurrentAmmoType()
+	{
+		return _weapon != null ? _weapon.GetMeta("ammo_type", "none").AsString() : "none";
+	}
+
+	private int GetReserve(string ammoType)
+	{
+		return AmmoSource != null ? AmmoSource.GetAmmo(ammoType) : 0;
+	}
+
+	/// <summary>Les munitions du sac ont changé : met à jour l'affichage.</summary>
+	public void NotifyAmmoChanged()
+	{
+		EmitAmmo();
+	}
+
+	private void EmitAmmo()
+	{
+		if (_state != null)
+			_state.Magazine = _magazine;
+
+		string ammoType = CurrentAmmoType();
+		EmitSignal(SignalName.UpdateAmmo, _weapon != null ? _magazine : 0, GetReserve(ammoType), ammoType);
+	}
+
+	// ------------------------------------------------------------------
+	// Viseur
+	// ------------------------------------------------------------------
+
+	/// <summary>
+	/// (Re)construit le viseur monté sur l'arme tenue d'après son état. À appeler quand le viseur change.
+	/// </summary>
+	public void RefreshAttachments()
+	{
+		RefreshAttachments(false);
+	}
+
+	/// <param name="poseIsIdle">L'arme est déjà en pose de repos : le viseur peut être posé tout de suite.</param>
+	private void RefreshAttachments(bool poseIsIdle)
+	{
+		ClearOptic();
+
+		if (_weapon == null || _state?.Optic == null)
+			return;
+
+		_opticNode = ItemVisuals.BuildViewmodelOptic(_state.Optic, _viewmodelFov);
+		CollectOpticMaterials(_opticNode);
+
+		// Le placement se mesure sur la pose de repos de l'arme ; sinon on attend qu'elle y revienne (voir _Process)
+		if (poseIsIdle || _stateMachine == null || _stateMachine.GetCurrentNode() == "idle")
+			PlaceOptic();
+	}
+
+	private void CollectOpticMaterials(Node node)
+	{
+		if (node is MeshInstance3D mi && mi.Mesh != null)
+		{
+			for (int i = 0; i < mi.Mesh.GetSurfaceCount(); i++)
+			{
+				if (mi.GetSurfaceOverrideMaterial(i) is ShaderMaterial sm && !_opticMaterials.Contains(sm))
+					_opticMaterials.Add(sm);
+			}
+		}
+
+		foreach (var child in node.GetChildren())
+			CollectOpticMaterials(child);
+	}
+
+	private void ClearOptic()
+	{
+		if (_opticNode != null)
+		{
+			_opticNode.GetParent()?.RemoveChild(_opticNode);
+			_opticNode.QueueFree();
+		}
+		_opticNode = null;
+		_opticPlaced = false;
+		_opticMaterials.Clear();
+		SetViewmodelFovBlend(0.0f);
+		_adsViewmodelFov = 0.0f;
+	}
+
+	/// <summary>
+	/// Fixe le viseur sur le dessus de l'arme et calcule la position de visée qui amène
+	/// le centre de la lentille au centre de l'écran.
+	/// </summary>
+	private void PlaceOptic()
+	{
+		var def = _state.Definition;
+		var optic = _state.Optic;
+
+		// Le viseur suit la pièce principale de l'arme (celle qui porte la bouche du canon)
+		var mount = (_weapon.FindChild("MuzzlePoint") as Node3D)?.GetParent() as Node3D ?? _weapon;
+		var toLocal = GlobalTransform.AffineInverse();
+
+		var mountLocal = ItemVisuals.ComputeLocalAabb(mount);
+		if (mountLocal == null)
+		{
+			mount = _weapon;
+			mountLocal = ItemVisuals.ComputeLocalAabb(mount) ?? new Aabb();
+		}
+
+		// Dans le repère du WeaponManager : X = droite, Y = haut, Z = avant de l'arme
+		var box = (toLocal * mount.GlobalTransform) * mountLocal.Value;
+		var position = new Vector3(
+			box.GetCenter().X,
+			box.End.Y,
+			Mathf.Lerp(box.Position.Z, box.End.Z, def.OpticAlong)) + def.OpticOffset;
+
+		mount.AddChild(_opticNode);
+		_opticNode.GlobalTransform = GlobalTransform * new Transform3D(Basis.Identity.Scaled(Vector3.One * def.OpticScale), position);
+
+		// Position de visée : centre de la lentille au centre de l'écran, arrière du viseur à distance fixe de l'œil
+		var center = _opticNode.GetNode<Node3D>(ItemVisuals.OpticalCenterName);
+		var centerOffset = toLocal * center.GlobalPosition - _weapon.Position;
+		var opticLocal = ItemVisuals.ComputeLocalAabb(_opticNode) ?? new Aabb();
+		var opticBox = (toLocal * _opticNode.GlobalTransform) * opticLocal;
+		float rearOffset = opticBox.Position.Z - _weapon.Position.Z;
+
+		_adsPosOptic = new Vector3(-centerOffset.X, -centerOffset.Y, optic.EyeRelief - rearOffset);
+		_opticPlaced = true;
+
+		// Lunette grossissante : en visée, le FOV de la vue FPS est resserré pour que le corps de la lunette
+		// (hauteur au-dessus de l'axe optique et demi-largeur) occupe une part fixe de l'écran
+		_adsViewmodelFov = 0.0f;
+		if (optic.Zoom >= 2.0f)
+		{
+			var centerLocal = toLocal * center.GlobalPosition;
+			float halfOuter = Mathf.Max(
+				opticBox.End.Y - centerLocal.Y,
+				Mathf.Max(opticBox.End.X - centerLocal.X, centerLocal.X - opticBox.Position.X));
+			float rearDistance = Mathf.Max(optic.EyeRelief, 0.05f);
+			float fov = Mathf.RadToDeg(2.0f * Mathf.Atan(halfOuter / rearDistance / ScopeScreenFraction));
+			_adsViewmodelFov = Mathf.Min(fov, _viewmodelFov);
+		}
+		_appliedFovBlend = -1.0f;
+	}
+
+	// ------------------------------------------------------------------
+	// Entrées
+	// ------------------------------------------------------------------
+
+	private static bool IsGameplayInputActive()
+	{
+		return Input.MouseMode == Input.MouseModeEnum.Captured;
+	}
+
+	private bool IsReadyForAction()
+	{
+		if (_weapon == null || _stateMachine == null || _switching)
+			return false;
+		string node = _stateMachine.GetCurrentNode();
+		return node == "idle" || node == "fire";
+	}
+
+	/// <summary>Mode « maintenir » : la visée s'arrête dès que le bouton est relâché.</summary>
+	private void OnAimReleased()
+	{
+		if (Openesport.Utils.GameSettings.Aim == Openesport.Utils.AimMode.Hold)
+			_ads = false;
 	}
 
 	private void OnAimTriggered()
 	{
-		if (_stateMachine.GetCurrentNode() != "idle" && _stateMachine.GetCurrentNode() != "fire")
+		if (!IsGameplayInputActive())
+			return;
+
+		if (_ads)
 		{
-			_logManager.Debug("Tentative de visée impossible : animation en cours");
+			// en mode « basculer », un deuxième clic retire la visée ; en « maintenir » on reste en visée jusqu'au relâchement
+			if (Openesport.Utils.GameSettings.Aim == Openesport.Utils.AimMode.Switch)
+				_ads = false;
 			return;
 		}
 
-		if (!_ads)
+		if (_isMelee || !IsReadyForAction())
 		{
-			_logManager.Debug("Activation de la visée");
-			_ads = true;
+			_logManager.Debug("Tentative de visée impossible");
+			return;
 		}
-		else
-		{
-			_logManager.Debug("Désactivation de la visée");
-			_ads = false;
-		}
+
+		_ads = true;
 	}
 
-	private void OnAimReleased()
-	{
-		// Ne rien faire ici, le toggle est géré dans OnAimTriggered
-	}
+	private FistsViewmodel _fists;
+	private bool _holdingFire;
+	/// <summary>Cache tous les bras et armes de la vue à la première personne (avion, chute libre, à terre) : on ne les voit qu'une fois arrivé.</summary>
+	public bool HideViewmodels { get; set; }
 
 	private void OnShootStateChanged(bool isShooting)
 	{
-		// Si le bouton est relâché, on réinitialise _canShoot et _wasShooting
-		if (!isShooting)
+		bool wasHolding = _holdingFire;
+		_holdingFire = isShooting && IsGameplayInputActive();
+		if (_holdingFire && !wasHolding && _weapon == null) _fists?.Punch(); // à mains nues, le coup part dès le clic
+		// Si le bouton est relâché (ou qu'un menu est ouvert), on réinitialise l'état de tir
+		if (!isShooting || !IsGameplayInputActive())
 		{
 			_canShoot = true;
 			_wasShooting = false;
 			return;
 		}
 
-		// Vérifications pour le tir
-		if (_isReloading || _weapon == null)
-		{
-			_logManager.Debug("Tentative de tir impossible : rechargement en cours ou arme non disponible");
+		if (_isReloading || _weapon == null || _switching)
 			return;
-		}
 
-		if (_magazine <= 0 && _maxMagazine > 0)
+		if (!_isMelee && _magazine <= 0 && _maxMagazine > 0)
 		{
-			_logManager.Debug("Tentative de tir avec chargeur vide");
+			// chargeur vide : appuyer sur tirer lance le rechargement (s'il reste des munitions) au lieu de ne rien faire
+			if (!_wasShooting) { _wasShooting = true; Reload(); }
 			return;
 		}
 
 		if (!_canShoot)
-		{
-			_logManager.Debug("Tentative de tir impossible : animation en cours");
 			return;
-		}
 
 		// Pour les armes automatiques, on tire tant que le bouton est maintenu
 		// Pour les armes semi-automatiques, on ne tire qu'une fois par appui
-		if ((_isAuto && isShooting) || (!_isAuto && !_wasShooting))
+		if (_isAuto || !_wasShooting)
 		{
 			_canShoot = false;
 			_wasShooting = true;
-			_magazine--;
 
 			if (_stateMachine != null)
 				_stateMachine.Travel("fire");
 
-			var bullet = _bulletScene.Instantiate<Bullet>();
-			GetTree().Root.AddChild(bullet);
+			if (_isMelee)
+				return;
 
-			if (Camera != null && _muzzlePoint != null)
-			{
-				bullet.GlobalPosition = _muzzlePoint.GlobalPosition;
-
-				// La direction de tir doit correspondre précisément à celle de la caméra
-				Vector3 direction = -Camera.GlobalTransform.Basis.Z.Normalized();
-				
-				float spread = _weapon.GetMeta("spread", 0.0f).As<float>();
-				if (spread > 0)
-				{
-					direction = direction.Rotated(Camera.GlobalTransform.Basis.Y, (float)GD.RandRange(-spread, spread));
-					direction = direction.Rotated(Camera.GlobalTransform.Basis.X, (float)GD.RandRange(-spread, spread));
-				}
-
-				var bulletSpeed = 1.0f;
-				bullet.set_initial_direction(direction * bulletSpeed);
-
-				_logManager.Debug($"Balle créée - Direction: {direction}, Vitesse: {bulletSpeed}, Position: {bullet.GlobalPosition}");
-			}
-			else
-			{
-				_logManager.Error("Camera ou Marker3D non trouvé");
-			}
-
-			ApplyRecoil();
-			SpawnMuzzleEffects();
+			if (Online)
+				return; // le serveur décide du tir, du chargeur et des dégâts
+			_magazine--;
+			EmitAmmo();
+			SpawnBullet();
 		}
+	}
+
+	private void SpawnBullet()
+	{
+		if (Camera == null || _muzzlePoint == null)
+		{
+			_logManager.Error("Camera ou Marker3D non trouvé");
+			return;
+		}
+
+		var bullet = _bulletScene.Instantiate<Bullet>();
+
+		// La balle ne doit jamais entrer en collision avec le tireur,
+		// sinon elle le pousse/l'entraîne au moment du tir
+		PhysicsBody3D shooterBody = null;
+		for (Node node = GetParent(); node != null; node = node.GetParent())
+		{
+			if (node is PhysicsBody3D shooter)
+			{
+				shooterBody = shooter;
+				bullet.AddCollisionExceptionWith(shooter);
+				break;
+			}
+		}
+
+		GetTree().Root.AddChild(bullet);
+		bullet.GlobalPosition = _muzzlePoint.GlobalPosition;
+
+		// La balle part du canon mais doit toucher le point visé au centre de l'écran
+		// (centre du viseur en visée) : elle est dirigée vers ce que la caméra regarde.
+		Vector3 forward = -Camera.GlobalTransform.Basis.Z.Normalized();
+		Vector3 origin = Camera.GlobalPosition;
+		Vector3 aimPoint = origin + forward * AimDistance;
+
+		var query = PhysicsRayQueryParameters3D.Create(origin, aimPoint);
+		if (shooterBody != null)
+			query.Exclude = new Godot.Collections.Array<Rid> { shooterBody.GetRid() };
+		var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
+		if (hit.Count > 0)
+			aimPoint = hit["position"].AsVector3();
+
+		Vector3 direction = (aimPoint - bullet.GlobalPosition).Normalized();
+		// Cible collée au canon : on tire droit devant plutôt que de travers
+		if (origin.DistanceTo(aimPoint) < 1.5f || direction.Dot(forward) < 0.9f)
+			direction = forward;
+
+		float spread = _weapon.GetMeta("spread", 0.0f).As<float>();
+		if (spread > 0)
+		{
+			direction = direction.Rotated(Camera.GlobalTransform.Basis.Y.Normalized(), (float)GD.RandRange(-spread, spread));
+			direction = direction.Rotated(Camera.GlobalTransform.Basis.X.Normalized(), (float)GD.RandRange(-spread, spread));
+		}
+
+		bullet.set_initial_direction(direction);
 	}
 
 	private void OnReloadTriggered()
 	{
-		Reload();
+		if (IsGameplayInputActive())
+			Reload();
 	}
 
-	private void OnSwitchWeaponUpTriggered()
-	{
-		SwitchToNextWeapon();
-	}
-
-	private void OnSwitchWeaponDownTriggered()
-	{
-		SwitchToPreviousWeapon();
-	}
-
-	public override void _ExitTree()
-	{
-		// Se désabonner des événements
-		var inputManager = GetNode<InputManager>(GlobalPaths.Managers.INPUT_MANAGER);
-		if (inputManager != null)
-		{
-			var inputEvents = inputManager.GetInputEvents();
-			
-			// Gestion de la visée
-			inputEvents.OnAimTriggered -= OnAimTriggered;
-			inputEvents.OnAimReleased -= OnAimReleased;
-			
-			// Gestion du tir
-			inputEvents.OnShootStateChanged -= OnShootStateChanged;
-			
-			// Gestion du rechargement
-			inputEvents.OnReloadTriggered -= OnReloadTriggered;
-			
-			// Gestion du changement d'arme
-			inputEvents.OnSwitchWeaponUpTriggered -= OnSwitchWeaponUpTriggered;
-			inputEvents.OnSwitchWeaponDownTriggered -= OnSwitchWeaponDownTriggered;
-		}
-	}
-
-	private void InitializeScenes()
-	{
-		_logManager.Debug("Initialisation des scènes d'armes");
-		
-		// Charger uniquement les scènes essentielles pour le moment
-		_bulletScene = GD.Load<PackedScene>("res://scenes/modules/weapons/bullet.tscn");
-
-		_weapons = new Godot.Collections.Array<PackedScene>
-		{
-			GD.Load<PackedScene>("res://addons/fps-hands/fps-knife/fps-knife.tscn"),
-			GD.Load<PackedScene>("res://addons/fps-hands/fps-c19/fps-c19.tscn"),
-			GD.Load<PackedScene>("res://addons/fps-hands/fps-smg45/fps-smg45.tscn"),
-			GD.Load<PackedScene>("res://addons/fps-hands/fps-ak/fps-ak.tscn"),
-			GD.Load<PackedScene>("res://addons/fps-hands/fps-lmg63/fps-lmg63.tscn"),
-			GD.Load<PackedScene>("res://addons/fps-hands/fps-sawnoff/fps-sawnoff.tscn")
-		};
-
-		// Vérification du chargement des scènes
-		foreach (var weapon in _weapons)
-		{
-			if (weapon == null)
-			{
-				_logManager.Error($"Échec du chargement d'une scène d'arme");
-			}
-			else
-			{
-				_logManager.Debug($"Scène d'arme chargée : {weapon.ResourcePath}");
-			}
-		}
-	}
-
-	private void InitializeComponents()
-	{
-		if (Sway && Camera != null)
-		{
-			TopLevel = true;
-		}
-		if (_animation != null)
-		{
-			// Utiliser le _delta déjà initialisé
-			_animation.Set("parameters/fire/speed_scale", 1.0f / _delta);
-		}
-	}
-
-	public void UpdateInventory()
-	{
-		var weaponsArray = (Godot.Collections.Array)Inventory["weapons"];
-		var currentWeapon = (Godot.Collections.Array)weaponsArray[_weaponIndex];
-		currentWeapon[1] = _magazine;
-		
-		var ammoDict = (Godot.Collections.Dictionary)Inventory["ammo"];
-		EmitSignal(SignalName.UpdateAmmo, _magazine, 
-			(int)ammoDict[_weapon.GetMeta("ammo_type", "none").AsString()],
-			_weapon.GetMeta("ammo_type", "none").AsString());
-	}
-
-	public void TakeWeapon(int inventoryIndex)
-	{
-		inventoryIndex = Mathf.Wrap(inventoryIndex, 0, ((Godot.Collections.Array)Inventory["weapons"]).Count);
-		var weaponsArray = (Godot.Collections.Array)Inventory["weapons"];
-		var inventoryWeapon = (Godot.Collections.Array)weaponsArray[inventoryIndex];
-		var index = (int)inventoryWeapon[0];
-		index = Mathf.Clamp(index, 0, _weapons.Count - 1);
-
-		if (_weapon == null || !_weapon.IsInsideTree())
-		{
-			_logManager.Debug($"Création de l'arme à l'index {index}");
-			_logManager.Debug($"Chemin de la scène de l'arme: {_weapons[index].ResourcePath}");
-			
-			_weapon = _weapons[index].Instantiate<Node3D>();
-			_weapon.Visible = true;
-			AddChild(_weapon);
-			
-			_logManager.Debug($"Arme créée - Nom: {_weapon.Name}, Parent: {_weapon.GetParent().Name}");
-			_logManager.Debug($"Arme - Position (Local): {_weapon.Position}, Rotation (Local): {_weapon.Rotation}");
-			_logManager.Debug($"Arme - Position (Global): {_weapon.GlobalPosition}, Rotation (Global): {_weapon.GlobalRotation}");
-			
-			_animation = _weapon.GetNode<AnimationTree>("AnimationTree");
-			if (_animation != null)
-			{
-				_animation.Connect("animation_finished", new Callable(this, nameof(_OnAnimationTreeAnimationFinished)));
-				_animation.Connect("animation_started", new Callable(this, nameof(_OnAnimationTreeAnimationStarted)));
-				
-				_stateMachine = _animation.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
-				if (_stateMachine != null)
-				{
-					try
-					{
-						_stateMachine.Travel("idle");
-						_logManager.Debug("Animation 'idle' lancée");
-					}
-					catch (Exception e)
-					{
-						_logManager.Warning($"Impossible de lancer l'animation 'idle': {e.Message}");
-					}
-				}
-			}
-			else
-			{
-				_logManager.Warning("AnimationTree non trouvé dans l'arme");
-			}
-			
-			// Rechercher le Marker3D pour le point de tir
-			var marker = _weapon.FindChild("Marker3D");
-			if (marker != null)
-			{
-				_muzzlePoint = (Node3D)marker;
-				_logManager.Debug($"Marker3D trouvé - Position: {_muzzlePoint.Position}, GlobalPosition: {_muzzlePoint.GlobalPosition}");
-			}
-			else
-			{
-				_logManager.Error("Marker3D non trouvé dans l'arme");
-			}
-
-			_startPos = _weapon.Position;
-			_adsPos = _weapon.GetMeta("ads_pos", _startPos).As<Vector3>();
-			_isAuto = _weapon.GetMeta("auto", false).As<bool>();
-			_delta = _weapon.GetMeta("delta", 1.0f).As<float>();
-			_fireRate = 1.0f / _delta;
-			_logManager.Debug($"Position de départ: {_startPos}, Position ADS: {_adsPos}");
-			_logManager.Debug($"Mode automatique: {_isAuto}, Delta: {_delta}, FireRate: {_fireRate}");
-
-			_maxMagazine = _weapon.GetMeta("max_magazine", 0).As<int>();
-			_magazine = (int)inventoryWeapon[1];
-			if (_magazine == -1)
-			{
-				_magazine = _maxMagazine;
-			}
-			UpdateInventory();
-		}
-		else if (_weaponIndex == inventoryIndex)
-		{
-			return;
-		}
-		else
-		{
-			_weaponChange = inventoryIndex;
-			try
-			{
-				if (_stateMachine != null)
-				{
-					_stateMachine.Travel("hide");
-				}
-				else
-				{
-					HideWeapon();
-				}
-			}
-			catch (Exception e)
-			{
-				_logManager.Warning($"Impossible de lancer l'animation 'hide': {e.Message}");
-				HideWeapon();
-			}
-			return;
-		}
-
-		_weaponIndex = inventoryIndex;
-		_weaponChange = inventoryIndex;
-	}
-
-	private void _OnAnimationTreeAnimationFinished(StringName animName)
+	private void OnAnimationFinished(StringName animName)
 	{
 		if (animName == "hide")
 		{
-			_logManager.Debug("Animation 'hide' terminée");
-			HideWeapon();
+			FinishHide();
 		}
 		else if (animName == "reload")
 		{
 			_isReloading = false;
-			var ammoDict = (Godot.Collections.Dictionary)Inventory["ammo"];
-			var ammoType = _weapon.GetMeta("ammo_type", "none").AsString();
-			var ammoCount = (int)ammoDict[ammoType];
-			var needed = _maxMagazine - _magazine;
-			var reload = Mathf.Min(needed, ammoCount);
-			_magazine += reload;
-			ammoDict[ammoType] = (int)ammoDict[ammoType] - reload;
-			UpdateInventory();
-		}
-		else if (animName == "show")
-		{
-			_logManager.Debug($"Animation 'show' terminée - Arme visible: {_weapon.Visible}, Position: {_weapon.GlobalPosition}, Rotation: {_weapon.GlobalRotation}");
-			_weapon.Visible = true;
+			string ammoType = CurrentAmmoType();
+			int needed = Mathf.Max(_maxMagazine - _magazine, 0);
+			_magazine += AmmoSource != null ? AmmoSource.TakeAmmo(ammoType, needed) : 0;
+			EmitAmmo();
 		}
 		else if (animName == "fire")
 		{
@@ -515,7 +781,7 @@ public partial class WeaponManager : Node3D
 		}
 	}
 
-	private void _OnAnimationTreeAnimationStarted(StringName animName)
+	private void OnAnimationStarted(StringName animName)
 	{
 		if (animName == "reload")
 		{
@@ -523,118 +789,142 @@ public partial class WeaponManager : Node3D
 		}
 	}
 
-	public void HideWeapon()
-	{
-		if (_animation != null)
-		{
-			_animation.Disconnect("animation_finished", new Callable(this, nameof(_OnAnimationTreeAnimationFinished)));
-			_animation.Disconnect("animation_started", new Callable(this, nameof(_OnAnimationTreeAnimationStarted)));
-		}
-
-		if (_weaponChange != _weaponIndex)
-		{
-			_weapon.TreeExited += () => TakeWeapon(_weaponChange);
-		}
-		_weapon.QueueFree();
-	}
-
-	private void ApplyRecoil()
-	{
-		// Temporairement désactivé
-		return;
-	}
-
-	private void SpawnMuzzleEffects()
-	{
-		// Temporairement désactivé
-		return;
-	}
-
 	public void Reload()
 	{
-		if (_isReloading || _weapon == null)
+		if (_isReloading || !IsReadyForAction())
 		{
 			_logManager.Debug("Tentative de rechargement impossible : rechargement déjà en cours ou arme non disponible");
 			return;
 		}
 
-		var ammoDict = (Godot.Collections.Dictionary)Inventory["ammo"];
-		var ammoType = _weapon.GetMeta("ammo_type", "none").AsString();
-		var ammoCount = (int)ammoDict[ammoType];
-
+		int ammoCount = GetReserve(CurrentAmmoType());
 		if (ammoCount <= 0 || _magazine >= _maxMagazine)
 		{
 			_logManager.Debug($"Tentative de rechargement impossible - Munitions : {ammoCount}, Chargeur : {_magazine}/{_maxMagazine}");
 			return;
 		}
 
-		_logManager.Debug("Début du rechargement");
 		_isReloading = true;
+		_ads = false;
 		_stateMachine.Travel("reload");
 	}
 
-	public void Aim(bool toggle = true)
-	{
-		if (toggle && (_stateMachine.GetCurrentNode() != "idle" && _stateMachine.GetCurrentNode() != "fire"))
-		{
-			_logManager.Debug("Tentative de visée impossible : animation en cours");
-			return;
-		}
+	// ------------------------------------------------------------------
+	// Mise à jour
+	// ------------------------------------------------------------------
 
-		if (!_ads && toggle)
+	private float _wallPush;
+	private const float WeaponReach = 1.0f;     // distance de la caméra au bout du canon (m)
+	private const float MaxWallPush = 0.55f;
+
+	/// <summary>Combien l'arme doit reculer : le décor est plus près que le bout du canon.</summary>
+	private float WallPushDistance()
+	{
+		if (Camera == null || !Camera.IsInsideTree()) return 0f;
+		var space = GetWorld3D()?.DirectSpaceState;
+		if (space == null) return 0f;
+		var exclude = new Godot.Collections.Array<Rid>();
+		for (Node node = GetParent(); node != null; node = node.GetParent())
+			if (node is PhysicsBody3D body) { exclude.Add(body.GetRid()); break; }
+
+		var basis = Camera.GlobalTransform.Basis;
+		Vector3 origin = Camera.GlobalPosition;
+		float nearest = WeaponReach;
+		// trois rayons : l'axe de visée, puis le bas et le côté droit où se trouve l'arme
+		foreach (var offset in new[] { Vector3.Zero, new Vector3(0.14f, -0.2f, 0f), new Vector3(0f, -0.28f, 0f) })
 		{
-			_logManager.Debug("Activation de la visée");
-			_ads = true;
+			Vector3 from = origin + basis * offset;
+			var query = PhysicsRayQueryParameters3D.Create(from, from - basis.Z * WeaponReach);
+			query.Exclude = exclude;
+			var hit = space.IntersectRay(query);
+			if (hit.Count > 0)
+				nearest = Mathf.Min(nearest, from.DistanceTo(hit["position"].AsVector3()));
 		}
-		else if (_ads)
-		{
-			_logManager.Debug("Désactivation de la visée");
-			_ads = false;
-		}
+		return Mathf.Clamp(WeaponReach - nearest, 0f, MaxWallPush);
 	}
 
-	public void SwitchToNextWeapon()
-	{
-		_logManager.Debug("Changement vers l'arme suivante");
-		int nextIndex = (_weaponIndex + 1) % ((Godot.Collections.Array)Inventory["weapons"]).Count;
-		TakeWeapon(nextIndex);
-	}
+	private bool _usingSupply;
 
-	public void SwitchToPreviousWeapon()
+	/// <summary>Un soin est en cours (en ligne) : l'arme est rangée et les mains lèvent le flacon à la bouche.</summary>
+	public void SetUsingSupply(string itemId)
 	{
-		_logManager.Debug("Changement vers l'arme précédente");
-		int weaponsCount = ((Godot.Collections.Array)Inventory["weapons"]).Count;
-		int previousIndex = (_weaponIndex - 1 + weaponsCount) % weaponsCount;
-		TakeWeapon(previousIndex);
-	}
-
-	public void SwitchToWeapon(int index)
-	{
-		_logManager.Debug($"Changement vers l'arme à l'index {index}");
-		TakeWeapon(index);
+		bool on = !string.IsNullOrEmpty(itemId);
+		if (on == _usingSupply) return;
+		_usingSupply = on;
+		if (_weapon != null) _weapon.Visible = !on;
+		_fists?.SetUsing(on, on ? ItemDatabase.Get(itemId) : null);
 	}
 
 	public override void _Process(double delta)
 	{
+		if (_fists != null)
+		{
+			_fists.Visible = !HideViewmodels && (_weapon == null || _usingSupply);
+			_fists.Attacking = _weapon == null && !_usingSupply && _holdingFire; // à mains nues, tenir le clic = boxer
+		}
+
 		if (_weapon != null)
 		{
+			if (_opticNode != null && !_opticPlaced && !_switching && _stateMachine != null && _stateMachine.GetCurrentNode() == "idle")
+			{
+				PlaceOptic();
+			}
+
 			// Gestion de l'AIM
+			Vector3 target = _startPos;
 			if (_ads)
+				target = _opticPlaced ? _adsPosOptic : _adsPos;
+			// contre un mur ou une pente raide, l'arme recule au lieu de traverser le décor
+			_wallPush = Mathf.Lerp(_wallPush, WallPushDistance(), 1.0f - Mathf.Exp(-20.0f * (float)delta));
+			target += new Vector3(0, -_wallPush * 0.25f, -_wallPush);
+			_weapon.Position = _weapon.Position.Lerp(target, 1.0f - Mathf.Exp(-AdsSpeed * (float)delta));
+		}
+
+		UpdateZoom((float)delta);
+	}
+
+	private void UpdateZoom(float delta)
+	{
+		if (Camera == null)
+			return;
+
+		float targetZoom = 1.0f;
+		if (_ads && _weapon != null && _opticPlaced && _state?.Optic != null)
+			targetZoom = Mathf.Max(1.0f, _state.Optic.Zoom);
+
+		_zoom = Mathf.Lerp(_zoom, targetZoom, 1.0f - Mathf.Exp(-ZoomSpeed * delta));
+		if (Mathf.Abs(_zoom - targetZoom) < 0.002f)
+			_zoom = targetZoom;
+
+		float halfFov = Mathf.DegToRad(_baseFov) * 0.5f;
+		Camera.Fov = Mathf.RadToDeg(2.0f * Mathf.Atan(Mathf.Tan(halfFov) / _zoom));
+
+		// Le FOV de la vue FPS suit la visée à la lunette
+		float blendTarget = _ads && _weapon != null && _opticPlaced ? 1.0f : 0.0f;
+		_adsBlend = Mathf.Lerp(_adsBlend, blendTarget, 1.0f - Mathf.Exp(-ZoomSpeed * delta));
+		if (Mathf.Abs(_adsBlend - blendTarget) < 0.002f)
+			_adsBlend = blendTarget;
+		SetViewmodelFovBlend(_adsBlend);
+
+		// La sensibilité de la souris suit le zoom
+		if (_head == null)
+			return;
+
+		if (_zoom > 1.001f)
+		{
+			if (!_sensitivityOverridden)
 			{
-				_weapon.Position = _weapon.Position.Lerp(_adsPos, _deltaAds);
+				_savedSensitivity = _head.MouseSensitivity;
+				_sensitivityOverridden = true;
 			}
-			else
-			{
-				_weapon.Position = _weapon.Position.Lerp(_startPos, _deltaAds);
-			}
+			_head.MouseSensitivity = _savedSensitivity / _zoom;
+		}
+		else if (_sensitivityOverridden)
+		{
+			_head.MouseSensitivity = _savedSensitivity;
+			_sensitivityOverridden = false;
 		}
 	}
-}
-
-public class WeaponData
-{
-	public PackedScene Scene { get; set; }
-	public string Id { get; set; }
 }
 
 public interface IDamageable

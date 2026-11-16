@@ -1,0 +1,474 @@
+[
+ {
+  "id": 0,
+  "name": "fir_a",
+  "glb": "fir_a",
+  "vis": 115,
+  "shadows": 0,
+  "count": 2045
+ },
+ {
+  "id": 1,
+  "name": "fir_b",
+  "glb": "fir_b",
+  "vis": 115,
+  "shadows": 0,
+  "count": 2108
+ },
+ {
+  "id": 2,
+  "name": "fir_c",
+  "glb": "fir_c",
+  "vis": 115,
+  "shadows": 0,
+  "count": 2072
+ },
+ {
+  "id": 3,
+  "name": "fir_far_a_a",
+  "glb": "fir_far_a",
+  "vis": 900,
+  "shadows": 0,
+  "count": 2045
+ },
+ {
+  "id": 4,
+  "name": "fir_far_b_b",
+  "glb": "fir_far_b",
+  "vis": 900,
+  "shadows": 0,
+  "count": 2108
+ },
+ {
+  "id": 5,
+  "name": "fir_far_a_c",
+  "glb": "fir_far_a",
+  "vis": 900,
+  "shadows": 0,
+  "count": 2072
+ },
+ {
+  "id": 6,
+  "name": "fern_b",
+  "glb": "pine_fern_b",
+  "vis": 55,
+  "shadows": 0,
+  "count": 9393
+ },
+ {
+  "id": 7,
+  "name": "fern_c",
+  "glb": "pine_fern_c",
+  "vis": 55,
+  "shadows": 0,
+  "count": 9286
+ },
+ {
+  "id": 8,
+  "name": "grass_a",
+  "glb": "pine_grass_a",
+  "vis": 40,
+  "shadows": 0,
+  "count": 17519
+ },
+ {
+  "id": 9,
+  "name": "grass_b",
+  "glb": "pine_grass_b",
+  "vis": 40,
+  "shadows": 0,
+  "count": 17424
+ },
+ {
+  "id": 10,
+  "name": "rock_a",
+  "glb": "pine_rock_a",
+  "vis": 160,
+  "shadows": 1,
+  "count": 127
+ },
+ {
+  "id": 11,
+  "name": "rock_b",
+  "glb": "pine_rock_b",
+  "vis": 160,
+  "shadows": 1,
+  "count": 114
+ },
+ {
+  "id": 12,
+  "name": "rock_c",
+  "glb": "pine_rock_c",
+  "vis": 160,
+  "shadows": 1,
+  "count": 148
+ },
+ {
+  "id": 13,
+  "name": "rock_d",
+  "glb": "pine_rock_d",
+  "vis": 160,
+  "shadows": 1,
+  "count": 116
+ },
+ {
+  "id": 14,
+  "name": "rock_e",
+  "glb": "pine_rock_e",
+  "vis": 160,
+  "shadows": 1,
+  "count": 130
+ },
+ {
+  "id": 15,
+  "name": "rock_f",
+  "glb": "pine_rock_f",
+  "vis": 160,
+  "shadows": 1,
+  "count": 136
+ },
+ {
+  "id": 16,
+  "name": "rockb_07",
+  "glb": "pine_rockb_07",
+  "vis": 130,
+  "shadows": 0,
+  "count": 152
+ },
+ {
+  "id": 17,
+  "name": "rockb_08",
+  "glb": "pine_rockb_08",
+  "vis": 130,
+  "shadows": 0,
+  "count": 187
+ },
+ {
+  "id": 18,
+  "name": "rockb_09",
+  "glb": "pine_rockb_09",
+  "vis": 130,
+  "shadows": 0,
+  "count": 144
+ },
+ {
+  "id": 19,
+  "name": "rockb_10",
+  "glb": "pine_rockb_10",
+  "vis": 130,
+  "shadows": 0,
+  "count": 127
+ },
+ {
+  "id": 20,
+  "name": "rockb_11",
+  "glb": "pine_rockb_11",
+  "vis": 130,
+  "shadows": 0,
+  "count": 135
+ },
+ {
+  "id": 21,
+  "name": "rockb_12",
+  "glb": "pine_rockb_12",
+  "vis": 130,
+  "shadows": 0,
+  "count": 141
+ },
+ {
+  "id": 22,
+  "name": "rockb_13",
+  "glb": "pine_rockb_13",
+  "vis": 130,
+  "shadows": 0,
+  "count": 164
+ },
+ {
+  "id": 23,
+  "name": "deadlog",
+  "glb": "pine_deadlog",
+  "vis": 130,
+  "shadows": 0,
+  "count": 313
+ },
+ {
+  "id": 24,
+  "name": "stump",
+  "glb": "pine_stump",
+  "vis": 110,
+  "shadows": 0,
+  "count": 398
+ },
+ {
+  "id": 25,
+  "name": "branch",
+  "glb": "pine_branch_a",
+  "vis": 60,
+  "shadows": 0,
+  "count": 1566
+ },
+ {
+  "id": 26,
+  "name": "quiver_a",
+  "glb": "nama_quiver_01",
+  "vis": 170,
+  "shadows": 1,
+  "count": 75
+ },
+ {
+  "id": 27,
+  "name": "quiver_b",
+  "glb": "nama_quiver_02",
+  "vis": 170,
+  "shadows": 1,
+  "count": 59
+ },
+ {
+  "id": 28,
+  "name": "searsia_e",
+  "glb": "nama_searsia_e",
+  "vis": 110,
+  "shadows": 0,
+  "count": 604
+ },
+ {
+  "id": 29,
+  "name": "searsia_f",
+  "glb": "nama_searsia_f",
+  "vis": 110,
+  "shadows": 0,
+  "count": 600
+ },
+ {
+  "id": 30,
+  "name": "searsia_g",
+  "glb": "nama_searsia_g",
+  "vis": 110,
+  "shadows": 0,
+  "count": 636
+ },
+ {
+  "id": 31,
+  "name": "othonna_e",
+  "glb": "nama_othonna_e",
+  "vis": 110,
+  "shadows": 0,
+  "count": 688
+ },
+ {
+  "id": 32,
+  "name": "othonna_f",
+  "glb": "nama_othonna_f",
+  "vis": 110,
+  "shadows": 0,
+  "count": 616
+ },
+ {
+  "id": 33,
+  "name": "othonna_g",
+  "glb": "nama_othonna_g",
+  "vis": 110,
+  "shadows": 0,
+  "count": 630
+ },
+ {
+  "id": 34,
+  "name": "ursinia_d",
+  "glb": "nama_ursinia_d",
+  "vis": 55,
+  "shadows": 0,
+  "count": 1687
+ },
+ {
+  "id": 35,
+  "name": "ursinia_e",
+  "glb": "nama_ursinia_e",
+  "vis": 55,
+  "shadows": 0,
+  "count": 1716
+ },
+ {
+  "id": 36,
+  "name": "stinkkruid_c",
+  "glb": "nama_stinkkruid_c",
+  "vis": 55,
+  "shadows": 0,
+  "count": 1713
+ },
+ {
+  "id": 37,
+  "name": "stinkkruid_d",
+  "glb": "nama_stinkkruid_d",
+  "vis": 55,
+  "shadows": 0,
+  "count": 1662
+ },
+ {
+  "id": 38,
+  "name": "gazania_a",
+  "glb": "nama_gazania_a",
+  "vis": 55,
+  "shadows": 0,
+  "count": 1682
+ },
+ {
+  "id": 39,
+  "name": "gazania_b",
+  "glb": "nama_gazania_b",
+  "vis": 55,
+  "shadows": 0,
+  "count": 1704
+ },
+ {
+  "id": 40,
+  "name": "gazania_c",
+  "glb": "nama_gazania_c",
+  "vis": 55,
+  "shadows": 0,
+  "count": 1656
+ },
+ {
+  "id": 41,
+  "name": "iceplant",
+  "glb": "nama_iceplant",
+  "vis": 50,
+  "shadows": 0,
+  "count": 3752
+ },
+ {
+  "id": 42,
+  "name": "succulent",
+  "glb": "nama_succulent",
+  "vis": 50,
+  "shadows": 0,
+  "count": 1951
+ },
+ {
+  "id": 43,
+  "name": "boulder_03",
+  "glb": "nama_boulder_03",
+  "vis": 220,
+  "shadows": 1,
+  "count": 223
+ },
+ {
+  "id": 44,
+  "name": "boulder_04",
+  "glb": "nama_boulder_04",
+  "vis": 220,
+  "shadows": 1,
+  "count": 183
+ },
+ {
+  "id": 45,
+  "name": "boulder_05",
+  "glb": "nama_boulder_05",
+  "vis": 220,
+  "shadows": 1,
+  "count": 190
+ },
+ {
+  "id": 46,
+  "name": "boulder_06",
+  "glb": "nama_boulder_06",
+  "vis": 220,
+  "shadows": 1,
+  "count": 212
+ },
+ {
+  "id": 47,
+  "name": "rock_a",
+  "glb": "nama_rock_a",
+  "vis": 100,
+  "shadows": 0,
+  "count": 885
+ },
+ {
+  "id": 48,
+  "name": "rock_b",
+  "glb": "nama_rock_b",
+  "vis": 100,
+  "shadows": 0,
+  "count": 941
+ },
+ {
+  "id": 49,
+  "name": "stone_b",
+  "glb": "nama_stone_b",
+  "vis": 100,
+  "shadows": 0,
+  "count": 1680
+ },
+ {
+  "id": 50,
+  "name": "stone_d",
+  "glb": "nama_stone_d",
+  "vis": 100,
+  "shadows": 0,
+  "count": 1656
+ },
+ {
+  "id": 51,
+  "name": "pebble_b",
+  "glb": "nama_pebble_b",
+  "vis": 100,
+  "shadows": 0,
+  "count": 3545
+ },
+ {
+  "id": 52,
+  "name": "pebble_c",
+  "glb": "nama_pebble_c",
+  "vis": 100,
+  "shadows": 0,
+  "count": 3581
+ },
+ {
+  "id": 53,
+  "name": "cliff_02",
+  "glb": "nama_cliff_02",
+  "vis": 420,
+  "shadows": 1,
+  "count": 360
+ },
+ {
+  "id": 54,
+  "name": "cliff_01",
+  "glb": "nama_cliff_01",
+  "vis": 380,
+  "shadows": 1,
+  "count": 447
+ },
+ {
+  "id": 55,
+  "name": "mboulder_0",
+  "glb": "nama_boulder_03",
+  "vis": 260,
+  "shadows": 1,
+  "count": 267
+ },
+ {
+  "id": 56,
+  "name": "mboulder_1",
+  "glb": "nama_boulder_04",
+  "vis": 260,
+  "shadows": 1,
+  "count": 277
+ },
+ {
+  "id": 57,
+  "name": "mboulder_2",
+  "glb": "nama_boulder_05",
+  "vis": 260,
+  "shadows": 1,
+  "count": 284
+ },
+ {
+  "id": 58,
+  "name": "mboulder_3",
+  "glb": "nama_boulder_06",
+  "vis": 260,
+  "shadows": 1,
+  "count": 271
+ }
+]

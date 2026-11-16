@@ -12,12 +12,25 @@ config_version=5
 
 download_path="res://addons/ambientcg/Downloads/"
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="open-esport-2025"
 run/main_scene="uid://d15rdh65of1ls"
-config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
+config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="uid://cvxwpkmxlu8gt"
+
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [dotnet]
 
@@ -25,4 +38,12 @@ project/assembly_name="open-esport-2025"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/ambientcg/plugin.cfg", "res://addons/fps-hands/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
+enabled=PackedStringArray("res://addons/ambientcg/plugin.cfg", "res://addons/fps-hands/plugin.cfg", "res://addons/open_esport_config/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
+
+[filesystem]
+
+import/blender/enabled=false
+
+[rendering]
+
+anti_aliasing/quality/msaa_3d=1

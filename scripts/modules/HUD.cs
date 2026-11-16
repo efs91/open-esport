@@ -26,10 +26,11 @@ namespace Openesport
 
 		public override void _Ready()
 		{
+			AddToGroup("game_hud"); // caché pendant le menu (Échap)
 			SetupHUD();
 			_player = GetParent<FPSController3D>();
 			_fpsHands = _player.GetNode("Head/Camera/WeaponManager");
-			_fpsHands.Connect("update_ammo", Callable.From((int magazine, int inventoryAmmo, string ammoType) => UpdateAmmo(magazine, inventoryAmmo)));
+			_fpsHands.Connect(WeaponManager.SignalName.UpdateAmmo, Callable.From((int magazine, int inventoryAmmo, string ammoType) => UpdateAmmo(magazine, inventoryAmmo)));
 			
 			_healthAbility = _player.GetNode<HealthAbility3D>("Health Ability 3D");
 			if (_healthAbility != null)
@@ -73,6 +74,7 @@ namespace Openesport
 			// Label pour la santé au-dessus des munitions
 			_healthLabel = CreateInfoLabel("Santé: 100/100", new Vector2(20, GetViewportRect().Size.Y - 80), Colors.Green);
 
+			SetDebugVisible(false);      // le panneau de débogage reste caché tant qu'on n'appuie pas sur F3
 			GD.Print("HUD: Setup complete");
 		}
 
@@ -98,6 +100,10 @@ namespace Openesport
 
 		public override void _PhysicsProcess(double delta)
 		{
+			// la fenêtre peut changer de taille : les libellés du bas restent collés au bord bas-gauche
+			float bottom = GetViewportRect().Size.Y;
+			if (_ammoLabel != null) _ammoLabel.Position = new Vector2(20, bottom - 40);
+			if (_healthLabel != null) _healthLabel.Position = new Vector2(20, bottom - 80);
 			// On va mettre à jour le HUD avec les informations du personnage
 			// Cette partie sera complétée une fois que nous aurons accès au personnage
 			UpdateHUD();
@@ -107,12 +113,30 @@ namespace Openesport
 		{
 			if (_player == null) return;
 
+			// En ligne, la santé vient du serveur
+			var online = Openesport.Online.OnlineGame.Instance;
+			if (online?.Client != null && online.Client.State == OpenEsport.Core.NetState.Playing)
+			{
+				UpdateHealth(online.Client.Health);
+				if (_healthLabel != null) _healthLabel.Visible = false;     // en ligne, la vie et le bouclier ont leurs propres barres
+			}
+
+			// Informations de débogage (vitesse, sol, friction, glissade…) : cachées, F3 les affiche
+			if (_debug)
+			{
 			// Vitesse
 			if (_speedLabel != null)
 			{
 				var velocity = _player.Velocity;
+				// Le contrôleur visuel local recalcule sa propre vitesse : en multijoueur,
+				// afficher celle de la simulation prédite, réconciliée avec le serveur.
+				if (online?.Client != null && online.Client.State == OpenEsport.Core.NetState.Playing)
+				{
+					var predictedVelocity = online.Client.Predicted.Vel;
+					velocity = new Vector3(predictedVelocity.X, predictedVelocity.Y, predictedVelocity.Z);
+				}
 				var speed = new Vector2(velocity.X, velocity.Z).Length();
-				_speedLabel.Text = $"Vitesse: {speed:F1}";
+				_speedLabel.Text = $"Vitesse: {speed:F1} m/s";
 			}
 
 			// Gravité et friction
@@ -178,6 +202,26 @@ namespace Openesport
 				_slideLabel.Text = $"Slide: {(isSliding ? "OUI" : "NON")}";
 				_slideLabel.AddThemeColorOverride("font_color", isSliding ? Colors.Green : Colors.Red);
 			}
+			}
+		}
+
+		private bool _debug;
+		private Label[] _debugLabels;
+
+		/// <summary>F3 : affiche ou cache le panneau de débogage (vitesse, sol, friction, glissade…). Caché par défaut.</summary>
+		public override void _UnhandledInput(InputEvent e)
+		{
+			if (e is InputEventKey { Pressed: true, Echo: false, Keycode: Key.F3 })
+			{
+				_debug = !_debug;
+				SetDebugVisible(_debug);
+			}
+		}
+
+		private void SetDebugVisible(bool on)
+		{
+			_debugLabels ??= new[] { _speedLabel, _gravityLabel, _groundLabel, _walkLabel, _sprintLabel, _crouchLabel, _jumpLabel, _slideLabel };
+			foreach (var l in _debugLabels) if (l != null) l.Visible = on;
 		}
 
 		public void UpdateAmmo(int magazine, int inventoryAmmo)

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>OpenEsport.Matchmaker</RootNamespace>
+    <AssemblyName>OpenEsport.Matchmaker</AssemblyName>
+    <RollForward>Major</RollForward>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenEsport.Core\OpenEsport.Core.csproj" />
+  </ItemGroup>
+</Project>

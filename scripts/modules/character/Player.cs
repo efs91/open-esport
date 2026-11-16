@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using Openesport.Utils;
+using Openesport.Inventory;
 
 public partial class Player : FPSController3D
 {
@@ -17,9 +18,18 @@ public partial class Player : FPSController3D
 	private InputManager _inputManager;
 	private InputEvents _inputEvents;
 
+	public PlayerInventory Inventory { get; private set; }
+
+	/// <summary>En ligne, le serveur décide du déplacement : le joueur n'a plus de physique propre.</summary>
+	public bool NetworkControlled { get; set; }
+
+	/// <summary>Vitesse décidée par le serveur : sert à animer course, glissade, accroupi, FOV et balancement comme en solo.</summary>
+	public Vector3 NetworkVelocity { get; set; }
+
 	public override void _Ready()
 	{
 		Input.MouseMode = Input.MouseModeEnum.Captured;
+		GetNodeOrNull("TextureRect")?.AddToGroup("game_hud"); // le viseur : caché pendant le menu
 		Setup();
 		Emerged += OnControllerEmerged;
 		Submerged += OnControllerSubemerged;
@@ -30,10 +40,20 @@ public partial class Player : FPSController3D
 		
 		// S'abonner uniquement aux événements de mouvement et de souris
 		_inputEvents.OnMouseMotionChanged += OnMouseMotionChanged;
+
+		// Inventaire (2 armes + sac à dos) et son interface
+		Inventory = new PlayerInventory { Name = "Inventory" };
+		AddChild(Inventory);
+		AddChild(new InventoryUI { Name = "InventoryUI", Inventory = Inventory });
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
+		// En ligne, la position vient du serveur ; on fait tourner le contrôleur avec les mêmes touches
+		// pour que course, glissade, accroupi, FOV et balancement de tête soient identiques au solo.
+		if (NetworkControlled)
+			Velocity = NetworkVelocity;
+
 		bool IsValidInput = Input.MouseMode == Input.MouseModeEnum.Captured;
 		
 		if (IsValidInput)

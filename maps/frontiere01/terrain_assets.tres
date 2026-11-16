@@ -1,0 +1,596 @@
+[gd_resource type="Terrain3DAssets" format=3 uid="uid://bxdwwfup0w0g0"]
+
+[ext_resource type="PackedScene" uid="uid://rl4d2d8u58b5" path="res://maps/frontiere01/models/fir_a.glb" id="1_1gy30"]
+[ext_resource type="PackedScene" uid="uid://efl42vudj1gi" path="res://maps/frontiere01/models/fir_b.glb" id="2_26l78"]
+[ext_resource type="PackedScene" uid="uid://c83bg6hs066n1" path="res://maps/frontiere01/models/fir_c.glb" id="3_sklqf"]
+[ext_resource type="PackedScene" uid="uid://d2k7jun12g6oq" path="res://maps/frontiere01/models/fir_far_a.glb" id="4_dcc1o"]
+[ext_resource type="PackedScene" uid="uid://lqxa0hjh736t" path="res://maps/frontiere01/models/fir_far_b.glb" id="5_iay4n"]
+[ext_resource type="PackedScene" uid="uid://bkcrxf0w2sjk6" path="res://maps/frontiere01/models/pine_fern_b.glb" id="6_723o2"]
+[ext_resource type="PackedScene" uid="uid://c0den4ld40yq2" path="res://maps/frontiere01/models/pine_fern_c.glb" id="7_hwyy4"]
+[ext_resource type="PackedScene" uid="uid://c6chrvgmsmxio" path="res://maps/frontiere01/models/pine_grass_a.glb" id="8_yowoc"]
+[ext_resource type="PackedScene" uid="uid://d06v1sdq1j2p0" path="res://maps/frontiere01/models/pine_grass_b.glb" id="9_5vcm0"]
+[ext_resource type="PackedScene" uid="uid://dkvq2rdqg3t33" path="res://maps/frontiere01/models/pine_rock_a.glb" id="10_y27vq"]
+[ext_resource type="PackedScene" uid="uid://f2w7cvu16py4" path="res://maps/frontiere01/models/pine_rock_b.glb" id="11_5awta"]
+[ext_resource type="PackedScene" uid="uid://qjupqqib5y0" path="res://maps/frontiere01/models/pine_rock_c.glb" id="12_03djg"]
+[ext_resource type="PackedScene" uid="uid://bgh55v8i33ppi" path="res://maps/frontiere01/models/pine_rock_d.glb" id="13_gih1l"]
+[ext_resource type="PackedScene" uid="uid://cy7yyw7017dd1" path="res://maps/frontiere01/models/pine_rock_e.glb" id="14_gbvkk"]
+[ext_resource type="PackedScene" uid="uid://bkdowj44qmgqj" path="res://maps/frontiere01/models/pine_rock_f.glb" id="15_anopk"]
+[ext_resource type="PackedScene" uid="uid://bx65ac0pyrcpe" path="res://maps/frontiere01/models/pine_rockb_07.glb" id="16_wrsmo"]
+[ext_resource type="PackedScene" uid="uid://bgwnqxdabpcv4" path="res://maps/frontiere01/models/pine_rockb_08.glb" id="17_qujbu"]
+[ext_resource type="PackedScene" uid="uid://yli61l2nd4sw" path="res://maps/frontiere01/models/pine_rockb_09.glb" id="18_h10qn"]
+[ext_resource type="PackedScene" uid="uid://d2h1ngvi0hhqb" path="res://maps/frontiere01/models/pine_rockb_10.glb" id="19_0ftgi"]
+[ext_resource type="PackedScene" uid="uid://bplrmuw271a4y" path="res://maps/frontiere01/models/pine_rockb_11.glb" id="20_nqq78"]
+[ext_resource type="PackedScene" uid="uid://dg2sfuf21tw6h" path="res://maps/frontiere01/models/pine_rockb_12.glb" id="21_fapjf"]
+[ext_resource type="PackedScene" uid="uid://ck6bv5sss4xls" path="res://maps/frontiere01/models/pine_rockb_13.glb" id="22_b80ua"]
+[ext_resource type="PackedScene" uid="uid://bsylf1qxj13re" path="res://maps/frontiere01/models/pine_deadlog.glb" id="23_jdwr4"]
+[ext_resource type="PackedScene" uid="uid://dw0bmg2hy5ght" path="res://maps/frontiere01/models/pine_stump.glb" id="24_14dck"]
+[ext_resource type="PackedScene" uid="uid://d3gpiywk3d3wm" path="res://maps/frontiere01/models/pine_branch_a.glb" id="25_nc8vq"]
+[ext_resource type="PackedScene" uid="uid://lme2qgquevj8" path="res://maps/frontiere01/models/nama_quiver_01.glb" id="26_wwm8t"]
+[ext_resource type="PackedScene" uid="uid://do2ht0jqy5u2t" path="res://maps/frontiere01/models/nama_quiver_02.glb" id="27_4gume"]
+[ext_resource type="PackedScene" uid="uid://daoq2q77d8ma2" path="res://maps/frontiere01/models/nama_searsia_e.glb" id="28_7nqxr"]
+[ext_resource type="PackedScene" uid="uid://du3kcc5d7mjo2" path="res://maps/frontiere01/models/nama_searsia_f.glb" id="29_vuipk"]
+[ext_resource type="PackedScene" uid="uid://u2bvj0qhyeqj" path="res://maps/frontiere01/models/nama_searsia_g.glb" id="30_e0u0a"]
+[ext_resource type="PackedScene" uid="uid://cuqkdpkjk2rnf" path="res://maps/frontiere01/models/nama_othonna_e.glb" id="31_tgxhb"]
+[ext_resource type="PackedScene" uid="uid://dwlqu3wx677go" path="res://maps/frontiere01/models/nama_othonna_f.glb" id="32_xibr8"]
+[ext_resource type="PackedScene" uid="uid://bahrq635xssno" path="res://maps/frontiere01/models/nama_othonna_g.glb" id="33_3c57y"]
+[ext_resource type="PackedScene" uid="uid://cin770blhaf4v" path="res://maps/frontiere01/models/nama_ursinia_d.glb" id="34_e3rom"]
+[ext_resource type="PackedScene" uid="uid://cpsl4nxl5fuul" path="res://maps/frontiere01/models/nama_ursinia_e.glb" id="35_e7cnl"]
+[ext_resource type="PackedScene" uid="uid://da4stmw65b4pi" path="res://maps/frontiere01/models/nama_stinkkruid_c.glb" id="36_uupuo"]
+[ext_resource type="PackedScene" uid="uid://1phoju1mqbgj" path="res://maps/frontiere01/models/nama_stinkkruid_d.glb" id="37_jsrpa"]
+[ext_resource type="PackedScene" uid="uid://b1iae50b850h" path="res://maps/frontiere01/models/nama_gazania_a.glb" id="38_8pptj"]
+[ext_resource type="PackedScene" uid="uid://cthlpgh08ykg8" path="res://maps/frontiere01/models/nama_gazania_b.glb" id="39_a2rnp"]
+[ext_resource type="PackedScene" uid="uid://cwphw7elu8qw" path="res://maps/frontiere01/models/nama_gazania_c.glb" id="40_xd2te"]
+[ext_resource type="PackedScene" uid="uid://ddr0f4s1oounn" path="res://maps/frontiere01/models/nama_iceplant.glb" id="41_bxgms"]
+[ext_resource type="PackedScene" uid="uid://bl6e1odtf7tk2" path="res://maps/frontiere01/models/nama_succulent.glb" id="42_w8nec"]
+[ext_resource type="PackedScene" uid="uid://c3srcqnvctx4r" path="res://maps/frontiere01/models/nama_boulder_03.glb" id="43_fypgi"]
+[ext_resource type="PackedScene" uid="uid://cjivftwhrphjx" path="res://maps/frontiere01/models/nama_boulder_04.glb" id="44_ly4vi"]
+[ext_resource type="PackedScene" uid="uid://d20nc3m372rkg" path="res://maps/frontiere01/models/nama_boulder_05.glb" id="45_2g5ys"]
+[ext_resource type="PackedScene" uid="uid://b3wo5ea8pfyal" path="res://maps/frontiere01/models/nama_boulder_06.glb" id="46_qwyyp"]
+[ext_resource type="PackedScene" uid="uid://b1fry2l0a5rbc" path="res://maps/frontiere01/models/nama_rock_a.glb" id="47_kw8vb"]
+[ext_resource type="PackedScene" uid="uid://c7woq03chlqg0" path="res://maps/frontiere01/models/nama_rock_b.glb" id="48_ne1vs"]
+[ext_resource type="PackedScene" uid="uid://i13pt4shjiit" path="res://maps/frontiere01/models/nama_stone_b.glb" id="49_76fsu"]
+[ext_resource type="PackedScene" uid="uid://b6ki3ft86m57o" path="res://maps/frontiere01/models/nama_stone_d.glb" id="50_pb0kk"]
+[ext_resource type="PackedScene" uid="uid://b34odwj2he0hh" path="res://maps/frontiere01/models/nama_pebble_b.glb" id="51_m1hu2"]
+[ext_resource type="PackedScene" uid="uid://bibr5jc8jweec" path="res://maps/frontiere01/models/nama_pebble_c.glb" id="52_850ru"]
+[ext_resource type="PackedScene" uid="uid://deiy2wlyndwv0" path="res://maps/frontiere01/models/nama_cliff_02.glb" id="53_7tegv"]
+[ext_resource type="PackedScene" uid="uid://b33lg3gtqa3qk" path="res://maps/frontiere01/models/nama_cliff_01.glb" id="54_oomcc"]
+[ext_resource type="Texture2D" uid="uid://cox0ojh08wtgt" path="res://maps/frontiere01/textures/forest_ground_alb_ht.png" id="55_32j2g"]
+[ext_resource type="Texture2D" uid="uid://cu81kae6a32w7" path="res://maps/frontiere01/textures/forest_ground_nrm_rgh.png" id="56_3oqtk"]
+[ext_resource type="Texture2D" uid="uid://xpj25d3e3xja" path="res://maps/frontiere01/textures/forest_leaves_alb_ht.png" id="57_keekn"]
+[ext_resource type="Texture2D" uid="uid://dqfc0j5s756m8" path="res://maps/frontiere01/textures/forest_leaves_nrm_rgh.png" id="58_100ke"]
+[ext_resource type="Texture2D" uid="uid://cuyeoamybqyim" path="res://maps/frontiere01/textures/cliff_alb_ht.png" id="59_6u21d"]
+[ext_resource type="Texture2D" uid="uid://7yll5hws7jg7" path="res://maps/frontiere01/textures/cliff_nrm_rgh.png" id="60_chd08"]
+[ext_resource type="Texture2D" uid="uid://dc85frgnyvwjs" path="res://maps/frontiere01/textures/sand_alb_ht.png" id="61_sp0kp"]
+[ext_resource type="Texture2D" uid="uid://voow6p2hio5g" path="res://maps/frontiere01/textures/sand_nrm_rgh.png" id="62_4trmj"]
+[ext_resource type="Texture2D" uid="uid://pgskquy1k3y5" path="res://maps/frontiere01/textures/dry_gravel_alb_ht.png" id="63_3u3ca"]
+[ext_resource type="Texture2D" uid="uid://bcx4xw8p1hbe" path="res://maps/frontiere01/textures/dry_gravel_nrm_rgh.png" id="64_cutus"]
+[ext_resource type="Texture2D" uid="uid://didglvtttgao0" path="res://maps/frontiere01/textures/dirt_road_alb_ht.png" id="65_f7afh"]
+[ext_resource type="Texture2D" uid="uid://dhrc4th5xboyp" path="res://maps/frontiere01/textures/dirt_road_nrm_rgh.png" id="66_4fxis"]
+[ext_resource type="Texture2D" uid="uid://das2fyqqmjcol" path="res://maps/frontiere01/textures/concrete_alb_ht.png" id="67_qehw7"]
+[ext_resource type="Texture2D" uid="uid://bt73it6asbla6" path="res://maps/frontiere01/textures/concrete_nrm_rgh.png" id="68_4nsfj"]
+[ext_resource type="Texture2D" uid="uid://d1fi0anl2f8pj" path="res://maps/frontiere01/textures/asphalt_alb_ht.png" id="69_b4rw2"]
+[ext_resource type="Texture2D" uid="uid://o17r8jmk2e1x" path="res://maps/frontiere01/textures/asphalt_nrm_rgh.png" id="70_7pau0"]
+[ext_resource type="Texture2D" uid="uid://c8jrsm50toq5i" path="res://maps/frontiere01/textures/metal_alb_ht.png" id="71_ob1y4"]
+[ext_resource type="Texture2D" uid="uid://cl4gha3i1s8mo" path="res://maps/frontiere01/textures/metal_nrm_rgh.png" id="72_pk0fi"]
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_6fdhh"]
+name = "fir_a"
+density = 0.014256881
+visibility_range = 115.0
+scene_file = ExtResource("1_1gy30")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_qnb0u"]
+name = "fir_b"
+id = 1
+density = 0.01
+visibility_range = 115.0
+scene_file = ExtResource("2_26l78")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_p00u2"]
+name = "fir_c"
+id = 2
+density = 0.029310472
+visibility_range = 115.0
+scene_file = ExtResource("3_sklqf")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cr5g2"]
+albedo_color = Color(0.05, 0.11, 0.05, 1)
+distance_fade_mode = 2
+distance_fade_min_distance = 95.0
+distance_fade_max_distance = 125.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_lusmb"]
+name = "fir_far_a_a"
+id = 3
+density = 0.031497456
+visibility_range = 900.0
+cast_shadows = 0
+scene_file = ExtResource("4_dcc1o")
+material_override = SubResource("StandardMaterial3D_cr5g2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qefmy"]
+albedo_color = Color(0.05, 0.11, 0.05, 1)
+distance_fade_mode = 2
+distance_fade_min_distance = 95.0
+distance_fade_max_distance = 125.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_lm183"]
+name = "fir_far_b_b"
+id = 4
+density = 0.016579365
+visibility_range = 900.0
+cast_shadows = 0
+scene_file = ExtResource("5_iay4n")
+material_override = SubResource("StandardMaterial3D_qefmy")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1xvxi"]
+albedo_color = Color(0.05, 0.11, 0.05, 1)
+distance_fade_mode = 2
+distance_fade_min_distance = 95.0
+distance_fade_max_distance = 125.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_v8jej"]
+name = "fir_far_a_c"
+id = 5
+density = 0.031497456
+visibility_range = 900.0
+cast_shadows = 0
+scene_file = ExtResource("4_dcc1o")
+material_override = SubResource("StandardMaterial3D_1xvxi")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_phyv5"]
+name = "fern_b"
+id = 6
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("6_723o2")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_s1mem"]
+name = "fern_c"
+id = 7
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("7_hwyy4")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_s54c8"]
+name = "grass_a"
+id = 8
+density = 9.867046
+visibility_range = 40.0
+cast_shadows = 0
+scene_file = ExtResource("8_yowoc")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_3q0sb"]
+name = "grass_b"
+id = 9
+visibility_range = 40.0
+cast_shadows = 0
+scene_file = ExtResource("9_5vcm0")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_sh42w"]
+name = "rock_a"
+id = 10
+density = 6.9487333
+visibility_range = 160.0
+scene_file = ExtResource("10_y27vq")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_qt726"]
+name = "rock_b"
+id = 11
+density = 7.1138344
+visibility_range = 160.0
+scene_file = ExtResource("11_5awta")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_2be1b"]
+name = "rock_c"
+id = 12
+visibility_range = 160.0
+scene_file = ExtResource("12_03djg")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_b7n5m"]
+name = "rock_d"
+id = 13
+visibility_range = 160.0
+scene_file = ExtResource("13_gih1l")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ox6kl"]
+name = "rock_e"
+id = 14
+visibility_range = 160.0
+scene_file = ExtResource("14_gbvkk")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_b6wk8"]
+name = "rock_f"
+id = 15
+visibility_range = 160.0
+scene_file = ExtResource("15_anopk")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_exe6i"]
+name = "rockb_07"
+id = 16
+density = 9.256148
+visibility_range = 130.0
+cast_shadows = 0
+scene_file = ExtResource("16_wrsmo")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_uopub"]
+name = "rockb_08"
+id = 17
+visibility_range = 130.0
+cast_shadows = 0
+scene_file = ExtResource("17_qujbu")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_cngwk"]
+name = "rockb_09"
+id = 18
+visibility_range = 130.0
+cast_shadows = 0
+scene_file = ExtResource("18_h10qn")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_kjc01"]
+name = "rockb_10"
+id = 19
+density = 5.406727
+visibility_range = 130.0
+cast_shadows = 0
+scene_file = ExtResource("19_0ftgi")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_2occc"]
+name = "rockb_11"
+id = 20
+density = 3.6411858
+visibility_range = 130.0
+cast_shadows = 0
+scene_file = ExtResource("20_nqq78")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_vh5wr"]
+name = "rockb_12"
+id = 21
+density = 8.582311
+visibility_range = 130.0
+cast_shadows = 0
+scene_file = ExtResource("21_fapjf")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_r7g48"]
+name = "rockb_13"
+id = 22
+density = 4.711031
+visibility_range = 130.0
+cast_shadows = 0
+scene_file = ExtResource("22_b80ua")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_hnn4g"]
+name = "deadlog"
+id = 23
+density = 7.9086537
+visibility_range = 130.0
+cast_shadows = 0
+scene_file = ExtResource("23_jdwr4")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_n73vm"]
+name = "stump"
+id = 24
+density = 3.4390757
+visibility_range = 110.0
+cast_shadows = 0
+scene_file = ExtResource("24_14dck")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_delwd"]
+name = "branch"
+id = 25
+density = 6.9430285
+visibility_range = 60.0
+cast_shadows = 0
+scene_file = ExtResource("25_nc8vq")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_8tclt"]
+name = "quiver_a"
+id = 26
+density = 0.40777612
+visibility_range = 170.0
+scene_file = ExtResource("26_wwm8t")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_2l5d6"]
+name = "quiver_b"
+id = 27
+density = 0.655719
+visibility_range = 170.0
+scene_file = ExtResource("27_4gume")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_h7ebt"]
+name = "searsia_e"
+id = 28
+density = 5.046168
+visibility_range = 110.0
+cast_shadows = 0
+scene_file = ExtResource("28_7nqxr")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_3d4yr"]
+name = "searsia_f"
+id = 29
+visibility_range = 110.0
+cast_shadows = 0
+scene_file = ExtResource("29_vuipk")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_c0loc"]
+name = "searsia_g"
+id = 30
+visibility_range = 110.0
+cast_shadows = 0
+scene_file = ExtResource("30_e0u0a")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_rq3wf"]
+name = "othonna_e"
+id = 31
+visibility_range = 110.0
+cast_shadows = 0
+scene_file = ExtResource("31_tgxhb")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_mu70k"]
+name = "othonna_f"
+id = 32
+visibility_range = 110.0
+cast_shadows = 0
+scene_file = ExtResource("32_xibr8")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_smi4k"]
+name = "othonna_g"
+id = 33
+visibility_range = 110.0
+cast_shadows = 0
+scene_file = ExtResource("33_3c57y")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_xa0ps"]
+name = "ursinia_d"
+id = 34
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("34_e3rom")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_hpskx"]
+name = "ursinia_e"
+id = 35
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("35_e7cnl")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_dbmwc"]
+name = "stinkkruid_c"
+id = 36
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("36_uupuo")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_roa2l"]
+name = "stinkkruid_d"
+id = 37
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("37_jsrpa")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_e7hbe"]
+name = "gazania_a"
+id = 38
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("38_8pptj")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_885lm"]
+name = "gazania_b"
+id = 39
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("39_a2rnp")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_k4k0u"]
+name = "gazania_c"
+id = 40
+visibility_range = 55.0
+cast_shadows = 0
+scene_file = ExtResource("40_xd2te")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ju3ku"]
+name = "iceplant"
+id = 41
+visibility_range = 50.0
+cast_shadows = 0
+scene_file = ExtResource("41_bxgms")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_bi72l"]
+name = "succulent"
+id = 42
+visibility_range = 50.0
+cast_shadows = 0
+scene_file = ExtResource("42_w8nec")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_tx4pc"]
+name = "boulder_03"
+id = 43
+density = 1.0036987
+visibility_range = 220.0
+scene_file = ExtResource("43_fypgi")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_t2er6"]
+name = "boulder_04"
+id = 44
+density = 0.83273536
+visibility_range = 220.0
+scene_file = ExtResource("44_ly4vi")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_qe82l"]
+name = "boulder_05"
+id = 45
+density = 4.6403027
+visibility_range = 220.0
+scene_file = ExtResource("45_2g5ys")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_14rgh"]
+name = "boulder_06"
+id = 46
+density = 4.484806
+visibility_range = 220.0
+scene_file = ExtResource("46_qwyyp")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_j5usq"]
+name = "rock_a"
+id = 47
+density = 2.0362737
+cast_shadows = 0
+scene_file = ExtResource("47_kw8vb")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_t4ldr"]
+name = "rock_b"
+id = 48
+density = 2.462284
+cast_shadows = 0
+scene_file = ExtResource("48_ne1vs")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_arhq2"]
+name = "stone_b"
+id = 49
+cast_shadows = 0
+scene_file = ExtResource("49_76fsu")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_l44vn"]
+name = "stone_d"
+id = 50
+density = 9.156988
+cast_shadows = 0
+scene_file = ExtResource("50_pb0kk")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_xveud"]
+name = "pebble_b"
+id = 51
+density = 3.4908142
+cast_shadows = 0
+scene_file = ExtResource("51_m1hu2")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_uy3tj"]
+name = "pebble_c"
+id = 52
+density = 6.2612853
+cast_shadows = 0
+scene_file = ExtResource("52_850ru")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_d4a2e"]
+name = "cliff_02"
+id = 53
+density = 0.01
+visibility_range = 420.0
+scene_file = ExtResource("53_7tegv")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_sech5"]
+name = "cliff_01"
+id = 54
+density = 0.010037497
+visibility_range = 380.0
+scene_file = ExtResource("54_oomcc")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_3xoaa"]
+name = "mboulder_0"
+id = 55
+density = 1.0036987
+visibility_range = 260.0
+scene_file = ExtResource("43_fypgi")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_ea18r"]
+name = "mboulder_1"
+id = 56
+density = 0.83273536
+visibility_range = 260.0
+scene_file = ExtResource("44_ly4vi")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_1v11n"]
+name = "mboulder_2"
+id = 57
+density = 4.6403027
+visibility_range = 260.0
+scene_file = ExtResource("45_2g5ys")
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_x7c7i"]
+name = "mboulder_3"
+id = 58
+density = 4.484806
+visibility_range = 260.0
+scene_file = ExtResource("46_qwyyp")
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_62eca"]
+name = "forest_ground"
+albedo_texture = ExtResource("55_32j2g")
+normal_texture = ExtResource("56_3oqtk")
+uv_scale = 0.09
+detiling = 0.15
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_ri58a"]
+name = "forest_leaves"
+id = 1
+albedo_texture = ExtResource("57_keekn")
+normal_texture = ExtResource("58_100ke")
+uv_scale = 0.09
+detiling = 0.15
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_nfwmo"]
+name = "cliff"
+id = 2
+albedo_color = Color(0.95, 0.92, 0.9, 1)
+albedo_texture = ExtResource("59_6u21d")
+normal_texture = ExtResource("60_chd08")
+uv_scale = 0.06
+detiling = 0.2
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_mbm8v"]
+name = "sand"
+id = 3
+albedo_color = Color(1, 0.95, 0.9, 1)
+albedo_texture = ExtResource("61_sp0kp")
+normal_texture = ExtResource("62_4trmj")
+uv_scale = 0.08
+detiling = 0.15
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_dvkh0"]
+name = "dry_gravel"
+id = 4
+albedo_texture = ExtResource("63_3u3ca")
+normal_texture = ExtResource("64_cutus")
+uv_scale = 0.08
+detiling = 0.15
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_n78tf"]
+name = "dirt_road"
+id = 5
+albedo_color = Color(0.78, 0.7, 0.6, 1)
+albedo_texture = ExtResource("65_f7afh")
+normal_texture = ExtResource("66_4fxis")
+uv_scale = 0.12
+detiling = 0.1
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_yivmc"]
+name = "concrete"
+id = 6
+albedo_color = Color(0.42, 0.41, 0.4, 1)
+albedo_texture = ExtResource("67_qehw7")
+normal_texture = ExtResource("68_4nsfj")
+uv_scale = 0.12
+detiling = 0.1
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_2df4d"]
+name = "asphalt"
+id = 7
+albedo_color = Color(0.8, 0.8, 0.82, 1)
+albedo_texture = ExtResource("69_b4rw2")
+normal_texture = ExtResource("70_7pau0")
+uv_scale = 0.15
+detiling = 0.1
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_xfape"]
+name = "metal"
+id = 8
+albedo_color = Color(0.75, 0.78, 0.82, 1)
+albedo_texture = ExtResource("71_ob1y4")
+normal_texture = ExtResource("72_pk0fi")
+uv_scale = 0.15
+detiling = 0.1
+
+[resource]
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_6fdhh"), SubResource("Terrain3DMeshAsset_qnb0u"), SubResource("Terrain3DMeshAsset_p00u2"), SubResource("Terrain3DMeshAsset_lusmb"), SubResource("Terrain3DMeshAsset_lm183"), SubResource("Terrain3DMeshAsset_v8jej"), SubResource("Terrain3DMeshAsset_phyv5"), SubResource("Terrain3DMeshAsset_s1mem"), SubResource("Terrain3DMeshAsset_s54c8"), SubResource("Terrain3DMeshAsset_3q0sb"), SubResource("Terrain3DMeshAsset_sh42w"), SubResource("Terrain3DMeshAsset_qt726"), SubResource("Terrain3DMeshAsset_2be1b"), SubResource("Terrain3DMeshAsset_b7n5m"), SubResource("Terrain3DMeshAsset_ox6kl"), SubResource("Terrain3DMeshAsset_b6wk8"), SubResource("Terrain3DMeshAsset_exe6i"), SubResource("Terrain3DMeshAsset_uopub"), SubResource("Terrain3DMeshAsset_cngwk"), SubResource("Terrain3DMeshAsset_kjc01"), SubResource("Terrain3DMeshAsset_2occc"), SubResource("Terrain3DMeshAsset_vh5wr"), SubResource("Terrain3DMeshAsset_r7g48"), SubResource("Terrain3DMeshAsset_hnn4g"), SubResource("Terrain3DMeshAsset_n73vm"), SubResource("Terrain3DMeshAsset_delwd"), SubResource("Terrain3DMeshAsset_8tclt"), SubResource("Terrain3DMeshAsset_2l5d6"), SubResource("Terrain3DMeshAsset_h7ebt"), SubResource("Terrain3DMeshAsset_3d4yr"), SubResource("Terrain3DMeshAsset_c0loc"), SubResource("Terrain3DMeshAsset_rq3wf"), SubResource("Terrain3DMeshAsset_mu70k"), SubResource("Terrain3DMeshAsset_smi4k"), SubResource("Terrain3DMeshAsset_xa0ps"), SubResource("Terrain3DMeshAsset_hpskx"), SubResource("Terrain3DMeshAsset_dbmwc"), SubResource("Terrain3DMeshAsset_roa2l"), SubResource("Terrain3DMeshAsset_e7hbe"), SubResource("Terrain3DMeshAsset_885lm"), SubResource("Terrain3DMeshAsset_k4k0u"), SubResource("Terrain3DMeshAsset_ju3ku"), SubResource("Terrain3DMeshAsset_bi72l"), SubResource("Terrain3DMeshAsset_tx4pc"), SubResource("Terrain3DMeshAsset_t2er6"), SubResource("Terrain3DMeshAsset_qe82l"), SubResource("Terrain3DMeshAsset_14rgh"), SubResource("Terrain3DMeshAsset_j5usq"), SubResource("Terrain3DMeshAsset_t4ldr"), SubResource("Terrain3DMeshAsset_arhq2"), SubResource("Terrain3DMeshAsset_l44vn"), SubResource("Terrain3DMeshAsset_xveud"), SubResource("Terrain3DMeshAsset_uy3tj"), SubResource("Terrain3DMeshAsset_d4a2e"), SubResource("Terrain3DMeshAsset_sech5"), SubResource("Terrain3DMeshAsset_3xoaa"), SubResource("Terrain3DMeshAsset_ea18r"), SubResource("Terrain3DMeshAsset_1v11n"), SubResource("Terrain3DMeshAsset_x7c7i")])
+texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_62eca"), SubResource("Terrain3DTextureAsset_ri58a"), SubResource("Terrain3DTextureAsset_nfwmo"), SubResource("Terrain3DTextureAsset_mbm8v"), SubResource("Terrain3DTextureAsset_dvkh0"), SubResource("Terrain3DTextureAsset_n78tf"), SubResource("Terrain3DTextureAsset_yivmc"), SubResource("Terrain3DTextureAsset_2df4d"), SubResource("Terrain3DTextureAsset_xfape")])

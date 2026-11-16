@@ -1,4 +1,11 @@
 {
+    "MENU_CHARACTER": "Character",
+    "MENU_RESUME": "Resume",
+    "MENU_LEAVE_GAME": "Leave game",
+    "LEAVE_GAME_CONFIRM": "Leave the current game and go back to the main menu?",
+    "LEAVE_GAME_YES": "Leave",
+    "LEAVE_GAME_NO": "Cancel",
+    "MENU_ONLINE_GAMES": "Online Games",
     "MENU_STANDARD_GAMES": "Standard Games",
     "MENU_RANKED_GAMES": "Ranked Games",
     "MENU_RANKINGS": "Rankings",

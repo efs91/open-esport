@@ -1,0 +1,19 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Alpha_02_Dif_Style_02_Alb.png" id="1_0o6p4"]
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Alpha_02_Dif_Style_02_AO.png" id="2_7htpv"]
+[ext_resource type="Texture2D" path="res://assets/environement/3D Scifi Starter Kit Free/_Textures/HD_Alpha_02_Dif_Style_02_Norm.png" id="3_8jjfp"]
+
+[resource]
+resource_name = "Alpha_02"
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("1_0o6p4")
+metallic = 0.35
+roughness = 0.7
+normal_enabled = true
+normal_texture = ExtResource("3_8jjfp")
+ao_enabled = true
+ao_texture = ExtResource("2_7htpv")

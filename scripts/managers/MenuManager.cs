@@ -15,6 +15,8 @@ public partial class MenuManager : Control
     private Dictionary<int, MenuElement> _menuElements = new Dictionary<int, MenuElement>();
     private Dictionary<string, Module> _actionHandlers = new Dictionary<string, Module>();
     private const int RETURN_BUTTON_WEIGHT = -1; // Poids spécial pour le bouton retour
+    /// <summary>Vrai quand le menu est ouvert depuis une partie (Échap) : pas de nouvelle partie, « Quitter » ramène au menu principal.</summary>
+    private bool _inGame;
 
     public override void _Ready()
     {
@@ -39,11 +41,16 @@ public partial class MenuManager : Control
         switch (state)
         {
             case GameManager.GameState.MainMenu:
+                _inGame = false;
+                ShowMainMenu();
+                break;
             case GameManager.GameState.Pause:
-                //_logManager.Info("[MenuManager] Transition vers l'affichage du menu");
+                _inGame = true;
+                GetTree().CallGroup("game_hud", "set_visible", false); // le HUD disparaît pendant le menu
                 ShowMainMenu();
                 break;
             case GameManager.GameState.Gameplay:
+                GetTree().CallGroup("game_hud", "set_visible", true);
                 //_logManager.Info("[MenuManager] Transition vers le masquage du menu");
                 HideMainMenu();
                 break;
@@ -178,6 +185,14 @@ public partial class MenuManager : Control
                 //_logManager.Info("[MenuManager] Exécution de l'action de fermeture");
                 GetTree().Quit();
             }
+            else if (action == "resume_game")
+            {
+                _gameManager.ChangeState(GameManager.GameState.Gameplay);
+            }
+            else if (action == "leave_game")
+            {
+                ConfirmLeaveGame();
+            }
             else
             {
                 //_logManager.Info($"[MenuManager] Action handlers disponibles : {string.Join(", ", _actionHandlers.Keys)}");
@@ -230,6 +245,36 @@ public partial class MenuManager : Control
         }
     }
 
+    /// <summary>Demande confirmation avant de quitter la partie en cours.</summary>
+    private void ConfirmLeaveGame()
+    {
+        var dialog = new ConfirmationDialog
+        {
+            Title = LocalizationManager.GetTranslation("MENU_LEAVE_GAME"),
+            DialogText = LocalizationManager.GetTranslation("LEAVE_GAME_CONFIRM"),
+            OkButtonText = LocalizationManager.GetTranslation("LEAVE_GAME_YES"),
+            CancelButtonText = LocalizationManager.GetTranslation("LEAVE_GAME_NO"),
+            Exclusive = true
+        };
+        dialog.Confirmed += LeaveGame;
+        dialog.Canceled += dialog.QueueFree;
+        dialog.Confirmed += dialog.QueueFree;
+        AddChild(dialog);
+        dialog.PopupCentered(new Vector2I(420, 140));
+    }
+
+    /// <summary>Fin de partie : revient au menu principal tout de suite (sans demander confirmation).</summary>
+    public void LeaveGameNow() { LeaveGame(); }
+
+    /// <summary>Ferme la partie (déconnexion comprise) et revient au menu principal.</summary>
+    private void LeaveGame()
+    {
+        // la scène de jeu contient le joueur, le HUD et la partie en ligne : la libérer déconnecte du serveur
+        GetNode<SceneManager>(GlobalPaths.Managers.SCENE_MANAGER).UnloadScene();
+        Input.MouseMode = Input.MouseModeEnum.Visible;
+        _gameManager.ChangeState(GameManager.GameState.MainMenu);
+    }
+
     private bool HasChildren(int parentId)
     {
         return _menuElements.Values.Any(element => element.ParentId == parentId);
@@ -237,9 +282,16 @@ public partial class MenuManager : Control
 
     private void LoadUI(string uiPath)
     {
-        //_logManager.Info($"[MenuManager] Chargement de l'UI : {uiPath}");
-        // TODO: Implémenter le chargement de l'UI
-        // Pour l'instant, on cache juste le menu
+        // Réglages des commandes (touches et mode de visée) : écran construit en code
+        if (uiPath.EndsWith("clavier.tscn"))
+        {
+            var settings = new Openesport.Menus.KeyBindingsMenu { Name = "KeyBindingsMenu" };
+            settings.Closed += Show; // au retour, on retrouve le menu
+            GetTree().Root.AddChild(settings);
+            Hide();
+            return;
+        }
+
         Hide();
     }
 
@@ -284,6 +336,23 @@ public partial class MenuManager : Control
             .OrderByDescending(element => element.Poids)
             .ToList();
 
+        // Menu ouvert pendant une partie : on garde les réglages (clavier, langue), mais plus de nouvelle partie ni de « Quitter
+        // l'application » ; on propose de reprendre ou de quitter la partie pour revenir au menu principal.
+        if (_inGame && parentId == 0)
+        {
+            elements = elements
+                .Where(e => e.Name != "MENU_QUIT"
+                    && !(e.Properties.TryGetValue("action", out var a) && a is string act && (act.StartsWith("start_") || act == "open_character_panel")))
+                .ToList();
+            var resume = new MenuElement(-10, "MENU_RESUME", MenuElementType.Button, 0, 1000);
+            resume.Properties["action"] = "resume_game";
+            var leave = new MenuElement(-11, "MENU_LEAVE_GAME", MenuElementType.Button, 0, -1000,
+                iconPath: "res://assets/textures/Menu/boutons/quit.png");
+            leave.Properties["action"] = "leave_game";
+            elements.Insert(0, resume);
+            elements.Add(leave);
+        }
+
         // Afficher tous les éléments du niveau
         foreach (var element in elements)
         {
@@ -301,6 +370,23 @@ public partial class MenuManager : Control
             backButton.Pressed += () => DisplaySubMenu(_menuElements[parentId].ParentId);
             container.AddChild(backButton);
         }
+
+        FitMenuToWindow();
+    }
+
+    /// <summary>Le menu (logo, titre, boutons) se réduit au besoin pour tenir en hauteur dans la fenêtre, quel que soit le nombre de boutons.</summary>
+    private async void FitMenuToWindow()
+    {
+        var box = GetNodeOrNull<Control>("MenuCenterContainer/MenuVBoxContainer");
+        if (box == null) return;
+        box.Scale = Vector2.One;
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); // le temps que la mise en page se recalcule
+        if (!IsInstanceValid(box)) return;
+        float need = box.GetCombinedMinimumSize().Y;
+        float have = GetViewportRect().Size.Y * 0.96f;
+        box.PivotOffset = box.Size / 2f;
+        float s = need > have ? have / need : 1f;
+        box.Scale = new Vector2(s, s);
     }
 
     private Node CreateUIElement(MenuElement element)

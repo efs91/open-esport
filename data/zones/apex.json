@@ -1,0 +1,55 @@
+{
+  "name": "apex",
+  "reference": "diagonal",
+  "firstRadius": 100,
+  "tickSeconds": 1.5,
+  "finalDamage": 25,
+  "ignoreShield": true,
+  "containment": "inside",
+  "maxShift": 0.8,
+  "revisitChance": 0,
+  "stages": [
+    {
+      "idle": 120,
+      "warning": 90,
+      "shrink": 260,
+      "radius": 50,
+      "damage": 2
+    },
+    {
+      "idle": 0,
+      "warning": 120,
+      "shrink": 70,
+      "radius": 28,
+      "damage": 4
+    },
+    {
+      "idle": 0,
+      "warning": 90,
+      "shrink": 45,
+      "radius": 14,
+      "damage": 10
+    },
+    {
+      "idle": 0,
+      "warning": 90,
+      "shrink": 50,
+      "radius": 6,
+      "damage": 15
+    },
+    {
+      "idle": 0,
+      "warning": 75,
+      "shrink": 120,
+      "radius": 0,
+      "damage": 20
+    }
+  ],
+  "cycle": false,
+  "cycleWarning": 20,
+  "cycleShrink": 40,
+  "cycleDamage": 10,
+  "cycleRatio": 0.85,
+  "cycleMinRadius": 8,
+  "cycleResetRadius": 35
+}

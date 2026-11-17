@@ -26,7 +26,7 @@ namespace Openesport.EditorTools
 			AddChild(new Label { Text = "Serveur de matchmaking que le jeu contacte (adresse publique du serveur en ligne)." });
 			var row = new HBoxContainer();
 			row.AddChild(new Label { Text = "Adresse / IP :" });
-			_host = new LineEdit { Text = host, CustomMinimumSize = new Vector2(240, 0), PlaceholderText = "ex. 51.91.125.49" };
+			_host = new LineEdit { Text = host, CustomMinimumSize = new Vector2(240, 0), PlaceholderText = "ex. openesport.cosludia.fr" };
 			row.AddChild(_host);
 			row.AddChild(new Label { Text = "  Port UDP :" });
 			_port = new SpinBox { MinValue = 1, MaxValue = 65535, Value = port };
@@ -37,8 +37,8 @@ namespace Openesport.EditorTools
 			var save = new Button { Text = "Enregistrer" };
 			save.Pressed += Save;
 			buttons.AddChild(save);
-			var online = new Button { Text = "Serveur en ligne (51.91.125.49)" };
-			online.Pressed += () => { _host.Text = "51.91.125.49"; _port.Value = 27000; Save(); };
+			var online = new Button { Text = "Serveur en ligne (openesport.cosludia.fr)" };
+			online.Pressed += () => { _host.Text = "openesport.cosludia.fr"; _port.Value = 27000; Save(); };
 			buttons.AddChild(online);
 			var local = new Button { Text = "Local (127.0.0.1)" };
 			local.Pressed += () => { _host.Text = "127.0.0.1"; _port.Value = 27000; Save(); };

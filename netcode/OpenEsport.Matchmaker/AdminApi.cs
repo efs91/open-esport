@@ -31,7 +31,9 @@ namespace OpenEsport.Matchmaker
 		public void Start(string bind, int port)
 		{
 			_http = new HttpListener();
-			_http.Prefixes.Add($"http://{bind}:{port}/");
+			// HttpListener (Linux) refuse « 0.0.0.0 » : l'écoute sur toutes les interfaces s'écrit « + »
+			string host = bind == "0.0.0.0" || bind == "*" ? "+" : bind;
+			_http.Prefixes.Add($"http://{host}:{port}/");
 			_http.Start();
 			Log($"Tableau de bord : http://{(bind == "+" || bind == "*" ? "localhost" : bind)}:{port}/  (arrêt des serveurs {(string.IsNullOrEmpty(_token) ? "désactivé : aucun jeton --admin-token" : "autorisé avec le jeton")})");
 			Task.Run(LoopAsync);

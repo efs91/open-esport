@@ -1,21 +1,12 @@
 # Serveur en ligne : matchmaking + serveurs de partie, tout dans Docker.
 #
 #   cp .env.example .env     (puis régler PUBLIC_HOST, OE_ADMIN_TOKEN, MAPS_DIR)
-#   docker compose build     (construit l'image du serveur de partie ET celle du matchmaking)
-#   docker compose up -d
+#   docker compose up -d --build     (construit le matchmaking ; il reconstruit lui-même l'image du serveur de partie à chaque démarrage)
 #
 # Les serveurs de partie sont lancés par le matchmaking avec « docker run » (nom explicite open-esport-<mode>-<port>) :
 # il faut donc la socket Docker, et le dossier des cartes doit avoir LE MÊME chemin dans le conteneur et sur la machine
 # (c'est le démon de la machine qui monte les cartes dans chaque serveur de partie).
 services:
-  # image du serveur de partie : ce service ne tourne jamais, il sert seulement à la construire (profil « build »)
-  server-image:
-    image: open-esport-server:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    profiles: ["build"]
-
   matchmaker:
     image: open-esport-matchmaker:latest
     build:
@@ -42,7 +33,8 @@ services:
       - open-esport-server:latest
       - --balance
       - ${CONFIG_DIR:-/opt/open-esport/config}/balance.json   # tes réglages (panneau Godot) ; sinon valeurs par défaut du code
-      - --no-build                      # l'image est construite par « docker compose build »
+      - --netcode-dir                   # à chaque démarrage : docker build (cache Docker = instantané si le code n'a pas changé)
+      - /netcode
       - --cpus
       - "${GAME_CPUS:-2}"
       - --memory
@@ -58,6 +50,7 @@ services:
       - "127.0.0.1:27080:27080/tcp"     # tableau de bord : mettre un proxy HTTPS devant pour l'ouvrir au public
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - .:/netcode:ro                   # le code du serveur de partie (Dockerfile + sources) : le matchmaker reconstruit l'image avec
       - ${MAPS_DIR:-/opt/open-esport/maps}:${MAPS_DIR:-/opt/open-esport/maps}:ro
       - ${CONFIG_DIR:-/opt/open-esport/config}:${CONFIG_DIR:-/opt/open-esport/config}:ro
     extra_hosts:

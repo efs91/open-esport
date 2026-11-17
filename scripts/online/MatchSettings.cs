@@ -11,6 +11,7 @@ namespace Openesport.Online
 	public static class MatchSettings
 	{
 		private const string Path = "user://network.cfg";
+		private const string ProjectCfg = "res://data/network.cfg";
 		private static int _teamSize = -1;
 
 		private static int _mode = -1;
@@ -106,6 +107,10 @@ namespace Openesport.Online
 			var cfg = new ConfigFile();
 			if (cfg.Load(Path) == Error.Ok && cfg.HasSectionKey("network", "matchmaker"))
 				Split((string)cfg.GetValue("network", "matchmaker"), Matchmaking.DefaultPort, out host, out port);
+			else if (cfg.Load(ProjectCfg) == Error.Ok && cfg.HasSectionKey("network", "host"))       // adresse réglée dans le panneau Open Esport (onglet Réseau), exportée avec le jeu
+			{
+				host = (string)cfg.GetValue("network", "host"); port = (int)cfg.GetValue("network", "port", Matchmaking.DefaultPort);
+			}
 		}
 
 		private static void Split(string value, int defaultPort, out string host, out int port)

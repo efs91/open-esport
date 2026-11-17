@@ -12,6 +12,7 @@ namespace Openesport.Online
 		private Minimap _radar;
 		private FullMap _fullMap;
 		private Vitals _vitals;
+		private Label _grenade;
 		private Label _hint, _flight, _stats, _downText, _zoneLabel, _zoneWarn;
 		private ColorRect _zoneVignette;
 		private ProgressBar _reviveBar;
@@ -73,6 +74,10 @@ namespace Openesport.Online
 			root.AddChild(_useBar);
 			_useBar.AnchorLeft = 0.5f; _useBar.AnchorRight = 0.5f; _useBar.AnchorTop = 1; _useBar.AnchorBottom = 1;
 			_useBar.OffsetLeft = -UseBar.W / 2f; _useBar.OffsetRight = UseBar.W / 2f; _useBar.OffsetTop = -190; _useBar.OffsetBottom = -190 + UseBar.H;
+			_grenade = MakeLabel(root, 18, new Color(1f, 0.85f, 0.55f));
+			_grenade.AnchorLeft = 1; _grenade.AnchorRight = 1; _grenade.AnchorTop = 0.78f; _grenade.AnchorBottom = 0.78f;
+			_grenade.OffsetLeft = -380; _grenade.OffsetRight = -18; _grenade.OffsetBottom = 30;
+			_grenade.HorizontalAlignment = HorizontalAlignment.Right;
 			_hint = MakeLabel(root, 22, Colors.White);
 			_hint.AnchorLeft = 0; _hint.AnchorRight = 1; _hint.AnchorTop = 0.62f; _hint.AnchorBottom = 0.62f; _hint.OffsetBottom = 34;
 			_hint.HorizontalAlignment = HorizontalAlignment.Center;
@@ -162,6 +167,9 @@ namespace Openesport.Online
 		public void SetFlightPath(Vector3 from, Vector3 to, bool show) { _radar.SetFlight(from, to, show); _fullMap.SetFlight(from, to, show); }
 
 		/// <summary>Écran de chargement : la carte en plein écran avec la trajectoire de l'avion, à la place d'un écran figé.</summary>
+		/// <summary>Écran de chargement affiché : les autres interfaces (scores, annonces) restent cachées.</summary>
+		public bool IsLoading => _loading;
+
 		public void SetLoading(bool on, string text = "")
 		{
 			_loading = on;
@@ -233,7 +241,26 @@ namespace Openesport.Online
 		/// <summary>Indication contextuelle au centre de l'écran (ex. « E : prendre la tyrolienne »).</summary>
 		public void SetHint(string text) { if (_hint.Text != text) _hint.Text = text; }
 
-		public void SetStatus(string text) { _status.Text = text; }
+		/// <summary>Message d'état : il s'efface tout seul après <paramref name="seconds"/> secondes (0 = reste affiché : connexion, erreur).</summary>
+		public void SetStatus(string text, float seconds = 4f)
+		{
+			_status.Text = text;
+			_statusUntil = seconds > 0f ? Time.GetTicksMsec() / 1000.0 + seconds : 0.0;
+		}
+
+		private double _statusUntil;
+
+		/// <summary>Pings de l'équipe, dessinés sur la minimap et sur la grande carte.</summary>
+		public void SetPings(List<PingMark> pings) { _radar.SetPings(pings); _fullMap.SetPings(pings); }
+
+		/// <summary>Modes à scores : les scores et le bandeau d'annonce occupent le haut de l'écran, le message d'état passe plus bas.</summary>
+		public void MoveStatusForMode()
+		{
+			_status.AnchorTop = 0.46f; _status.AnchorBottom = 0.46f; _status.OffsetTop = 0; _status.OffsetBottom = 30;
+		}
+
+		/// <summary>Grenade choisie et son nombre (vide : aucune grenade dans le sac).</summary>
+		public void SetGrenade(string text) { if (_grenade.Text != text) _grenade.Text = text; }
 
 		public void HitMarker(bool kill)
 		{
@@ -287,6 +314,7 @@ namespace Openesport.Online
 
 		public override void _Process(double delta)
 		{
+			if (_statusUntil > 0.0 && Time.GetTicksMsec() / 1000.0 > _statusUntil) { _status.Text = ""; _statusUntil = 0.0; }
 			if (_hitTime > 0)
 			{
 				_hitTime -= delta;
@@ -323,6 +351,20 @@ namespace Openesport.Online
 
 		public void SetMap(Texture2D tex, float minX, float maxX, float minZ, float maxZ) { Tex = tex; MinX = minX; MaxX = maxX; MinZ = minZ; MaxZ = maxZ; QueueRedraw(); }
 		public void Set(Vector3 me, float yaw, List<MapMark> marks) { Me = me; Yaw = yaw; Marks = marks; QueueRedraw(); }
+		protected List<PingMark> Pings = new();
+		public void SetPings(List<PingMark> pings) { Pings = pings; QueueRedraw(); }
+
+		/// <summary>Un losange de ping (pulsation douce) en <paramref name="p"/>, de la couleur de son type.</summary>
+		protected void DrawPing(Vector2 p, PingMark m, float size)
+		{
+			var col = PingView.ColorOf(m.Type) with { A = m.Alpha };
+			float t = (float)(Time.GetTicksMsec() / 1000.0);
+			DrawArc(p, size * (1.5f + 0.5f * Mathf.Abs(Mathf.Sin(t * 3f))), 0, Mathf.Tau, 24, col with { A = m.Alpha * 0.55f }, 2f, true);
+			var d = new[] { p + new Vector2(0, -size), p + new Vector2(size * 0.75f, 0), p + new Vector2(0, size), p + new Vector2(-size * 0.75f, 0) };
+			DrawColoredPolygon(new[] { d[0] + (d[0] - p) * 0.25f, d[1] + (d[1] - p) * 0.25f, d[2] + (d[2] - p) * 0.25f, d[3] + (d[3] - p) * 0.25f }, new Color(0, 0, 0, 0.8f * m.Alpha));
+			DrawColoredPolygon(d, col);
+		}
+
 		protected float ZCx, ZCz, ZR, ZNx, ZNz, ZNr;
 		protected bool ZShow, ZNextVisible;
 		public void SetZone(bool show, float cx, float cz, float r, bool nextVisible, float nx, float nz, float nr)
@@ -396,6 +438,14 @@ namespace Openesport.Online
 				DrawCircle(c + p, 4.8f, col);
 				if (!m.Friendly) DrawArc(c + p, 9f + (1f - m.Alpha) * 6f, 0, Mathf.Tau, 20, new Color(1f, 0.3f, 0.2f, m.Alpha * 0.6f), 1.5f, true);
 			}
+			foreach (var pg in Pings)
+			{
+				var rel = pg.Pos - Me;
+				var p = new Vector2(rel.X, rel.Z) * k;
+				var half = Size * 0.5f - 9f;
+				if (Mathf.Abs(p.X) > half || Mathf.Abs(p.Y) > half) p = p * (half / Mathf.Max(Mathf.Abs(p.X), Mathf.Abs(p.Y)));      // hors cadre : collé au bord
+				DrawPing(c + p, pg, 7.5f);
+			}
 			// moi : flèche blanche au centre, tournée comme mon regard, avec un cône de vision
 			var dir = new Vector2(-Mathf.Sin(Yaw), -Mathf.Cos(Yaw));
 			var perp = new Vector2(-dir.Y, dir.X);
@@ -434,13 +484,20 @@ namespace Openesport.Online
 				if (!string.IsNullOrEmpty(m.Name))
 					DrawString(ThemeDB.FallbackFont, p + new Vector2(11, 5), m.Name, HorizontalAlignment.Left, -1, 15, new Color(0.7f, 0.9f, 1f));
 			}
+			foreach (var pg in Pings)
+			{
+				var pp = ToMap(pg.Pos);
+				DrawPing(pp, pg, 11f);
+				if (!string.IsNullOrEmpty(pg.Label))
+					DrawString(ThemeDB.FallbackFont, pp + new Vector2(16, 5), pg.Label, HorizontalAlignment.Left, -1, 16, PingView.ColorOf(pg.Type) with { A = pg.Alpha });
+			}
 			// moi : flèche orientée comme mon regard (0 = nord = -Z)
 			var me = ToMap(Me);
 			var dir = new Vector2(-Mathf.Sin(Yaw), -Mathf.Cos(Yaw));
 			var perp = new Vector2(-dir.Y, dir.X);
 			DrawColoredPolygon(new[] { me + dir * 15, me - dir * 9 + perp * 9, me - dir * 3, me - dir * 9 - perp * 9 }, new Color(0, 0, 0, 0.85f));
 			DrawColoredPolygon(new[] { me + dir * 12, me - dir * 7 + perp * 7, me - dir * 2.5f, me - dir * 7 - perp * 7 }, new Color(1f, 0.92f, 0.3f));
-			string title = Loading ? "CHARGEMENT  —  trajectoire de l'avion en jaune, vous êtes dessus" : "CARTE  —  vous : flèche jaune, équipiers : points bleus, avion : trait jaune   (M pour fermer)";
+			string title = Loading ? (ShowFlight ? "CHARGEMENT  —  trajectoire de l'avion en jaune, vous êtes dessus" : "CHARGEMENT  —  la carte de la partie") : "CARTE  —  vous : flèche jaune, équipiers : points bleus, avion : trait jaune   (M pour fermer)";
 			DrawString(ThemeDB.FallbackFont, new Vector2(origin.X, origin.Y - 8), title, HorizontalAlignment.Left, -1, 17, Colors.White);
 			if (Loading && !string.IsNullOrEmpty(LoadingText))
 				DrawString(ThemeDB.FallbackFont, new Vector2(origin.X, origin.Y + side + 28), LoadingText, HorizontalAlignment.Left, -1, 20, new Color(1f, 0.93f, 0.55f));

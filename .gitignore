@@ -32,3 +32,6 @@ assets/environement/pine_forest/
 assets/environement/namaqualand/
 tools/meshy/raw/
 *.psd
+
+# Python
+__pycache__/

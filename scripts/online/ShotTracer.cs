@@ -62,13 +62,15 @@ void fragment() {
 			1 => new Color(1.0f, 0.62f, 0.15f),   // légères : orange
 			2 => new Color(0.45f, 1.0f, 0.45f),   // lourdes : vert
 			3 => new Color(1.0f, 0.28f, 0.22f),   // cartouches : rouge
+			4 => new Color(0.55f, 0.8f, 1.0f),    // précision : bleu clair
 			_ => new Color(1.0f, 0.9f, 0.5f),
 		};
 
-		public static void Spawn(Node parent, Vector3 from, Vector3 direction, Color color)
+		/// <param name="speed">Vitesse de la balle (m/s) ; 0 = vitesse commune. Chaque arme peut avoir la sienne (sniper).</param>
+		public static void Spawn(Node parent, Vector3 from, Vector3 direction, Color color, float speed = 0f)
 		{
 			if (!GodotObject.IsInstanceValid(parent)) return;
-			var t = new ShotTracer { _pos = from, _vel = direction.Normalized() * Speed, _color = color };
+			var t = new ShotTracer { _pos = from, _vel = direction.Normalized() * (speed > 0f ? speed : Speed), _color = color };
 			parent.AddChild(t);
 		}
 

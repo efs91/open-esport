@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://do6dpjrnawg7e" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Pipes.gltf" id="25_owuq0"]
 [ext_resource type="PackedScene" uid="uid://cn08tj10nkciw" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Barrel_Large.gltf" id="26_t6rih"]
 [ext_resource type="PackedScene" uid="uid://unjgwga62wel" path="res://maps/frontiere01/models/zip_pad.glb" id="27_03qqq"]
+[ext_resource type="Script" uid="uid://bmf42x1iqg3em" path="res://scripts/online/LootEntry.cs" id="29_8ryjp"]
 [ext_resource type="PackedScene" path="res://scenes/loot/CoffreButin.tscn" id="loot_chest_prefab"]
 [ext_resource type="PackedScene" path="res://scenes/loot/ObjetButin.tscn" id="loot_item_prefab"]
 
@@ -3415,6 +3416,41 @@ top_radius = 0.06
 bottom_radius = 0.85
 height = 14.0
 radial_segments = 16
+
+[sub_resource type="Resource" id="Resource_kh667"]
+script = ExtResource("29_8ryjp")
+Item = "sniper"
+metadata/_custom_type_script = "uid://bmf42x1iqg3em"
+
+[sub_resource type="Resource" id="Resource_uixqe"]
+script = ExtResource("29_8ryjp")
+Item = "grenade_sticky"
+metadata/_custom_type_script = "uid://bmf42x1iqg3em"
+
+[sub_resource type="Resource" id="Resource_2kcgq"]
+script = ExtResource("29_8ryjp")
+Item = "grenade_frag"
+metadata/_custom_type_script = "uid://bmf42x1iqg3em"
+
+[sub_resource type="Resource" id="Resource_4t3mo"]
+script = ExtResource("29_8ryjp")
+Item = "grenade_fire"
+metadata/_custom_type_script = "uid://bmf42x1iqg3em"
+
+[sub_resource type="Resource" id="Resource_g28q7"]
+script = ExtResource("29_8ryjp")
+Item = "optic_2x"
+metadata/_custom_type_script = "uid://bmf42x1iqg3em"
+
+[sub_resource type="Resource" id="Resource_n8wo2"]
+script = ExtResource("29_8ryjp")
+Item = "optic_4x"
+metadata/_custom_type_script = "uid://bmf42x1iqg3em"
+
+[sub_resource type="Resource" id="Resource_5t1r3"]
+script = ExtResource("29_8ryjp")
+Item = "backpack_3"
+metadata/_custom_type_script = "uid://bmf42x1iqg3em"
 
 [node name="Frontiere01" type="Node3D" unique_id=755270090]
 metadata/editor_authored = true
@@ -11273,6 +11309,7 @@ Quality = 2
 transform = Transform3D(-0.024666637, 0, -0.9996959, 0, 1, 0, 0.9996959, 0, -0.024666637, -352.58707, 78.14, -211.94366)
 Activation = 1
 Quality = 2
+Pool = Array[ExtResource("29_8ryjp")]([SubResource("Resource_kh667"), SubResource("Resource_uixqe"), SubResource("Resource_2kcgq"), SubResource("Resource_4t3mo")])
 
 [node name="Coffre_31" parent="Loot/Coffres" unique_id=1132387394 instance=ExtResource("loot_chest_prefab")]
 transform = Transform3D(0.03178911, 0, -0.9994947, 0, 1, 0, 0.9994947, 0, 0.03178911, -312.0469, 78.14, -208.03288)
@@ -11333,9 +11370,14 @@ transform = Transform3D(0.9998841, 0, 0.015222604, 0, 1, 0, -0.015222604, 0, 0.9
 
 [node name="Coffre_37" parent="Loot/Coffres" unique_id=1759641470 instance=ExtResource("loot_chest_prefab")]
 transform = Transform3D(-0.12576249, 0, 0.99206036, 0, 1, 0, -0.99206036, 0, -0.12576249, -380.46152, 77.674, -252.39975)
+Activation = 1
+OwnChance = true
+Chance = 1.0
+Item = "optic_2x"
 
 [node name="Coffre_38" parent="Loot/Coffres" unique_id=1364527414 instance=ExtResource("loot_chest_prefab")]
 transform = Transform3D(-0.99670064, 0, 0.0811655, 0, 1, 0, -0.0811655, 0, -0.99670064, -382.7081, 77.674, -254.89525)
+Pool = Array[ExtResource("29_8ryjp")]([SubResource("Resource_g28q7"), SubResource("Resource_n8wo2"), SubResource("Resource_5t1r3")])
 
 [node name="Coffre_39" parent="Loot/Coffres" unique_id=579590063 instance=ExtResource("loot_chest_prefab")]
 transform = Transform3D(-0.9933481, 0, -0.11515012, 0, 1, 0, 0.11515012, 0, -0.9933481, -386.3105, 77.674, -254.89525)
@@ -11378,6 +11420,543 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.096, 71.569, -497.303)
 
 [node name="Coffre_30" parent="Loot/Coffres" unique_id=845861245 instance=ExtResource("loot_chest_prefab")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 347.558, 84.023, -200.888)
+
+[node name="Coffre_40" parent="Loot/Coffres" unique_id=556938649 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 298.7, 83.808, -247.4)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_41" parent="Loot/Coffres" unique_id=1124267258 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 301.3, 83.86, -247.4)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_42" parent="Loot/Coffres" unique_id=466445119 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 301.3, 83.753, -252.6)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_43" parent="Loot/Coffres" unique_id=802573277 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 298.7, 83.739, -252.6)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_44" parent="Loot/Coffres" unique_id=960944467 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 378.7, 84.005, -331.3)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_45" parent="Loot/Coffres" unique_id=1972944703 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 381.3, 84.006, -331.3)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_46" parent="Loot/Coffres" unique_id=2094529756 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 376.5, 84.005, -328.7)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_47" parent="Loot/Coffres" unique_id=1486618750 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 376.5, 84.003, -326.1)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_48" parent="Loot/Coffres" unique_id=1512384823 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 383.5, 84.009, -328.7)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_49" parent="Loot/Coffres" unique_id=730745677 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 383.5, 84.007, -326.1)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_50" parent="Loot/Coffres" unique_id=1234429664 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -95.13, 43.197, 344.91)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_51" parent="Loot/Coffres" unique_id=1721217025 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.53, 43.197, 344.91)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_52" parent="Loot/Coffres" unique_id=922082436 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -92.53, 43.193, 339.71)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_53" parent="Loot/Coffres" unique_id=122382334 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -95.13, 43.197, 339.71)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_54" parent="Loot/Coffres" unique_id=1497252488 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 96.12, 43.003, 318.66)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_55" parent="Loot/Coffres" unique_id=1212215632 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 98.72, 43.016, 318.66)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_56" parent="Loot/Coffres" unique_id=1563068306 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 93.92, 43.082, 321.26)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_57" parent="Loot/Coffres" unique_id=325336733 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 93.92, 43.116, 323.86)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_58" parent="Loot/Coffres" unique_id=1699725635 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 100.92, 43.051, 321.26)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_59" parent="Loot/Coffres" unique_id=1073800981 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 100.92, 43.035, 323.86)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_60" parent="Loot/Coffres" unique_id=541554097 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.31, 79.472, -454.73)
+Activation = 1
+
+[node name="Coffre_61" parent="Loot/Coffres" unique_id=1806516122 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.91, 79.363, -454.73)
+Activation = 1
+
+[node name="Coffre_62" parent="Loot/Coffres" unique_id=2010072495 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 3.91, 79.168, -459.93)
+Activation = 1
+
+[node name="Coffre_63" parent="Loot/Coffres" unique_id=605681271 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 1.31, 79.339, -459.93)
+Activation = 1
+
+[node name="Coffre_64" parent="Loot/Coffres" unique_id=1884816161 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -385.3, 77.382, -44.58)
+Activation = 1
+
+[node name="Coffre_65" parent="Loot/Coffres" unique_id=108712528 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -382.7, 77.278, -44.58)
+Activation = 1
+
+[node name="Coffre_66" parent="Loot/Coffres" unique_id=1880581479 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -382.7, 77.407, -49.78)
+Activation = 1
+
+[node name="Coffre_67" parent="Loot/Coffres" unique_id=222536503 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -385.3, 77.482, -49.78)
+Activation = 1
+
+[node name="Coffre_68" parent="Loot/Coffres" unique_id=112168015 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 376.7, 70.749, 26.99)
+Activation = 1
+
+[node name="Coffre_69" parent="Loot/Coffres" unique_id=14367490 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 379.3, 70.679, 26.99)
+Activation = 1
+
+[node name="Coffre_70" parent="Loot/Coffres" unique_id=1325051665 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 379.3, 71.049, 21.79)
+Activation = 1
+
+[node name="Coffre_71" parent="Loot/Coffres" unique_id=915965286 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 376.7, 71.057, 21.79)
+Activation = 1
+
+[node name="Coffre_72" parent="Loot/Coffres" unique_id=1326756088 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.81, 36.301, 170.66)
+Activation = 1
+
+[node name="Coffre_73" parent="Loot/Coffres" unique_id=711822153 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.21, 36.21, 170.66)
+Activation = 1
+
+[node name="Coffre_74" parent="Loot/Coffres" unique_id=354757718 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -5.21, 35.3, 165.46)
+Activation = 1
+
+[node name="Coffre_75" parent="Loot/Coffres" unique_id=1819404558 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -7.81, 35.392, 165.46)
+Activation = 1
+
+[node name="Coffre_76" parent="Loot/Coffres" unique_id=1269678030 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3, 32.563, 58.58)
+Activation = 1
+
+[node name="Coffre_77" parent="Loot/Coffres" unique_id=1386965583 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.7, 32.619, 58.58)
+Activation = 1
+
+[node name="Coffre_78" parent="Loot/Coffres" unique_id=1592873890 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -23.7, 33.127, 53.38)
+Activation = 1
+
+[node name="Coffre_79" parent="Loot/Coffres" unique_id=1336018213 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -26.3, 32.696, 53.38)
+Activation = 1
+
+[node name="Coffre_80" parent="Loot/Coffres" unique_id=1775262899 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.7, 186.369, -120.4)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_81" parent="Loot/Coffres" unique_id=1986991170 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 88.3, 186.384, -120.4)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_82" parent="Loot/Coffres" unique_id=749616710 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 88.3, 186.215, -125.6)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_83" parent="Loot/Coffres" unique_id=1562714848 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 85.7, 186.28, -125.6)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_84" parent="Loot/Coffres" unique_id=1753530309 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -0.21, 205.795, -195.14)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_85" parent="Loot/Coffres" unique_id=1370810395 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.39, 205.504, -195.14)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_86" parent="Loot/Coffres" unique_id=67375978 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -2.41, 205.696, -192.54)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_87" parent="Loot/Coffres" unique_id=1832821605 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -2.41, 205.854, -189.94)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_88" parent="Loot/Coffres" unique_id=172403799 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.59, 204.355, -192.54)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_89" parent="Loot/Coffres" unique_id=1269569424 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.59, 204.696, -189.94)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_90" parent="Loot/Coffres" unique_id=1121427739 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -395.87, 77.986, -277.23)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_91" parent="Loot/Coffres" unique_id=1384501284 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -393.27, 77.985, -277.23)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_92" parent="Loot/Coffres" unique_id=1434623011 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -393.27, 77.98, -282.43)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_93" parent="Loot/Coffres" unique_id=1621200324 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -395.87, 77.984, -282.43)
+Activation = 1
+Quality = 2
+
+[node name="Coffre_94" parent="Loot/Coffres" unique_id=1041806902 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 334.7, 83.668, -289.3)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_95" parent="Loot/Coffres" unique_id=1337476692 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 337.3, 83.668, -289.3)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_96" parent="Loot/Coffres" unique_id=1723716184 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 332.5, 83.664, -286.7)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_97" parent="Loot/Coffres" unique_id=343169593 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 332.5, 83.664, -284.1)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_98" parent="Loot/Coffres" unique_id=610319958 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 339.5, 83.668, -286.7)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_99" parent="Loot/Coffres" unique_id=159025000 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 339.5, 83.668, -284.1)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_100" parent="Loot/Coffres" unique_id=1271323376 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -6.94, 51.64, 340.74)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_101" parent="Loot/Coffres" unique_id=616093819 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4.34, 51.641, 340.74)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_102" parent="Loot/Coffres" unique_id=2093226614 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.14, 51.64, 343.34)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_103" parent="Loot/Coffres" unique_id=1485488386 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.14, 51.648, 345.94)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_104" parent="Loot/Coffres" unique_id=584992227 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -2.14, 51.644, 343.34)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_105" parent="Loot/Coffres" unique_id=1194869122 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -2.14, 51.644, 345.94)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_106" parent="Loot/Coffres" unique_id=292713897 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.28, 220.75, -232.38)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_107" parent="Loot/Coffres" unique_id=1616894754 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.88, 220.259, -232.38)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_108" parent="Loot/Coffres" unique_id=533399585 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 30.88, 220.01, -237.58)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_109" parent="Loot/Coffres" unique_id=1671160667 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 28.28, 219.877, -237.58)
+Activation = 1
+Quality = 3
+
+[node name="Coffre_110" parent="Loot/Coffres" unique_id=1601192623 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55.26, 86.969, -391.62)
+Activation = 1
+
+[node name="Coffre_111" parent="Loot/Coffres" unique_id=45230267 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.66, 87.02, -391.62)
+Activation = 1
+
+[node name="Coffre_112" parent="Loot/Coffres" unique_id=1063789070 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -52.66, 86.167, -396.82)
+Activation = 1
+
+[node name="Coffre_113" parent="Loot/Coffres" unique_id=883923193 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -55.26, 86.257, -396.82)
+Activation = 1
+
+[node name="Coffre_114" parent="Loot/Coffres" unique_id=1655965175 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -77.3, 86.528, -412.18)
+Activation = 1
+
+[node name="Coffre_115" parent="Loot/Coffres" unique_id=792928590 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -74.7, 86.136, -412.18)
+Activation = 1
+
+[node name="Coffre_116" parent="Loot/Coffres" unique_id=1615369849 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 87.185, -409.58)
+Activation = 1
+
+[node name="Coffre_117" parent="Loot/Coffres" unique_id=2077075094 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 87.423, -406.98)
+Activation = 1
+
+[node name="Coffre_118" parent="Loot/Coffres" unique_id=1296339132 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -72.5, 86.189, -409.58)
+Activation = 1
+
+[node name="Coffre_119" parent="Loot/Coffres" unique_id=218098816 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -72.5, 86.464, -406.98)
+Activation = 1
+
+[node name="Coffre_120" parent="Loot/Coffres" unique_id=1618632508 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -421.73, 82.442, -37.07)
+Activation = 1
+
+[node name="Coffre_121" parent="Loot/Coffres" unique_id=598646257 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -419.13, 82.381, -37.07)
+Activation = 1
+
+[node name="Coffre_122" parent="Loot/Coffres" unique_id=97945092 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -419.13, 82.243, -42.27)
+Activation = 1
+
+[node name="Coffre_123" parent="Loot/Coffres" unique_id=684996096 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -421.73, 82.232, -42.27)
+Activation = 1
+
+[node name="Coffre_124" parent="Loot/Coffres" unique_id=1921189641 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -380.72, 77.91, -72.89)
+Activation = 1
+
+[node name="Coffre_125" parent="Loot/Coffres" unique_id=1982289325 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -378.12, 77.834, -72.89)
+Activation = 1
+
+[node name="Coffre_126" parent="Loot/Coffres" unique_id=977743713 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -382.92, 77.918, -70.29)
+Activation = 1
+
+[node name="Coffre_127" parent="Loot/Coffres" unique_id=57200968 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -382.92, 77.814, -67.69)
+Activation = 1
+
+[node name="Coffre_128" parent="Loot/Coffres" unique_id=1424219543 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -375.92, 77.533, -70.29)
+Activation = 1
+
+[node name="Coffre_129" parent="Loot/Coffres" unique_id=965866509 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -375.92, 77.18, -67.69)
+Activation = 1
+
+[node name="Coffre_130" parent="Loot/Coffres" unique_id=129303722 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 372.81, 71.09, 4.79)
+Activation = 1
+
+[node name="Coffre_131" parent="Loot/Coffres" unique_id=1246416806 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 375.41, 71.12, 4.79)
+Activation = 1
+
+[node name="Coffre_132" parent="Loot/Coffres" unique_id=1049540272 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 375.41, 70.626, -0.41)
+Activation = 1
+
+[node name="Coffre_133" parent="Loot/Coffres" unique_id=2088491385 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 372.81, 70.587, -0.41)
+Activation = 1
+
+[node name="Coffre_134" parent="Loot/Coffres" unique_id=354949686 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 375.79, 72.124, 90.53)
+Activation = 1
+
+[node name="Coffre_135" parent="Loot/Coffres" unique_id=1110438212 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 378.39, 72.064, 90.53)
+Activation = 1
+
+[node name="Coffre_136" parent="Loot/Coffres" unique_id=116440577 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 373.59, 72.154, 93.13)
+Activation = 1
+
+[node name="Coffre_137" parent="Loot/Coffres" unique_id=1985363159 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 373.59, 72.199, 95.73)
+Activation = 1
+
+[node name="Coffre_138" parent="Loot/Coffres" unique_id=76161947 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 380.59, 72.075, 93.13)
+Activation = 1
+
+[node name="Coffre_139" parent="Loot/Coffres" unique_id=539047722 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 380.59, 72.038, 95.73)
+Activation = 1
+
+[node name="Coffre_140" parent="Loot/Coffres" unique_id=1445871527 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.97, 45.279, 252.74)
+Activation = 1
+
+[node name="Coffre_141" parent="Loot/Coffres" unique_id=613303076 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90.37, 45.142, 252.74)
+Activation = 1
+
+[node name="Coffre_142" parent="Loot/Coffres" unique_id=1789285377 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -90.37, 45.637, 247.54)
+Activation = 1
+
+[node name="Coffre_143" parent="Loot/Coffres" unique_id=1369019794 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -92.97, 45.806, 247.54)
+Activation = 1
+
+[node name="Coffre_144" parent="Loot/Coffres" unique_id=2048271793 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -168.06, 51.577, 263.72)
+Activation = 1
+
+[node name="Coffre_145" parent="Loot/Coffres" unique_id=2118940990 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -165.46, 51.208, 263.72)
+Activation = 1
+
+[node name="Coffre_146" parent="Loot/Coffres" unique_id=821199849 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -170.26, 51.672, 266.32)
+Activation = 1
+
+[node name="Coffre_147" parent="Loot/Coffres" unique_id=471844262 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -170.26, 51.499, 268.92)
+Activation = 1
+
+[node name="Coffre_148" parent="Loot/Coffres" unique_id=715365575 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -163.26, 50.759, 266.32)
+Activation = 1
+
+[node name="Coffre_149" parent="Loot/Coffres" unique_id=1595576225 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -163.26, 50.663, 268.92)
+Activation = 1
+
+[node name="Coffre_150" parent="Loot/Coffres" unique_id=1530007703 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.72, 33.185, 79.86)
+Activation = 1
+
+[node name="Coffre_151" parent="Loot/Coffres" unique_id=385303543 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.12, 32.829, 79.86)
+Activation = 1
+
+[node name="Coffre_152" parent="Loot/Coffres" unique_id=2053956989 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -17.12, 32.988, 74.66)
+Activation = 1
+
+[node name="Coffre_153" parent="Loot/Coffres" unique_id=1656440808 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -19.72, 33.244, 74.66)
+Activation = 1
+
+[node name="Coffre_154" parent="Loot/Coffres" unique_id=462874194 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 32.16, 26.823, 49.07)
+Activation = 1
+
+[node name="Coffre_155" parent="Loot/Coffres" unique_id=2114127771 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 34.76, 26.831, 49.07)
+Activation = 1
+
+[node name="Coffre_156" parent="Loot/Coffres" unique_id=1676529709 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 29.96, 26.651, 51.67)
+Activation = 1
+
+[node name="Coffre_157" parent="Loot/Coffres" unique_id=865830297 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 29.96, 26.476, 54.27)
+Activation = 1
+
+[node name="Coffre_158" parent="Loot/Coffres" unique_id=829708813 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 36.96, 26.794, 51.67)
+Activation = 1
+
+[node name="Coffre_159" parent="Loot/Coffres" unique_id=527184524 instance=ExtResource("loot_chest_prefab")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 36.96, 26.676, 54.27)
+Activation = 1
+
+[node name="ObjetButin" parent="Loot/Coffres" unique_id=2064488628 instance=ExtResource("loot_item_prefab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -384.07376, 77.65822, -252.26352)
+Activation = 1
+OwnChance = true
+Chance = 1.0
+Item = "optic_2x"
 
 [node name="Objets" type="Node3D" parent="Loot" unique_id=1528629094]
 

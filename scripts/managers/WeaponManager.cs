@@ -93,7 +93,7 @@ public partial class WeaponManager : Node3D
 	/// <summary>Chargeur de l'arme en main, tel que le serveur le compte.</summary>
 	public void SetServerMagazine(int magazine)
 	{
-		if (_weapon == null || magazine == _magazine) return;
+		if (_weapon == null || _switching || magazine == _magazine) return;      // en plein changement d'arme, le chargeur reçu est celui de la nouvelle arme
 		_magazine = magazine;
 		EmitAmmo();
 	}
@@ -483,7 +483,7 @@ public partial class WeaponManager : Node3D
 
 	private void EmitAmmo()
 	{
-		if (_state != null)
+		if (_state != null && !_switching)
 			_state.Magazine = _magazine;
 
 		string ammoType = CurrentAmmoType();
@@ -590,7 +590,7 @@ public partial class WeaponManager : Node3D
 		// Lunette grossissante : en visée, le FOV de la vue FPS est resserré pour que le corps de la lunette
 		// (hauteur au-dessus de l'axe optique et demi-largeur) occupe une part fixe de l'écran
 		_adsViewmodelFov = 0.0f;
-		if (optic.Zoom >= 2.0f)
+		if (optic.Zoom > 2.0f)      // lunettes (4x, 6x) ; un viseur ouvert x2 garde la présentation d'un viseur de type holographique
 		{
 			var centerLocal = toLocal * center.GlobalPosition;
 			float halfOuter = Mathf.Max(
@@ -658,7 +658,7 @@ public partial class WeaponManager : Node3D
 	{
 		bool wasHolding = _holdingFire;
 		_holdingFire = isShooting && IsGameplayInputActive();
-		if (_holdingFire && !wasHolding && _weapon == null) _fists?.Punch(); // à mains nues, le coup part dès le clic
+		if (_holdingFire && !wasHolding && _weapon == null && _bombHeld == null) _fists?.Punch(); // à mains nues, le coup part dès le clic
 		// Si le bouton est relâché (ou qu'un menu est ouvert), on réinitialise l'état de tir
 		if (!isShooting || !IsGameplayInputActive())
 		{
@@ -844,6 +844,29 @@ public partial class WeaponManager : Node3D
 	}
 
 	private bool _usingSupply;
+	private Node3D _bombHeld;
+
+	private string _heldId;
+
+	/// <summary>Montre un objet devant les mains (mains nues) tant qu'il est en main : la bombe (le clic la pose) ou une grenade (le clic la lance). null = rien.</summary>
+	public void SetHeldObject(string itemId, float scale = 1.6f)
+	{
+		bool alive = _bombHeld != null && GodotObject.IsInstanceValid(_bombHeld);
+		if (itemId == _heldId && (itemId == null || alive)) return;
+		if (alive) _bombHeld.QueueFree();
+		_bombHeld = null; _heldId = itemId;
+		if (itemId == null) return;
+		var def = ItemDatabase.Get(itemId);
+		if (def == null || Camera == null) return;
+		_bombHeld = new Node3D { Name = "ObjetEnMain" };
+		var model = ItemVisuals.BuildGroundModel(def);
+		model.Scale = Vector3.One * scale;                    // un peu plus grand qu'au sol : on le voit bien
+		model.Position = new Vector3(0, -0.12f, 0);
+		_bombHeld.AddChild(model);
+		_bombHeld.Position = new Vector3(0.08f, -0.2f, -0.42f);
+		_bombHeld.RotationDegrees = new Vector3(8, -25, 0);
+		Camera.AddChild(_bombHeld);
+	}
 
 	/// <summary>Un soin est en cours (en ligne) : l'arme est rangée et les mains lèvent le flacon à la bouche.</summary>
 	public void SetUsingSupply(string itemId)
@@ -860,7 +883,8 @@ public partial class WeaponManager : Node3D
 		if (_fists != null)
 		{
 			_fists.Visible = !HideViewmodels && (_weapon == null || _usingSupply);
-			_fists.Attacking = _weapon == null && !_usingSupply && _holdingFire; // à mains nues, tenir le clic = boxer
+			if (_bombHeld != null && GodotObject.IsInstanceValid(_bombHeld)) _bombHeld.Visible = !HideViewmodels && !_usingSupply;
+			_fists.Attacking = _weapon == null && !_usingSupply && _bombHeld == null && _holdingFire; // à mains nues, tenir le clic = boxer (pas avec la bombe en main : le clic la pose)
 		}
 
 		if (_weapon != null)

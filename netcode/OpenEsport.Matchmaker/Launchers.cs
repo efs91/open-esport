@@ -94,12 +94,11 @@ namespace OpenEsport.Matchmaker
 			Log($"{list.Count} conteneur(s) d'une exécution précédente supprimé(s)");
 		}
 
-		/// <summary>Construit l'image du serveur si elle n'existe pas encore (contexte : le dossier netcode).</summary>
+		/// <summary>Construit (ou met à jour) l'image du serveur à chaque démarrage (contexte : le dossier netcode).</summary>
 		public void EnsureImage(string netcodeDir)
 		{
-			var (code, _) = Run(new List<string> { "image", "inspect", Image });
-			if (code == 0) return;
-			Log($"Image {Image} absente : construction (quelques minutes la première fois)…");
+			// toujours « docker build » : le cache de Docker rend l'opération instantanée si le code n'a pas changé, et l'image suit les modifications
+			Log($"Image {Image} : construction / mise à jour (rapide si rien n'a changé, quelques minutes sinon)…");
 			var (c2, o2) = Run(new List<string> { "build", "-t", Image, "-f", Path.Combine(netcodeDir, "Dockerfile"), netcodeDir });
 			if (c2 != 0) throw new InvalidOperationException("docker build a échoué : " + o2);
 		}

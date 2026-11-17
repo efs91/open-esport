@@ -17,8 +17,13 @@ namespace OpenEsport.Core
 		public float ReloadSeconds;
 		public byte AmmoType;
 		public bool Melee;
+		/// <summary>Vitesse de la balle (m/s) ; 0 = vitesse commune (bullet.speed).</summary>
+		public float BulletSpeed;
 
 		public float SecondsBetweenShots => 60f / RoundsPerMinute;
+
+		/// <summary>Vitesse réelle de la balle : celle de l'arme, sinon la vitesse commune.</summary>
+		public float Speed => BulletSpeed > 0f ? BulletSpeed : GameBalance.BulletSpeed;
 	}
 
 	public static class WeaponDefs
@@ -35,6 +40,7 @@ namespace OpenEsport.Core
 			Add(new WeaponDef { Id = ItemIds.Smg45, Damage = 13, RoundsPerMinute = 900, MagazineSize = 25, Automatic = true, Range = 150, SpreadDegrees = 1.2f, ReloadSeconds = 1.8f, AmmoType = 1 });
 			Add(new WeaponDef { Id = ItemIds.Ak, Damage = 19, RoundsPerMinute = 600, MagazineSize = 30, Automatic = true, Range = 400, SpreadDegrees = 0.3f, ReloadSeconds = 2.3f, AmmoType = 2 });
 			Add(new WeaponDef { Id = ItemIds.Lmg63, Damage = 17, RoundsPerMinute = 700, MagazineSize = 100, Automatic = true, Range = 400, SpreadDegrees = 0.5f, ReloadSeconds = 4.5f, AmmoType = 2 });
+			Add(new WeaponDef { Id = ItemIds.Sniper, Damage = 75, RoundsPerMinute = 45, MagazineSize = 5, Range = 800, SpreadDegrees = 0.02f, ReloadSeconds = 3.2f, AmmoType = 4, BulletSpeed = 600 });
 			Add(new WeaponDef { Id = ItemIds.Sawnoff, Damage = 11, RoundsPerMinute = 120, MagazineSize = 2, Range = 40, SpreadDegrees = 4f, Pellets = 8, ReloadSeconds = 2.4f, AmmoType = 3 });
 		}
 
@@ -69,6 +75,7 @@ namespace OpenEsport.Core
 				Set("spread", v => d.SpreadDegrees = v);
 				Set("pellets", v => d.Pellets = Math.Max(1, (int)v));
 				Set("reloadSeconds", v => d.ReloadSeconds = v);
+				Set("bulletSpeed", v => d.BulletSpeed = Math.Max(0f, v));
 			}
 		}
 	}

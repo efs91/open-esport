@@ -60,7 +60,7 @@ namespace Openesport.Online
 			{
 				foreach (var c in n.GetChildren())
 				{
-					if (c is CoverBox cb)
+					if (c is CoverBox cb && cb.Solid)         // une dalle de sol (non solide) n'est pas un obstacle
 					{
 						var b = cb.WorldBounds();
 						data.Boxes.Add(new OpenEsport.Core.Aabb(new Vec3(b.Position.X, b.Position.Y, b.Position.Z), new Vec3(b.End.X, b.End.Y, b.End.Z)));

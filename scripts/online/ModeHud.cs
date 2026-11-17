@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using OpenEsport.Core;
+using Openesport.Inventory;
 
 namespace Openesport.Online
 {
@@ -26,6 +27,22 @@ namespace Openesport.Online
 		private ModeState _last = ModeState.Empty;
 		private bool _alive = true;
 		private MatchPhase _phase;
+
+		// ---- messages : un seul emplacement par sorte de message, pour que rien ne se superpose
+		//   haut : scores et état de la manche (lignes 1 et 2)  ·  bandeau d'annonce (file d'attente, un message à la fois)
+		//   puis : panneau de la phase d'achat (persistant)  ·  alerte pose / désamorçage de l'adversaire  ·  pose / désamorçage de soi (barre au centre)
+		/// <summary>Position du joueur local (pour la distance et la direction de la bombe) et son identifiant.</summary>
+		public Func<Vector3?> LocalPosition = () => null;
+		public Func<ushort> MyId = () => 0xFFFF;
+
+		private PanelContainer _bannerPanel, _buyPanel;
+		private RichTextLabel _bannerText, _buyText, _alert;
+		private StyleBoxFlat _bannerStyle;
+		private ProgressBar _buyBar;
+		private float _bannerLeft;
+		private readonly System.Collections.Generic.Queue<(string text, Color color, float seconds)> _queue = new();
+		private ModeState _prev;
+		private bool _prevKnown;
 
 		private static readonly Color Blue = new Color(0.35f, 0.62f, 1f), Red = new Color(1f, 0.38f, 0.32f), Gray = new Color(0.8f, 0.8f, 0.8f);
 
@@ -59,20 +76,53 @@ namespace Openesport.Online
 			}
 
 			_footer = new Label { MouseFilter = Control.MouseFilterEnum.Ignore };
-			_footer.AnchorTop = 1; _footer.AnchorBottom = 1; _footer.OffsetLeft = 16; _footer.OffsetTop = -120; _footer.OffsetBottom = -80;
+			_footer.AnchorTop = 1; _footer.AnchorBottom = 1; _footer.OffsetLeft = 16; _footer.OffsetTop = -214; _footer.OffsetBottom = -164;      // au-dessus de la vie et du bouclier
 			_footer.AddThemeFontSizeOverride("font_size", 20);
 			_footer.AddThemeColorOverride("font_outline_color", Colors.Black); _footer.AddThemeConstantOverride("outline_size", 6);
 			root.AddChild(_footer);
 
 			_actionLabel = new Label { HorizontalAlignment = HorizontalAlignment.Center, Visible = false, MouseFilter = Control.MouseFilterEnum.Ignore };
-			_actionLabel.AnchorLeft = 0.5f; _actionLabel.AnchorRight = 0.5f; _actionLabel.AnchorTop = 0.62f; _actionLabel.OffsetLeft = -200; _actionLabel.OffsetRight = 200;
+			_actionLabel.AnchorLeft = 0.5f; _actionLabel.AnchorRight = 0.5f; _actionLabel.AnchorTop = 0.70f; _actionLabel.OffsetLeft = -200; _actionLabel.OffsetRight = 200;
 			_actionLabel.AddThemeFontSizeOverride("font_size", 22);
 			root.AddChild(_actionLabel);
 			_action = new ProgressBar { MinValue = 0, MaxValue = 100, ShowPercentage = false, Visible = false, MouseFilter = Control.MouseFilterEnum.Ignore };
-			_action.AnchorLeft = 0.5f; _action.AnchorRight = 0.5f; _action.AnchorTop = 0.62f; _action.OffsetLeft = -140; _action.OffsetRight = 140; _action.OffsetTop = 34; _action.OffsetBottom = 52;
+			_action.AnchorLeft = 0.5f; _action.AnchorRight = 0.5f; _action.AnchorTop = 0.70f; _action.OffsetLeft = -140; _action.OffsetRight = 140; _action.OffsetTop = 34; _action.OffsetBottom = 52;
 			root.AddChild(_action);
 
+			// bandeau d'annonce : sous les scores, un message à la fois (les suivants attendent leur tour)
+			_bannerStyle = PanelStyle(Gray);
+			_bannerPanel = new PanelContainer { Visible = false, MouseFilter = Control.MouseFilterEnum.Ignore };
+			_bannerPanel.AddThemeStyleboxOverride("panel", _bannerStyle);
+			_bannerPanel.AnchorLeft = 0.5f; _bannerPanel.AnchorRight = 0.5f; _bannerPanel.AnchorTop = 0.15f; _bannerPanel.OffsetLeft = -340; _bannerPanel.OffsetRight = 340;
+			_bannerText = MakeRich(30);
+			_bannerText.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			_bannerText.HorizontalAlignment = HorizontalAlignment.Center;
+			_bannerPanel.AddChild(_bannerText);
+			root.AddChild(_bannerPanel);
+
+			// phase d'achat : un grand panneau qui reste affiché tant qu'on peut acheter
+			_buyPanel = new PanelContainer { Visible = false, MouseFilter = Control.MouseFilterEnum.Ignore };
+			_buyPanel.AddThemeStyleboxOverride("panel", PanelStyle(new Color(1f, 0.82f, 0.25f)));
+			_buyPanel.AnchorLeft = 0.5f; _buyPanel.AnchorRight = 0.5f; _buyPanel.AnchorTop = 0.235f; _buyPanel.OffsetLeft = -300; _buyPanel.OffsetRight = 300;
+			var buyBox = new VBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
+			buyBox.AddThemeConstantOverride("separation", 6);
+			_buyText = MakeRich(24);
+			_buyText.HorizontalAlignment = HorizontalAlignment.Center;
+			_buyText.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			_buyBar = new ProgressBar { MinValue = 0, MaxValue = 100, ShowPercentage = false, CustomMinimumSize = new Vector2(0, 10), MouseFilter = Control.MouseFilterEnum.Ignore };
+			buyBox.AddChild(_buyText); buyBox.AddChild(_buyBar);
+			_buyPanel.AddChild(buyBox);
+			root.AddChild(_buyPanel);
+
+			// alerte : l'adversaire pose ou désamorce la bombe
+			_alert = MakeRich(26);
+			_alert.HorizontalAlignment = HorizontalAlignment.Center;
+			_alert.AnchorLeft = 0.5f; _alert.AnchorRight = 0.5f; _alert.AnchorTop = 0.30f; _alert.OffsetLeft = -380; _alert.OffsetRight = 380;
+			_alert.Visible = false;
+			root.AddChild(_alert);
+
 			_menu = new PanelContainer { Visible = false };
+			_menu.AddThemeStyleboxOverride("panel", PanelStyle(new Color(0.45f, 0.47f, 0.52f), 0.97f));
 			_menu.SetAnchorsPreset(Control.LayoutPreset.Center);
 			_menu.OffsetLeft = -250; _menu.OffsetRight = 250; _menu.OffsetTop = -240; _menu.OffsetBottom = 240;
 			_menuBox = new VBoxContainer();
@@ -125,35 +175,114 @@ namespace Openesport.Online
 		private void Rebuild()
 		{
 			foreach (var c in _menuBox.GetChildren()) c.QueueFree();
-			var title = new Label { Text = _menuKind == "buy" ? $"Boutique — argent : {_last.Money} $" : "Choisis ta classe", HorizontalAlignment = HorizontalAlignment.Center };
+			bool buy = _menuKind == "buy";
+			// la boutique est large (une colonne par famille d'articles), le menu de classe reste étroit
+			_menu.OffsetLeft = buy ? -600 : -250; _menu.OffsetRight = buy ? 600 : 250;
+			_menu.OffsetTop = buy ? -300 : -240; _menu.OffsetBottom = buy ? 300 : 240;
+			if (buy) { BuildShop(); return; }
+
+			var title = new Label { Text = "Choisis ta classe", HorizontalAlignment = HorizontalAlignment.Center };
 			title.AddThemeFontSizeOverride("font_size", 24);
 			_menuBox.AddChild(title);
-			if (_menuKind == "buy")
+			_menuBox.AddChild(new Label { Text = "Le changement prend effet à ta prochaine réapparition (tout de suite en salle d'attente).", AutowrapMode = TextServer.AutowrapMode.WordSmart });
+			foreach (var kit in Loadouts.Kits)
 			{
-				_menuBox.AddChild(new Label { Text = "B ou Échap : fermer. Les achats se font pendant la phase d'achat.", AutowrapMode = TextServer.AutowrapMode.WordSmart });
-				foreach (var item in Shop.Items)
-				{
-					if (item.Side != 255 && item.Side != _last.MySide) continue;
-					var it = item;
-					var b = new Button { Text = $"{it.Name} — {it.Price} $", Disabled = it.Price > _last.Money || (it.DefuseKit && _last.HasKit), CustomMinimumSize = new Vector2(0, 32) };
-					b.Pressed += () => { Send?.Invoke(CommandType.Buy, it.Code); b.Disabled = true; };
-					_menuBox.AddChild(b);
-				}
-			}
-			else
-			{
-				_menuBox.AddChild(new Label { Text = "Le changement prend effet à ta prochaine réapparition (tout de suite en salle d'attente).", AutowrapMode = TextServer.AutowrapMode.WordSmart });
-				foreach (var kit in Loadouts.Kits)
-				{
-					var k = kit;
-					var b = new Button { Text = $"{(k.Id == _last.ClassId ? "✔  " : "")}{k.Name} — {k.Description}", CustomMinimumSize = new Vector2(0, 46), AutowrapMode = TextServer.AutowrapMode.WordSmart };
-					b.Pressed += () => { Send?.Invoke(CommandType.SelectClass, k.Id); _last.ClassId = k.Id; Rebuild(); };
-					_menuBox.AddChild(b);
-				}
+				var k = kit;
+				var b = new Button { Text = $"{(k.Id == _last.ClassId ? "✔  " : "")}{k.Name} — {k.Description}", CustomMinimumSize = new Vector2(0, 46), AutowrapMode = TextServer.AutowrapMode.WordSmart };
+				b.Pressed += () => { Send?.Invoke(CommandType.SelectClass, k.Id); _last.ClassId = k.Id; Rebuild(); };
+				_menuBox.AddChild(b);
 			}
 			var close = new Button { Text = "Fermer" };
 			close.Pressed += CloseMenu;
 			_menuBox.AddChild(close);
+		}
+
+		// ------------------------------------------------------------------ boutique (comme celles de Valorant et de Counter-Strike : des familles en colonnes, des cases à cliquer)
+
+		private static readonly string[] ShopColumns = { "PISTOLET", "PROXIMITÉ", "FUSILS", "BOUCLIERS", "SOINS", "VISEURS", "GRENADES", "ÉQUIPEMENT" };
+
+		private static string ShopCategory(ShopItem it)
+		{
+			if (it.DefuseKit) return "ÉQUIPEMENT";
+			if (it.ShieldTier >= 0) return "BOUCLIERS";
+			var d = ItemDefs.Get(it.ItemId);
+			if (d == null) return "ÉQUIPEMENT";
+			return d.Kind switch
+			{
+				ItemKind.Weapon => it.ItemId == ItemIds.C19 ? "PISTOLET" : it.ItemId == ItemIds.Smg45 || it.ItemId == ItemIds.Sawnoff ? "PROXIMITÉ" : "FUSILS",
+				ItemKind.Optic => "VISEURS",
+				ItemKind.Grenade => "GRENADES",
+				ItemKind.Consumable => "SOINS",
+				_ => "ÉQUIPEMENT",
+			};
+		}
+
+		private void BuildShop()
+		{
+			var head = new HBoxContainer();
+			var title = new Label { Text = "BOUTIQUE", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			title.AddThemeFontSizeOverride("font_size", 30);
+			var money = new Label { Text = $"{_last.Money} $" };
+			money.AddThemeFontSizeOverride("font_size", 30);
+			money.AddThemeColorOverride("font_color", Gold);
+			head.AddChild(title); head.AddChild(money);
+			_menuBox.AddChild(head);
+			var hint = new Label { Text = "Clique sur un article pour l'acheter pendant la phase d'achat   ·   B ou Échap : fermer" };
+			hint.AddThemeColorOverride("font_color", new Color(0.7f, 0.73f, 0.78f));
+			_menuBox.AddChild(hint);
+
+			var columns = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+			columns.AddThemeConstantOverride("separation", 10);
+			foreach (var cat in ShopColumns)
+			{
+				var items = new System.Collections.Generic.List<ShopItem>();
+				foreach (var it in Shop.Items) if ((it.Side == 255 || it.Side == _last.MySide) && ShopCategory(it) == cat) items.Add(it);
+				if (items.Count == 0) continue;
+				var col = new VBoxContainer();
+				col.AddThemeConstantOverride("separation", 8);
+				var name = new Label { Text = cat, HorizontalAlignment = HorizontalAlignment.Center };
+				name.AddThemeFontSizeOverride("font_size", 16);
+				name.AddThemeColorOverride("font_color", new Color(0.7f, 0.73f, 0.78f));
+				col.AddChild(name);
+				foreach (var it in items) col.AddChild(ShopTile(it));
+				columns.AddChild(col);
+			}
+			var scroll = new ScrollContainer { CustomMinimumSize = new Vector2(0, 475), HorizontalScrollMode = ScrollContainer.ScrollMode.Auto, VerticalScrollMode = ScrollContainer.ScrollMode.Auto };
+			scroll.AddChild(columns);
+			_menuBox.AddChild(scroll);
+			var close = new Button { Text = "Fermer" };
+			close.Pressed += CloseMenu;
+			_menuBox.AddChild(close);
+		}
+
+		/// <summary>Une case d'article : miniature, nom, prix. Grisée si on n'a pas assez d'argent (ou déjà le kit).</summary>
+		private Button ShopTile(ShopItem it)
+		{
+			bool afford = it.Price <= _last.Money && !(it.DefuseKit && _last.HasKit);
+			var b = new Button { CustomMinimumSize = new Vector2(128, 104), Disabled = !afford, FocusMode = Control.FocusModeEnum.None };
+			StyleBoxFlat Box(Color bg, Color border) { var s = new StyleBoxFlat { BgColor = bg, BorderColor = border }; s.SetBorderWidthAll(2); s.SetCornerRadiusAll(5); return s; }
+			b.AddThemeStyleboxOverride("normal", Box(new Color(0.12f, 0.14f, 0.19f), new Color(0.32f, 0.35f, 0.41f)));
+			b.AddThemeStyleboxOverride("hover", Box(new Color(0.18f, 0.2f, 0.27f), Gold));
+			b.AddThemeStyleboxOverride("pressed", Box(new Color(0.24f, 0.26f, 0.34f), Gold));
+			b.AddThemeStyleboxOverride("disabled", Box(new Color(0.08f, 0.09f, 0.12f), new Color(0.2f, 0.22f, 0.26f)));
+
+			var box = new VBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore, Modulate = afford ? Colors.White : new Color(1, 1, 1, 0.45f) };
+			box.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+			box.OffsetLeft = 6; box.OffsetRight = -6; box.OffsetTop = 6; box.OffsetBottom = -6;
+			box.AddThemeConstantOverride("separation", 2);
+			Texture2D icon = it.ItemId != ItemIds.None ? ItemIcons.Get(ItemDefs.Get(it.ItemId)?.Name)
+				: it.ShieldTier >= 0 && ResourceLoader.Exists(ItemTierStyle.ShieldIcon(it.ShieldTier)) ? GD.Load<Texture2D>(ItemTierStyle.ShieldIcon(it.ShieldTier)) : null;
+			box.AddChild(new TextureRect { Texture = icon, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(0, 44), SizeFlagsVertical = Control.SizeFlags.ExpandFill, MouseFilter = Control.MouseFilterEnum.Ignore });
+			var label = new Label { Text = it.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, MouseFilter = Control.MouseFilterEnum.Ignore };
+			label.AddThemeFontSizeOverride("font_size", 12);
+			box.AddChild(label);
+			var price = new Label { Text = $"{it.Price} $", HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = Control.MouseFilterEnum.Ignore };
+			price.AddThemeFontSizeOverride("font_size", 17);
+			price.AddThemeColorOverride("font_color", afford ? Gold : new Color(0.9f, 0.35f, 0.3f));
+			box.AddChild(price);
+			b.AddChild(box);
+			b.Pressed += () => { Send?.Invoke(CommandType.Buy, it.Code); b.Disabled = true; };
+			return b;
 		}
 
 		/// <summary>Met l'interface à jour : à appeler à chaque image avec l'état du mode et de la partie.</summary>
@@ -205,6 +334,145 @@ namespace Openesport.Online
 
 			_action.Visible = _actionLabel.Visible = m.Action != 0;
 			if (m.Action != 0) { _action.Value = m.ActionProgress; _actionLabel.Text = m.Action == 1 ? "Pose de la bombe…" : "Désamorçage…"; }
+			UpdateMessages(m, phase);
+		}
+
+		private static StyleBoxFlat PanelStyle(Color border, float alpha = 0.8f)
+		{
+			var s = new StyleBoxFlat { BgColor = new Color(0.04f, 0.05f, 0.08f, alpha), BorderColor = border };
+			s.SetBorderWidthAll(3); s.SetCornerRadiusAll(8);
+			s.ContentMarginLeft = 18; s.ContentMarginRight = 18; s.ContentMarginTop = 10; s.ContentMarginBottom = 12;
+			return s;
+		}
+
+		/// <summary>Affiche un message dans le bandeau. Les messages se suivent (3,5 s chacun) ; un message urgent efface la file et passe tout de suite.</summary>
+		public void Announce(string text, Color color, float seconds = 3.5f, bool urgent = false)
+		{
+			if (urgent) { _queue.Clear(); _bannerLeft = 0f; }
+			while (_queue.Count >= 4) _queue.Dequeue();
+			_queue.Enqueue((text, color, seconds));
+		}
+
+		public override void _Process(double delta)
+		{
+			float dt = (float)delta;
+			if (_bannerLeft > 0f)
+			{
+				_bannerLeft -= dt;
+				_bannerPanel.Modulate = new Color(1, 1, 1, Mathf.Clamp(_bannerLeft / 0.4f, 0f, 1f));
+				if (_bannerLeft <= 0f) _bannerPanel.Visible = false;
+			}
+			if (_bannerLeft <= 0f && _queue.Count > 0)
+			{
+				var (text, color, seconds) = _queue.Dequeue();
+				_bannerText.Text = text;
+				_bannerStyle.BorderColor = color;
+				_bannerPanel.Modulate = Colors.White;
+				_bannerPanel.Visible = true;
+				_bannerLeft = seconds;
+			}
+			_bannerPanel.Visible = _bannerLeft > 0f && !MenuOpen;      // pas d'annonce par-dessus un menu
+			if (_alert.Visible) _alert.Modulate = new Color(1, 1, 1, 0.65f + 0.35f * Mathf.Sin(Time.GetTicksMsec() / 1000f * 8f));
+		}
+
+		/// <summary>Où est un point : coordonnées de la carte, distance et direction par rapport au joueur (le nord est vers -Z).</summary>
+		private string Where(Vec3 p)
+		{
+			string coords = $"X {p.X:0} · Z {p.Z:0}";
+			var me = LocalPosition();
+			if (me == null) return coords;
+			float dx = p.X - me.Value.X, dz = p.Z - me.Value.Z;
+			string[] names = { "nord", "nord-est", "est", "sud-est", "sud", "sud-ouest", "ouest", "nord-ouest" };
+			int dir = ((int)MathF.Round(MathF.Atan2(dx, -dz) / (MathF.PI / 4f)) % 8 + 8) % 8;
+			return $"{coords}   ({MathF.Sqrt(dx * dx + dz * dz):0} m, {names[dir]})";
+		}
+
+		private static readonly Color Gold = new Color(1f, 0.82f, 0.25f), Orange = new Color(1f, 0.55f, 0.15f), Green = new Color(0.4f, 0.9f, 0.5f);
+
+		/// <summary>Sabotage : panneau d'achat, alerte de l'adversaire et annonces des changements d'état (manche, bombe au sol, pose, désamorçage, fin).</summary>
+		private void UpdateMessages(ModeState m, MatchPhase phase)
+		{
+			bool sab = m.Mode == GameMode.Sabotage && phase != MatchPhase.Lobby;
+			var stage = (SabotageStage)m.Stage;
+			bool attack = m.MySide == 1;
+			ushort me = MyId();
+
+			// phase d'achat : grand panneau fixe
+			_buyPanel.Visible = sab && stage == SabotageStage.Buy && phase == MatchPhase.Playing && !MenuOpen;      // la boutique ouverte passe devant : on ne montre pas les deux
+			if (_buyPanel.Visible)
+			{
+				float total = Mathf.Max(1f, GameBalance.F("sabotage.buySeconds"));
+				_buyBar.Value = Mathf.Clamp(m.TimeLeft / total * 100f, 0f, 100f);
+				_buyText.Text = $"[b]PHASE D'ACHAT[/b]   ·   départ dans [b]{Clock(m.TimeLeft)}[/b]\n"
+					+ (attack ? "[color=#ff6152]Vous ATTAQUEZ[/color]" : "[color=#59a0ff]Vous DÉFENDEZ[/color]") + $"   ·   argent [b]{m.Money} $[/b]\n"
+					+ "[color=#ffd23f][b]B[/b][/color] : ouvrir la boutique";
+			}
+
+			// alerte : l'adversaire agit sur la bombe (pas moi : ma propre barre est au centre)
+			bool other = sab && !MenuOpen && m.BombAction != 0 && m.Action == 0 && (stage == SabotageStage.Round || stage == SabotageStage.Planted);
+			_alert.Visible = other;
+			if (other)
+			{
+				string who = NameOf(m.BombActor);
+				_alert.Text = m.BombAction == 2
+					? (attack ? $"[color=#ff5040][b]⚠  {who} DÉSAMORCE LA BOMBE — {m.BombActionProgress} %[/b][/color]" : $"[color=#6fe08a][b]{who} désamorce la bombe — {m.BombActionProgress} %[/b][/color]")
+					: (attack ? $"[color=#6fe08a][b]{who} pose la bombe — {m.BombActionProgress} %[/b][/color]" : $"[color=#ff5040][b]⚠  {who} POSE LA BOMBE — {m.BombActionProgress} %[/b][/color]");
+			}
+
+			// annonces : seulement sur un changement d'état (jamais à la première image reçue)
+			if (!sab) { _prevKnown = false; return; }
+			var p = _prev;
+			bool known = _prevKnown;
+			_prev = m; _prevKnown = true;
+			if (!known) return;
+			string role = attack ? "[color=#ff6152]Vous attaquez[/color]" : "[color=#59a0ff]Vous défendez[/color]";
+
+			if (m.Stage != p.Stage || m.Round != p.Round)
+			{
+				if (stage == SabotageStage.Buy) Announce($"[b]MANCHE {m.Round}[/b]\n{role}", Gold, 3f, true);
+				else if (stage == SabotageStage.Round && (SabotageStage)p.Stage == SabotageStage.Buy)
+				{
+					string goal = !attack ? "Empêchez la pose de la bombe sur les sites A et B"
+						: m.BombCarrier == me ? "[b]Tu portes la bombe[/b] : rejoins un site (A ou B), sors-la (molette ou [b]5[/b]) puis maintiens le [b]clic gauche[/b]   ([b]X[/b] : la lâcher)"
+						: m.BombCarrier != 0xFFFF ? $"{NameOf(m.BombCarrier)} porte la bombe : protège-le jusqu'à un site" : "La bombe est au sol";
+					Announce($"[b]C'EST PARTI ![/b]\n{goal}", Green, 4f, true);
+				}
+				else if (stage == SabotageStage.Planted)
+					Announce($"[b]BOMBE POSÉE — SITE {(char)('A' + m.BombSite)}[/b]\n" + (attack ? "Défends-la jusqu'à l'explosion" : "Désamorcez-la : maintenez [b]E[/b] près de la bombe"), Orange, 4f, true);
+			}
+
+			// la bombe change de main ou tombe
+			if (stage == SabotageStage.Round)
+			{
+				if (m.BombState == 1 && p.BombState != 1)
+					Announce($"[b]BOMBE AU SOL[/b]\n{Where(m.BombPos)}", Orange, 5f, true);
+				else if (m.BombState == 0 && p.BombState == 1)
+					Announce(m.BombCarrier == me ? "[b]Tu as ramassé la bombe[/b]" : $"{NameOf(m.BombCarrier)} a ramassé la bombe", Gold, 3f);
+			}
+
+			// désamorçage vu par tous
+			if (m.BombAction == 2 && p.BombAction != 2 && attack)
+				Announce($"[b][color=#ff5040]DÉSAMORÇAGE EN COURS[/color][/b]\npar {NameOf(m.BombActor)} — empêchez-le !", Red, 3f, true);
+			else if (p.BombAction == 2 && m.BombAction == 0 && stage == SabotageStage.Planted)
+				Announce(attack ? "Désamorçage interrompu" : "[b]Désamorçage interrompu[/b]", Gold, 2.5f);
+
+			// fin de manche
+			if (m.BombState == 3 && p.BombState != 3)
+				Announce("[b]BOMBE DÉSAMORCÉE[/b]\n" + (attack ? "Les défenseurs gagnent la manche : votre équipe a perdu" : "Les défenseurs gagnent la manche"), attack ? Red : Green, 5f, true);
+			else if (m.BombState == 4 && p.BombState != 4)
+				Announce("[b]LA BOMBE A EXPLOSÉ[/b]\nLes attaquants gagnent la manche", attack ? Green : Red, 5f, true);
+			else if (stage == SabotageStage.RoundEnd && (SabotageStage)p.Stage != SabotageStage.RoundEnd && m.BombState < 3 && m.RoundWinner != 255)
+				Announce($"[b]MANCHE GAGNÉE PAR LES {(m.RoundWinner == 1 ? "ATTAQUANTS" : "DÉFENSEURS")}[/b]", (m.RoundWinner == 1) == attack ? Green : Red, 4f, true);
+		}
+
+		private string BombLine(ModeState m, string timer)
+		{
+			ushort me = MyId();
+			string state = m.BombState == 1 ? $"[color=#ff8c26][b]bombe au sol[/b][/color] : {Where(m.BombPos)}"
+				: m.BombCarrier == me ? "[b]tu portes la bombe[/b] (X : la lâcher)"
+				: m.BombCarrier != 0xFFFF && m.MySide == 1 ? $"la bombe est portée par {NameOf(m.BombCarrier)}"
+				: m.MySide == 1 ? "la bombe est tombée" : "empêche la pose de la bombe";
+			return state;
 		}
 
 		private string FlagText(FlagState f) => f.State == 0 ? "à sa base" : f.State == 1 ? $"porté par {NameOf(f.Carrier)}" : "tombé au sol";
@@ -213,10 +481,10 @@ namespace Openesport.Online
 		{
 			switch ((SabotageStage)m.Stage)
 			{
-				case SabotageStage.Buy: return $"Phase d'achat — B : boutique — départ dans {timer}";
+				case SabotageStage.Buy: return $"[color=#ffd23f]Phase d'achat[/color]   ·   départ dans {timer}";
 				case SabotageStage.Round:
-					string bomb = m.MySide == 1 ? (m.BombCarrier != 0xFFFF ? $"la bombe est portée par {NameOf(m.BombCarrier)}" : "la bombe est tombée au sol") : "empêche la pose de la bombe";
-					return $"{timer}   ·   {bomb}";
+					string bomb = BombLine(m, "");
+					return $"{timer}   ·   {bomb}";      // le texte de la bombe : porteur, ou « au sol » avec ses coordonnées
 				case SabotageStage.Planted: return $"[color=#ffcc33][b]BOMBE POSÉE — site {(char)('A' + m.BombSite)}[/b][/color]   ·   explosion dans {Math.Ceiling(m.BombTimer):0} s";
 				default:
 					return m.RoundWinner == 255 ? "" : $"Manche gagnée par les {(m.RoundWinner == 1 ? "attaquants" : "défenseurs")}";
@@ -259,15 +527,35 @@ namespace Openesport.Online
 						AddChild(new MeshInstance3D { Mesh = new CylinderMesh { TopRadius = pt.Radius, BottomRadius = pt.Radius, Height = 0.08f, RadialSegments = 40 }, Position = pos + new Vector3(0, 0.06f, 0), MaterialOverride = Glow(pt.Team == 0 ? Blue : Red, 0.4f) });
 						break;
 					case MapPointKind.BombSite:
-						AddChild(new MeshInstance3D { Mesh = new CylinderMesh { TopRadius = pt.Radius, BottomRadius = pt.Radius, Height = 0.08f, RadialSegments = 48 }, Position = pos + new Vector3(0, 0.06f, 0), MaterialOverride = Glow(new Color(1f, 0.8f, 0.2f), 0.35f) });
+					{
+						// toute la zone de pose : un rectangle jaune (surface translucide + liseré plus marqué), tourné comme le point
+						float side = pt.Radius * 2f;
+						var gold = new Color(1f, 0.8f, 0.2f);
+						var zone = new Node3D { Position = pos + new Vector3(0, 0.06f, 0), Rotation = new Vector3(0, pt.Yaw, 0) };
+						zone.AddChild(new MeshInstance3D { Mesh = new BoxMesh { Size = new Vector3(side, 0.06f, side) }, MaterialOverride = Glow(gold, 0.22f) });
+						float t = 0.35f;
+						foreach (var (size, off) in new[] { (new Vector3(side, 0.1f, t), new Vector3(0, 0, pt.Radius - t / 2)), (new Vector3(side, 0.1f, t), new Vector3(0, 0, -pt.Radius + t / 2)), (new Vector3(t, 0.1f, side), new Vector3(pt.Radius - t / 2, 0, 0)), (new Vector3(t, 0.1f, side), new Vector3(-pt.Radius + t / 2, 0, 0)) })
+							zone.AddChild(new MeshInstance3D { Mesh = new BoxMesh { Size = size }, Position = off, MaterialOverride = Glow(gold, 0.75f) });
+						AddChild(zone);
 						AddChild(new Label3D { Text = ((char)('A' + pt.Index)).ToString(), Position = pos + new Vector3(0, 6f, 0), Billboard = BaseMaterial3D.BillboardModeEnum.Enabled, FontSize = 220, PixelSize = 0.01f, NoDepthTest = true, Modulate = new Color(1f, 0.85f, 0.3f), OutlineSize = 20 });
 						break;
+					}
 				}
 			}
 			_flag0 = MakeFlag(Blue); _flag1 = MakeFlag(Red);
 			_bomb = new Node3D { Visible = false };
-			_bomb.AddChild(new MeshInstance3D { Mesh = new BoxMesh { Size = new Vector3(0.5f, 0.3f, 0.35f) }, Position = new Vector3(0, 0.15f, 0), MaterialOverride = new StandardMaterial3D { AlbedoColor = new Color(0.15f, 0.15f, 0.15f) } });
-			_bombLight = new MeshInstance3D { Mesh = new SphereMesh { Radius = 0.08f, Height = 0.16f }, Position = new Vector3(0, 0.34f, 0), MaterialOverride = Glow(Red, 1f) };
+			// charge explosive (assets/grenades/basic_explosive.glb) : modèle debout et centré, 3,4 unités de haut → 0,5 m, posé sur son pied
+			var bombModel = GD.Load<PackedScene>("res://assets/grenades/basic_explosive.glb")?.Instantiate<Node3D>();
+			if (bombModel != null)
+			{
+				const float height = 0.5f;
+				bombModel.Scale = Vector3.One * (height / 3.4f);
+				bombModel.Position = new Vector3(0, height * 0.5f, 0);
+				_bomb.AddChild(bombModel);
+			}
+			else
+				_bomb.AddChild(new MeshInstance3D { Mesh = new BoxMesh { Size = new Vector3(0.5f, 0.3f, 0.35f) }, Position = new Vector3(0, 0.15f, 0), MaterialOverride = new StandardMaterial3D { AlbedoColor = new Color(0.15f, 0.15f, 0.15f) } });
+			_bombLight = new MeshInstance3D { Mesh = new SphereMesh { Radius = 0.04f, Height = 0.08f }, Position = new Vector3(0, 0.54f, 0), MaterialOverride = Glow(Red, 1f) };      // voyant au-dessus du modèle : clignote de plus en plus vite une fois la bombe posée
 			_bomb.AddChild(_bombLight);
 			AddChild(_bomb);
 		}

@@ -63,6 +63,19 @@ namespace OpenEsport.Matchmaker
 			if (launcherKind == "docker")
 			{
 				var d = new DockerLauncher { Image = image, WorldFile = world, BalanceFile = balance, ZonesFile = opt.ZonesFile, Cpus = cpus, Memory = memory };
+				// sans --netcode-dir : on cherche le Dockerfile à partir du dossier courant et de l'exécutable, en remontant les dossiers
+				if (netcodeDir == null)
+				{
+					foreach (var start in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
+					{
+						for (var dir = new DirectoryInfo(start); dir != null && netcodeDir == null; dir = dir.Parent)
+						{
+							if (File.Exists(Path.Combine(dir.FullName, "Dockerfile"))) netcodeDir = dir.FullName;
+							else if (File.Exists(Path.Combine(dir.FullName, "netcode", "Dockerfile"))) netcodeDir = Path.Combine(dir.FullName, "netcode");
+						}
+						if (netcodeDir != null) break;
+					}
+				}
 				if (!noBuild && netcodeDir != null)
 				{
 					try { d.EnsureImage(netcodeDir); }

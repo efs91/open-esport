@@ -1,0 +1,30 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://addons/fps-hands/shader.gdshader" id="1_hehwn"]
+[ext_resource type="Texture2D" path="res://assets/armes/Sniper sans viseur_Image_0.png" id="2_viued"]
+[ext_resource type="Texture2D" path="res://assets/armes/Sniper sans viseur_Image_1.png" id="3_x2qh5"]
+[ext_resource type="Texture2D" path="res://assets/armes/Sniper sans viseur_Image_2.png" id="4_rj887"]
+
+[resource]
+resource_name = "arms"
+render_priority = 0
+shader = ExtResource("1_hehwn")
+shader_parameter/fov = 70.0
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("2_viued")
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/texture_metallic = ExtResource("3_x2qh5")
+shader_parameter/metallic_texture_channel = null
+shader_parameter/texture_roughness = ExtResource("3_x2qh5")
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 1.0
+shader_parameter/texture_normal = ExtResource("4_rj887")
+shader_parameter/normal_scale = 1.0
+shader_parameter/texture_ambient_occlusion = ExtResource("3_x2qh5")
+shader_parameter/ao_texture_channel = null
+shader_parameter/ao_light_affect = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)

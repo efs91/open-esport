@@ -30,10 +30,15 @@ namespace Openesport.Menus
 			(InputManager.Actions.WEAPON_SLOT_2, "Arme 2"),
 			(InputManager.Actions.HOLSTER, "Mains nues"),
 			(InputManager.Actions.INVENTORY, "Inventaire"),
-			(InputManager.Actions.USE_HEAL, "Utiliser un soin (vie)"),
+			(InputManager.Actions.USE_HEAL, "Menu des soins (maintenir, souris) ; appui bref : soin de vie"),
 			(InputManager.Actions.USE_SHIELD, "Utiliser un soin (bouclier)"),
 			(InputManager.Actions.USE_BOTH, "Utiliser un soin (bouclier + vie)"),
 			(InputManager.Actions.DROP_SHIELD, "Jeter le bouclier"),
+			(InputManager.Actions.GRENADE_MENU, "Menu des grenades (maintenir, souris)"),
+			(InputManager.Actions.THROW_GRENADE, "Lancer la grenade choisie"),
+			(InputManager.Actions.PING, "Ping : désigner un endroit à l'équipe (Maj : danger)"),
+			(InputManager.Actions.NEXT_GRENADE, "Changer de grenade"),
+			(InputManager.Actions.DROP_BOMB, "Lâcher la bombe (Sabotage)"),
 		};
 
 		private readonly Dictionary<string, Button> _buttons = new();

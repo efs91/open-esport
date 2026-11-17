@@ -1,0 +1,172 @@
+[gd_scene load_steps=25 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/armes/Sniper sans viseur.glb" id="1_glb"]
+[ext_resource type="Material" path="res://addons/fps-hands/fps-sniper/resources/sniper.tres" id="2_gun"]
+[ext_resource type="Material" path="res://addons/fps-hands/fps-sniper/resources/arms.tres" id="3_arms"]
+[ext_resource type="AnimationLibrary" path="res://addons/fps-hands/fps-sniper/resources/animations.res" id="4_lib"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i2r40"]
+animation = &"fire"
+use_custom_timeline = true
+timeline_length = 1.2
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0xgqa"]
+animation = &"hide"
+use_custom_timeline = true
+timeline_length = 0.3
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_c014o"]
+animation = &"idle"
+use_custom_timeline = true
+timeline_length = 0.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0uw4j"]
+animation = &"melee"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_45xup"]
+animation = &"reload"
+use_custom_timeline = true
+timeline_length = 3.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nhb0g"]
+animation = &"reload_full"
+use_custom_timeline = true
+timeline_length = 3.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_akvjt"]
+animation = &"take"
+use_custom_timeline = true
+timeline_length = 0.35
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rda6y"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o84at"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wp3db"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f22pm"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dhtqt"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rk7gk"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bxc6t"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dbqs8"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i60ht"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rwmqm"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_prgat"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cr1ri"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_gexxc"]
+states/fire/node = SubResource("AnimationNodeAnimation_i2r40")
+states/fire/position = Vector2(362, 20)
+states/hide/node = SubResource("AnimationNodeAnimation_0xgqa")
+states/hide/position = Vector2(517, 100)
+states/idle/node = SubResource("AnimationNodeAnimation_c014o")
+states/idle/position = Vector2(414, 100)
+states/melee/node = SubResource("AnimationNodeAnimation_0uw4j")
+states/melee/position = Vector2(483, 20)
+states/reload/node = SubResource("AnimationNodeAnimation_45xup")
+states/reload/position = Vector2(362, 179)
+states/reload_full/node = SubResource("AnimationNodeAnimation_nhb0g")
+states/reload_full/position = Vector2(483, 179)
+states/take/node = SubResource("AnimationNodeAnimation_akvjt")
+states/take/position = Vector2(312, 100)
+transitions = ["Start", "take", SubResource("AnimationNodeStateMachineTransition_rda6y"), "take", "idle", SubResource("AnimationNodeStateMachineTransition_o84at"), "hide", "End", SubResource("AnimationNodeStateMachineTransition_wp3db"), "idle", "fire", SubResource("AnimationNodeStateMachineTransition_f22pm"), "idle", "melee", SubResource("AnimationNodeStateMachineTransition_dhtqt"), "idle", "hide", SubResource("AnimationNodeStateMachineTransition_rk7gk"), "idle", "reload", SubResource("AnimationNodeStateMachineTransition_bxc6t"), "idle", "reload_full", SubResource("AnimationNodeStateMachineTransition_dbqs8"), "fire", "idle", SubResource("AnimationNodeStateMachineTransition_i60ht"), "melee", "idle", SubResource("AnimationNodeStateMachineTransition_rwmqm"), "reload_full", "idle", SubResource("AnimationNodeStateMachineTransition_prgat"), "reload", "idle", SubResource("AnimationNodeStateMachineTransition_cr1ri")]
+
+[node name="fps-sniper" instance=ExtResource("1_glb")]
+transform = Transform3D(0.015, 0, 0, 0, 0.015, 0, 0, 0, 0.015, -0.1, -0.4, 0.35)
+metadata/ads_pos = Vector3(0, -0.3, 0.15)
+metadata/max_magazine = 5
+metadata/auto = false
+metadata/delta = 2.0
+metadata/damage = 75.0
+metadata/range = 800.0
+metadata/recoil_x = 0.25
+metadata/recoil_y = 0.03
+metadata/ammo_type = "sniper"
+
+[node name="base_sniper_0" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper/base" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="bolt_sniper_0" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper/boltrear/bolt" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="boltrear_sniper_0" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper/boltrear" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="cheekrest_sniper_0" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper/cheekrest" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="bullet_sniper_0" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper/clip/bullet" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="clip_sniper_0" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper/clip" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="silencer_sniper_0" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper/silencer" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="trigger_sniper_0" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper/trigger" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="Object_7" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/Skeleton3D" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("3_arms")
+
+[node name="AnimationPlayer" parent="." index="1"]
+libraries/ = ExtResource("4_lib")
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="2"]
+tree_root = SubResource("AnimationNodeStateMachine_gexxc")
+anim_player = NodePath("../AnimationPlayer")
+
+[node name="MuzzlePoint" type="Node3D" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.636195, 108.82323)
+
+[node name="Marker3D" type="Marker3D" parent="Sketchfab_model/0e83ca9608fa4d53acd597e04c9f07a6_fbx/Object_2/RootNode/Object_4/sniper" index="8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.636195, 108.82323)

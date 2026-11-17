@@ -84,7 +84,7 @@ namespace Openesport.Inventory
 			if (def.Type == ItemType.Weapon && WeaponState != null) WeaponState.Tier = Tier;
 			Tier = ItemTierStyle.TierOf(def, Tier); // les sacs à dos ont un niveau fixe
 			AddChild(ItemVisuals.BuildGroundModel(def, Tier));
-			if (def.Type == ItemType.Weapon || def.Type == ItemType.Backpack || def.Type == ItemType.Shield || def.Type == ItemType.Consumable) AddAura();
+			if (def.Type == ItemType.Weapon || def.Type == ItemType.Backpack || def.Type == ItemType.Shield || def.Type == ItemType.Consumable || def.Type == ItemType.Grenade) AddAura();
 			SetPhysicsProcess(SnapToGround);
 		}
 

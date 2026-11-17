@@ -17,6 +17,9 @@ namespace Openesport.Online
 
 		[Export] public Vector2 Size { get => _size; set { _size = value; Rebuild(); } }
 		[Export] public Color GroundColor { get => _groundColor; set { _groundColor = value; Rebuild(); } }
+		private Surface _groundSurface = Surface.Unie;
+		/// <summary>Matière du sol (terre, herbe, béton…) : la couleur du sol la teinte. « Unie » : une couleur sans texture.</summary>
+		[Export] public Surface GroundSurface { get => _groundSurface; set { _groundSurface = value; Rebuild(); } }
 
 		public override void _EnterTree()
 		{
@@ -33,7 +36,7 @@ namespace Openesport.Online
 			if (_mesh == null || !IsInstanceValid(_mesh)) return;
 			_mesh.Mesh = new BoxMesh { Size = new Vector3(_size.X, 1f, _size.Y) };
 			_mesh.Position = new Vector3(0, -0.5f, 0);
-			_mesh.MaterialOverride = new StandardMaterial3D { AlbedoColor = _groundColor, Roughness = 1f };
+			_mesh.MaterialOverride = _groundSurface == Surface.Unie ? new StandardMaterial3D { AlbedoColor = _groundColor, Roughness = 1f } : Surfaces.Material(_groundSurface, _groundColor, 6f);
 			_shape.Shape = new BoxShape3D { Size = new Vector3(_size.X, 1f, _size.Y) };
 			_shape.Position = new Vector3(0, -0.5f, 0);
 		}

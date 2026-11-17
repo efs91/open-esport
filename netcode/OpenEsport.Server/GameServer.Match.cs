@@ -298,6 +298,7 @@ namespace OpenEsport.Server
 			foreach (var b in _players.ToArray()) if (b.IsBot) RemoveBot(b);
 			_zone = null;
 			ClearProjectiles();
+			ClearGrenades();
 			ClearLoot();
 			SpawnInitialLoot();
 			Phase = MatchPhase.Lobby;

@@ -234,6 +234,7 @@ namespace OpenEsport.Server
 			}
 			_playerGrid.Build();
 			StepProjectiles(dt);
+			StepGrenades(dt);
 			if (_lootDirty) RebuildLootGrid();
 
 			if (_tick % (uint)_m.SnapshotDivisor == 0 && _humans.Count > 0)
@@ -325,6 +326,7 @@ namespace OpenEsport.Server
 					case MsgType.Join: if (player == null) HandleJoin(peer); break;
 					case MsgType.Input: if (player != null) HandleInput(player); break;
 					case MsgType.Command: if (player != null) HandleCommand(player); break;
+					case MsgType.Ping: if (player != null) HandlePing(player); break;
 				}
 			}
 			catch (Exception e)

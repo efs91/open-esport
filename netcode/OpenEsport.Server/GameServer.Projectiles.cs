@@ -46,7 +46,7 @@ namespace OpenEsport.Server
 			if (idx < 0) return;
 			_bullets[idx] = new Projectile
 			{
-				Active = true, Owner = owner, WeaponId = weaponId, Damage = damage, Pos = origin, Vel = dir * BulletSpeed,
+				Active = true, Owner = owner, WeaponId = weaponId, Damage = damage, Pos = origin, Vel = dir * def.Speed,
 				StartTick = _tick, ViewTick = viewTick, MaxDistance = def.Range
 			};
 			BroadcastShot(owner, weaponId, origin, dir);

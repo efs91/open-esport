@@ -46,9 +46,12 @@ namespace OpenEsport.Core
 		public Vec3 BombPos;
 		public float BombTimer;
 		public byte BombSite;
-		public byte Action, ActionProgress;   // 1 = pose en cours, 2 = désamorçage ; avancement 0-100
+		public byte Action, ActionProgress;   // 1 = pose en cours, 2 = désamorçage ; avancement 0-100 (seulement pour celui qui agit)
+		/// <summary>Pose (1) ou désamorçage (2) en cours, vus de tous : avancement 0-100 et auteur (0xFFFF = personne). Sert aux messages « l'adversaire désamorce ».</summary>
+		public byte BombAction, BombActionProgress;
+		public ushort BombActor;
 
-		public static ModeState Empty => new ModeState { Points = new ControlPointState[5], WinnerTeam = 255, RoundWinner = 255 };
+		public static ModeState Empty => new ModeState { Points = new ControlPointState[5], WinnerTeam = 255, RoundWinner = 255, BombActor = 0xFFFF };
 
 		public void Write(BitWriter w)
 		{
@@ -66,6 +69,7 @@ namespace OpenEsport.Core
 			WriteFlag(w, Flag0); WriteFlag(w, Flag1);
 			w.WriteByte(BombState); w.WriteUInt16(BombCarrier); w.WriteVec3(BombPos); w.WriteFloat(BombTimer); w.WriteByte(BombSite);
 			w.WriteByte(Action); w.WriteByte(ActionProgress);
+			w.WriteByte(BombAction); w.WriteByte(BombActionProgress); w.WriteUInt16(BombActor);
 		}
 
 		private static void WriteFlag(BitWriter w, FlagState f) { w.WriteByte(f.State); w.WriteUInt16(f.Carrier); w.WriteVec3(f.Pos); }
@@ -84,6 +88,7 @@ namespace OpenEsport.Core
 			s.Flag0 = ReadFlag(r); s.Flag1 = ReadFlag(r);
 			s.BombState = r.ReadByte(); s.BombCarrier = r.ReadUInt16(); s.BombPos = r.ReadVec3(); s.BombTimer = r.ReadFloat(); s.BombSite = r.ReadByte();
 			s.Action = r.ReadByte(); s.ActionProgress = r.ReadByte();
+			s.BombAction = r.ReadByte(); s.BombActionProgress = r.ReadByte(); s.BombActor = r.ReadUInt16();
 			return s;
 		}
 	}

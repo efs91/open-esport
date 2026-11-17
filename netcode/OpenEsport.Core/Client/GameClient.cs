@@ -99,6 +99,8 @@ namespace OpenEsport.Core
 		public byte Magazine { get; private set; }
 		public bool Reloading { get; private set; }
 		public InventoryState Inventory { get; private set; } = new InventoryState();
+		/// <summary>Grenades et zones de feu proches, telles que le serveur vient de les décrire (liste vide : plus rien).</summary>
+		public List<GrenadeInfo> Grenades { get; private set; } = new List<GrenadeInfo>();
 		public List<RosterEntry> Roster { get; private set; } = new List<RosterEntry>();
 
 		/// <summary>Position à afficher pour le joueur local : prédiction + correction lissée.</summary>
@@ -125,6 +127,7 @@ namespace OpenEsport.Core
 		public event Action<ServerEvent> EventReceived;
 		public event Action RosterChanged;
 		public event Action InventoryChanged;
+		public event Action GrenadesChanged;
 		public event Action<string> Disconnected;
 
 		public float RenderTick => _renderTick;
@@ -206,6 +209,7 @@ namespace OpenEsport.Core
 					case MsgType.Snapshot: HandleSnapshot(); break;
 					case MsgType.Event: { var e = ServerEvent.Read(_reader); if (!_reader.Overflow) EventReceived?.Invoke(e); break; }
 					case MsgType.Roster: { var r = Messages.ReadRoster(_reader); if (!_reader.Overflow) { Roster = r; RosterChanged?.Invoke(); } break; }
+					case MsgType.Grenades: { var gl = Messages.ReadGrenades(_reader); if (!_reader.Overflow) { Grenades = gl; GrenadesChanged?.Invoke(); } break; }
 					case MsgType.Inventory: { var inv = InventoryState.Read(_reader); if (!_reader.Overflow) { Inventory = inv; InventoryChanged?.Invoke(); } break; }
 				}
 			}
@@ -433,6 +437,15 @@ namespace OpenEsport.Core
 			}
 			_renderTick += 1f;                          // avance d'un tick
 			_renderTick += (target - _renderTick) * 0.1f; // se recale doucement
+		}
+
+		/// <summary>Désigne un endroit à son équipe (0 ici, 1 danger, 2 ennemi) : le serveur le renvoie aux équipiers.</summary>
+		public void SendPing(byte type, Vec3 pos)
+		{
+			if (State != NetState.Playing) return;
+			_writer.Reset();
+			Messages.WritePing(_writer, type, pos);
+			_peer?.Send(_writer.Buffer, 0, _writer.ByteLength, DeliveryMethod.ReliableOrdered);
 		}
 
 		/// <summary>Envoie une commande fiable (jeter un objet, équiper un viseur…).</summary>

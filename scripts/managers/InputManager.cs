@@ -45,6 +45,11 @@ public partial class InputManager : Node
 		public const string USE_SHIELD = "use_shield";
 		public const string USE_BOTH = "use_both";
 		public const string DROP_SHIELD = "drop_shield";
+		public const string THROW_GRENADE = "throw_grenade";
+		public const string NEXT_GRENADE = "next_grenade";
+		public const string DROP_BOMB = "drop_bomb";
+		public const string PING = "ping";
+		public const string GRENADE_MENU = "grenade_menu";
 	}
 
 	// Configuration par défaut des touches
@@ -85,6 +90,10 @@ public partial class InputManager : Node
 	/// Cliquer « Reprendre » recapture la souris alors que le bouton est encore enfoncé.
 	/// </summary>
 	public static bool ClickGuard { get; private set; }
+	/// <summary>Un menu à la souris (menu circulaire) est ouvert : pas de tir ni de visée.</summary>
+	public static bool UiBlock { get; set; }
+	/// <summary>Le clic en cours ne doit pas tirer (il a servi à valider un menu).</summary>
+	public static void ArmClickGuard() { ClickGuard = true; }
 	/// <summary>En l'air (avion, chute libre) : TAB sert à passer le commandement du saut, pas à ouvrir l'inventaire.</summary>
 	public static bool AirborneLock { get; set; }
 
@@ -265,7 +274,7 @@ public partial class InputManager : Node
 		bool menuOpen = _gameManager.GetCurrentState() != GameManager.GameState.Gameplay;
 		if (ClickGuard && !Input.IsActionPressed(Actions.SHOOT) && !Input.IsActionPressed(Actions.AIM))
 			ClickGuard = false; // le clic du menu est relâché
-		bool blocked = menuOpen || ClickGuard;
+		bool blocked = menuOpen || ClickGuard || UiBlock;
 
 		bool isShooting = !blocked && Input.IsActionPressed(Actions.SHOOT);
 		_inputEvents.UpdateShootState(isShooting);
@@ -381,7 +390,12 @@ public partial class InputManager : Node
 			{ Actions.USE_HEAL, new InputEventKey { PhysicalKeycode = Key.Key4 } },
 			{ Actions.USE_SHIELD, new InputEventKey { PhysicalKeycode = Key.Key5 } },
 			{ Actions.USE_BOTH, new InputEventKey { PhysicalKeycode = Key.Key6 } },
-			{ Actions.DROP_SHIELD, new InputEventKey { Keycode = Key.G } }
+			{ Actions.DROP_SHIELD, new InputEventKey() },      // aucune touche par défaut : on jette le bouclier en le glissant hors de l'inventaire (une touche reste possible dans les réglages)
+			{ Actions.GRENADE_MENU, new InputEventKey { Keycode = Key.G } },
+			{ Actions.PING, new InputEventMouseButton { ButtonIndex = MouseButton.Middle } },
+			{ Actions.THROW_GRENADE, new InputEventKey { Keycode = Key.F } },
+			{ Actions.NEXT_GRENADE, new InputEventKey { Keycode = Key.V } },
+			{ Actions.DROP_BOMB, new InputEventKey { Keycode = Key.X } }
 		};
 
 		// Ajouter toutes les actions

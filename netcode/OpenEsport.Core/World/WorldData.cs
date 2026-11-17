@@ -78,6 +78,15 @@ namespace OpenEsport.Core
 		public byte Team, Index;
 		public Vec3 Pos;
 		public float Radius, Yaw;
+
+		/// <summary>Le point (x, z) est-il dans la zone carrée de demi-côté <see cref="Radius"/>, tournée de <see cref="Yaw"/> ? (sites de bombe : toute la zone, pas un disque)</summary>
+		public readonly bool InSquare(float x, float z)
+		{
+			float dx = x - Pos.X, dz = z - Pos.Z;
+			float c = MathF.Cos(Yaw), s = MathF.Sin(Yaw);
+			float lx = dx * c - dz * s, lz = dx * s + dz * c;
+			return MathF.Abs(lx) <= Radius && MathF.Abs(lz) <= Radius;
+		}
 	}
 
 	public struct LootSpawn

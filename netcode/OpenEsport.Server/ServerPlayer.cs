@@ -45,6 +45,12 @@ namespace OpenEsport.Server
 
 		// armes
 		public float ShotCooldown;
+		/// <summary>Délai avant de pouvoir lancer une autre grenade, et temps d'aveuglement restant (flash).</summary>
+		public float GrenadeCooldown, BlindLeft;
+		/// <summary>Instant (tick) avant lequel un nouveau ping est refusé.</summary>
+		public uint NextPingTick;
+		/// <summary>Emplacement de l'arme tenue avant de sortir une grenade (on la reprend après le lancer).</summary>
+		public int PreGrenadeSlot = -1;
 		public bool Reloading;
 		public float ReloadLeft;
 		public int FireFlagTicks;

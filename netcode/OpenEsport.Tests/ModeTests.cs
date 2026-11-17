@@ -206,7 +206,7 @@ namespace OpenEsport.Tests
 				Assert.True(RunUntil(rig, () => att.C.Mode.Stage == (byte)SabotageStage.Round, 3));
 				float g = rig.World.HeightAt(0, 0);
 				rig.Teleport(att, new Vec3(30, g, -40));
-				att.Buttons = Buttons.Interact;
+				att.C.SendCommand(CommandType.EquipBomb, 1); att.Buttons = Buttons.Fire;
 				Assert.True(RunUntil(rig, () => att.C.Mode.BombState == 2, 4), "la bombe doit être posée");
 				att.Buttons = Buttons.None;
 				// elle explose : les attaquants gagnent la manche et touchent la prime
@@ -232,7 +232,7 @@ namespace OpenEsport.Tests
 				var att = p.First(b => SP(rig, b).Team == 0); var def = p.First(b => b != att);
 				Assert.True(RunUntil(rig, () => att.C.Mode.Stage == (byte)SabotageStage.Round, 3));
 				float g = rig.World.HeightAt(0, 0);
-				rig.Teleport(att, new Vec3(30, g, 40)); att.Buttons = Buttons.Interact;
+				rig.Teleport(att, new Vec3(30, g, 40)); att.C.SendCommand(CommandType.EquipBomb, 1); att.Buttons = Buttons.Fire;
 				Assert.True(RunUntil(rig, () => att.C.Mode.BombState == 2, 3), rig.Server.ModeDebug());
 				att.Buttons = Buttons.None;
 				rig.Teleport(att, new Vec3(-90, g, 0));
@@ -241,6 +241,131 @@ namespace OpenEsport.Tests
 				Assert.Equal(0, def.C.Mode.RoundWinner);
 			}
 			finally { Reset("sabotage.buySeconds", "sabotage.plantSeconds", "sabotage.bombSeconds", "sabotage.defuseSeconds", "sabotage.endSeconds"); }
+		}
+
+		[Fact]
+		public void Sabotage_The_Bomb_Is_In_The_Carriers_Bag_Can_Be_Dropped_And_Falls_When_He_Dies()
+		{
+			Balance(("sabotage.buySeconds", 0.3), ("sabotage.endSeconds", 5));
+			try
+			{
+				using var rig = Make(GameMode.Sabotage, 4, humans: 2);
+				var p = Join(rig, 2);
+				var att = p.First(b => SP(rig, b).Team == 0); var def = p.First(b => b != att);
+				Assert.True(RunUntil(rig, () => att.C.Mode.Stage == (byte)SabotageStage.Round, 3));
+				// au départ, un attaquant porte la bombe dans son sac ; les défenseurs n'en ont pas
+				Assert.True(RunUntil(rig, () => att.C.Inventory.CountOf(ItemIds.Bomb) == 1, 2), "la bombe est dans le sac du porteur");
+				Assert.Equal(0, def.C.Inventory.CountOf(ItemIds.Bomb));
+				Assert.Equal(att.C.PlayerId, att.C.Mode.BombCarrier);
+
+				// il la lâche : elle est au sol (position annoncée), plus dans le sac
+				att.C.SendCommand(CommandType.DropBomb, 0);
+				Assert.True(RunUntil(rig, () => att.C.Mode.BombState == 1, 2), "la bombe tombe au sol");
+				Assert.True(RunUntil(rig, () => att.C.Inventory.CountOf(ItemIds.Bomb) == 0, 2));
+				Assert.Equal(0xFFFF, att.C.Mode.BombCarrier);
+				var spot = att.C.Mode.BombPos;
+				Assert.True(Math.Abs(spot.X - SP(rig, att).State.Pos.X) < 3f && Math.Abs(spot.Z - SP(rig, att).State.Pos.Z) < 3f, $"posée près de lui : {spot}");
+
+				// un défenseur à côté ne la ramasse pas ; le porteur la reprend une fois le délai passé
+				rig.Teleport(def, spot); rig.Run(0.5);
+				Assert.Equal(1, def.C.Mode.BombState);
+				rig.Teleport(def, new Vec3(-90, spot.Y, 0));
+				Assert.True(RunUntil(rig, () => att.C.Mode.BombState == 0 && att.C.Inventory.CountOf(ItemIds.Bomb) == 1, 5), "il la ramasse de nouveau");
+
+				// il meurt avec : elle tombe là où il est mort
+				var deathPos = SP(rig, att).State.Pos;
+				rig.OnServer(() => rig.Server.AdminKill(def.C.PlayerId, att.C.PlayerId));
+				Assert.True(RunUntil(rig, () => att.C.Mode.BombState == 1, 2), "la bombe tombe à sa mort");
+				Assert.True(Math.Abs(att.C.Mode.BombPos.X - deathPos.X) < 2f && Math.Abs(att.C.Mode.BombPos.Z - deathPos.Z) < 2f);
+				Assert.Equal(0, att.C.Inventory.CountOf(ItemIds.Bomb));
+			}
+			finally { Reset("sabotage.buySeconds", "sabotage.endSeconds"); }
+		}
+
+		[Fact]
+		public void Sabotage_Everyone_Sees_The_Defuse_In_Progress_And_Defenders_Win_When_It_Is_Defused()
+		{
+			Balance(("sabotage.buySeconds", 0.3), ("sabotage.plantSeconds", 0.3), ("sabotage.bombSeconds", 30), ("sabotage.defuseSeconds", 3), ("sabotage.endSeconds", 5));
+			try
+			{
+				using var rig = Make(GameMode.Sabotage, 4, humans: 2);
+				var p = Join(rig, 2);
+				var att = p.First(b => SP(rig, b).Team == 0); var def = p.First(b => b != att);
+				Assert.True(RunUntil(rig, () => att.C.Mode.Stage == (byte)SabotageStage.Round, 3));
+				float g = rig.World.HeightAt(0, 0);
+				rig.Teleport(att, new Vec3(30, g, 40)); att.C.SendCommand(CommandType.EquipBomb, 1); att.Buttons = Buttons.Fire;
+				Assert.True(RunUntil(rig, () => att.C.Mode.BombState == 2, 3));
+				Assert.Equal(0, att.C.Inventory.CountOf(ItemIds.Bomb));            // posée : plus dans le sac
+				att.Buttons = Buttons.None;
+				rig.Teleport(att, new Vec3(-90, g, 0));
+				// un défenseur désamorce : l'attaquant le voit aussi (message « désamorçage en cours »)
+				rig.Teleport(def, new Vec3(30, g, 40)); def.Buttons = Buttons.Interact;
+				Assert.True(RunUntil(rig, () => att.C.Mode.BombAction == 2 && att.C.Mode.BombActionProgress > 0, 3), "l'attaquant voit le désamorçage");
+				Assert.Equal(def.C.PlayerId, att.C.Mode.BombActor);
+				Assert.True(RunUntil(rig, () => att.C.Mode.BombState == 3, 5), "désamorcée");
+				Assert.Equal(0, att.C.Mode.RoundWinner);                            // les défenseurs gagnent : l'équipe qui posait a perdu
+				Assert.Equal(0, att.C.Mode.BombAction);
+			}
+			finally { Reset("sabotage.buySeconds", "sabotage.plantSeconds", "sabotage.bombSeconds", "sabotage.defuseSeconds", "sabotage.endSeconds"); }
+		}
+
+		[Fact]
+		public void Sabotage_The_Bomb_Is_Planted_Only_With_It_In_Hand_And_The_Left_Click_Held_On_A_Site()
+		{
+			Balance(("sabotage.buySeconds", 0.3), ("sabotage.plantSeconds", 0.5), ("sabotage.bombSeconds", 20), ("sabotage.endSeconds", 5));
+			try
+			{
+				using var rig = Make(GameMode.Sabotage, 4, humans: 2);
+				var p = Join(rig, 2);
+				var att = p.First(b => SP(rig, b).Team == 0);
+				Assert.True(RunUntil(rig, () => att.C.Mode.Stage == (byte)SabotageStage.Round, 3));
+				Assert.True(RunUntil(rig, () => att.C.Inventory.CountOf(ItemIds.Bomb) == 1, 2));
+				float g = rig.World.HeightAt(0, 0);
+				rig.Teleport(att, new Vec3(30, g, -40));
+				// sur le site, la bombe dans le sac, clic gauche : rien (c'est l'ancienne touche E qui ne sert plus)
+				att.Buttons = Buttons.Fire | Buttons.Interact; rig.Run(1.0);
+				Assert.Equal(0, att.C.Mode.BombState);
+				Assert.False(att.C.Inventory.BombInHand);
+				// bombe en main (mains nues), puis clic gauche maintenu : elle se pose
+				att.Buttons = Buttons.None;
+				att.C.SendCommand(CommandType.EquipBomb, 1);
+				Assert.True(RunUntil(rig, () => att.C.Inventory.BombInHand && att.C.Inventory.ActiveSlot == -1, 2), "la bombe est en main");
+				att.Buttons = Buttons.Fire;
+				Assert.True(RunUntil(rig, () => att.C.Mode.BombState == 2, 3), "posée au clic gauche");
+				Assert.Equal(0, att.C.Inventory.CountOf(ItemIds.Bomb));
+				Assert.False(att.C.Inventory.BombInHand);
+			}
+			finally { Reset("sabotage.buySeconds", "sabotage.plantSeconds", "sabotage.bombSeconds", "sabotage.endSeconds"); }
+		}
+
+		[Fact]
+		public void Sabotage_The_Bomb_Goes_To_Real_Players_In_Turn_Before_Anyone_Gets_It_Twice()
+		{
+			Balance(("sabotage.buySeconds", 0.3), ("sabotage.roundSeconds", 1.5), ("sabotage.endSeconds", 0.4));
+			try
+			{
+				// 3 humains : deux chez les attaquants (équipe 0), un chez les défenseurs ; les bots complètent les équipes
+				using var rig = Make(GameMode.Sabotage, 4, humans: 3, bots: true);
+				var humans = Join(rig, 3);
+				var attackers = humans.Where(b => SP(rig, b).Team == 0).Select(b => (int)b.C.PlayerId).ToHashSet();
+				Assert.True(attackers.Count >= 2, "deux humains chez les attaquants");
+				var viewer = humans[0];
+				var carriers = new List<int>();
+				int lastRound = -1;
+				var sw = System.Diagnostics.Stopwatch.StartNew();
+				while (sw.Elapsed.TotalSeconds < 60 && carriers.Count < 5)
+				{
+					rig.Run(0.1);
+					var m = viewer.C.Mode;
+					if (m.Stage == (byte)SabotageStage.Round && m.Round != lastRound && m.BombCarrier != 0xFFFF) { lastRound = m.Round; carriers.Add(m.BombCarrier); }
+				}
+				Assert.True(carriers.Count >= 4, $"manches observées : {carriers.Count}");
+				Assert.All(carriers, id => Assert.Contains(id, attackers));                 // jamais un bot
+				Assert.NotEqual(carriers[0], carriers[1]);                                     // ça tourne
+				Assert.Equal(carriers[0], carriers[2]);
+				Assert.Equal(carriers[1], carriers[3]);
+			}
+			finally { Reset("sabotage.buySeconds", "sabotage.roundSeconds", "sabotage.endSeconds"); }
 		}
 
 		[Fact]

@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/accessoires/x2/viseur_holographique_U_x2.glb" id="1_glb"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_ouverture"]
+resource_name = "glass_ouverture"
+transparency = 1
+albedo_color = Color(0.6, 0.9, 1, 0.03)
+shading_mode = 0
+
+[sub_resource type="QuadMesh" id="Mesh_ouverture"]
+size = Vector2(0.004, 0.004)
+
+; Le modèle ChatGPT est en Z vers le haut et -Y vers l'avant (script generate_viseur_2x.py) : on le remet en Y vers le haut et +Z vers l'avant,
+; ce qu'attend le système d'accessoires (ItemVisuals.BuildViewmodelOptic).
+[node name="ViseurX2" type="Node3D"]
+
+[node name="Modele" parent="." instance=ExtResource("1_glb")]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+
+; Repère de l'ouverture : le viseur n'a pas de verre, le jeu s'en sert pour centrer la visée sur le réticule (point central du modèle)
+[node name="Ouverture" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.067, 0.012)
+mesh = SubResource("Mesh_ouverture")
+surface_material_override/0 = SubResource("Mat_ouverture")

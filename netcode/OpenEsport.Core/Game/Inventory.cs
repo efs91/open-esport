@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenEsport.Core
 {
@@ -54,6 +55,10 @@ namespace OpenEsport.Core
 
 		public readonly WeaponSlot[] Weapons = new WeaponSlot[WeaponSlotCount];
 		public int ActiveSlot = -1;
+		/// <summary>Sabotage : le porteur a sorti la bombe (mains nues, clic gauche maintenu pour la poser). Toute sélection d'arme la range.</summary>
+		public bool BombInHand;
+		/// <summary>Grenade en main (identifiant de l'objet, 0 = aucune) : mains nues, le clic gauche la lance. Toute sélection d'arme la range.</summary>
+		public byte GrenadeInHand;
 		public int BackpackLevel = 1;
 		/// <summary>Niveau du bouclier équipé (0 blanc, 1 bleu, 2 violet, 3 rouge) ; −1 = aucun. Tout joueur démarre avec un bouclier blanc.</summary>
 		public int ShieldTier = 0;
@@ -136,6 +141,7 @@ namespace OpenEsport.Core
 					}
 					if (Items.Count >= Capacity) return false;
 					Items.Add(new ItemStack { Id = item.ItemId, Count = 1 });
+					SortItems();
 					return true;
 				}
 				case ItemKind.Backpack:
@@ -153,6 +159,8 @@ namespace OpenEsport.Core
 					ShieldTier = Math.Min((int)item.Tier, Tiers.Count - 1);
 					return true;
 				}
+				case ItemKind.Bomb:
+				case ItemKind.Grenade:
 				case ItemKind.Consumable:
 				{
 					int left = AddAmmo(def, item.Count);
@@ -195,11 +203,23 @@ namespace OpenEsport.Core
 				Items.Add(new ItemStack { Id = def.Id, Count = add });
 				amount -= add;
 			}
+			SortItems();
 			return amount;
+		}
+
+		/// <summary>Range le sac dans l'ordre fixe de <see cref="ItemDefs.InventoryOrder"/> (tri stable : à rang égal, l'ordre d'arrivée).</summary>
+		public void SortItems()
+		{
+			if (Items.Count < 2) return;
+			var sorted = Items.Select((s, i) => (s, i)).OrderBy(t => ItemDefs.InventoryOrder(t.s.Id)).ThenBy(t => t.i).Select(t => t.s).ToList();
+			Items.Clear();
+			Items.AddRange(sorted);
 		}
 
 		public bool SelectSlot(int slot)
 		{
+			BombInHand = false;
+			GrenadeInHand = 0;
 			if (slot == -1) { ActiveSlot = -1; return true; }
 			if (slot < 0 || slot >= WeaponSlotCount || Weapons[slot] == null) return false;
 			ActiveSlot = slot;
@@ -269,6 +289,32 @@ namespace OpenEsport.Core
 			w.OpticId = def.Id;
 			if (previous != ItemIds.None) Items[index] = new ItemStack { Id = previous, Count = 1 };
 			else Items.RemoveAt(index);
+			SortItems();
+			return true;
+		}
+
+		/// <summary>Monte le viseur du sac (index) sur l'arme de l'emplacement donné, même si elle n'est pas en main.</summary>
+		public bool EquipOpticOn(int slot, int index)
+		{
+			if (slot < 0 || slot >= WeaponSlotCount || Weapons[slot] == null || index < 0 || index >= Items.Count) return false;
+			var w = Weapons[slot];
+			var def = ItemDefs.Get(Items[index].Id);
+			if (def == null || def.Kind != ItemKind.Optic || !ItemDefs.Get(w.WeaponId).AcceptsOptic) return false;
+			byte previous = w.OpticId;
+			w.OpticId = def.Id;
+			if (previous != ItemIds.None) Items[index] = new ItemStack { Id = previous, Count = 1 };
+			else Items.RemoveAt(index);
+			SortItems();
+			return true;
+		}
+
+		/// <summary>Retire le viseur de l'arme de l'emplacement donné pour le jeter (il ne passe pas par le sac).</summary>
+		public bool TakeOptic(int slot, out LootItem item)
+		{
+			item = default;
+			if (slot < 0 || slot >= WeaponSlotCount || Weapons[slot] == null || Weapons[slot].OpticId == ItemIds.None) return false;
+			item = LootItem.Of(Weapons[slot].OpticId);
+			Weapons[slot].OpticId = ItemIds.None;
 			return true;
 		}
 
@@ -278,6 +324,7 @@ namespace OpenEsport.Core
 			if (Items.Count >= Capacity) return false;
 			Items.Add(new ItemStack { Id = Weapons[slot].OpticId, Count = 1 });
 			Weapons[slot].OpticId = ItemIds.None;
+			SortItems();
 			return true;
 		}
 
@@ -300,6 +347,8 @@ namespace OpenEsport.Core
 			w.WriteBits((uint)(ActiveSlot + 1), 2);
 			w.WriteBits((uint)BackpackLevel, 2);
 			w.WriteBits((uint)(ShieldTier + 1), 3);
+			w.WriteBool(BombInHand);
+			w.WriteByte(GrenadeInHand);
 			for (int i = 0; i < WeaponSlotCount; i++)
 			{
 				var s = Weapons[i];
@@ -324,6 +373,8 @@ namespace OpenEsport.Core
 			inv.ActiveSlot = (int)r.ReadBits(2) - 1;
 			inv.BackpackLevel = Math.Clamp((int)r.ReadBits(2), 1, 3);
 			inv.ShieldTier = Math.Min((int)r.ReadBits(3), Tiers.Count) - 1;
+			inv.BombInHand = r.ReadBool();
+			inv.GrenadeInHand = r.ReadByte();
 			for (int i = 0; i < WeaponSlotCount; i++)
 			{
 				if (!r.ReadBool()) continue;

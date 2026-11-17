@@ -158,6 +158,17 @@ namespace Openesport.Inventory
 		/// <summary>Molette : passe à l'autre arme (avec 2 emplacements, les deux sens reviennent au même).</summary>
 		public void CycleWeapon()
 		{
+			// Sabotage : la bombe du porteur fait partie du tour (arme 1, arme 2, bombe, arme 1…)
+			if (Network != null && Items.Exists(s => s.Id == "bomb"))
+			{
+				var order = new System.Collections.Generic.List<int>();
+				for (int i = 0; i < Weapons.Length; i++) if (Weapons[i] != null) order.Add(i);
+				order.Add(-2);                                                   // -2 = la bombe
+				int cur = BombInHand ? order.Count - 1 : order.IndexOf(ActiveWeapon);
+				int next = order[(cur + 1 + order.Count) % order.Count];
+				if (next == -2) Network.SendCommand(OpenEsport.Core.CommandType.EquipBomb, 1); else SelectWeapon(next);
+				return;
+			}
 			for (int i = 1; i <= Weapons.Length; i++)
 			{
 				int slot = (Mathf.Max(ActiveWeapon, -1) + i) % Weapons.Length;
@@ -172,6 +183,11 @@ namespace Openesport.Inventory
 		/// <summary>Jette l'arme de l'emplacement donné, avec son viseur.</summary>
 		/// <summary>Niveau du bouclier équipé (0 blanc à 3 rouge), −1 = aucun. Le serveur décide ; cette valeur est son reflet.</summary>
 		public int ShieldTier = 0;
+
+		/// <summary>Sabotage : la bombe est en main (reflet du serveur). Les mains sont nues, le clic gauche maintenu la pose.</summary>
+		public bool BombInHand;
+		/// <summary>Grenade en main (identifiant de l'objet du noyau, 0 = aucune) : le clic gauche la lance.</summary>
+		public byte GrenadeInHand;
 
 		public void DropShield()
 		{
@@ -264,6 +280,21 @@ namespace Openesport.Inventory
 			Items.Add(new ItemStack { Id = weapon.OpticId });
 			weapon.OpticId = null;
 			OnWeaponAttachmentsChanged(weapon);
+		}
+
+		/// <summary>Glisser-déposer : monte le viseur du sac sur l'arme de cet emplacement, même si elle n'est pas en main.</summary>
+		public void EquipOpticOn(int weaponSlot, int index)
+		{
+			if (Network != null) { Network.SendCommand(OpenEsport.Core.CommandType.EquipOpticOn, weaponSlot * 16 + index); return; }
+			if (weaponSlot == ActiveWeapon) EquipOpticFromBackpack(index);
+			else Message?.Invoke("Prenez cette arme en main pour y monter un viseur");
+		}
+
+		/// <summary>Glisser-déposer : jette à terre le viseur monté sur l'arme de cet emplacement.</summary>
+		public void DropOptic(int weaponSlot)
+		{
+			if (Network != null) { Network.SendCommand(OpenEsport.Core.CommandType.DropOptic, weaponSlot); return; }
+			Message?.Invoke("Jeter un viseur monté n'est possible qu'en ligne");
 		}
 
 		private void OnWeaponAttachmentsChanged(WeaponSlotState weapon)
@@ -393,6 +424,10 @@ namespace Openesport.Inventory
 			foreach (var s in st.Items) Items.Add(new ItemStack { Id = NameOf(s.Id), Count = s.Count });
 			BackpackLevel = st.BackpackLevel;
 			ShieldTier = st.ShieldTier;
+			BombInHand = st.BombInHand;
+			GrenadeInHand = st.GrenadeInHand;
+			// objet en main : la bombe, ou la grenade sortie
+			_weaponManager.SetHeldObject(BombInHand ? "bomb" : st.GrenadeInHand != 0 ? OpenEsport.Core.ItemDefs.Get(st.GrenadeInHand)?.Name : null, BombInHand ? 1.6f : 2.4f);
 
 			var previouslyHeld = _weaponManager.HeldWeapon;
 			var wanted = st.ActiveSlot >= 0 ? Weapons[st.ActiveSlot] : null;

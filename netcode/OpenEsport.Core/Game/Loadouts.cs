@@ -16,17 +16,19 @@ namespace OpenEsport.Core
 		public int ShieldTier;
 		/// <summary>Soins emportés : petits soins de vie et petits boucliers.</summary>
 		public int HealSmall, ShieldSmall;
+		/// <summary>Grenades emportées (une entrée par grenade : ItemIds.GrenadeFrag…).</summary>
+		public byte[] Grenades;
 	}
 
 	public static class Loadouts
 	{
 		public static readonly ClassKit[] Kits =
 		{
-			new ClassKit { Id = 0, Name = "Assaut", Description = "Fusil d'assaut polyvalent, viseur holographique, pistolet.", Primary = ItemIds.Ak, Secondary = ItemIds.C19, PrimaryOptic = ItemIds.OpticHolo, ShieldTier = 1, HealSmall = 1, ShieldSmall = 1 },
-			new ClassKit { Id = 1, Name = "Appui", Description = "Mitrailleuse lourde : beaucoup de balles, bouclier plus solide, mais lourde.", Primary = ItemIds.Lmg63, Secondary = ItemIds.C19, ReserveMagazines = 2, ShieldTier = 2, HealSmall = 1 },
-			new ClassKit { Id = 2, Name = "Éclaireur", Description = "Pistolet-mitrailleur rapide à courte portée, viseur point rouge.", Primary = ItemIds.Smg45, Secondary = ItemIds.C19, PrimaryOptic = ItemIds.OpticRedDot, ShieldTier = 0, HealSmall = 2, ShieldSmall = 1 },
-			new ClassKit { Id = 3, Name = "Fusil à pompe", Description = "Dévastateur de près, vulnérable de loin.", Primary = ItemIds.Sawnoff, Secondary = ItemIds.C19, ShieldTier = 1, HealSmall = 2 },
-			new ClassKit { Id = 4, Name = "Tireur", Description = "Fusil d'assaut avec viseur 4x pour les longues distances.", Primary = ItemIds.Ak, Secondary = ItemIds.C19, PrimaryOptic = ItemIds.Optic4x, ReserveMagazines = 2, ShieldTier = 0, HealSmall = 1, ShieldSmall = 2 },
+			new ClassKit { Id = 0, Name = "Fusilier", Description = "AK-74 avec viseur holographique x2, pistolet C19. Polyvalent à toutes les distances.", Primary = ItemIds.Ak, Secondary = ItemIds.C19, PrimaryOptic = ItemIds.Optic2x, ShieldTier = 1, HealSmall = 1, ShieldSmall = 1, Grenades = new[] { ItemIds.GrenadeFrag, ItemIds.GrenadeFrag } },
+			new ClassKit { Id = 1, Name = "Éclaireur", Description = "SMG-45 avec viseur point rouge, pistolet C19. Rapide et mortel de près, plus de soins.", Primary = ItemIds.Smg45, Secondary = ItemIds.C19, PrimaryOptic = ItemIds.OpticRedDot, ShieldTier = 0, HealSmall = 2, ShieldSmall = 1, Grenades = new[] { ItemIds.GrenadeFlash, ItemIds.GrenadeFlash, ItemIds.GrenadeSticky } },
+			new ClassKit { Id = 2, Name = "Appui", Description = "LMG-63, pistolet C19. Beaucoup de balles et un bouclier plus solide, mais moins de chargeurs de réserve.", Primary = ItemIds.Lmg63, Secondary = ItemIds.C19, ReserveMagazines = 2, ShieldTier = 2, HealSmall = 1, Grenades = new[] { ItemIds.GrenadeFrag, ItemIds.GrenadeFire } },
+			new ClassKit { Id = 3, Name = "Briseur", Description = "Fusil à canon scié, pistolet C19. Dévastateur au corps à corps, vulnérable de loin.", Primary = ItemIds.Sawnoff, Secondary = ItemIds.C19, ShieldTier = 1, HealSmall = 2, Grenades = new[] { ItemIds.GrenadeFrag, ItemIds.GrenadeFlash } },
+			new ClassKit { Id = 4, Name = "Tireur d'élite", Description = "Sniper à verrou avec lunette 4x, pistolet C19. Un tir précis peut suffire, mais il faut le placer.", Primary = ItemIds.Sniper, Secondary = ItemIds.C19, PrimaryOptic = ItemIds.Optic4x, ReserveMagazines = 4, ShieldTier = 0, HealSmall = 2, ShieldSmall = 1, Grenades = new[] { ItemIds.GrenadeFlash, ItemIds.GrenadeSticky } },
 		};
 
 		public static ClassKit Get(int id) => Kits[Math.Clamp(id, 0, Kits.Length - 1)];
@@ -62,6 +64,12 @@ namespace OpenEsport.Core
 			new ShopItem { Code = 10, Name = "Petit bouclier (recharge)", Price = 200, ItemId = ItemIds.ShieldSmall },
 			new ShopItem { Code = 11, Name = "Viseur point rouge", Price = 300, ItemId = ItemIds.OpticRedDot },
 			new ShopItem { Code = 12, Name = "Viseur 4x", Price = 500, ItemId = ItemIds.Optic4x },
+			new ShopItem { Code = 14, Name = "Viseur holographique x2", Price = 400, ItemId = ItemIds.Optic2x },
+			new ShopItem { Code = 15, Name = "Fusil de précision (sniper)", Price = 4750, ItemId = ItemIds.Sniper },
+			new ShopItem { Code = 16, Name = "Grenade à fragmentation", Price = 300, ItemId = ItemIds.GrenadeFrag },
+			new ShopItem { Code = 17, Name = "Grenade flash", Price = 200, ItemId = ItemIds.GrenadeFlash },
+			new ShopItem { Code = 18, Name = "Grenade collante", Price = 350, ItemId = ItemIds.GrenadeSticky },
+			new ShopItem { Code = 19, Name = "Grenade incendiaire", Price = 400, ItemId = ItemIds.GrenadeFire },
 			new ShopItem { Code = 13, Name = "Kit de désamorçage", Price = 400, DefuseKit = true, Side = 0 },
 		};
 

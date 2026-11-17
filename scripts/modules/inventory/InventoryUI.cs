@@ -7,6 +7,39 @@ namespace Openesport.Inventory
 	/// <summary>
 	/// Interface de l'inventaire : invite de ramassage, barre des armes et panneau d'inventaire (Tab).
 	/// </summary>
+	public partial class DragButton : Button
+	{
+		public Godot.Collections.Dictionary DragData;
+		public string DragText = "";
+		public Func<Godot.Collections.Dictionary, bool> Accepts;
+		public Action<Godot.Collections.Dictionary> Dropped;
+
+		public override Variant _GetDragData(Vector2 atPosition)
+		{
+			if (DragData == null) return default;
+			var preview = new PanelContainer { Modulate = new Color(1, 1, 1, 0.9f) };
+			var box = new StyleBoxFlat { BgColor = new Color(0.16f, 0.18f, 0.21f, 0.95f), BorderColor = new Color(0.95f, 0.65f, 0.15f) };
+			box.SetBorderWidthAll(2); box.SetCornerRadiusAll(4); box.SetContentMarginAll(8);
+			preview.AddThemeStyleboxOverride("panel", box);
+			preview.AddChild(new Label { Text = DragText });
+			SetDragPreview(preview);
+			return DragData;
+		}
+
+		public override bool _CanDropData(Vector2 atPosition, Variant data)
+			=> Accepts != null && data.VariantType == Variant.Type.Dictionary && Accepts(data.AsGodotDictionary());
+
+		public override void _DropData(Vector2 atPosition, Variant data) => Dropped?.Invoke(data.AsGodotDictionary());
+	}
+
+	/// <summary>Le fond de l'écran quand l'inventaire est ouvert : y déposer un objet le jette à terre.</summary>
+	public partial class DropCatcher : Control
+	{
+		public Action<Godot.Collections.Dictionary> Dropped;
+		public override bool _CanDropData(Vector2 atPosition, Variant data) => data.VariantType == Variant.Type.Dictionary && data.AsGodotDictionary().ContainsKey("src");
+		public override void _DropData(Vector2 atPosition, Variant data) => Dropped?.Invoke(data.AsGodotDictionary());
+	}
+
 	public partial class InventoryUI : CanvasLayer
 	{
 		private static readonly Color PanelColor = new Color(0.08f, 0.09f, 0.11f, 0.88f);
@@ -21,6 +54,7 @@ namespace Openesport.Inventory
 		private Label _toast;
 		private HBoxContainer _weaponBar;
 		private CenterContainer _panelRoot;
+		private DropCatcher _dropCatcher;
 		private VBoxContainer _panelContent;
 
 		private bool _dirty = true;
@@ -105,6 +139,7 @@ namespace Openesport.Inventory
 		{
 			// Pause ou retour au menu : on ferme le panneau, l'InputManager gère la souris
 			_panelRoot.Visible = false;
+			_dropCatcher.Visible = false;
 		}
 
 		public void Toggle()
@@ -115,6 +150,7 @@ namespace Openesport.Inventory
 
 			bool open = !_panelRoot.Visible;
 			_panelRoot.Visible = open;
+			_dropCatcher.Visible = open;
 			Input.MouseMode = open ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
 			_dirty = true;
 		}
@@ -142,6 +178,12 @@ namespace Openesport.Inventory
 			_weaponBar.OffsetBottom = -20;
 			_weaponBar.OffsetLeft = -20;
 			_weaponBar.OffsetTop = -20;
+
+			// fond de l'écran : un objet déposé ici (hors du panneau) est jeté à terre
+			_dropCatcher = new DropCatcher { Visible = false, MouseFilter = Control.MouseFilterEnum.Stop };
+			_dropCatcher.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+			_dropCatcher.Dropped = DropOnGround;
+			root.AddChild(_dropCatcher);
 
 			_panelRoot = new CenterContainer { Visible = false, MouseFilter = Control.MouseFilterEnum.Ignore };
 			root.AddChild(_panelRoot);
@@ -198,9 +240,9 @@ namespace Openesport.Inventory
 			return label;
 		}
 
-		private static Button MakeSlotButton(string text, bool filled, Vector2 size, Action onLeft, Action onRight)
+		private static DragButton MakeSlotButton(string text, bool filled, Vector2 size, Action onLeft, Action onRight)
 		{
-			var button = new Button
+			var button = new DragButton
 			{
 				Text = text,
 				CustomMinimumSize = size,
@@ -259,7 +301,36 @@ namespace Openesport.Inventory
 			}
 		}
 
-		private static readonly string[] AmmoTypeNames = { null, "9mm", "rifle", "shell" };
+		private static Godot.Collections.Dictionary Data(string src, int index) => new Godot.Collections.Dictionary { ["src"] = src, ["index"] = index };
+
+		/// <summary>Un emplacement d'arme accepte un viseur glissé depuis le sac (si l'arme en prend un).</summary>
+		private void SetOpticTarget(DragButton button, int slot, WeaponSlotState weapon)
+		{
+			if (weapon == null || !weapon.Definition.AcceptsOptic) return;
+			button.Disabled = false;
+			button.Accepts = d =>
+			{
+				if (d["src"].AsString() != "bag") return false;
+				int i = d["index"].AsInt32();
+				return i >= 0 && i < Inventory.Items.Count && Inventory.Items[i].Definition?.Type == ItemType.Optic;
+			};
+			button.Dropped = d => Inventory.EquipOpticOn(slot, d["index"].AsInt32());
+		}
+
+		/// <summary>Un objet lâché hors du panneau est jeté à terre.</summary>
+		private void DropOnGround(Godot.Collections.Dictionary d)
+		{
+			int i = d["index"].AsInt32();
+			switch (d["src"].AsString())
+			{
+				case "bag": Inventory.DropItem(i); break;
+				case "weapon": Inventory.DropWeapon(i); break;
+				case "optic": Inventory.DropOptic(i); break;
+				case "shield": Inventory.DropShield(); break;
+			}
+		}
+
+		private static readonly string[] AmmoTypeNames = { null, "9mm", "rifle", "shell", "sniper" };
 
 		/// <summary>
 		/// Munitions d'une arme : « chargeur / total » où le total est le chargeur plus les munitions du sac
@@ -326,6 +397,15 @@ namespace Openesport.Inventory
 		}
 
 		/// <summary>Image à gauche du texte d'un bouton, à la taille voulue.</summary>
+		private static void SetIcon(Button button, Texture2D tex, int size)
+		{
+			if (tex == null) return;
+			button.Icon = tex;
+			button.IconAlignment = HorizontalAlignment.Left;
+			button.AddThemeConstantOverride("icon_max_width", size);
+		}
+
+		/// <summary>Image à gauche du texte d'un bouton, à la taille voulue.</summary>
 		private static void SetIcon(Button button, string path, int size)
 		{
 			if (!ResourceLoader.Exists(path)) return;
@@ -375,15 +455,20 @@ namespace Openesport.Inventory
 				}
 				else if (active)
 					weaponButton.AddThemeStyleboxOverride("normal", MakeBox(SlotColor, AccentColor));
+				if (weapon != null) { weaponButton.DragData = Data("weapon", slot); weaponButton.DragText = weapon.Definition.DisplayName; SetIcon(weaponButton, ItemIcons.Get(weapon.ItemId), 56); }
+				SetOpticTarget(weaponButton, slot, weapon);
 				column.AddChild(weaponButton);
 
 				bool acceptsOptic = weapon != null && weapon.Definition.AcceptsOptic;
 				string opticText = weapon?.Optic != null
 					? $"Viseur : {weapon.Optic.DisplayName}"
 					: acceptsOptic ? "Viseur : aucun" : "";
-				column.AddChild(MakeSlotButton(opticText, weapon?.Optic != null, new Vector2(250, 40),
+				var opticButton = MakeSlotButton(opticText, weapon?.Optic != null, new Vector2(250, 40),
 					() => Inventory.UnequipOptic(slot),
-					null));
+					null);
+				if (weapon?.Optic != null) { opticButton.DragData = Data("optic", slot); opticButton.DragText = weapon.Optic.DisplayName; SetIcon(opticButton, ItemIcons.Get(weapon.OpticId), 34); }
+				SetOpticTarget(opticButton, slot, weapon);
+				column.AddChild(opticButton);
 			}
 
 			// --- Bouclier ---
@@ -399,6 +484,7 @@ namespace Openesport.Inventory
 				shieldButton.AddThemeStyleboxOverride("normal", MakeBox(SlotColor, tc.Darkened(0.35f)));
 				SetIcon(shieldButton, ItemTierStyle.ShieldIcon(Inventory.ShieldTier), 56);
 			}
+			if (Inventory.ShieldTier >= 0) { shieldButton.DragData = Data("shield", 0); shieldButton.DragText = "Bouclier"; }
 			_panelContent.AddChild(shieldButton);
 
 			// --- Sac à dos ---
@@ -416,17 +502,23 @@ namespace Openesport.Inventory
 				int index = i;
 				var stack = i < Inventory.Items.Count ? Inventory.Items[i] : null;
 				var def = stack?.Definition;
-				string label = def == null ? "" : def.Type == ItemType.Ammo || def.Type == ItemType.Consumable ? $"{def.DisplayName}\nx{stack.Count}" : def.DisplayName;
-				var slotButton = MakeSlotButton(label, def != null, new Vector2(120, 70),
+				string label = def == null ? "" : def.Type == ItemType.Ammo || def.Type == ItemType.Consumable || def.Type == ItemType.Grenade ? $"{def.DisplayName}\nx{stack.Count}" : def.DisplayName;
+				var slotButton = MakeSlotButton(label, def != null, new Vector2(150, 76),
 					def != null && def.Type == ItemType.Optic ? () => Inventory.EquipOpticFromBackpack(index)
 						: def != null && def.Type == ItemType.Consumable ? () => Inventory.UseConsumable(def.Id) : null,
 					() => Inventory.DropItem(index));
 				if (def != null && def.Type == ItemType.Consumable && def.IconPath != null) SetIcon(slotButton, def.IconPath, 44);
+				else if (def != null) SetIcon(slotButton, ItemIcons.Get(def.Id), 52);       // miniature du modèle
+				if (def != null) { slotButton.DragData = Data("bag", index); slotButton.DragText = def.DisplayName; }
+				// on peut y ranger le viseur d'une arme (glissé hors de l'arme)
+				slotButton.Disabled = false;
+				slotButton.Accepts = d => d["src"].AsString() == "optic";
+				slotButton.Dropped = d => Inventory.UnequipOptic(d["index"].AsInt32());
 				grid.AddChild(slotButton);
 			}
 
 			_panelContent.AddChild(MakeLabel(
-				"Clic gauche : équiper un viseur, prendre une arme, utiliser un soin  —  Clic droit : jeter (arme, bouclier, objet)  —  Tab : fermer",
+				"Clic gauche : équiper un viseur, prendre une arme, utiliser un soin  —  Clic droit : jeter  —  Glisser-déposer : un viseur sur une arme pour l'équiper, un objet hors du panneau pour le jeter  —  Tab : fermer",
 				DimTextColor, 13));
 		}
 	}

@@ -158,7 +158,20 @@ namespace Openesport.Modules
 				var modeScreen = new Openesport.Menus.ModeScreen { Name = "ModeScreen" };
 				modeScreen.OnContinue = () =>
 				{
-					var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel", OnPlay = FindOnlineGame };
+					var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel" };
+					// hors battle royale : après le personnage, on choisit son équipement de départ
+					panel.OnPlay = () =>
+					{
+						if (Openesport.Online.MatchSettings.Mode == OpenEsport.Core.GameMode.BattleRoyale) { FindOnlineGame(); return; }
+						var loadout = new Openesport.Menus.LoadoutScreen { Name = "LoadoutScreen", OnContinue = FindOnlineGame };
+						loadout.OnBack = () =>
+						{
+							var again = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel", OnPlay = panel.OnPlay };
+							again.Closed += () => ExecuteAction("start_online_game");
+							((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, again);
+						};
+						((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, loadout);
+					};
 					panel.Closed += () => ExecuteAction("start_online_game");       // retour : la page du mode
 					((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, panel);
 				};

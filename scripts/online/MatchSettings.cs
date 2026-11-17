@@ -37,6 +37,30 @@ namespace Openesport.Online
 			}
 		}
 
+		private static int _loadout = -1;
+
+		/// <summary>Équipement de départ choisi dans le menu (hors battle royale) : numéro dans Loadouts.Kits (mémorisé).</summary>
+		public static int Loadout
+		{
+			get
+			{
+				if (_loadout < 0)
+				{
+					var cfg = new ConfigFile();
+					_loadout = cfg.Load(Path) == Error.Ok ? (int)cfg.GetValue("match", "loadout", 0) : 0;
+				}
+				return Mathf.Clamp(_loadout, 0, OpenEsport.Core.Loadouts.Kits.Length - 1);
+			}
+			set
+			{
+				_loadout = Mathf.Clamp(value, 0, OpenEsport.Core.Loadouts.Kits.Length - 1);
+				var cfg = new ConfigFile();
+				cfg.Load(Path);
+				cfg.SetValue("match", "loadout", _loadout);
+				cfg.Save(Path);
+			}
+		}
+
 		/// <summary>Taille de l'équipe : 1 (solo) à 10 selon le mode.</summary>
 		public static int TeamSize
 		{

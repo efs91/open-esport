@@ -7,7 +7,7 @@ namespace Openesport.Online
 	{
 		private const string StepDir = "res://assets/sounds/foosteps/conctrete/";
 		private static AudioStream[] _jog, _jump, _land;
-		private static AudioStreamWav _shot, _shotLight;
+		private static AudioStreamWav _shot, _shotLight, _boom, _bang, _ping;
 
 		private static AudioStream[] Load(string prefix, int count)
 		{
@@ -29,6 +29,9 @@ namespace Openesport.Online
 			_land = Load("Footstep_Concrete_Boots_Land_", 4);
 			_shot = Synthesize(0.42f, 70f, 16f, 1f);
 			_shotLight = Synthesize(0.28f, 130f, 24f, 0.8f);
+			_boom = Synthesize(1.3f, 48f, 4f, 1.3f);
+			_bang = Synthesize(0.5f, 260f, 14f, 1.0f);
+			_ping = Synthesize(0.18f, 1100f, 20f, 0.35f);
 		}
 
 		/// <summary>Coup de feu synthétisé : claquement (bruit) + grondement grave qui s'éteint.</summary>
@@ -86,6 +89,15 @@ namespace Openesport.Online
 
 		public static void Jump(Node parent, Vector3 pos) { Init(); PlayAt(parent, Pick(_jump), pos, 0f, 55f, 6f); }
 		public static void Land(Node parent, Vector3 pos) { Init(); PlayAt(parent, Pick(_land), pos, 2f, 60f, 7f); }
+
+		/// <summary>Explosion de grenade : grave et longue, audible de très loin.</summary>
+		public static void Boom(Node parent, Vector3 pos, float gain) { Init(); PlayAt(parent, _boom, pos, 4f + 6f * gain, 340f, 26f, 0.92f + (float)Rng.NextDouble() * 0.12f); }
+
+		/// <summary>Petit « bip » d'un ping d'équipe.</summary>
+		public static void Ping(Node parent, Vector3 pos) { Init(); PlayAt(parent, _ping, pos, -2f, 80f, 40f, 1f); }
+
+		/// <summary>Détonation sèche et aiguë d'une grenade flash.</summary>
+		public static void Bang(Node parent, Vector3 pos) { Init(); PlayAt(parent, _bang, pos, 9f, 280f, 22f, 0.95f + (float)Rng.NextDouble() * 0.1f); }
 
 		/// <summary>Coup de feu : audible de loin (250 m), très fort de près.</summary>
 		public static void Shot(Node parent, Vector3 pos, bool light, bool local)

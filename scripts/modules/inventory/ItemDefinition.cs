@@ -10,7 +10,11 @@ namespace Openesport.Inventory
 		Backpack,
 		Ammo,
 		Shield,
-		Consumable
+		Consumable,
+		/// <summary>Grenade à lancer (touche F) : fragmentation, collante, incendiaire ou flash.</summary>
+		Grenade,
+		/// <summary>Sabotage : la bombe du porteur (X : la lâcher).</summary>
+		Bomb
 	}
 
 	/// <summary>
@@ -48,6 +52,8 @@ namespace Openesport.Inventory
 		public float ModelYawDegrees = -90.0f;
 		/// <summary>Plus grande dimension du viseur monté, en mètres (0 = taille d'origine, point de fixation à l'origine du modèle).</summary>
 		public float ModelSize;
+		/// <summary>Correction du point de visée (repère du viseur, avant agrandissement, en mètres : X droite, Y haut). Si le réticule paraît en haut à droite du centre de l'écran, augmente X et Y.</summary>
+		public Vector3 CenterOffset;
 		/// <summary>Affiche un point rouge lumineux au centre de la lentille.</summary>
 		public bool RedDot;
 
@@ -128,6 +134,9 @@ namespace Openesport.Inventory
 			Add(new ItemDefinition { Id = "lmg63", DisplayName = "LMG-63", Type = ItemType.Weapon, ScenePath = Hands + "fps-lmg63/fps-lmg63.tscn", AcceptsOptic = true, OpticAlong = 0.40f, OpticOffset = new Vector3(0, -0.065f, 0) });
 			Add(new ItemDefinition { Id = "sawnoff", DisplayName = "Fusil à canon scié", Type = ItemType.Weapon, ScenePath = Hands + "fps-sawnoff/fps-sawnoff.tscn", AcceptsOptic = true });
 
+			// Fusil de précision à verrou (kit fps-hands généré par tools/build_sniper_viewmodel.gd ; le modèle n'a pas de lunette : on monte les nôtres)
+			Add(new ItemDefinition { Id = "sniper", DisplayName = "Sniper", Type = ItemType.Weapon, ScenePath = Hands + "fps-sniper/fps-sniper.tscn", AcceptsOptic = true, OpticAlong = 0.45f, OpticOffset = new Vector3(0, -0.02f, 0) });
+
 			// Viseurs
 			Add(new ItemDefinition { Id = "optic_holo", DisplayName = "Viseur holographique 1x", Type = ItemType.Optic, ScenePath = Scopes + "H02_Holo/H02_Holo_Legacy_K1_Rail_Top.glb", Zoom = 1.25f, EyeRelief = 0.30f });
 			Add(new ItemDefinition { Id = "optic_4x", DisplayName = "Lunette compacte 4x", Type = ItemType.Optic, ScenePath = SeeThroughScopes + "P42_4x_Compact_see_through.glb", Zoom = 4.0f, EyeRelief = 0.8f, MountRise = 0.022f });
@@ -135,16 +144,34 @@ namespace Openesport.Inventory
 
 			Add(new ItemDefinition { Id = "optic_reddot", DisplayName = "Viseur point rouge 1x", Type = ItemType.Optic, ScenePath = "res://assets/accessoires/reddot/fps_red_dot_sight_game_model.glb", Zoom = 1.15f, EyeRelief = 0.11f, ModelYawDegrees = 180.0f, ModelSize = 0.12f, RedDot = true, GroundSize = 0.09f });
 
+			// Viseur holographique ouvert x2 (modèle généré par ChatGPT, remis à l'endroit par viseur_x2.tscn)
+			Add(new ItemDefinition { Id = "optic_2x", DisplayName = "Viseur holographique x2", Type = ItemType.Optic, ScenePath = "res://assets/accessoires/x2/viseur_x2.tscn", Zoom = 2.0f, EyeRelief = 0.12f, ModelYawDegrees = 0.0f, ModelSize = 0.11f, GroundSize = 0.11f, CenterOffset = new Vector3(-0.0065f, 0.0078f, 0f) });
+
 			// Munitions (modèles générés avec Meshy)
 			Add(new ItemDefinition { Id = "ammo_9mm", DisplayName = "Munitions 9mm", Type = ItemType.Ammo, ScenePath = Ammo + "ammo_9mm.glb", AmmoType = "9mm", StackSize = 60, PickupAmount = 20, GroundSize = 0.2f });
 			Add(new ItemDefinition { Id = "ammo_rifle", DisplayName = "Munitions de fusil", Type = ItemType.Ammo, ScenePath = Ammo + "ammo_rifle.glb", AmmoType = "rifle", StackSize = 60, PickupAmount = 30, GroundSize = 0.28f });
 			Add(new ItemDefinition { Id = "ammo_shell", DisplayName = "Cartouches", Type = ItemType.Ammo, ScenePath = Ammo + "ammo_shell.glb", AmmoType = "shell", StackSize = 16, PickupAmount = 8, GroundSize = 0.22f });
 
+			Add(new ItemDefinition { Id = "ammo_sniper", DisplayName = "Munitions de précision", Type = ItemType.Ammo, ScenePath = "res://assets/munitions/sniper_ammo_box_game-ready.glb", AmmoType = "sniper", StackSize = 20, PickupAmount = 10, GroundSize = 0.3f });
+
 			// Sacs à dos
 			Add(new ItemDefinition { Id = "backpack_2", DisplayName = "Sac à dos niv. 2", Type = ItemType.Backpack, ScenePath = Backpacks + "military_backpack.glb", BackpackLevel = 2, GroundSize = 0.55f });
 			Add(new ItemDefinition { Id = "backpack_3", DisplayName = "Sac à dos niv. 3", Type = ItemType.Backpack, ScenePath = Backpacks + "military_backpack-1.glb", BackpackLevel = 3, GroundSize = 0.6f });
 
+			AddGrenades();
+			Add(new ItemDefinition { Id = "bomb", DisplayName = "Bombe", Type = ItemType.Bomb, StackSize = 1, ScenePath = "res://assets/grenades/basic_explosive.glb", GroundSize = 0.3f });
 			AddSupplies();
+		}
+
+		private const string Grenades = "res://assets/grenades/";
+
+		/// <summary>Grenades (modèles dans assets/grenades) : les caractéristiques de jeu sont celles du serveur (GrenadeDefs).</summary>
+		private static void AddGrenades()
+		{
+			Add(new ItemDefinition { Id = "grenade_frag", DisplayName = "Grenade à fragmentation", Type = ItemType.Grenade, StackSize = 3, ScenePath = Grenades + "frag_grenade.glb", GroundSize = 0.15f });
+			Add(new ItemDefinition { Id = "grenade_sticky", DisplayName = "Grenade collante", Type = ItemType.Grenade, StackSize = 2, ScenePath = Grenades + "arc_star.glb", GroundSize = 0.17f });
+			Add(new ItemDefinition { Id = "grenade_fire", DisplayName = "Grenade incendiaire", Type = ItemType.Grenade, StackSize = 2, ScenePath = Grenades + "incendiary_grenade.glb", GroundSize = 0.2f });
+			Add(new ItemDefinition { Id = "grenade_flash", DisplayName = "Grenade flash", Type = ItemType.Grenade, StackSize = 3, ScenePath = Grenades + "flashbang_grenade.glb", GroundSize = 0.18f });
 		}
 
 		private const string Soin = "res://assets/textures/Soin/";

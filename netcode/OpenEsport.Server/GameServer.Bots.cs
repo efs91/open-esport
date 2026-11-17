@@ -43,6 +43,9 @@ namespace OpenEsport.Server
 			public Vec3 LandTarget;
 			/// <summary>Erreur de visée (radians), tirée de temps en temps : un bot faible garde un moment la même mauvaise visée.</summary>
 			public float AimYawErr, AimPitchErr, AimTimer; // erreurs de visée en mètres à la cible
+			/// <summary>Temps depuis lequel la cible n'est plus en vue ; délai pendant lequel il ne recule plus (coincé contre un mur) ; blocages successifs en combat.</summary>
+			public float SinceSeen, NoRetreat, GrenadeTimer;
+			public int FightStuck;
 
 			public BotBrain(int seed, float skill)
 			{
@@ -258,8 +261,18 @@ namespace OpenEsport.Server
 			int slot = 0;
 			b.Toggle = !b.Toggle;
 
-			if (weapon == null && (inv.Weapons[0] != null || inv.Weapons[1] != null))
-				slot = inv.Weapons[0] != null ? 1 : 2;
+			// arme absente ou vide (plus de balles) : il passe à l'autre arme si elle est utilisable
+			if ((weapon == null || !BotUsable(p, weapon)) && !p.Inventory.BombInHand)
+			{
+				int alt = -1;
+				for (int i = 0; i < 2 && i < inv.Weapons.Length; i++)
+					if (inv.Weapons[i] != null && inv.Weapons[i] != weapon && BotUsable(p, inv.Weapons[i])) { alt = i; break; }
+				if (alt < 0 && weapon == null)
+					for (int i = 0; i < 2 && i < inv.Weapons.Length; i++) if (inv.Weapons[i] != null) { alt = i; break; }
+				if (alt >= 0) slot = alt + 1;
+			}
+			b.SinceSeen += dt;
+			b.NoRetreat -= dt;
 
 			// un bot dont l'équipe compte un joueur humain reste près de lui, et le rejoint s'il s'en éloigne
 			ServerPlayer leader = null;
@@ -289,7 +302,7 @@ namespace OpenEsport.Server
 				desiredYaw = MathF.Atan2(-d.X, -d.Z);
 				desiredPitch = MathF.Atan2(d.Y, horiz);
 				// la balle tombe : il vise un peu au-dessus de la cible, selon le temps de vol
-				float flight = horiz / BulletSpeed;
+				float flight = horiz / (def != null ? def.Speed : BulletSpeed);
 				desiredPitch += 0.5f * BulletGravity * flight * flight / MathF.Max(horiz, 1f);
 
 				// Un bot moins bon vise moins bien. Toutes les ~0,5 s il « décide » de sa visée : juste avec une probabilité qui dépend
@@ -320,6 +333,16 @@ namespace OpenEsport.Server
 				if (b.StrafeTimer <= 0f) { b.StrafeDir = -b.StrafeDir; b.StrafeTimer = 0.5f + (float)b.Rng.NextDouble() * 1.0f; }
 				strafe = b.StrafeDir;
 				forward = horiz > (def.Range > 100 ? 40f : 15f) ? 1f : (horiz < 6f ? -1f : 0f);
+				if (b.NoRetreat > 0f && forward < 0f) forward = 0f;      // coincé contre un mur : il ne recule plus
+				if (b.SinceSeen > 0.6f)
+				{
+					// cible perdue de vue (derrière un mur) : il la poursuit en contournant les obstacles, sans tirer dans le décor
+					var chase = Steer(p, b, b.Target.State.Pos, dt);
+					desiredYaw = MathF.Atan2(-(chase.X - pos.X), -(chase.Z - pos.Z));
+					desiredPitch = 0f;
+					forward = 1f; strafe = 0f;
+					buttons |= Buttons.Sprint;
+				}
 
 				// rafales : il tire un moment, puis fait une pause
 				b.BurstTimer -= dt;
@@ -329,8 +352,10 @@ namespace OpenEsport.Server
 					else { b.PauseTimer = 0.15f + (float)b.Rng.NextDouble() * 0.4f * (1.2f - b.Skill); b.BurstTimer = b.PauseTimer; }
 				}
 				bool inBurst = b.PauseTimer <= 0f;
-				if (inBurst && !p.Reloading && weapon.Magazine > 0 && (def.Automatic || b.Toggle)) buttons |= Buttons.Fire;
+				if (inBurst && b.SinceSeen <= 0.6f && !p.Reloading && weapon.Magazine > 0 && (def.Automatic || b.Toggle)) buttons |= Buttons.Fire;
 				if (b.Rng.Next(120) == 0) buttons |= Buttons.Crouch;
+				b.GrenadeTimer -= dt;
+				if (b.GrenadeTimer <= 0f && b.SinceSeen < 0.3f) { b.GrenadeTimer = 3f; TryBotGrenade(p, b, horiz, d.Y); }
 			}
 			else if (modeGoal)
 			{
@@ -416,6 +441,13 @@ namespace OpenEsport.Server
 			if (b.StuckTimer >= 1f)
 			{
 				float mdx = pos.X - b.LastPos.X, mdz = pos.Z - b.LastPos.Z;
+				// en combat : s'il ne bouge pas malgré ses déplacements, il ne recule plus, change de côté, puis abandonne sa cible
+				if (fighting && mdx * mdx + mdz * mdz < 0.3f * 0.3f)
+				{
+					b.NoRetreat = 2f; b.StrafeDir = -b.StrafeDir; b.StrafeTimer = 1f;
+					if (++b.FightStuck >= 3) { b.Target = null; b.FightStuck = 0; b.Path.Clear(); b.RepathTimer = 0f; }
+				}
+				else if (fighting) b.FightStuck = 0;
 				bool wantsToMove = !fighting && forward > 0f && !(b.LootIdx >= 0 && !regroup && Vec3.DistanceSquared(pos, _loot[b.LootIdx].Pos) < 6f);
 				if (wantsToMove && mdx * mdx + mdz * mdz < 0.5f * 0.5f && p.Alive)
 				{
@@ -472,10 +504,14 @@ namespace OpenEsport.Server
 			Vec3 eye = pos + new Vec3(0, Sim.EyeFor(p.State.Stance), 0);
 			var scratch = _lootScratch;
 
+			if (p.BlindLeft > 0f) { b.Target = null; return; }      // aveuglé par une grenade flash : il ne voit plus rien
+
 			// sans arme utilisable, un bot ne cherche pas la bagarre : il cherche de quoi s'équiper
 			var held = p.Inventory.Active;
 			var heldDef = held != null ? WeaponDefs.Get(held.WeaponId) : null;
-			bool canFight = heldDef != null && (heldDef.Melee || held.Magazine > 0 || p.Inventory.GetAmmo(heldDef.AmmoType) > 0);
+			bool canFight = false;
+			for (int wi = 0; wi < p.Inventory.Weapons.Length; wi++)
+				if (p.Inventory.Weapons[wi] != null && BotUsable(p, p.Inventory.Weapons[wi])) canFight = true;
 			if (!canFight) b.Target = null;
 
 			ServerPlayer best = null;
@@ -485,10 +521,35 @@ namespace OpenEsport.Server
 				_playerGrid.Query(pos.X, pos.Z, 90f, scratch);
 				best = FindVisibleEnemy(p, eye, pos, scratch);
 				// il garde sa cible un instant même s'il la perd de vue
-				if (best != null || b.Target == null || !b.Target.Alive) b.Target = best;
+				if (best != null) b.SinceSeen = 0f;
+				// cible perdue de vue : on la garde quelques secondes (poursuite), puis on l'oublie
+				if (best != null || b.Target == null || !b.Target.Alive || b.SinceSeen > 4f) b.Target = best;
 				if (b.Target != null) { b.LootIdx = -1; return; }
 			}
 			SeekLoot(p, b, pos);
+		}
+
+		/// <summary>Un bot qui voit sa cible à portée de lancer jette une grenade (au plus une toutes les 8 à 16 s) : fragmentation de près, flash ou autre sinon.</summary>
+		private void TryBotGrenade(ServerPlayer p, BotBrain b, float horiz, float rise)
+		{
+			if (horiz < 6f || horiz > 15f || p.GrenadeCooldown > 0f) return;
+			byte pick = 0;
+			byte[] order = horiz < 11f
+				? new[] { ItemIds.GrenadeFrag, ItemIds.GrenadeSticky, ItemIds.GrenadeFire, ItemIds.GrenadeFlash }
+				: new[] { ItemIds.GrenadeFlash, ItemIds.GrenadeFrag, ItemIds.GrenadeFire, ItemIds.GrenadeSticky };
+			foreach (var id in order) if (p.Inventory.CountOf(id) > 0) { pick = id; break; }
+			if (pick == 0) return;
+			// angle de lancer pour que la portée à plat égale la distance : v² sin(2a) / g
+			float s = Math.Clamp((horiz + rise * 0.5f) * GrenadeDefs.Gravity / (GrenadeDefs.ThrowSpeed * GrenadeDefs.ThrowSpeed), 0.05f, 0.98f);
+			b.GrenadeTimer = 8f + (float)b.Rng.NextDouble() * 8f;
+			ThrowGrenade(p, pick, 0.5f * MathF.Asin(s), b.Yaw);
+		}
+
+		/// <summary>Une arme est utilisable si elle est blanche ou s'il lui reste des balles (chargeur ou réserve).</summary>
+		private static bool BotUsable(ServerPlayer p, WeaponSlot w)
+		{
+			var d = WeaponDefs.Get(w.WeaponId);
+			return d != null && (d.Melee || w.Magazine > 0 || p.Inventory.GetAmmo(d.AmmoType) > 0);
 		}
 
 		private ServerPlayer FindVisibleEnemy(ServerPlayer p, Vec3 eye, Vec3 pos, List<int> scratch)
@@ -512,23 +573,39 @@ namespace OpenEsport.Server
 			return best;
 		}
 
+		/// <summary>Une arme au sol vaut le détour si elle a des balles dans son chargeur ou si le bot a des munitions pour elle.</summary>
+		private static bool WorthTaking(InventoryState inv, byte weaponId, short magazine)
+		{
+			var wd = WeaponDefs.Get(weaponId);
+			return wd != null && (wd.Melee || magazine != 0 || inv.GetAmmo(wd.AmmoType) > 0);
+		}
+
 		private void SeekLoot(ServerPlayer p, BotBrain b, Vec3 pos)
 		{
 			var scratch = _lootScratch;
 			// objet utile à proximité
 			var inv = p.Inventory;
-			byte wantedAmmo = 0;
-			bool needWeapon = inv.Weapons[0] == null && inv.Weapons[1] == null;
-			var active = inv.Active;
-			if (active != null)
+			// munitions voulues : pour chacune de ses armes dont la réserve est basse (deux types au plus)
+			byte ammoA = 0, ammoB = 0;
+			bool anyUsable = false, freeSlot = false;
+			for (int wi = 0; wi < inv.Weapons.Length; wi++)
 			{
-				var wd = WeaponDefs.Get(active.WeaponId);
-				if (wd != null && wd.AmmoType != 0 && inv.GetAmmo(wd.AmmoType) < wd.MagazineSize * 2) wantedAmmo = wd.AmmoType;
+				var w = inv.Weapons[wi];
+				if (w == null) { freeSlot = true; continue; }
+				var wd = WeaponDefs.Get(w.WeaponId);
+				if (wd == null) continue;
+				if (BotUsable(p, w)) anyUsable = true;
+				if (wd.AmmoType != 0 && inv.GetAmmo(wd.AmmoType) < wd.MagazineSize * 2)
+				{
+					if (ammoA == 0) ammoA = wd.AmmoType; else if (ammoA != wd.AmmoType) ammoB = wd.AmmoType;
+				}
 			}
+			bool needWeapon = !anyUsable;                 // plus rien pour tirer : arme ou munitions, vite
+			bool wantWeapon = needWeapon || freeSlot;
 			bool wantBackpack = inv.BackpackLevel < 3;
 
 			scratch.Clear();
-			_lootGrid.Query(pos.X, pos.Z, 70f, scratch);
+			_lootGrid.Query(pos.X, pos.Z, needWeapon ? 130f : 70f, scratch);
 			int bestIdx = -1;
 			float bestLoot = float.MaxValue;
 			for (int i = 0; i < scratch.Count; i++)
@@ -537,10 +614,11 @@ namespace OpenEsport.Server
 				if (idx < 0 || idx >= _lootHigh || !_loot[idx].Active) continue;
 				var def = ItemDefs.Get(_loot[idx].Item.ItemId);
 				if (def == null) continue;
-				bool wanted = (needWeapon && def.Kind == ItemKind.Weapon)
-					|| (def.Kind == ItemKind.Ammo && def.AmmoType == wantedAmmo && wantedAmmo != 0)
+				bool wanted = (wantWeapon && def.Kind == ItemKind.Weapon && WorthTaking(inv, def.Id, _loot[idx].Item.Magazine))
+					|| (def.Kind == ItemKind.Ammo && def.AmmoType != 0 && (def.AmmoType == ammoA || def.AmmoType == ammoB))
 					|| (def.Kind == ItemKind.Backpack && wantBackpack && def.BackpackLevel > inv.BackpackLevel)
-					|| (def.Kind == ItemKind.Optic && !needWeapon && inv.Items.Count < inv.Capacity);
+					|| (def.Kind == ItemKind.Optic && !needWeapon && inv.Items.Count < inv.Capacity)
+					|| (def.Kind == ItemKind.Grenade && !needWeapon && inv.CountOf(def.Id) < def.StackSize && (inv.CountOf(def.Id) > 0 || inv.Items.Count < inv.Capacity));
 				if (!wanted) continue;
 				float d2 = Vec3.DistanceSquared(_loot[idx].Pos, pos);
 				if (d2 < bestLoot) { bestLoot = d2; bestIdx = idx; }

@@ -3,22 +3,26 @@ using System.Collections.Generic;
 
 namespace OpenEsport.Core
 {
-	public enum ItemKind : byte { None = 0, Weapon = 1, Optic = 2, Backpack = 3, Ammo = 4, Chest = 5, Shield = 6, Consumable = 7 }
+	public enum ItemKind : byte { None = 0, Weapon = 1, Optic = 2, Backpack = 3, Ammo = 4, Chest = 5, Shield = 6, Consumable = 7, Grenade = 8, Bomb = 9 }
 
 	/// <summary>Identifiants des objets du jeu. Ils sont envoyés tels quels sur le réseau.</summary>
 	public static class ItemIds
 	{
 		public const byte None = 0;
-		public const byte Knife = 1, C19 = 2, Smg45 = 3, Ak = 4, Lmg63 = 5, Sawnoff = 6;
-		public const byte OpticHolo = 10, Optic4x = 11, Optic6x = 12, OpticRedDot = 13;
+		public const byte Knife = 1, C19 = 2, Smg45 = 3, Ak = 4, Lmg63 = 5, Sawnoff = 6, Sniper = 7;
+		public const byte OpticHolo = 10, Optic4x = 11, Optic6x = 12, OpticRedDot = 13, Optic2x = 14;
 		public const byte Backpack2 = 20, Backpack3 = 21;
-		public const byte Ammo9mm = 30, AmmoRifle = 31, AmmoShell = 32;
+		public const byte Ammo9mm = 30, AmmoRifle = 31, AmmoShell = 32, AmmoSniper = 33;
 		/// <summary>Coffre de butin : réplique comme un objet au sol (Count = 0 fermé, 1 ouvert) mais ne se ramasse pas, il s'ouvre.</summary>
 		public const byte Chest = 40;
 		/// <summary>Bouclier : un seul objet, son niveau (blanc, bleu, violet, rouge) donne 50 / 75 / 100 / 125 points.</summary>
 		public const byte Shield = 50;
 		/// <summary>Soins : petit/grand soin de vie, petit/grand bouclier, petit/grand « bouclier + vie ».</summary>
 		public const byte HealSmall = 60, HealBig = 61, ShieldSmall = 62, ShieldBig = 63, BothSmall = 64, BothBig = 65;
+		/// <summary>Grenades : à fragmentation, collante, incendiaire, flash (lancées avec F, voir <see cref="GrenadeDefs"/>).</summary>
+		/// <summary>Sabotage : la bombe que porte un attaquant (objet de son sac ; on peut la lâcher).</summary>
+		public const byte Bomb = 80;
+		public const byte GrenadeFrag = 70, GrenadeSticky = 71, GrenadeFire = 72, GrenadeFlash = 73;
 	}
 
 	public sealed class ItemDef
@@ -49,10 +53,12 @@ namespace OpenEsport.Core
 			Add(new ItemDef { Id = ItemIds.Ak, Name = "ak", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.Lmg63, Name = "lmg63", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.Sawnoff, Name = "sawnoff", Kind = ItemKind.Weapon, AcceptsOptic = true });
+			Add(new ItemDef { Id = ItemIds.Sniper, Name = "sniper", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.OpticHolo, Name = "optic_holo", Kind = ItemKind.Optic });
 			Add(new ItemDef { Id = ItemIds.Optic4x, Name = "optic_4x", Kind = ItemKind.Optic });
 			Add(new ItemDef { Id = ItemIds.Optic6x, Name = "optic_6x", Kind = ItemKind.Optic });
 			Add(new ItemDef { Id = ItemIds.OpticRedDot, Name = "optic_reddot", Kind = ItemKind.Optic });
+			Add(new ItemDef { Id = ItemIds.Optic2x, Name = "optic_2x", Kind = ItemKind.Optic });
 			Add(new ItemDef { Id = ItemIds.Backpack2, Name = "backpack_2", Kind = ItemKind.Backpack, BackpackLevel = 2 });
 			Add(new ItemDef { Id = ItemIds.Backpack3, Name = "backpack_3", Kind = ItemKind.Backpack, BackpackLevel = 3 });
 			Add(new ItemDef { Id = ItemIds.Chest, Name = "chest", Kind = ItemKind.Chest });
@@ -66,6 +72,12 @@ namespace OpenEsport.Core
 			Add(new ItemDef { Id = ItemIds.Ammo9mm, Name = "ammo_9mm", Kind = ItemKind.Ammo, AmmoType = 1, StackSize = 60, PickupAmount = 20 });
 			Add(new ItemDef { Id = ItemIds.AmmoRifle, Name = "ammo_rifle", Kind = ItemKind.Ammo, AmmoType = 2, StackSize = 60, PickupAmount = 30 });
 			Add(new ItemDef { Id = ItemIds.AmmoShell, Name = "ammo_shell", Kind = ItemKind.Ammo, AmmoType = 3, StackSize = 16, PickupAmount = 8 });
+			Add(new ItemDef { Id = ItemIds.GrenadeFrag, Name = "grenade_frag", Kind = ItemKind.Grenade, StackSize = 3 });
+			Add(new ItemDef { Id = ItemIds.GrenadeSticky, Name = "grenade_sticky", Kind = ItemKind.Grenade, StackSize = 2 });
+			Add(new ItemDef { Id = ItemIds.GrenadeFire, Name = "grenade_fire", Kind = ItemKind.Grenade, StackSize = 2 });
+			Add(new ItemDef { Id = ItemIds.GrenadeFlash, Name = "grenade_flash", Kind = ItemKind.Grenade, StackSize = 3 });
+			Add(new ItemDef { Id = ItemIds.Bomb, Name = "bomb", Kind = ItemKind.Bomb, StackSize = 1 });
+			Add(new ItemDef { Id = ItemIds.AmmoSniper, Name = "ammo_sniper", Kind = ItemKind.Ammo, AmmoType = 4, StackSize = 20, PickupAmount = 10 });
 		}
 
 		private static void Add(ItemDef d)
@@ -73,6 +85,25 @@ namespace OpenEsport.Core
 			_byId[d.Id] = d;
 			_byName[d.Name] = d;
 			All.Add(d);
+		}
+
+		/// <summary>
+		/// Rang d'un objet dans le sac : toujours le même ordre. Munitions lourdes d'abord (précision, fusil), cartouches, munitions légères, puis les viseurs,
+		/// les boucliers et soins, les grenades, et la bombe en dernier.
+		/// </summary>
+		public static int InventoryOrder(byte id)
+		{
+			var d = _byId[id];
+			if (d == null) return 1000;
+			switch (d.Kind)
+			{
+				case ItemKind.Ammo: return 10 + (d.AmmoType == 4 ? 0 : d.AmmoType == 2 ? 1 : d.AmmoType == 3 ? 2 : 3);
+				case ItemKind.Optic: return 100 + id;
+				case ItemKind.Shield: case ItemKind.Consumable: return 200 + id;
+				case ItemKind.Grenade: return 300 + id;
+				case ItemKind.Bomb: return 400;
+				default: return 500 + id;
+			}
 		}
 
 		public static ItemDef Get(byte id) => _byId[id];
@@ -104,16 +135,16 @@ namespace OpenEsport.Core
 		{
 			int cap = Math.Min(4, into.Length);
 			int n = 0;
-			byte first = (byte)(ItemIds.C19 + rng.Next(5));
+			byte first = RollWeapon(rng);
 			into[n++] = first;
 			byte second = ItemIds.None;
 			if (rng.NextDouble() < ChestSecondWeaponChance)
 			{
-				second = (byte)(ItemIds.C19 + rng.Next(5));
+				second = RollWeapon(rng);
 				into[n++] = second;
 			}
 			if (n < cap && rng.NextDouble() < ChestAccessoryChance)
-				into[n++] = rng.Next(4) == 0 ? (rng.Next(2) == 0 ? ItemIds.Backpack3 : ItemIds.Backpack2) : (byte)(ItemIds.OpticHolo + rng.Next(4));
+				into[n++] = rng.Next(4) == 0 ? (rng.Next(2) == 0 ? ItemIds.Backpack3 : ItemIds.Backpack2) : (byte)(ItemIds.OpticHolo + rng.Next(5));
 			// fournitures : un bouclier ou un soin, plus ou moins rares (loot.weight.*)
 			if (n < cap && rng.NextDouble() < GameBalance.ChestSupplyChance)
 				into[n++] = RollSupply(rng);
@@ -125,7 +156,7 @@ namespace OpenEsport.Core
 			if (a2 != ItemIds.None && a2 != a1 && n < cap) into[n++] = a2;
 			// un coffre contient toujours 4 objets : on complète avec des munitions de l'arme (si elle en a) puis des fournitures
 			while (n < cap)
-				into[n++] = (a1 != ItemIds.None && rng.Next(2) == 0) ? a1 : RollSupply(rng);
+				into[n++] = rng.NextDouble() < GrenadeFillChance ? RollGrenade(rng) : (a1 != ItemIds.None && rng.Next(2) == 0) ? a1 : RollSupply(rng);
 			return n;
 		}
 
@@ -143,15 +174,39 @@ namespace OpenEsport.Core
 			return ItemIds.HealSmall;
 		}
 
+		/// <summary>Probabilité qu'une place restante d'un coffre soit une grenade.</summary>
+		public const double GrenadeFillChance = 0.3;
+
+		/// <summary>Une boîte de munitions au hasard : le sniper est rare, comme l'arme.</summary>
+		public static byte RollAmmo(Random rng)
+		{
+			int r = rng.Next(100);
+			return r < 38 ? ItemIds.Ammo9mm : r < 76 ? ItemIds.AmmoRifle : r < 90 ? ItemIds.AmmoShell : ItemIds.AmmoSniper;
+		}
+
+		/// <summary>Une grenade au hasard : la fragmentation est la plus courante, l'incendiaire la plus rare.</summary>
+		public static byte RollGrenade(Random rng)
+		{
+			int r = rng.Next(100);
+			return r < 38 ? ItemIds.GrenadeFrag : r < 63 ? ItemIds.GrenadeFlash : r < 85 ? ItemIds.GrenadeSticky : ItemIds.GrenadeFire;
+		}
+
+		/// <summary>Part du sniper parmi les armes tirées au hasard : une arme puissante, donc plus rare que les autres.</summary>
+		public const double SniperShare = 0.08;
+
+		/// <summary>Une arme à feu au hasard : le sniper est rare, les autres armes se partagent le reste à parts égales.</summary>
+		public static byte RollWeapon(Random rng) => rng.NextDouble() < SniperShare ? ItemIds.Sniper : (byte)(ItemIds.C19 + rng.Next(5));
+
 		public static byte Roll(Random rng)
 		{
 			int r = rng.Next(100);
-			if (r < 12) return (byte)(ItemIds.C19 + rng.Next(5));      // armes
-			if (r < 52) return (byte)(ItemIds.Ammo9mm + rng.Next(3));  // munitions (beaucoup : on en trouve même sans arme)
-			if (r < 62) return (byte)(ItemIds.OpticHolo + rng.Next(4)); // viseurs
-			if (r < 66) return rng.Next(3) == 0 ? ItemIds.Backpack3 : ItemIds.Backpack2;
-			if (r < 88) return RollSupply(rng);                         // boucliers (niveau tiré à la création) et soins
-			return (byte)(ItemIds.Ammo9mm + rng.Next(3));
+			if (r < 14) return RollWeapon(rng);                          // armes
+			if (r < 40) return RollAmmo(rng);                           // munitions (beaucoup : on en trouve même sans arme)
+			if (r < 48) return (byte)(ItemIds.OpticHolo + rng.Next(5)); // viseurs
+			if (r < 51) return rng.Next(3) == 0 ? ItemIds.Backpack3 : ItemIds.Backpack2;
+			if (r < 57) return RollGrenade(rng);                         // grenades
+			if (r < 85) return RollSupply(rng);                         // boucliers (niveau tiré à la création) et soins
+			return RollAmmo(rng);
 		}
 	}
 }

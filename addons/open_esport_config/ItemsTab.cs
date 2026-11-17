@@ -20,7 +20,7 @@ namespace Openesport.EditorTools
 
 		private static string TypeName(ItemType t) => t switch
 		{
-			ItemType.Weapon => "Arme", ItemType.Optic => "Viseur", ItemType.Backpack => "Sac à dos", ItemType.Ammo => "Munitions", ItemType.Shield => "Bouclier", ItemType.Consumable => "Soin", _ => t.ToString()
+			ItemType.Weapon => "Arme", ItemType.Optic => "Viseur", ItemType.Backpack => "Sac à dos", ItemType.Ammo => "Munitions", ItemType.Shield => "Bouclier", ItemType.Consumable => "Soin", ItemType.Grenade => "Grenade", _ => t.ToString()
 		};
 
 		public override void _Ready()
@@ -65,6 +65,7 @@ namespace Openesport.EditorTools
 			ItemType.Weapon => "weapon." + d.Id,
 			ItemType.Shield => "shield",
 			ItemType.Consumable => "consumable",
+			ItemType.Grenade => "grenade",
 			ItemType.Backpack => "sac",
 			ItemType.Ammo => "munitions",
 			_ => d.Id

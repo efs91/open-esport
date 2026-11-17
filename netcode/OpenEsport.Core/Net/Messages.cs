@@ -9,6 +9,8 @@ namespace OpenEsport.Core
 		Join = 1,
 		Input = 2,
 		Command = 3,
+		/// <summary>Ping : le joueur désigne un endroit à son équipe. Octet de type (0 ici, 1 danger, 2 ennemi) puis la position.</summary>
+		Ping = 4,
 		// serveur -> client
 		JoinAccept = 10,
 		JoinReject = 11,
@@ -24,6 +26,8 @@ namespace OpenEsport.Core
 		Zone = 18,
 		/// <summary>État propre au mode de jeu (scores, minuteur, points, drapeaux, bombe, argent) : voir <see cref="ModeState"/>.</summary>
 		ModeState = 19,
+		/// <summary>Grenades en vol et zones de feu autour du joueur (non fiable, 20 fois par seconde) : voir <see cref="Messages.WriteGrenades"/>.</summary>
+		Grenades = 20,
 	}
 
 	public enum MatchPhase : byte { Lobby = 0, Playing = 1, Over = 2 }
@@ -85,6 +89,12 @@ namespace OpenEsport.Core
 		Shot = 5,
 		/// <summary>À tous : un joueur tombe « à terre ». A = auteur, B = victime, C = arme.</summary>
 		Downed = 6,
+		/// <summary>À ceux qui sont à portée : une grenade agit. C = type (0 frag, 1 collante, 2 incendiaire, 3 flash), Pos = lieu.</summary>
+		Explosion = 7,
+		/// <summary>Au joueur aveuglé par une grenade flash : C = durée en dixièmes de seconde, D = part de l'éclair vue de face (0-255, sert à l'éblouissement).</summary>
+		Flashed = 8,
+		/// <summary>Aux équipiers (et à l'auteur) : un ping. A = auteur, C = type (0 ici, 1 danger, 2 ennemi), Pos = lieu désigné.</summary>
+		Ping = 9,
 	}
 
 	public enum CommandType : byte
@@ -103,11 +113,23 @@ namespace OpenEsport.Core
 		SelectClass = 8,
 		/// <summary>Sabotage : achète un article de la boutique (arg = code) pendant la phase d'achat.</summary>
 		Buy = 9,
+		/// <summary>Lance une grenade (arg = identifiant de l'objet) dans la direction où le joueur regarde.</summary>
+		ThrowGrenade = 10,
+		/// <summary>Sabotage : lâche la bombe portée (elle tombe devant le joueur).</summary>
+		DropBomb = 11,
+		/// <summary>Glisser-déposer : monte le viseur du sac sur une arme précise (arg = emplacement de l'arme × 16 + index dans le sac).</summary>
+		EquipOpticOn = 12,
+		/// <summary>Glisser-déposer : jette à terre le viseur monté sur l'arme de cet emplacement (arg).</summary>
+		DropOptic = 13,
+		/// <summary>Sabotage : sort la bombe en main (arg 1) ou la range et reprend une arme (arg 0).</summary>
+		EquipBomb = 14,
+		/// <summary>Sort une grenade en main (arg = identifiant de l'objet) ou la range (0) : le clic gauche la lance ensuite.</summary>
+		EquipGrenade = 15,
 	}
 
 	public static class Protocol
 	{
-		public const ushort Version = 18;
+		public const ushort Version = 25;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";
@@ -226,6 +248,13 @@ namespace OpenEsport.Core
 			w.WriteByte(arg);
 		}
 
+		public static void WritePing(BitWriter w, byte type, Vec3 pos)
+		{
+			w.WriteByte((byte)MsgType.Ping);
+			w.WriteByte(type);
+			w.WriteVec3(pos);
+		}
+
 		public static void WriteReject(BitWriter w, string reason)
 		{
 			w.WriteByte((byte)MsgType.JoinReject);
@@ -272,6 +301,36 @@ namespace OpenEsport.Core
 				var e = new RosterEntry { Id = r.ReadUInt16(), Team = r.ReadByte(), IsBot = r.ReadBool(), Name = r.ReadString() };
 				e.Appearance = ReadAppearance(r);
 				list.Add(e);
+			}
+			return list;
+		}
+
+		public const int MaxGrenadesPerMessage = 28;
+
+		public static void WriteGrenades(BitWriter w, List<GrenadeInfo> list)
+		{
+			int n = Math.Min(list.Count, MaxGrenadesPerMessage);
+			w.WriteByte((byte)MsgType.Grenades);
+			w.WriteByte((byte)n);
+			for (int i = 0; i < n; i++)
+			{
+				var g = list[i];
+				w.WriteUInt16(g.Id); w.WriteByte(g.Kind); w.WriteBool(g.Stuck);
+				w.WriteVec3(g.Pos);
+				if (!g.Stuck) w.WriteVec3(g.Vel);
+			}
+		}
+
+		public static List<GrenadeInfo> ReadGrenades(BitReader r)
+		{
+			int n = r.ReadByte();
+			var list = new List<GrenadeInfo>(n);
+			for (int i = 0; i < n && i < MaxGrenadesPerMessage && !r.Overflow; i++)
+			{
+				var g = new GrenadeInfo { Id = r.ReadUInt16(), Kind = r.ReadByte(), Stuck = r.ReadBool() };
+				g.Pos = r.ReadVec3();
+				if (!g.Stuck) g.Vel = r.ReadVec3();
+				list.Add(g);
 			}
 			return list;
 		}

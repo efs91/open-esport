@@ -36,7 +36,7 @@ namespace OpenEsport.Core
 		public static float BaseSpeed, SprintMultiplier, CrouchMultiplier, Acceleration, Deceleration, Gravity, JumpSpeed;
 		public static float SlideStartMultiplier, SlideMaxMultiplier, SlideCooldown, SlideFlatDeceleration, SlideDownAcceleration, SlideUpDeceleration;
 		public static float BulletSpeed, BulletGravity, HeadMultiplier, TorsoMultiplier, LimbMultiplier;
-		public static float ChestSecondWeaponChance, ChestAccessoryChance, ChestSupplyChance, ItemPointChance, ChestPointChance, QualityMajority, ZoneRampPerTick, ZoneRampMax, ExtraAmmoChance, AmmoAmountMultiplier;
+		public static float ChestSecondWeaponChance, ChestAccessoryChance, ChestSupplyChance, ItemPointChance, ChestPointChance, QualityMajority, ExtraSupplyChance, ZoneRampPerTick, ZoneRampMax, ExtraAmmoChance, AmmoAmountMultiplier;
 		/// <summary>Poids de tirage des fournitures : bouclier, puis les 6 soins (HealSmall à BothBig).</summary>
 		public static readonly float[] SupplyWeights = new float[7];
 		/// <summary>Points de bouclier par niveau (blanc, bleu, violet, rouge).</summary>
@@ -83,6 +83,18 @@ namespace OpenEsport.Core
 				if (w.SpreadDegrees > 0) Define($"weapon.{n}.spread", w.SpreadDegrees, "°", $"Dispersion ({n}).");
 				if (w.Pellets > 1) Define($"weapon.{n}.pellets", w.Pellets, "plombs", $"Nombre de plombs par tir ({n}).", integer: true);
 				if (w.ReloadSeconds > 0) Define($"weapon.{n}.reloadSeconds", w.ReloadSeconds, "s", $"Durée du rechargement ({n}).");
+				if (w.BulletSpeed > 0) Define($"weapon.{n}.bulletSpeed", w.BulletSpeed, "m/s", $"Vitesse de la balle ({n}) ; sans cette ligne, la vitesse commune bullet.speed.");
+			}
+
+			// ---- grenades
+			foreach (var g in GrenadeDefs.All)
+			{
+				string n = GrenadeDefs.NameOf(g);
+				Define($"grenade.{n}.fuse", g.Fuse, "s", $"Délai avant l'effet de la grenade ({n}).");
+				Define($"grenade.{n}.radius", g.Radius, "m", g.Effect == GrenadeEffect.Flash ? $"Portée de l'éclair ({n})." : $"Rayon de l'effet ({n}).");
+				if (g.Effect == GrenadeEffect.Blast) Define($"grenade.{n}.damage", g.Damage, "PV", $"Dégâts au centre de l'explosion ({n}) ; 20 % au bord.");
+				if (g.Effect == GrenadeEffect.Fire) { Define($"grenade.{n}.burnSeconds", g.BurnSeconds, "s", $"Durée de la zone de feu ({n})."); Define($"grenade.{n}.burnDps", g.BurnDps, "PV/s", $"Dégâts par seconde dans la zone de feu ({n})."); }
+				if (g.Effect == GrenadeEffect.Flash) Define($"grenade.{n}.flashSeconds", g.FlashSeconds, "s", $"Durée maximale de l'aveuglement ({n}) : de face et de près.");
 			}
 
 			// ---- niveaux d'équipement : blanc / bleu / violet / rouge
@@ -116,11 +128,12 @@ namespace OpenEsport.Core
 			Define("zone.rampMax", 3.0, "x", "Hors de la zone : multiplicateur maximal des dégâts de zone (3 = trois fois le coup de base).");
 			Define("loot.extraAmmoChance", 0.85, "0-1", "Probabilité qu'un point d'objet ait en plus une boîte de munitions posée à côté (en plus des munitions de l'arme).");
 			Define("loot.ammoAmountMultiplier", 1.5, "x", "Multiplicateur de la quantité de munitions des boîtes posées au sol et dans les coffres.");
-			Define("loot.pointChance", 0.85, "0-1", "Points de butin « au hasard » (objets au sol) : probabilité commune qu'un point soit garni à chaque partie. Chaque point peut avoir sa propre valeur dans l'éditeur.");
-			Define("loot.chestPointChance", 0.85, "0-1", "Emplacements de coffre « au hasard » : probabilité commune qu'un coffre soit présent à chaque partie. Chaque coffre peut avoir sa propre valeur dans l'éditeur.");
+			Define("loot.pointChance", 0.95, "0-1", "Points de butin « au hasard » (objets au sol) : probabilité commune qu'un point soit garni à chaque partie. Chaque point peut avoir sa propre valeur dans l'éditeur.");
+			Define("loot.extraSupplyChance", 0.5, "0-1", "Probabilité qu'un point d'objet ait en plus un bouclier ou un soin posé à côté (en plus des munitions).");
+			Define("loot.chestPointChance", 1.0, "0-1", "Emplacements de coffre « au hasard » : probabilité commune qu'un coffre soit présent à chaque partie. Chaque coffre peut avoir sa propre valeur dans l'éditeur.");
 			Define("loot.qualityMajority", 0.70, "0-1", "Points de butin réglés « en majorité » d'un niveau (rare, épique…) : probabilité que l'arme ou le bouclier soit de ce niveau (sinon tirage normal).");
 			Define("loot.chestSecondWeaponChance", 0.20, "0-1", "Probabilité qu'un coffre contienne deux armes (sinon une seule).");
-			Define("loot.chestSupplyChance", 0.55, "0-1", "Probabilité qu'un coffre contienne un bouclier ou un soin (en plus des armes, de l'accessoire et des munitions).");
+			Define("loot.chestSupplyChance", 0.67, "0-1", "Probabilité qu'un coffre contienne un bouclier ou un soin (en plus des armes, de l'accessoire et des munitions).");
 			double[] supply = { 22, 30, 8, 24, 6, 12, 3 };
 			string[] supplyNames = { "shield", "healSmall", "healBig", "shieldSmall", "shieldBig", "bothSmall", "bothBig" };
 			for (int i = 0; i < 7; i++)
@@ -191,7 +204,7 @@ namespace OpenEsport.Core
 			HeadMultiplier = F("hit.headMultiplier"); TorsoMultiplier = F("hit.torsoMultiplier"); LimbMultiplier = F("hit.limbMultiplier");
 			ChestSecondWeaponChance = F("loot.chestSecondWeaponChance"); ChestAccessoryChance = F("loot.chestAccessoryChance"); ChestSupplyChance = F("loot.chestSupplyChance");
 			ItemPointChance = F("loot.pointChance"); ChestPointChance = F("loot.chestPointChance"); QualityMajority = F("loot.qualityMajority");
-			ZoneRampPerTick = F("zone.rampPerTick"); ZoneRampMax = F("zone.rampMax"); ExtraAmmoChance = F("loot.extraAmmoChance"); AmmoAmountMultiplier = F("loot.ammoAmountMultiplier");
+			ZoneRampPerTick = F("zone.rampPerTick"); ZoneRampMax = F("zone.rampMax"); ExtraAmmoChance = F("loot.extraAmmoChance"); ExtraSupplyChance = F("loot.extraSupplyChance"); AmmoAmountMultiplier = F("loot.ammoAmountMultiplier");
 			string[] sn = { "shield", "healSmall", "healBig", "shieldSmall", "shieldBig", "bothSmall", "bothBig" };
 			for (int i = 0; i < 7; i++) SupplyWeights[i] = F($"loot.weight.{sn[i]}");
 			for (int t = 0; t < Tiers.Count; t++)
@@ -206,6 +219,7 @@ namespace OpenEsport.Core
 				ConsumableHeal[i] = F($"consumable.{ConsumableKeys[i]}.heal"); ConsumableShield[i] = F($"consumable.{ConsumableKeys[i]}.shield"); ConsumableSeconds[i] = F($"consumable.{ConsumableKeys[i]}.seconds");
 			}
 			WeaponDefs.ApplyBalance();
+			GrenadeDefs.ApplyBalance();
 		}
 
 		/// <summary>Probabilité qu'un bot de ce niveau (0 à 1) vise juste à un instant donné, interpolée entre les niveaux.</summary>

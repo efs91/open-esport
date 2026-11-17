@@ -83,6 +83,7 @@ namespace OpenEsport.Server
 			for (int i = 0; i < inv.Weapons.Length; i++) if (inv.Weapons[i] != null && inv.Weapons[i].WeaponId == k.Primary) inv.ActiveSlot = i;
 			if (k.HealSmall > 0) { var h = LootItem.Of(ItemIds.HealSmall); h.Count = (ushort)k.HealSmall; inv.TryPickup(ref h, none); }
 			if (k.ShieldSmall > 0) { var h = LootItem.Of(ItemIds.ShieldSmall); h.Count = (ushort)k.ShieldSmall; inv.TryPickup(ref h, none); }
+			if (k.Grenades != null) foreach (var gid in k.Grenades) { var gi = LootItem.Of(gid); inv.TryPickup(ref gi, none); }
 			inv.ShieldTier = k.ShieldTier;
 			p.Inventory = inv;
 			p.Shield = k.ShieldTier >= 0 ? Consumables.ShieldMaxOf(k.ShieldTier) : 0f;
@@ -231,6 +232,10 @@ namespace OpenEsport.Server
 			public virtual ClassKit KitFor(ServerPlayer p) => Loadouts.Get(p.ClassId);
 			public virtual void OnBuy(ServerPlayer p, int code) { }
 			public virtual void OnPlayerLeft(ServerPlayer p) { }
+			/// <summary>Le joueur lâche la bombe qu'il porte (Sabotage).</summary>
+			public virtual void OnDropBomb(ServerPlayer p) { }
+			/// <summary>Le porteur sort la bombe en main (<paramref name="on"/>) ou la range.</summary>
+			public virtual void OnEquipBomb(ServerPlayer p, bool on) { }
 			public virtual int SideOf(ServerPlayer p) => p.Team;
 			public virtual void FillState(ref ModeState st, ServerPlayer viewer) { }
 			/// <summary>Un but pour un bot qui ne se bat pas : où aller, à quelle distance il est arrivé, et les touches à tenir une fois arrivé.</summary>
@@ -529,6 +534,9 @@ namespace OpenEsport.Server
 			private int _site;
 			private float _bombTimer, _action;
 			private byte _actionKind;                   // 1 pose, 2 désamorçage
+			private readonly HashSet<ServerPlayer> _carried = new HashSet<ServerPlayer>();       // ceux qui ont déjà porté la bombe dans le tour de rôle en cours
+			private ServerPlayer _actor, _lastDropper;   // qui pose ou désamorce ; qui vient de lâcher la bombe (il ne la ramasse pas aussitôt)
+			private float _noPickup;
 			private byte _roundWinner = 255;
 			private int _botSite;
 			private MapPoint[] _sites = new MapPoint[2];
@@ -561,7 +569,7 @@ namespace OpenEsport.Server
 				bool half = _round == RoundsToWin;     // après (RoundsToWin - 1) manches jouées
 				if (half)
 				{
-					_swapped ^= 1; _lossStreak[0] = _lossStreak[1] = 0;
+					_swapped ^= 1; _lossStreak[0] = _lossStreak[1] = 0; _carried.Clear();
 					foreach (var p in Players) { p.Money = (int)GameBalance.F("sabotage.startMoney"); p.HasKit = false; p.DiedThisRound = true; }
 				}
 				_stage = SabotageStage.Buy; _stageTimer = GameBalance.F("sabotage.buySeconds");
@@ -577,8 +585,10 @@ namespace OpenEsport.Server
 					if (SideOf(p) == 1) attackers.Add(p);
 					if (p.Brain is BotBrain) BotBuy(p);
 				}
-				_carrier = attackers.Count > 0 ? attackers[S._rng.Next(attackers.Count)] : null;
+				_carrier = PickCarrier(attackers);
 				_bombPos = _carrier?.State.Pos ?? default;
+				_actor = null; _lastDropper = null; _noPickup = 0f;
+				ResetBombItems();
 				_botSite = S._rng.Next(2);
 				GameServer.Log($"Sabotage : manche {_round} ({Score[0]}-{Score[1]})");
 			}
@@ -629,25 +639,28 @@ namespace OpenEsport.Server
 				if (_stage == SabotageStage.Round)
 				{
 					// bombe au sol : un attaquant la ramasse
-					if (_bombState == 1) foreach (var p in Players) if (SideOf(p) == 1 && Near(p, _bombPos, 1.8f)) { _carrier = p; _bombState = 0; break; }
+					_noPickup -= dt;
+					if (_bombState == 1) foreach (var p in Players) if (p.Alive && SideOf(p) == 1 && Near(p, _bombPos, 1.8f) && !(p == _lastDropper && _noPickup > 0f)) { _carrier = p; _bombState = 0; GiveBomb(p); break; }
 					if (_bombState == 0 && _carrier != null && _carrier.Alive) _bombPos = _carrier.State.Pos;
 					// pose
 					var c = _carrier;
 					int onSite = -1;
 					if (_bombState == 0 && c != null && c.Alive)
-						for (int i = 0; i < 2; i++) if (_sites[i].Radius > 0f && Flat(c.State.Pos, _sites[i].Pos) <= _sites[i].Radius) onSite = i;
-					if (onSite >= 0 && c.Holding)
+						for (int i = 0; i < 2; i++) if (_sites[i].Radius > 0f && _sites[i].InSquare(c.State.Pos.X, c.State.Pos.Z)) onSite = i;
+					if (onSite >= 0 && c.Inventory.BombInHand && (c.LastButtons & Buttons.Fire) != 0)
 					{
 						if (_actionKind != 1) { _actionKind = 1; _action = 0f; }
+						_actor = c;
 						_action += dt;
 						if (_action >= GameBalance.F("sabotage.plantSeconds"))
 						{
+							TakeBomb(c); _actor = null;
 							_bombState = 2; _bombPos = c.State.Pos; _site = onSite; _bombTimer = GameBalance.F("sabotage.bombSeconds");
 							_stage = SabotageStage.Planted; _action = 0f; _actionKind = 0;
 							GameServer.Log($"Sabotage : bombe posée sur le site {(char)('A' + onSite)}");
 						}
 					}
-					else if (_actionKind == 1) { _actionKind = 0; _action = 0f; }
+					else if (_actionKind == 1) { _actionKind = 0; _action = 0f; _actor = null; }
 					_ = plantReach;
 				}
 				else if (_stage == SabotageStage.Planted)
@@ -659,11 +672,12 @@ namespace OpenEsport.Server
 					if (defuser != null)
 					{
 						if (_actionKind != 2) { _actionKind = 2; _action = 0f; }
+						_actor = defuser;
 						_action += dt;
 						float need = GameBalance.F(defuser.HasKit ? "sabotage.defuseKitSeconds" : "sabotage.defuseSeconds");
-						if (_action >= need) { _bombState = 3; _actionKind = 0; _action = 0f; EndRound(0); }
+						if (_action >= need) { _bombState = 3; _actionKind = 0; _action = 0f; _actor = null; EndRound(0); }
 					}
-					else if (_actionKind == 2) { _actionKind = 0; _action = 0f; }
+					else if (_actionKind == 2) { _actionKind = 0; _action = 0f; _actor = null; }
 				}
 			}
 
@@ -696,12 +710,84 @@ namespace OpenEsport.Server
 					killer.Kills++;
 					killer.Money = Math.Min((int)GameBalance.F("sabotage.maxMoney"), killer.Money + (int)GameBalance.F("sabotage.killMoney"));
 				}
-				if (_carrier == victim && _bombState == 0) { _bombState = 1; _bombPos = victim.State.Pos; _carrier = null; }
+				if (_carrier == victim && _bombState == 0) { _bombState = 1; _bombPos = victim.State.Pos; _carrier = null; TakeBomb(victim); _lastDropper = null; }
+				if (_actor == victim) { _actor = null; _actionKind = 0; _action = 0f; }
+			}
+
+			/// <summary>La bombe est un objet du sac de celui qui la porte : on l'ajoute, on la retire, on retire toute bombe oubliée d'une manche à l'autre.</summary>
+			private void GiveBomb(ServerPlayer p)
+			{
+				if (p.Inventory.CountOf(ItemIds.Bomb) == 0) { p.Inventory.Items.Add(new ItemStack { Id = ItemIds.Bomb, Count = 1 }); p.Inventory.SortItems(); }
+				S.SendInventory(p);
+			}
+
+			private void TakeBomb(ServerPlayer p)
+			{
+				bool wasInHand = p.Inventory.BombInHand;
+				p.Inventory.BombInHand = false;
+				if (wasInHand) SelectFirstWeapon(p);        // la bombe n'est plus là : on reprend une arme
+				bool had = false;
+				for (int i = p.Inventory.Items.Count - 1; i >= 0; i--) if (p.Inventory.Items[i].Id == ItemIds.Bomb) { p.Inventory.Items.RemoveAt(i); had = true; }
+				if (had) S.SendInventory(p);
+			}
+
+			/// <summary>
+			/// Le porteur de la manche : un vrai joueur de préférence (les bots ne la portent que s'il n'y a aucun humain chez les attaquants), et chacun son tour :
+			/// personne ne la reçoit deux fois tant que tous les autres ne l'ont pas eue.
+			/// </summary>
+			private ServerPlayer PickCarrier(List<ServerPlayer> attackers)
+			{
+				if (attackers.Count == 0) return null;
+				_carried.RemoveWhere(p => !attackers.Contains(p));        // parti ou changé de camp
+				var pool = attackers.Where(p => !p.IsBot).ToList();
+				if (pool.Count == 0) pool = attackers;
+				var fresh = pool.Where(p => !_carried.Contains(p)).ToList();
+				if (fresh.Count == 0) { foreach (var p in pool) _carried.Remove(p); fresh = pool; }       // tout le monde l'a eue : on recommence
+				var pick = fresh[S._rng.Next(fresh.Count)];
+				_carried.Add(pick);
+				return pick;
+			}
+
+			private static void SelectFirstWeapon(ServerPlayer p)
+			{
+				for (int i = 0; i < p.Inventory.Weapons.Length; i++) if (p.Inventory.Weapons[i] != null) { p.Inventory.SelectSlot(i); return; }
+			}
+
+			public override void OnEquipBomb(ServerPlayer p, bool on)
+			{
+				if (p != _carrier || !p.Alive || _bombState != 0) return;
+				if (_stage != SabotageStage.Round && _stage != SabotageStage.Buy) return;
+				if (p.Inventory.CountOf(ItemIds.Bomb) == 0) return;
+				p.Reloading = false; p.UseId = 0;
+				if (on) { p.Inventory.SelectSlot(-1); p.Inventory.BombInHand = true; }
+				else { p.Inventory.BombInHand = false; SelectFirstWeapon(p); }
+				S.SendInventory(p);
+			}
+
+			private void ResetBombItems()
+			{
+				foreach (var p in Players) if (p != _carrier) TakeBomb(p);
+				if (_carrier != null) GiveBomb(_carrier);
+			}
+
+			/// <summary>Le porteur lâche la bombe : elle tombe un peu devant lui. Il ne la ramasse pas tout de suite (un coéquipier le peut).</summary>
+			public override void OnDropBomb(ServerPlayer p)
+			{
+				if (p != _carrier || _bombState != 0 || !p.Alive) return;
+				if (_stage != SabotageStage.Buy && _stage != SabotageStage.Round) return;
+				float sy = MathF.Sin(p.Yaw), cy = MathF.Cos(p.Yaw);
+				Vec3 pos = p.State.Pos + new Vec3(-sy, 0f, -cy) * 1.2f;
+				if (S._world.Raycast(p.State.Pos + new Vec3(0, 1f, 0), new Vec3(-sy, 0f, -cy), 1.2f, out _)) pos = p.State.Pos;       // un mur devant : elle tombe aux pieds
+				_bombPos = new Vec3(pos.X, MathF.Max(S._world.HeightAt(pos.X, pos.Z), p.State.Pos.Y - 0.3f), pos.Z);
+				_bombState = 1; _carrier = null; _lastDropper = p; _noPickup = 2.5f;
+				TakeBomb(p);
+				if (_actor == p) { _actor = null; _actionKind = 0; _action = 0f; }
+				GameServer.Log($"Sabotage : {p.Name} lâche la bombe en ({_bombPos.X:F0} ; {_bombPos.Z:F0})");
 			}
 
 			public override void OnPlayerLeft(ServerPlayer p)
 			{
-				if (_carrier == p && _bombState == 0) { _bombState = 1; _bombPos = p.State.Pos; _carrier = null; }
+				if (_carrier == p && _bombState == 0) { _bombState = 1; _bombPos = p.State.Pos; _carrier = null; TakeBomb(p); }
 			}
 
 			public override void OnBuy(ServerPlayer p, int code)
@@ -767,6 +853,12 @@ namespace OpenEsport.Server
 				st.CanBuy = _stage == SabotageStage.Buy && viewer.Alive;
 				st.BombState = _bombState; st.BombCarrier = _carrier?.Id ?? (ushort)0xFFFF; st.BombPos = _bombPos; st.BombTimer = _bombState == 2 ? _bombTimer : 0f; st.BombSite = (byte)_site;
 				// scores par équipe (bleus 0, rouges 1) : l'interface sait qui attaque d'après MySide
+				st.BombAction = _actionKind; st.BombActor = _actor?.Id ?? (ushort)0xFFFF;
+				if (_actionKind != 0)
+				{
+					float needAll = _actionKind == 1 ? GameBalance.F("sabotage.plantSeconds") : GameBalance.F(_actor != null && _actor.HasKit ? "sabotage.defuseKitSeconds" : "sabotage.defuseSeconds");
+					st.BombActionProgress = (byte)Math.Clamp((int)(_action / MathF.Max(0.1f, needAll) * 100f), 0, 100);
+				}
 				bool mine = viewer == _carrier && _actionKind == 1 || _actionKind == 2 && viewer.Holding;
 				if (_actionKind != 0 && mine)
 				{
@@ -786,7 +878,12 @@ namespace OpenEsport.Server
 				{
 					if (_bombState == 2) { goal = _bombPos + new Vec3(MathF.Cos(p.Id), 0, MathF.Sin(p.Id)) * 6f; arrive = 3f; return true; }       // la bombe est posée : on la garde
 					if (_bombState == 1) { goal = _bombPos; arrive = 1f; return true; }                                                          // bombe tombée
-					if (_carrier == p) { goal = _sites[site].Pos; arrive = MathF.Max(1f, _sites[site].Radius * 0.4f); hold = Buttons.Interact; return true; }
+					if (_carrier == p)
+					{
+						goal = _sites[site].Pos; arrive = MathF.Max(1f, _sites[site].Radius * 0.4f); hold = Buttons.Fire;
+						if (!p.Inventory.BombInHand && Flat(p.State.Pos, _sites[site].Pos) < _sites[site].Radius + 8f) OnEquipBomb(p, true);
+						return true;
+					}
 					goal = _sites[site].Pos + new Vec3(MathF.Cos(p.Id * 2.4f), 0, MathF.Sin(p.Id * 2.4f)) * 5f; arrive = 3f;
 					return true;
 				}

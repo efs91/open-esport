@@ -93,7 +93,18 @@ namespace Openesport.Online
 
 			_hud = new OnlineHud { Name = "OnlineHud" };
 			AddChild(_hud);
-			_hud.SetStatus($"Connexion à {host}:{port}…");
+			_grenadeView = new GrenadeView { Name = "Grenades" };
+			worldRoot.AddChild(_grenadeView);
+			_flash = new FlashOverlay { Name = "Eclair" };
+			AddChild(_flash);
+			_radial = new RadialMenu { Name = "MenuCirculaire" };
+			AddChild(_radial);
+			_preview = new GrenadePreview { Name = "TrajectoireGrenade" };
+			worldRoot.AddChild(_preview);
+			_pingView = new PingView { Name = "Pings" };
+			worldRoot.AddChild(_pingView);
+			_pingView.Sync(_pings);
+			_hud.SetStatus($"Connexion à {host}:{port}…", 0f);
 
 			var world = LoadWorld(worldPath, out uint checksum);
 			_worldCollision = world;
@@ -105,8 +116,9 @@ namespace Openesport.Online
 			Client.Joined += OnJoined;
 			Client.EventReceived += OnServerEvent;
 			Client.InventoryChanged += () => _inventory.ApplyServerInventory(Client.Inventory);
+			Client.GrenadesChanged += () => _grenadeView.Apply(Client.Grenades);
 			Client.RosterChanged += RebuildRoster;
-			Client.Disconnected += reason => { _disconnectReason = reason; _hud.SetStatus("Déconnecté : " + reason); };
+			Client.Disconnected += reason => { _disconnectReason = reason; _hud.SetStatus("Déconnecté : " + reason, 0f); };
 			_hud.OnLeave = LeaveToMenu;
 			Client.ErrorLog = e => GD.PrintErr("[OnlineGame] erreur de traitement d'un paquet : " + e);
 			Client.Connect(host, port, playerName, CharacterAppearance.Current.Pack());
@@ -152,9 +164,12 @@ namespace Openesport.Online
 				case EventType.HitConfirm: _hud.HitMarker((e.D & 0x80) != 0); break;
 				case EventType.Damaged: _hud.DamageFlash(Client.Shield > 0 && Client.Health >= 100); break;
 				case EventType.Shot: OnShot(e); break;
+				case EventType.Explosion: GrenadeFx.Explosion(_worldRoot, e.C, new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z)); break;
+				case EventType.Flashed: _flash.Trigger(e.C / 10f, e.D / 255f); break;
+				case EventType.Ping: OnPing(e); break;
 				case EventType.KillFeed:
 				{
-					var weapon = e.C == 0 ? "poings" : e.C == 250 ? "zone" : ItemDefs.Get(e.C)?.Name ?? "?";
+					var weapon = e.C == 0 ? "poings" : e.C == 250 ? "zone" : ItemDatabase.Get(ItemDefs.Get(e.C)?.Name)?.DisplayName ?? ItemDefs.Get(e.C)?.Name ?? "?";
 					_hud.AddFeed($"{NameOf(e.A)}  ➜  {NameOf(e.B)}   [{weapon}]");
 					break;
 				}
@@ -180,7 +195,7 @@ namespace Openesport.Online
 			Vector3 aim = origin + dir * 60f;
 			Vector3 d = (aim - muzzle).Normalized();
 			if (d.Dot(dir) < 0.9f) d = dir;
-			ShotTracer.Spawn(_worldRoot, muzzle, d, ShotTracer.ColorFor(WeaponDefs.Get(e.C)?.AmmoType ?? 0));
+			ShotTracer.Spawn(_worldRoot, muzzle, d, ShotTracer.ColorFor(WeaponDefs.Get(e.C)?.AmmoType ?? 0), WeaponDefs.Get(e.C)?.Speed ?? 0f);
 			if (e.C != 0) GameAudio.Shot(_worldRoot, muzzle, (WeaponDefs.Get(e.C)?.AmmoType ?? 0) == 1, e.A == Client.PlayerId);
 		}
 
@@ -190,7 +205,7 @@ namespace Openesport.Online
 		{
 			if (Client == null) return;
 			using (LagTracer.Scope("Client.Poll")) Client.Poll();
-			if (Client.State == NetState.Failed) { _hud.SetStatus("Connexion impossible : " + Client.FailReason); _disconnectReason ??= Client.FailReason; return; }
+			if (Client.State == NetState.Failed) { _hud.SetStatus("Connexion impossible : " + Client.FailReason, 0f); _disconnectReason ??= Client.FailReason; return; }
 			if (Client.State != NetState.Playing) return;
 
 			bool inLobby = Client.MatchKnown && Client.Match.Phase == MatchPhase.Lobby;
@@ -207,7 +222,7 @@ namespace Openesport.Online
 				bool airborne = Client.Predicted.Stance == Stance.Plane || Client.Predicted.Stance == Stance.Diving;
 				if (!airborne && (Input.IsActionPressed(InputManager.Actions.SPRINT) || _player.WantsSprint)) buttons |= Buttons.Sprint; // sprint « bascule » comme en solo
 				if (airborne && Input.IsKeyPressed(Key.Tab)) buttons |= Buttons.PassLead;     // chef de saut : passer le commandement
-				if (Input.IsActionPressed(InputManager.Actions.SHOOT) && !InputManager.ClickGuard && !airborne) buttons |= Buttons.Fire;
+				if (Input.IsActionPressed(InputManager.Actions.SHOOT) && !InputManager.ClickGuard && !InputManager.UiBlock && !airborne) buttons |= Buttons.Fire;
 				if (Input.IsActionPressed(InputManager.Actions.RELOAD)) buttons |= Buttons.Reload;
 				if (Client.Match.CanRevive && Input.IsActionPressed(InputManager.Actions.INTERACT)) buttons |= Buttons.Interact;     // maintenir E : réanimer
 				if (_weapons.IsAiming) buttons |= Buttons.Aim;
@@ -239,9 +254,11 @@ namespace Openesport.Online
 
 			_weapons.SetServerMagazine(Client.Magazine);
 			_hud.SetVitals(Client.Health, Client.Shield, Client.ShieldTier, Client.UsingItem, Client.UseProgress);
-			_hud.SetHint(Client.Match.CanRevive ? (Client.Match.Revive > 0 ? "Réanimation…" : "Maintenir E : réanimer ton coéquipier") : Client.Predicted.Stance == Stance.Climbing ? "Escalade…" : Client.Predicted.Stance == Stance.Zipping ? "Saut : se décrocher   —   tu peux tirer" : Client.ZiplineInReach ? "E : prendre la tyrolienne" : "");
+			_hud.SetHint(Client.Match.CanRevive ? (Client.Match.Revive > 0 ? "Réanimation…" : "Maintenir E : réanimer ton coéquipier") : Client.Predicted.Stance == Stance.Climbing ? "Escalade…" : Client.Predicted.Stance == Stance.Zipping ? "Saut : se décrocher   —   tu peux tirer" : Client.ZiplineInReach ? "E : prendre la tyrolienne" : BombHint());
 			_weapons.SetUsingSupply(Client.UsingItem == 0 ? null : ItemDefs.Get(Client.UsingItem)?.Name);
-			if (active) HandleSupplyKeys();
+			if (active) HandleSupplyKeys(); else if (_radial.IsOpen) _radial.Close();
+			UpdatePings();
+			UpdateGrenadeHud();
 			if (_wasAlive != Client.Alive)
 			{
 				_wasAlive = Client.Alive;
@@ -252,10 +269,197 @@ namespace Openesport.Online
 		/// <summary>Touches 4 / 5 / 6 : soin de vie, de bouclier, ou les deux ; G : jeter le bouclier. Même touche pendant un soin : annuler.</summary>
 		private void HandleSupplyKeys()
 		{
+			if (_radial.IsOpen) { UpdateRadial(); return; }
+			if (Input.IsActionJustPressed(InputManager.Actions.PING)) SendPing();
+			if (Input.IsActionJustPressed(InputManager.Actions.GRENADE_MENU)) { OpenGrenadeRadial(); return; }
+			if (Input.IsActionJustPressed(InputManager.Actions.USE_HEAL)) { OpenHealRadial(); return; }
 			if (Input.IsActionJustPressed(InputManager.Actions.DROP_SHIELD)) { _inventory.DropShield(); return; }
-			if (Input.IsActionJustPressed(InputManager.Actions.USE_HEAL)) UseSupply(ItemIds.HealSmall, ItemIds.HealBig, true, false);
+			if (Input.IsActionJustPressed(InputManager.Actions.THROW_GRENADE)) { ThrowGrenade(); return; }
+			if (Input.IsActionJustPressed(InputManager.Actions.NEXT_GRENADE)) CycleGrenade();
+			if (Input.IsActionJustPressed(InputManager.Actions.DROP_BOMB) && Client.Inventory.CountOf(ItemIds.Bomb) > 0) Client.SendCommand(CommandType.DropBomb, 0);
+			if (Input.IsActionJustPressed(InputManager.Actions.USE_SHIELD) && Client.Inventory.CountOf(ItemIds.Bomb) > 0) Client.SendCommand(CommandType.EquipBomb, (byte)(_inventory.BombInHand ? 0 : 1));     // Sabotage : 5 = la bombe en main
 			else if (Input.IsActionJustPressed(InputManager.Actions.USE_SHIELD)) UseSupply(ItemIds.ShieldSmall, ItemIds.ShieldBig, false, true);
 			else if (Input.IsActionJustPressed(InputManager.Actions.USE_BOTH)) UseSupply(ItemIds.BothSmall, ItemIds.BothBig, true, true);
+		}
+
+		// ------------------------------------------------------------------ menus circulaires
+
+		/// <summary>Menu des soins (touche 4 maintenue) : on pointe un soin à la souris, on relâche pour l'utiliser. Un appui bref garde l'ancien raccourci (soin de vie).</summary>
+		private void OpenHealRadial()
+		{
+			var items = new (byte id, string name, Color color)[]
+			{
+				(ItemIds.HealSmall, "Petit soin", new Color(1f, 0.35f, 0.3f)),
+				(ItemIds.HealBig, "Grand soin", new Color(1f, 0.35f, 0.3f)),
+				(ItemIds.BothSmall, "Soin + bouclier", new Color(0.8f, 0.4f, 1f)),
+				(ItemIds.BothBig, "Grand soin + bouclier", new Color(0.8f, 0.4f, 1f)),
+				(ItemIds.ShieldBig, "Grand bouclier", new Color(0.35f, 0.65f, 1f)),
+				(ItemIds.ShieldSmall, "Petit bouclier", new Color(0.35f, 0.65f, 1f)),
+			};
+			var slices = new List<RadialMenu.Slice>();
+			var owned = new List<byte>();
+			foreach (var it in items)
+			{
+				int count = Client.Inventory.CountOf(it.id);
+				if (count <= 0) continue;          // le menu ne montre que ce qu'on a dans le sac
+				owned.Add(it.id);
+				slices.Add(new RadialMenu.Slice { Label = it.name, Detail = $"x{count}", Icon = ItemIcons.Get(ItemDefs.Get(it.id)?.Name), Color = it.color, Enabled = count > 0 && Consumables.Useful(it.id, Client.Health, Client.Shield, Client.ShieldTier) });
+			}
+			if (slices.Count == 0) { _hud.SetStatus("Aucun soin ni bouclier dans le sac"); return; }
+			_radial.OnChoose = (i, click) => Client.SendCommand(CommandType.UseItem, owned[i]);
+			_radialKind = 1; _radialAction = InputManager.Actions.USE_HEAL;
+			_radial.Open("SOINS", "relâche pour utiliser", slices);
+		}
+
+		/// <summary>Menu des grenades (touche G maintenue) : relâcher choisit la grenade (F la lance) ; un clic gauche la choisit et la lance tout de suite.</summary>
+		private void OpenGrenadeRadial()
+		{
+			var colors = new[] { new Color(1f, 0.55f, 0.2f), new Color(0.4f, 0.8f, 1f), new Color(1f, 0.35f, 0.2f), new Color(0.95f, 0.95f, 0.5f) };
+			var slices = new List<RadialMenu.Slice>();
+			var owned = new List<int>();
+			for (int i = 0; i < GrenadeOrder.Length; i++)
+			{
+				int count = Client.Inventory.CountOf(GrenadeOrder[i]);
+				if (count <= 0) continue;          // seulement les types qu'on a
+				owned.Add(i);
+				slices.Add(new RadialMenu.Slice { Label = char.ToUpper(GrenadeNames[i][0]) + GrenadeNames[i].Substring(1), Detail = $"x{count}", Icon = ItemIcons.Get(ItemDefs.Get(GrenadeOrder[i])?.Name), Color = colors[i], Enabled = count > 0 });
+			}
+			if (slices.Count == 0) { _hud.SetStatus("Aucune grenade dans le sac"); return; }
+			_radial.OnChoose = (i, click) =>
+			{
+				_grenadePick = GrenadeOrder[owned[i]];
+				Client.SendCommand(CommandType.EquipGrenade, _grenadePick);       // en main : le clic gauche la lance
+			};
+			_radialKind = 2; _radialAction = InputManager.Actions.GRENADE_MENU;
+			_radial.Open("GRENADES", "relâche : en main", slices);
+		}
+
+		/// <summary>Tant que la touche du menu est tenue, la souris pilote le menu ; au relâchement on valide.</summary>
+		private void UpdateRadial()
+		{
+			if (Input.IsActionPressed(_radialAction)) return;
+			var result = _radial.Release();
+			if (result == RadialMenu.Result.Tap && _radialKind == 1) UseSupply(ItemIds.HealSmall, ItemIds.HealBig, true, false);       // appui bref : l'ancien raccourci
+			if (result == RadialMenu.Result.Tap && _radialKind == 2) TapGrenade();
+		}
+
+		// ------------------------------------------------------------------ pings
+
+		/// <summary>Désigne l'endroit visé (ou l'adversaire visé) à son équipe : clic molette ; Maj = danger.</summary>
+		private void SendPing()
+		{
+			var cam = _head.GetNodeOrNull<Camera3D>("Camera");
+			if (cam == null || _worldCollision == null) return;
+			Vector3 o = cam.GlobalPosition, d = -cam.GlobalTransform.Basis.Z.Normalized();
+			const float MaxRange = 600f;
+			bool wall = _worldCollision.Raycast(new Vec3(o.X, o.Y, o.Z), new Vec3(d.X, d.Y, d.Z), MaxRange, out float hit);
+			if (!wall) hit = MaxRange;
+			byte type = 0;
+			// un adversaire sur la ligne de visée, avant le décor : « ennemi »
+			foreach (var kv in _remotes)
+			{
+				if (!GodotObject.IsInstanceValid(kv.Value) || (_roster.TryGetValue(kv.Key, out var r) && r.Team == Client.TeamId)) continue;
+				Vector3 oc = o - (kv.Value.GlobalPosition + Vector3.Up * 0.9f);
+				float b = oc.Dot(d), disc = b * b - (oc.Dot(oc) - 0.85f * 0.85f);
+				if (disc < 0f) continue;
+				float t = -b - Mathf.Sqrt(disc);
+				if (t > 0f && t < hit) { hit = t; type = 2; wall = true; }
+			}
+			if (!wall) return;      // le ciel ne se désigne pas
+			if (type == 0 && Input.IsKeyPressed(Key.Shift)) type = 1;
+			Vector3 p = o + d * hit;
+			Client.SendPing(type, new Vec3(p.X, p.Y, p.Z));
+		}
+
+		private void OnPing(ServerEvent e)
+		{
+			double now = Time.GetTicksMsec() / 1000.0;
+			_pings.Add(new PingData { Owner = e.A, Type = e.C, Pos = new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z), Born = now, Name = e.A == Client.PlayerId ? "Moi" : NameOf(e.A) });
+			// deux pings au plus par joueur : le plus ancien disparaît
+			int mine = 0;
+			for (int i = _pings.Count - 1; i >= 0; i--)
+				if (_pings[i].Owner == e.A && ++mine > 2) _pings.RemoveAt(i);
+			GameAudio.Ping(_worldRoot, _player.GlobalPosition);
+		}
+
+		private void UpdatePings()
+		{
+			double now = Time.GetTicksMsec() / 1000.0;
+			_pings.RemoveAll(p => now - p.Born > PingView.Lifetime);
+			var marks = new List<PingMark>(_pings.Count);
+			foreach (var p in _pings)
+				marks.Add(new PingMark { Pos = p.Pos, Type = p.Type, Alpha = (float)Mathf.Clamp(PingView.Lifetime - (now - p.Born), 0.0, 1.0), Label = $"{p.Name} — {PingView.NameOf(p.Type)}" });
+			_hud.SetPings(marks);
+		}
+
+		private static readonly byte[] GrenadeOrder = { ItemIds.GrenadeFrag, ItemIds.GrenadeSticky, ItemIds.GrenadeFire, ItemIds.GrenadeFlash };
+		private static readonly string[] GrenadeNames = { "fragmentation", "collante", "incendiaire", "flash" };
+		private byte _grenadePick = ItemIds.GrenadeFrag;
+
+		/// <summary>La grenade choisie, ou la première qu'on possède si celle-ci est épuisée ; 0 s'il n'y en a aucune.</summary>
+		private byte CurrentGrenade()
+		{
+			if (Client.Inventory.CountOf(_grenadePick) > 0) return _grenadePick;
+			foreach (var id in GrenadeOrder) if (Client.Inventory.CountOf(id) > 0) return _grenadePick = id;
+			return 0;
+		}
+
+		/// <summary>Le porteur de la bombe : ce qu'il doit faire pour la poser (la sortir, rejoindre un site, cliquer).</summary>
+		private string BombHint()
+		{
+			if (!Client.ModeKnown || Client.Mode.Mode != GameMode.Sabotage || Client.Mode.Stage != (byte)SabotageStage.Round || !Client.Alive || Client.Inventory.CountOf(ItemIds.Bomb) == 0) return "";
+			bool onSite = false;
+			if (_worldCollision != null)
+				foreach (var site in _worldCollision.Data.PointsOf(MapPointKind.BombSite))
+				{
+						if (site.InSquare(Client.Predicted.Pos.X, Client.Predicted.Pos.Z)) onSite = true;
+					}
+			if (_inventory.BombInHand) return onSite ? "Maintiens le clic gauche : poser la bombe" : "Bombe en main : rejoins un site (A ou B) pour la poser";
+			return onSite ? "Molette ou [5] : sortir la bombe, puis clic gauche pour la poser" : "";
+		}
+
+		/// <summary>Appui bref sur G : met en main la grenade choisie (ou la seule qu'on a) ; si une grenade est déjà en main, la range.</summary>
+		private void TapGrenade()
+		{
+			if (_inventory.GrenadeInHand != 0) { Client.SendCommand(CommandType.EquipGrenade, 0); return; }
+			byte id = CurrentGrenade();                       // la grenade choisie, sinon la première qu'on possède (la seule, le plus souvent)
+			if (id == 0) { _hud.SetStatus("Aucune grenade dans le sac"); return; }
+			Client.SendCommand(CommandType.EquipGrenade, id);
+		}
+
+		private void ThrowGrenade()
+		{
+			byte id = CurrentGrenade();
+			if (id == 0) { _hud.SetStatus("Aucune grenade dans le sac"); return; }
+			Client.SendCommand(CommandType.ThrowGrenade, id);
+		}
+
+		/// <summary>Passe à la grenade suivante que l'on possède.</summary>
+		private void CycleGrenade()
+		{
+			int start = System.Array.IndexOf(GrenadeOrder, _grenadePick);
+			for (int k = 1; k <= GrenadeOrder.Length; k++)
+			{
+				byte id = GrenadeOrder[(start + k) % GrenadeOrder.Length];
+				if (Client.Inventory.CountOf(id) > 0)
+				{
+					_grenadePick = id;
+					if (_inventory.GrenadeInHand != 0) Client.SendCommand(CommandType.EquipGrenade, id);
+					return;
+				}
+			}
+		}
+
+		private void UpdateGrenadeHud()
+		{
+			byte id = CurrentGrenade();
+			string name = id == 0 ? "" : GrenadeNames[System.Array.IndexOf(GrenadeOrder, id)];
+			_hud.SetGrenade(id == 0 ? "" : _inventory.GrenadeInHand != 0
+				? $"Grenade {name} x{Client.Inventory.CountOf(id)} en main   —   clic gauche : lancer   [G] ranger   [V] changer"
+				: $"Grenade {name} x{Client.Inventory.CountOf(id)}   —   [G] la sortir   (maintenir G : menu)");
+			// la trajectoire s'affiche tant qu'une grenade est en main
+			var cam = _head?.GetNodeOrNull<Camera3D>("Camera");
+			_preview.Refresh(cam, new Vector3(Client.Predicted.Vel.X, 0f, Client.Predicted.Vel.Z), _inventory.GrenadeInHand, _worldCollision, Client.Alive && !_radial.IsOpen);
 		}
 
 		private void UseSupply(byte small, byte big, bool heals, bool shields)
@@ -534,6 +738,15 @@ namespace Openesport.Online
 
 		private ZoneWall _zoneWall;
 		private ModeHud _modeHud;
+		private GrenadeView _grenadeView;
+		private RadialMenu _radial;
+		private GrenadePreview _preview;
+		private PingView _pingView;
+		private readonly List<PingData> _pings = new();
+		private byte _radialKind;
+		private string _radialAction = "";
+		private FlashOverlay _flash;
+		private bool _loadoutSent;
 		private ModeWorld _modeWorld;
 		private Vec3 _modeView;
 		
@@ -542,11 +755,20 @@ namespace Openesport.Online
 		{
 			if (!Client.ModeKnown) return;
 			_modeView = view;
+			if (!_loadoutSent)
+			{
+				// l'équipement choisi dans le menu : envoyé une fois, dès que le serveur annonce un mode à équipement (hors battle royale)
+				_loadoutSent = true;
+				if (Client.Mode.Mode != GameMode.BattleRoyale) Client.SendCommand(CommandType.SelectClass, (byte)MatchSettings.Loadout);
+			}
 			if (_modeHud == null || !GodotObject.IsInstanceValid(_modeHud))
 			{
 				_modeHud = new ModeHud { Name = "ModeHud" };
 				_modeHud.NameOf = id => NameOf(id);
 				_modeHud.Send = (t, a) => Client.SendCommand(t, (byte)a);
+				_modeHud.LocalPosition = () => _player != null && GodotObject.IsInstanceValid(_player) ? _player.GlobalPosition : null;
+				_modeHud.MyId = () => Client.PlayerId;
+				_hud.MoveStatusForMode();      // le message d'état ne doit pas recouvrir les scores ni le bandeau d'annonce
 				AddChild(_modeHud);
 			}
 			if (_modeWorld == null || !GodotObject.IsInstanceValid(_modeWorld))
@@ -560,6 +782,7 @@ namespace Openesport.Online
 					return _remotes.TryGetValue(id, out var r) && GodotObject.IsInstanceValid(r) ? r.GlobalPosition : null;
 				};
 			}
+			_modeHud.Visible = !_hud.IsLoading;      // pas de scores par-dessus l'écran de chargement
 			_modeHud.Refresh(Client.Mode, Client.Match.Phase, Client.Alive);
 			_modeWorld.Refresh(Client.Mode);
 		}

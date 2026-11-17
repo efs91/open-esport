@@ -138,7 +138,12 @@ namespace OpenEsport.Server
 				if (wantShoot && !p.Reloading && p.ShotCooldown <= 0f)
 					Shoot(p, weapon, def, inp);
 			}
-			else if (fire && !p.Reloading && p.ShotCooldown <= 0f)
+			else if (p.Inventory.GrenadeInHand != 0)
+			{
+				// grenade en main : le clic gauche la lance (un clic, pas une rafale)
+				if (fire && !p.PrevFire) ThrowGrenade(p, p.Inventory.GrenadeInHand);
+			}
+			else if (fire && !p.Reloading && p.ShotCooldown <= 0f && !p.Inventory.BombInHand)       // la bombe en main : le clic sert à la poser, pas à frapper
 			{
 				// aucune arme en main : on frappe à mains nues
 				Shoot(p, _fistSlot, WeaponDefs.Fists, inp);
@@ -367,7 +372,13 @@ namespace OpenEsport.Server
 				if (kind != ItemKind.Ammo && _rng.NextDouble() < GameBalance.ExtraAmmoChance)
 				{
 					float x = spawn.Pos.X - 0.7f, z = spawn.Pos.Z - 0.5f;
-					if (!AddLoot(BoostAmmo(LootItem.Rolled((byte)(ItemIds.Ammo9mm + _rng.Next(3)), _rng)), new Vec3(x, _world.HeightAt(x, z), z))) break;
+					if (!AddLoot(BoostAmmo(LootItem.Rolled(LootTable.RollAmmo(_rng), _rng)), new Vec3(x, _world.HeightAt(x, z), z))) break;
+				}
+				// et souvent un bouclier ou un soin posé à côté
+				if (_rng.NextDouble() < GameBalance.ExtraSupplyChance)
+				{
+					float x = spawn.Pos.X + 0.1f, z = spawn.Pos.Z - 0.9f;
+					if (!AddLoot(LootItem.Rolled(LootTable.RollSupply(_rng), _rng), new Vec3(x, _world.HeightAt(x, z), z))) break;
 				}
 			}
 			// les coffres de cette partie deviennent des obstacles pleins (le client pose les mêmes en les recevant)
@@ -581,15 +592,22 @@ namespace OpenEsport.Server
 				case CommandType.DropWeapon:
 					if (p.Inventory.DropWeapon(arg, out var w)) { DropLootAround(w, p.State.Pos); p.Reloading = false; changed = true; }
 					break;
+				case CommandType.DropBomb: if (Modal) _mode.OnDropBomb(p); break;
+				case CommandType.EquipBomb: if (Modal) _mode.OnEquipBomb(p, arg != 0); break;
+				case CommandType.EquipGrenade: EquipGrenade(p, (byte)arg); break;
 				case CommandType.DropItem:
+					if (Modal && arg >= 0 && arg < p.Inventory.Items.Count && p.Inventory.Items[arg].Id == ItemIds.Bomb) { _mode.OnDropBomb(p); break; }     // la bombe se lâche par le mode, pas comme un objet au sol
 					if (p.Inventory.DropItem(arg, out var it)) { DropLootAround(it, p.State.Pos); changed = true; }
 					break;
 				case CommandType.DropShield:
 					if (p.Inventory.DropShield(out var sh)) { DropLootAround(sh, p.State.Pos); p.Shield = 0f; changed = true; }
 					break;
 				case CommandType.UseItem: StartUse(p, (byte)arg); break;
+				case CommandType.ThrowGrenade: ThrowGrenade(p, (byte)arg); break;
 				case CommandType.CancelUse: p.UseId = 0; break;
 				case CommandType.EquipOptic: changed = p.Inventory.EquipOptic(arg); break;
+				case CommandType.EquipOpticOn: changed = p.Inventory.EquipOpticOn(arg >> 4, arg & 15); break;
+				case CommandType.DropOptic: if (p.Inventory.TakeOptic(arg, out var optic)) { DropLootAround(optic, p.State.Pos); changed = true; } break;
 				case CommandType.UnequipOptic: changed = p.Inventory.UnequipOptic(arg); break;
 			}
 			if (changed) SendInventory(p);

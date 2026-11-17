@@ -1,0 +1,18 @@
+# Matchmaking open-esport dans Docker. Il lance les serveurs de partie (un conteneur par partie) via le Docker de la machine (socket montée) :
+# les conteneurs de partie sont donc des « frères » de celui-ci, pas des enfants. Voir docker-compose.yml.
+# Construction (depuis le dossier netcode) :  docker build -f Dockerfile.matchmaker -t open-esport-matchmaker .
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY Directory.Build.props ./
+COPY OpenEsport.Core/ OpenEsport.Core/
+COPY OpenEsport.Matchmaker/ OpenEsport.Matchmaker/
+RUN dotnet publish OpenEsport.Matchmaker/OpenEsport.Matchmaker.csproj -c Release -o /app -p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/runtime:8.0
+# le client Docker seul (binaire statique) : le démon est celui de la machine
+COPY --from=docker:27-cli /usr/local/bin/docker /usr/local/bin/docker
+WORKDIR /app
+COPY --from=build /app .
+EXPOSE 27000/udp 27080/tcp
+ENTRYPOINT ["dotnet", "OpenEsport.Matchmaker.dll"]

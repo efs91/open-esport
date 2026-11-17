@@ -1,0 +1,64 @@
+# Serveur en ligne : matchmaking + serveurs de partie, tout dans Docker.
+#
+#   cp .env.example .env     (puis régler PUBLIC_HOST, OE_ADMIN_TOKEN, MAPS_DIR)
+#   docker compose build     (construit l'image du serveur de partie ET celle du matchmaking)
+#   docker compose up -d
+#
+# Les serveurs de partie sont lancés par le matchmaking avec « docker run » (nom explicite open-esport-<mode>-<port>) :
+# il faut donc la socket Docker, et le dossier des cartes doit avoir LE MÊME chemin dans le conteneur et sur la machine
+# (c'est le démon de la machine qui monte les cartes dans chaque serveur de partie).
+services:
+  # image du serveur de partie : ce service ne tourne jamais, il sert seulement à la construire (profil « build »)
+  server-image:
+    image: open-esport-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: ["build"]
+
+  matchmaker:
+    image: open-esport-matchmaker:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.matchmaker
+    container_name: open-esport-matchmaker
+    restart: unless-stopped
+    command:
+      - --public-host
+      - ${PUBLIC_HOST:?PUBLIC_HOST - adresse ou IP publique du serveur}
+      - --probe-host
+      - host.docker.internal
+      - --port
+      - "27000"
+      - --ports
+      - ${GAME_PORTS:-27100-27199}
+      - --players
+      - "${PLAYERS:-30}"
+      - --min-players
+      - "${MIN_PLAYERS:-1}"
+      - --world
+      - ${MAPS_DIR:-/opt/open-esport/maps}/frontiere01.world
+      - --image
+      - open-esport-server:latest
+      - --balance
+      - ${CONFIG_DIR:-/opt/open-esport/config}/balance.json   # tes réglages (panneau Godot) ; sinon valeurs par défaut du code
+      - --no-build                      # l'image est construite par « docker compose build »
+      - --cpus
+      - "${GAME_CPUS:-2}"
+      - --memory
+      - ${GAME_MEMORY:-1g}
+      - --admin-port
+      - "27080"
+      - --admin-bind
+      - 0.0.0.0                         # dans le conteneur ; côté machine, le port n'est publié que sur 127.0.0.1 (voir ports)
+    environment:
+      OE_ADMIN_TOKEN: ${OE_ADMIN_TOKEN:-}
+    ports:
+      - "27000:27000/udp"               # demandes des joueurs
+      - "127.0.0.1:27080:27080/tcp"     # tableau de bord : mettre un proxy HTTPS devant pour l'ouvrir au public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${MAPS_DIR:-/opt/open-esport/maps}:${MAPS_DIR:-/opt/open-esport/maps}:ro
+      - ${CONFIG_DIR:-/opt/open-esport/config}:${CONFIG_DIR:-/opt/open-esport/config}:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

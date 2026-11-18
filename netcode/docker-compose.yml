@@ -25,6 +25,8 @@ services:
       - ${GAME_PORTS:-27100-27199}
       - --players
       - "${PLAYERS:-30}"
+      - --lobby-countdown
+      - "${LOBBY_COUNTDOWN:-5}"              # secondes d'attente dans la salle avant le départ de la partie
       - --min-players
       - "${MIN_PLAYERS:-1}"
       - --world

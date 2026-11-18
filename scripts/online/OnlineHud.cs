@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using Godot;
 using System.Collections.Generic;
 
@@ -202,8 +203,8 @@ namespace Openesport.Online
 		{
 			_stats.Visible = show;
 			if (!show) return;
-			string alive = teamSize > 1 ? $"Vivants : {playersAlive}   (équipes : {teamsAlive})" : $"Vivants : {playersAlive}";
-			string text = $"{alive}\nÉliminations : {kills}\nDégâts : {damage}";
+			string alive = teamSize > 1 ? I18n.T("Vivants : {0}   (équipes : {1})", playersAlive, teamsAlive) : I18n.T("Vivants : {0}", playersAlive);
+			string text = alive + "\n" + I18n.T("Éliminations : {0}", kills) + "\n" + I18n.T("Dégâts : {0}", damage);
 			if (_stats.Text != text) _stats.Text = text;
 		}
 
@@ -212,7 +213,7 @@ namespace Openesport.Online
 		{
 			_downVignette.Visible = down;
 			_downText.Visible = down;
-			if (down) _downText.Text = revive > 0 ? "Un coéquipier te relève…" : $"À TERRE — un coéquipier peut te relever\nIl te reste {secondsLeft} s";
+			if (down) _downText.Text = revive > 0 ? I18n.T("Un coéquipier te relève…") : I18n.T("À TERRE — un coéquipier peut te relever") + "\n" + I18n.T("Il te reste {0} s", secondsLeft);
 			_reviveBar.Visible = revive > 0;
 			_reviveBar.Value = revive;
 		}
@@ -285,7 +286,7 @@ namespace Openesport.Online
 			_useBar.Set(usingId, progress);
 		}
 
-		public void SetDead(bool dead) { _dead.Visible = dead; _dead.Text = "ÉLIMINÉ — réapparition…"; }
+		public void SetDead(bool dead) { _dead.Visible = dead; _dead.Text = I18n.T("ÉLIMINÉ — réapparition…"); }
 
 		public void AddFeed(string text)
 		{
@@ -309,7 +310,7 @@ namespace Openesport.Online
 		{
 			while (_team.GetChildCount() > mates.Count + 1) _team.GetChild(_team.GetChildCount() - 1).QueueFree();
 			while (_team.GetChildCount() < mates.Count + 1) MakeLabelIn(_team, "");
-			((Label)_team.GetChild(0)).Text = mates.Count > 0 ? "ÉQUIPE" : "";
+			((Label)_team.GetChild(0)).Text = mates.Count > 0 ? I18n.T("ÉQUIPE") : "";
 			((Label)_team.GetChild(0)).HorizontalAlignment = HorizontalAlignment.Left;
 			for (int i = 0; i < mates.Count; i++)
 			{
@@ -522,7 +523,7 @@ namespace Openesport.Online
 			var perp = new Vector2(-dir.Y, dir.X);
 			DrawColoredPolygon(new[] { me + dir * 15, me - dir * 9 + perp * 9, me - dir * 3, me - dir * 9 - perp * 9 }, new Color(0, 0, 0, 0.85f));
 			DrawColoredPolygon(new[] { me + dir * 12, me - dir * 7 + perp * 7, me - dir * 2.5f, me - dir * 7 - perp * 7 }, new Color(1f, 0.92f, 0.3f));
-			string title = Loading ? (ShowFlight ? "CHARGEMENT  —  trajectoire de l'avion en jaune, vous êtes dessus" : "CHARGEMENT  —  la carte de la partie") : "CARTE  —  vous : flèche jaune, équipiers : points bleus, avion : trait jaune   (M pour fermer)   —   clic gauche sur un ping : le retirer";
+			string title = Loading ? (ShowFlight ? I18n.T("CHARGEMENT  —  trajectoire de l'avion en jaune, vous êtes dessus") : I18n.T("CHARGEMENT  —  la carte de la partie")) : I18n.T("CARTE  —  vous : flèche jaune, équipiers : points bleus, avion : trait jaune   (M pour fermer)   —   clic gauche sur un ping : le retirer");
 			DrawString(ThemeDB.FallbackFont, new Vector2(origin.X, origin.Y - 8), title, HorizontalAlignment.Left, -1, 17, Colors.White);
 			if (Loading && !string.IsNullOrEmpty(LoadingText))
 				DrawString(ThemeDB.FallbackFont, new Vector2(origin.X, origin.Y + side + 28), LoadingText, HorizontalAlignment.Left, -1, 20, new Color(1f, 0.93f, 0.55f));

@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -65,44 +66,44 @@ public partial class CharacterCreator : CanvasLayer
 		box.AddThemeConstantOverride("separation", 8);
 		scroll.AddChild(box);
 
-		var title = new Label { Text = "Création du personnage" };
+		var title = new Label { Text = I18n.T("Création du personnage") };
 		title.AddThemeFontSizeOverride("font_size", 26);
 		box.AddChild(title);
 
-		box.AddChild(Section("Nom"));
-		_nameEdit = new LineEdit { Text = CharacterName, PlaceholderText = "Nom du personnage", MaxLength = 24 };
+		box.AddChild(Section(I18n.T("Nom")));
+		_nameEdit = new LineEdit { Text = CharacterName, PlaceholderText = I18n.T("Nom du personnage"), MaxLength = 24 };
 		box.AddChild(_nameEdit);
 
-		box.AddChild(Section("Morphologie"));
-		AddSlider(box, "gender", "Masculin  ↔  Féminin", 0f, 1f, v => _app.Gender = v);
-		AddSlider(box, "height", "Taille", -1f, 1f, v => _app.Height = v);
-		AddSlider(box, "weight", "Corpulence", -1f, 1f, v => _app.Weight = v);
-		AddSlider(box, "muscle", "Musculature", -1f, 1f, v => _app.Muscle = v);
-		AddSlider(box, "age", "Âge", -1f, 1f, v => _app.Age = v);
+		box.AddChild(Section(I18n.T("Morphologie")));
+		AddSlider(box, "gender", I18n.T("Masculin  ↔  Féminin"), 0f, 1f, v => _app.Gender = v);
+		AddSlider(box, "height", I18n.T("Taille"), -1f, 1f, v => _app.Height = v);
+		AddSlider(box, "weight", I18n.T("Corpulence"), -1f, 1f, v => _app.Weight = v);
+		AddSlider(box, "muscle", I18n.T("Musculature"), -1f, 1f, v => _app.Muscle = v);
+		AddSlider(box, "age", I18n.T("Âge"), -1f, 1f, v => _app.Age = v);
 
-		box.AddChild(Section("Apparence"));
+		box.AddChild(Section(I18n.T("Apparence")));
 		var skins = new List<string>();
 		foreach (var s in CharacterKit.Skins) skins.Add(s.Name);
-		AddOption(box, "skin", "Peau", skins, i => _app.Skin = i);
-		AddPieceOption(box, "clothes", "Tenue");
-		AddPieceOption(box, "shoes", "Chaussures");
-		AddPieceOption(box, "hair", "Cheveux");
-		AddPieceOption(box, "eyebrows", "Sourcils");
+		AddOption(box, "skin", I18n.T("Peau"), skins, i => _app.Skin = i);
+		AddPieceOption(box, "clothes", I18n.T("Tenue"));
+		AddPieceOption(box, "shoes", I18n.T("Chaussures"));
+		AddPieceOption(box, "hair", I18n.T("Cheveux"));
+		AddPieceOption(box, "eyebrows", I18n.T("Sourcils"));
 
-		box.AddChild(Section("Aperçu"));
-		var weapons = new List<string> { "Mains nues" };
+		box.AddChild(Section(I18n.T("Aperçu")));
+		var weapons = new List<string> { I18n.T("Mains nues") };
 		_weaponIds.Clear(); _weaponIds.Add(null);
 		foreach (var id in ItemDatabase.Ids)
 		{
 			var d = ItemDatabase.Get(id);
 			if (d != null && d.Type == ItemType.Weapon) { weapons.Add(d.DisplayName); _weaponIds.Add(id); }
 		}
-		_weaponOption = AddOption(box, "weapon", "Arme en main", weapons, _ => UpdatePreviewState(), selected: _weaponIds.IndexOf("ak"));
-		_poseOption = AddOption(box, "pose", "Animation", new List<string> { "Repos", "Marche", "Course", "Glissade", "Coup de poing" }, _ => UpdatePreviewState());
+		_weaponOption = AddOption(box, "weapon", I18n.T("Arme en main"), weapons, _ => UpdatePreviewState(), selected: _weaponIds.IndexOf("ak"));
+		_poseOption = AddOption(box, "pose", I18n.T("Animation"), new List<string> { I18n.T("Repos"), I18n.T("Marche"), I18n.T("Course"), I18n.T("Glissade"), I18n.T("Coup de poing") }, _ => UpdatePreviewState());
 
 		var views = new HBoxContainer();
 		views.AddThemeConstantOverride("separation", 6);
-		foreach (var (label, yaw) in new[] { ("Face", Mathf.Pi), ("Profil", Mathf.Pi / 2f), ("Dos", 0f), ("Dessus", -1f) })
+		foreach (var (label, yaw) in new[] { (I18n.T("Face"), Mathf.Pi), (I18n.T("Profil"), Mathf.Pi / 2f), (I18n.T("Dos"), 0f), (I18n.T("Dessus"), -1f) })
 		{
 			var b = new Button { Text = label, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			float y = yaw;
@@ -112,7 +113,7 @@ public partial class CharacterCreator : CanvasLayer
 		box.AddChild(views);
 		var zooms = new HBoxContainer();
 		zooms.AddThemeConstantOverride("separation", 6);
-		foreach (var (label, h, d, fov) in new[] { ("Corps entier", 1.0f, 3.6f, 32f), ("Buste", 1.35f, 2.0f, 32f), ("Bras et mains", 1.25f, 1.45f, 32f) })
+		foreach (var (label, h, d, fov) in new[] { (I18n.T("Corps entier"), 1.0f, 3.6f, 32f), (I18n.T("Buste"), 1.35f, 2.0f, 32f), (I18n.T("Bras et mains"), 1.25f, 1.45f, 32f) })
 		{
 			var b = new Button { Text = label, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			float hh = h, dd = d, ff = fov;
@@ -124,15 +125,15 @@ public partial class CharacterCreator : CanvasLayer
 		box.AddChild(new HSeparator());
 		var actions = new HBoxContainer();
 		actions.AddThemeConstantOverride("separation", 8);
-		var random = new Button { Text = "Aléatoire", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+		var random = new Button { Text = I18n.T("Aléatoire"), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 		random.Pressed += () => { var rng = new RandomNumberGenerator(); rng.Randomize(); _app.Randomize(rng); Refresh(); };
-		var reset = new Button { Text = "Par défaut", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+		var reset = new Button { Text = I18n.T("Par défaut"), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 		reset.Pressed += () => { _app = new CharacterAppearance(); Refresh(); };
 		actions.AddChild(random);
 		actions.AddChild(reset);
 		box.AddChild(actions);
 
-		var play = new Button { Text = "Enregistrer le personnage", CustomMinimumSize = new Vector2(0, 52) };
+		var play = new Button { Text = I18n.T("Enregistrer le personnage"), CustomMinimumSize = new Vector2(0, 52) };
 		play.Pressed += () =>
 		{
 			// le panneau Personnage range le résultat dans la bibliothèque et le choisit
@@ -141,7 +142,7 @@ public partial class CharacterCreator : CanvasLayer
 			QueueFree();
 		};
 		box.AddChild(play);
-		var back = new Button { Text = "Retour" };
+		var back = new Button { Text = I18n.T("Retour") };
 		back.Pressed += () => { Cancelled?.Invoke(); QueueFree(); };
 		box.AddChild(back);
 		return scroll;
@@ -180,7 +181,7 @@ public partial class CharacterCreator : CanvasLayer
 
 	private void AddPieceOption(VBoxContainer box, string group, string label)
 	{
-		var names = new List<string> { "Aucun" };
+		var names = new List<string> { I18n.T("Aucun") };
 		foreach (var it in CharacterKit.Items(group)) names.Add(it.Name);
 		AddOption(box, group, label, names, i => _app.Pieces[group] = i - 1);
 	}

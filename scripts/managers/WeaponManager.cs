@@ -861,9 +861,9 @@ public partial class WeaponManager : Node3D
 		_bombHeld = new Node3D { Name = "ObjetEnMain" };
 		var model = ItemVisuals.BuildGroundModel(def);
 		model.Scale = Vector3.One * scale;                    // un peu plus grand qu'au sol : on le voit bien
-		model.Position = new Vector3(0, -0.12f, 0);
+		model.Position = new Vector3(0, -0.04f, 0);
 		_bombHeld.AddChild(model);
-		_bombHeld.Position = new Vector3(0.08f, -0.2f, -0.42f);
+		_bombHeld.Position = new Vector3(0.12f, -0.22f, -0.38f);
 		_bombHeld.RotationDegrees = new Vector3(8, -25, 0);
 		Camera.AddChild(_bombHeld);
 	}

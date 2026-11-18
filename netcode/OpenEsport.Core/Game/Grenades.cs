@@ -35,8 +35,8 @@ namespace OpenEsport.Core
 		/// <summary>Numéro réseau d'une zone de feu (un foyer qui brûle après une grenade incendiaire).</summary>
 		public const byte FireZoneKind = 4;
 
-		/// <summary>Vitesse de lancer (m/s) et gravité (m/s²) des grenades : un arc court, bien plus lourd qu'une balle.</summary>
-		public const float ThrowSpeed = 19f, Gravity = 22f;
+		/// <summary>Vitesse de lancer (m/s) et gravité (m/s²) des grenades : portée d’environ 34 m à 45°, comme dans Apex Legends.</summary>
+		public const float ThrowSpeed = 26f, Gravity = 20f;
 		/// <summary>Durée (s) pendant laquelle on ne peut pas relancer.</summary>
 		public const float ThrowCooldown = 0.9f;
 
@@ -45,8 +45,8 @@ namespace OpenEsport.Core
 
 		static GrenadeDefs()
 		{
-			Add(new GrenadeDef { Id = ItemIds.GrenadeFrag, Effect = GrenadeEffect.Blast, Fuse = 3.0f, Radius = 7f, Damage = 110f });
-			Add(new GrenadeDef { Id = ItemIds.GrenadeSticky, Effect = GrenadeEffect.Blast, Fuse = 2.2f, Radius = 5f, Damage = 90f, Sticky = true });
+			Add(new GrenadeDef { Id = ItemIds.GrenadeFrag, Effect = GrenadeEffect.Blast, Fuse = 3.0f, Radius = 7f, Damage = 100f });
+			Add(new GrenadeDef { Id = ItemIds.GrenadeSticky, Effect = GrenadeEffect.Blast, Fuse = 2.2f, Radius = 5f, Damage = 50f, Sticky = true });
 			Add(new GrenadeDef { Id = ItemIds.GrenadeFire, Effect = GrenadeEffect.Fire, Fuse = 2.5f, Radius = 4.5f, OnImpact = true, BurnSeconds = 7f, BurnDps = 18f });
 			Add(new GrenadeDef { Id = ItemIds.GrenadeFlash, Effect = GrenadeEffect.Flash, Fuse = 1.6f, Radius = 30f, FlashSeconds = 5f });
 		}

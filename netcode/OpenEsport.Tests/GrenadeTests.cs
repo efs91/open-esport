@@ -15,7 +15,7 @@ namespace OpenEsport.Tests
 			Assert.True(rig.WaitPlaying(a));
 			rig.Give(a, grenade, count);
 			rig.Run(0.3);
-			a.Pitch = 1.5f;
+			a.Pitch = 1.56f;
 			rig.Run(0.2);
 			return (rig, a);
 		}
@@ -68,11 +68,16 @@ namespace OpenEsport.Tests
 		{
 			var (rig, a) = Setup(ItemIds.GrenadeFire);
 			using var _ = rig;
+			a.Pitch = 0.5f;   // un lancer en cloche : elle retombe loin, on ira se placer dans le foyer
+			rig.Run(0.2);
 			a.C.SendCommand(CommandType.ThrowGrenade, ItemIds.GrenadeFire);
 			Assert.True(rig.WaitUntil(() => a.C.Grenades.Any(g => g.Kind == GrenadeDefs.FireZoneKind), 6), "une zone de feu apparaît");
+			var fire = a.C.Grenades.First(g => g.Kind == GrenadeDefs.FireZoneKind);
+			rig.Teleport(a, new Vec3(fire.Pos.X, fire.Pos.Y + 0.1f, fire.Pos.Z));   // la grenade porte loin : on se place dans le foyer
+			rig.Run(0.3);
 			int shield = a.C.Shield, health = a.C.Health;
 			rig.Run(3.0);
-			Assert.True(a.C.Health < health || a.C.Shield < shield, "le feu brûle ce qui reste dedans (sinon la grenade a roulé hors de la zone)");
+			Assert.True(a.C.Health < health || a.C.Shield < shield, $"fire={fire.Pos.X:0.0},{fire.Pos.Y:0.0},{fire.Pos.Z:0.0} me={a.C.Predicted.Pos.X:0.0},{a.C.Predicted.Pos.Y:0.0},{a.C.Predicted.Pos.Z:0.0} hp={a.C.Health}/{health} sh={a.C.Shield}/{shield} zones={a.C.Grenades.Count(g=>g.Kind==4)}; le feu brûle ce qui reste dedans (sinon la grenade a roulé hors de la zone)");
 		}
 
 		[Fact]
@@ -83,7 +88,7 @@ namespace OpenEsport.Tests
 			rig.Give(a, ItemIds.Ak);
 			rig.Give(a, ItemIds.GrenadeFrag, 2); rig.Give(a, ItemIds.GrenadeFlash);
 			rig.Run(0.3);
-			a.Pitch = 1.5f; rig.Run(0.2);
+			a.Pitch = 1.56f; rig.Run(0.2);
 			// pas de grenade qu'on n'a pas
 			a.C.SendCommand(CommandType.EquipGrenade, ItemIds.GrenadeFire); rig.Run(0.4);
 			Assert.Equal(0, a.C.Inventory.GrenadeInHand);

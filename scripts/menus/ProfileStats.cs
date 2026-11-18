@@ -1,6 +1,6 @@
+using Openesport.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Godot;
 using Openesport.Online;
@@ -8,70 +8,80 @@ using Openesport.Online;
 namespace Openesport.Menus
 {
 	/// <summary>
-	/// Colonne de statistiques de la scène « Mon profil » : le classement général (score, rang, tous les modes d'un coup, meilleurs joueurs) puis un onglet par mode de jeu
-	/// avec les statistiques du joueur dans ce mode et le classement de ce mode. Les données viennent du service de comptes.
+	/// Colonne de statistiques de la scène « Mon profil » : un sélecteur (Général, puis un bouton par mode de jeu) et, dessous, le détail.
+	/// Général : score, rang, tous les modes d'un coup et les meilleurs joueurs. Un mode : les statistiques du joueur dans ce mode et le classement de ce mode.
+	/// Les données viennent du service de comptes.
 	/// </summary>
 	public partial class ProfileStats : VBoxContainer
 	{
-		public Action OnLogout;
+		private const string General = "general";
 
-		private Label _who;
-		private TabContainer _tabs;
-		private RichTextLabel _general;
-		private readonly Dictionary<string, RichTextLabel> _modes = new();
-
-		private static RichTextLabel NewText(string title)
-		{
-			var t = new RichTextLabel { Name = title, BbcodeEnabled = true, FitContent = false, ScrollActive = true, SelectionEnabled = true };
-			t.AddThemeFontSizeOverride("normal_font_size", 17);
-			t.AddThemeFontSizeOverride("bold_font_size", 17);
-			return t;
-		}
+		private HFlowContainer _selector;
+		private RichTextLabel _body;
+		private readonly Dictionary<string, string> _texts = new();
+		private readonly Dictionary<string, Button> _buttons = new();
+		private string _current = General;
 
 		public override void _Ready()
 		{
-			CustomMinimumSize = new Vector2(500, 0);
-			AddThemeConstantOverride("separation", 8);
+			SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+			AddThemeConstantOverride("separation", 10);
 
-			var head = new HBoxContainer();
-			_who = new Label { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-			_who.AddThemeFontSizeOverride("font_size", 26);
-			var logout = new Button { Text = "Se déconnecter" };
-			logout.Pressed += () => OnLogout?.Invoke();
-			head.AddChild(_who); head.AddChild(logout);
-			AddChild(head);
+			var title = new Label { Text = I18n.T("Statistiques et classements") };
+			title.AddThemeFontSizeOverride("font_size", 22);
+			AddChild(title);
 
-			_tabs = new TabContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill };
-			AddChild(_tabs);
-			_general = NewText("Général");
-			_tabs.AddChild(_general);
-			foreach (var m in OpenEsport.Core.Modes.All)
-			{
-				var t = NewText(Short(m.Label));
-				_modes[m.Key] = t;
-				_tabs.AddChild(t);
-			}
+			_selector = new HFlowContainer();
+			_selector.AddThemeConstantOverride("h_separation", 6);
+			_selector.AddThemeConstantOverride("v_separation", 6);
+			AddChild(_selector);
+			var group = new ButtonGroup();
+			AddSelector(General, I18n.T("Général"), group);
+			foreach (var m in OpenEsport.Core.Modes.All) AddSelector(m.Key, I18n.T(m.Label), group);
+
+			_body = new RichTextLabel { BbcodeEnabled = true, SizeFlagsVertical = Control.SizeFlags.ExpandFill, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, ScrollActive = true, SelectionEnabled = true };
+			_body.AddThemeFontSizeOverride("normal_font_size", 17);
+			_body.AddThemeFontSizeOverride("bold_font_size", 17);
+			AddChild(_body);
+
+			_buttons[General].ButtonPressed = true;
 			Load();
 		}
 
-		/// <summary>Libellé court d'un onglet.</summary>
-		private static string Short(string label) => label switch { "Battle Royale" => "Battle R.", "Match à mort" => "Mort sub.", _ => label.Length > 12 ? label.Substring(0, 12) : label };
+		private void AddSelector(string key, string label, ButtonGroup group)
+		{
+			var b = new Button { Text = label, ToggleMode = true, ButtonGroup = group, CustomMinimumSize = new Vector2(0, 34) };
+			b.AddThemeFontSizeOverride("font_size", 16);
+			b.Pressed += () => Select(key);
+			_selector.AddChild(b);
+			_buttons[key] = b;
+		}
+
+		private void Select(string key)
+		{
+			_current = key;
+			_body.Text = _texts.TryGetValue(key, out var t) ? t : "";
+			_body.ScrollToLine(0);
+		}
+
+		private void Set(string key, string bbcode)
+		{
+			_texts[key] = bbcode;
+			if (key == _current) _body.Text = bbcode;
+		}
 
 		private void SetAll(string bbcode)
 		{
-			_general.Text = bbcode;
-			foreach (var t in _modes.Values) t.Text = bbcode;
+			foreach (var k in _buttons.Keys) Set(k, bbcode);
 		}
 
 		private async void Load()
 		{
-			_who.Text = AccountClient.Login;
-			SetAll("[color=#9aa4b2]Chargement des statistiques…[/color]");
+			SetAll("[color=#9aa4b2]" + I18n.T("Chargement des statistiques…") + "[/color]");
 			string error = await AccountClient.RefreshAsync();
 			if (!IsInstanceValid(this)) return;
-			if (error != null) { SetAll("[color=#ff7766]" + error + "[/color]"); return; }
+			if (error != null) { SetAll("[color=#ff7766]" + I18n.T(error) + "[/color]"); return; }
 			var p = AccountClient.Profile;
-			_who.Text = p.Login;
 			FillGeneral(p, null);
 			foreach (var m in p.Modes) FillMode(m, null);
 
@@ -90,15 +100,16 @@ namespace Openesport.Menus
 		private static string Ratio(int kills, int deaths) => deaths == 0 ? kills.ToString("0.00") : ((double)kills / deaths).ToString("0.00");
 		private static string Percent(int wins, int matches) => matches == 0 ? "—" : (100.0 * wins / matches).ToString("0") + " %";
 		private static string RankText(int rank) => rank > 0 ? "#" + rank : "—";
+		private static string Escape(string s) => (s ?? "").Replace("[", "[lb]");
 
 		private static void Board(StringBuilder sb, List<LeaderRow> rows, string login)
 		{
 			sb.AppendLine();
-			sb.AppendLine("[b]Meilleurs joueurs[/b]");
-			if (rows == null) { sb.AppendLine("[color=#9aa4b2]Classement indisponible.[/color]"); return; }
-			if (rows.Count == 0) { sb.AppendLine("[color=#9aa4b2]Personne n'est encore classé.[/color]"); return; }
+			sb.AppendLine("[b]" + I18n.T("Meilleurs joueurs") + "[/b]");
+			if (rows == null) { sb.AppendLine("[color=#9aa4b2]" + I18n.T("Classement indisponible.") + "[/color]"); return; }
+			if (rows.Count == 0) { sb.AppendLine("[color=#9aa4b2]" + I18n.T("Personne n'est encore classé.") + "[/color]"); return; }
 			sb.AppendLine("[table=4]");
-			sb.AppendLine("[cell][color=#9aa4b2]Rang[/color]   [/cell][cell][color=#9aa4b2]Joueur[/color]   [/cell][cell][color=#9aa4b2]Score[/color]   [/cell][cell][color=#9aa4b2]Parties[/color][/cell]");
+			sb.AppendLine($"[cell][color=#9aa4b2]{I18n.T("Rang")}[/color]   [/cell][cell][color=#9aa4b2]{I18n.T("Joueur")}[/color]   [/cell][cell][color=#9aa4b2]{I18n.T("Score")}[/color]   [/cell][cell][color=#9aa4b2]{I18n.T("Parties")}[/color][/cell]");
 			foreach (var r in rows)
 			{
 				string c = r.Login == login ? "[color=#ffd24a]" : "[color=#ffffff]";
@@ -107,48 +118,51 @@ namespace Openesport.Menus
 			sb.AppendLine("[/table]");
 		}
 
-		private static string Escape(string s) => (s ?? "").Replace("[", "[lb]");
-
 		private void FillGeneral(AccountProfile p, List<LeaderRow> top)
 		{
 			var sb = new StringBuilder();
-			sb.AppendLine("[font_size=24][b]Classement général[/b][/font_size]");
-			sb.AppendLine($"Score : [b]{p.General.Rating}[/b] pts     Rang : [b]{(p.General.Rank > 0 ? "#" + p.General.Rank : "non classé")}[/b]");
-			sb.AppendLine(p.General.Rank > 0 ? $"{p.General.Matches} parties jouées" : $"{p.General.Matches} partie(s) jouée(s) — il en faut {3} pour être classé");
-			sb.AppendLine("[color=#9aa4b2]Le score général est la moyenne des scores de chaque mode, pondérée par le nombre de parties jouées dans chacun. On part de 1000.[/color]");
+			sb.AppendLine("[font_size=26][b]" + I18n.T("Classement général") + "[/b][/font_size]");
+			sb.AppendLine(p.General.Matches == 0
+				? "[color=#9aa4b2]" + I18n.T("Non classé : joue une partie pour obtenir un score.") + "[/color]"
+				: I18n.T("Score : [b]{0}[/b] pts     Rang : [b]{1}[/b]", p.General.Rating, p.General.Rank > 0 ? "#" + p.General.Rank : I18n.T("non classé")));
+			sb.AppendLine(p.General.Rank > 0 ? I18n.T("{0} partie(s) jouée(s)", p.General.Matches) : I18n.T("{0} partie(s) jouée(s) — il en faut 3 pour être classé", p.General.Matches));
+			sb.AppendLine("[color=#9aa4b2]" + I18n.T("Moyenne des scores de chaque mode, pondérée par le nombre de parties jouées dans chacun. On part de 1000.") + "[/color]");
 			sb.AppendLine();
-			sb.AppendLine("[b]Chaque mode[/b]");
-			sb.AppendLine("[table=6]");
-			sb.AppendLine("[cell][color=#9aa4b2]Mode[/color]   [/cell][cell][color=#9aa4b2]Parties[/color]   [/cell][cell][color=#9aa4b2]Victoires[/color]   [/cell][cell][color=#9aa4b2]K/D[/color]   [/cell][cell][color=#9aa4b2]Score[/color]   [/cell][cell][color=#9aa4b2]Rang[/color][/cell]");
+			sb.AppendLine("[b]" + I18n.T("Chaque mode") + "[/b]");
 			foreach (var m in p.Modes)
-				sb.AppendLine($"[cell]{m.Label}   [/cell][cell]{m.Matches}   [/cell][cell]{Percent(m.Wins, m.Matches)}   [/cell][cell]{Ratio(m.Kills, m.Deaths)}   [/cell][cell]{m.Rating}   [/cell][cell]{RankText(m.Rank)}[/cell]");
-			sb.AppendLine("[/table]");
+			{
+				sb.AppendLine(m.Matches == 0
+					? $"[b]{I18n.T(m.Label)}[/b]   [color=#9aa4b2]{I18n.T("non classé")}[/color]"
+					: $"[b]{I18n.T(m.Label)}[/b]   [color=#ffd24a]{I18n.T("{0} pts", m.Rating)}[/color]   {I18n.T("rang {0}", RankText(m.Rank))}");
+				sb.AppendLine("[color=#9aa4b2]" + I18n.T("{0} partie(s)  ·  victoires {1}  ·  K/D {2}", m.Matches, Percent(m.Wins, m.Matches), Ratio(m.Kills, m.Deaths)) + "[/color]");
+			}
 			Board(sb, top, p.Login);
-			_general.Text = sb.ToString();
+			Set(General, sb.ToString());
 		}
 
 		private void FillMode(ModeStat m, List<LeaderRow> rows)
 		{
-			if (!_modes.TryGetValue(m.Mode, out var label)) return;
 			var sb = new StringBuilder();
-			sb.AppendLine($"[font_size=24][b]{m.Label}[/b][/font_size]");
-			sb.AppendLine($"Score : [b]{m.Rating}[/b] pts     Rang : [b]{(m.Rank > 0 ? "#" + m.Rank : "non classé")}[/b]");
-			if (m.Matches == 0) sb.AppendLine("[color=#9aa4b2]Tu n'as pas encore joué à ce mode.[/color]");
+			sb.AppendLine($"[font_size=26][b]{I18n.T(m.Label)}[/b][/font_size]");
+			sb.AppendLine(m.Matches == 0
+				? "[color=#9aa4b2]" + I18n.T("Non classé : joue une partie pour obtenir un score.") + "[/color]"
+				: I18n.T("Score : [b]{0}[/b] pts     Rang : [b]{1}[/b]", m.Rating, m.Rank > 0 ? "#" + m.Rank : I18n.T("non classé")));
+			if (m.Matches == 0) sb.AppendLine("[color=#9aa4b2]" + I18n.T("Tu n'as pas encore joué à ce mode.") + "[/color]");
 			sb.AppendLine();
 			sb.AppendLine("[table=2]");
 			void Row(string name, string value) => sb.AppendLine($"[cell][color=#9aa4b2]{name}[/color]      [/cell][cell][b]{value}[/b][/cell]");
-			Row("Parties jouées", m.Matches.ToString());
-			Row("Victoires", $"{m.Wins}  ({Percent(m.Wins, m.Matches)})");
-			Row("Défaites", (m.Matches - m.Wins).ToString());
-			Row("Éliminations", m.Kills.ToString());
-			Row("Morts", m.Deaths.ToString());
-			Row("Ratio éliminations / morts", Ratio(m.Kills, m.Deaths));
-			Row("Dégâts infligés", m.Damage.ToString("N0"));
-			if (m.Matches > 0) Row("Dégâts par partie", (m.Damage / m.Matches).ToString("N0"));
-			if (!m.Teams) Row("Meilleure place", m.BestPlacement > 0 ? "#" + m.BestPlacement : "—");
+			Row(I18n.T("Parties jouées"), m.Matches.ToString());
+			Row(I18n.T("Victoires"), $"{m.Wins}  ({Percent(m.Wins, m.Matches)})");
+			Row(I18n.T("Défaites"), (m.Matches - m.Wins).ToString());
+			Row(I18n.T("Éliminations"), m.Kills.ToString());
+			Row(I18n.T("Morts"), m.Deaths.ToString());
+			Row(I18n.T("Ratio éliminations / morts"), Ratio(m.Kills, m.Deaths));
+			Row(I18n.T("Dégâts infligés"), m.Damage.ToString("N0"));
+			if (m.Matches > 0) Row(I18n.T("Dégâts par partie"), (m.Damage / m.Matches).ToString("N0"));
+			if (!m.Teams) Row(I18n.T("Meilleure place"), m.BestPlacement > 0 ? "#" + m.BestPlacement : "—");
 			sb.AppendLine("[/table]");
 			Board(sb, rows, AccountClient.Login);
-			label.Text = sb.ToString();
+			Set(m.Mode, sb.ToString());
 		}
 	}
 }

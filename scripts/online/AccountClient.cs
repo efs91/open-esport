@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,15 +80,15 @@ namespace Openesport.Online
 			}
 			catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException || e is InvalidOperationException || e is UriFormatException)
 			{
-				return (0, $"Impossible de joindre le service de comptes ({MatchSettings.AccountsUrl()}).");
+				return (0, I18n.T("Impossible de joindre le service de comptes ({0}).", MatchSettings.AccountsUrl()));
 			}
 		}
 
 		private static string ErrorOf(int code, string body)
 		{
 			if (code == 0) return body;
-			try { var e = JsonDocument.Parse(body).RootElement; if (e.TryGetProperty("error", out var m)) return m.GetString(); } catch { }
-			return $"Erreur du service de comptes ({code}).";
+			try { var e = JsonDocument.Parse(body).RootElement; if (e.TryGetProperty("error", out var m)) return I18n.T(m.GetString()); } catch { }
+			return I18n.T("Erreur du service de comptes ({0}).", code);
 		}
 
 		private static void Remember(string login, bool remember)
@@ -107,7 +108,7 @@ namespace Openesport.Online
 				Token = root.GetProperty("token").GetString();
 				Profile = JsonSerializer.Deserialize<AccountProfile>(root.GetProperty("account").GetRawText(), Options);
 			}
-			catch (Exception e) { return "Réponse inattendue du service de comptes : " + e.Message; }
+			catch (Exception e) { return I18n.T("Réponse inattendue du service de comptes : {0}", e.Message); }
 			Remember(Profile.Login ?? login, remember);
 			CharacterLibrary.UseAccount(Profile);
 			return null;
@@ -142,11 +143,11 @@ namespace Openesport.Online
 		/// <summary>Recharge le profil (statistiques à jour).</summary>
 		public static async Task<string> RefreshAsync()
 		{
-			if (Token == null) return "Non connecté.";
+			if (Token == null) return I18n.T("Non connecté.");
 			var (code, body) = await SendAsync(HttpMethod.Get, "/api/me");
 			if (code != 200) return ErrorOf(code, body);
 			try { Profile = JsonSerializer.Deserialize<AccountProfile>(body, Options); }
-			catch (Exception e) { return "Réponse inattendue du service de comptes : " + e.Message; }
+			catch (Exception e) { return I18n.T("Réponse inattendue du service de comptes : {0}", e.Message); }
 			return null;
 		}
 

@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using System;
 using Godot;
 using OpenEsport.Core;
@@ -12,7 +13,7 @@ namespace Openesport.Online
 	public partial class ModeHud : CanvasLayer
 	{
 		public Action<CommandType, int> Send;
-		public Func<ushort, string> NameOf = id => "Joueur " + id;
+		public Func<ushort, string> NameOf = id => I18n.T("Joueur {0}", id);
 		public bool MenuOpen => _menu != null && _menu.Visible;
 
 		private RichTextLabel _line1, _line2;
@@ -145,7 +146,7 @@ namespace Openesport.Online
 
 		private static string Hex(Color c) => c.ToHtml(false);
 		private static string Clock(int s) => $"{Math.Max(0, s) / 60}:{Math.Max(0, s) % 60:00}";
-		private string Side(int team) => $"[color=#{Hex(team == 0 ? Blue : Red)}]{(team == 0 ? "Bleus" : "Rouges")}[/color]";
+		private string Side(int team) => $"[color=#{Hex(team == 0 ? Blue : Red)}]{(team == 0 ? I18n.T("Bleus") : I18n.T("Rouges"))}[/color]";
 
 		public override void _Input(InputEvent e)
 		{
@@ -181,25 +182,25 @@ namespace Openesport.Online
 			_menu.OffsetTop = buy ? -300 : -240; _menu.OffsetBottom = buy ? 300 : 240;
 			if (buy) { BuildShop(); return; }
 
-			var title = new Label { Text = "Choisis ta classe", HorizontalAlignment = HorizontalAlignment.Center };
+			var title = new Label { Text = I18n.T("Choisis ta classe"), HorizontalAlignment = HorizontalAlignment.Center };
 			title.AddThemeFontSizeOverride("font_size", 24);
 			_menuBox.AddChild(title);
-			_menuBox.AddChild(new Label { Text = "Le changement prend effet à ta prochaine réapparition (tout de suite en salle d'attente).", AutowrapMode = TextServer.AutowrapMode.WordSmart });
+			_menuBox.AddChild(new Label { Text = I18n.T("Le changement prend effet à ta prochaine réapparition (tout de suite en salle d'attente)."), AutowrapMode = TextServer.AutowrapMode.WordSmart });
 			foreach (var kit in Loadouts.Kits)
 			{
 				var k = kit;
-				var b = new Button { Text = $"{(k.Id == _last.ClassId ? "✔  " : "")}{k.Name} — {k.Description}", CustomMinimumSize = new Vector2(0, 46), AutowrapMode = TextServer.AutowrapMode.WordSmart };
+				var b = new Button { Text = $"{(k.Id == _last.ClassId ? "✔  " : "")}{I18n.T(k.Name)} — {I18n.T(k.Description)}", CustomMinimumSize = new Vector2(0, 46), AutowrapMode = TextServer.AutowrapMode.WordSmart };
 				b.Pressed += () => { Send?.Invoke(CommandType.SelectClass, k.Id); _last.ClassId = k.Id; Rebuild(); };
 				_menuBox.AddChild(b);
 			}
-			var close = new Button { Text = "Fermer" };
+			var close = new Button { Text = I18n.T("Fermer") };
 			close.Pressed += CloseMenu;
 			_menuBox.AddChild(close);
 		}
 
 		// ------------------------------------------------------------------ boutique (comme celles de Valorant et de Counter-Strike : des familles en colonnes, des cases à cliquer)
 
-		private static readonly string[] ShopColumns = { "PISTOLET", "PROXIMITÉ", "FUSILS", "BOUCLIERS", "SOINS", "VISEURS", "MUNITIONS", "GRENADES", "ÉQUIPEMENT" };
+		private static readonly string[] ShopColumns = { /*T*/"PISTOLET", /*T*/"PROXIMITÉ", /*T*/"FUSILS", /*T*/"BOUCLIERS", /*T*/"SOINS", /*T*/"VISEURS", /*T*/"MUNITIONS", /*T*/"GRENADES", /*T*/"ÉQUIPEMENT" };
 
 		private static string ShopCategory(ShopItem it)
 		{
@@ -221,14 +222,14 @@ namespace Openesport.Online
 		private void BuildShop()
 		{
 			var head = new HBoxContainer();
-			var title = new Label { Text = "BOUTIQUE", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			var title = new Label { Text = I18n.T("BOUTIQUE"), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			title.AddThemeFontSizeOverride("font_size", 30);
 			var money = new Label { Text = $"{_last.Money} $" };
 			money.AddThemeFontSizeOverride("font_size", 30);
 			money.AddThemeColorOverride("font_color", Gold);
 			head.AddChild(title); head.AddChild(money);
 			_menuBox.AddChild(head);
-			var hint = new Label { Text = "Clique sur un article pour l'acheter pendant la phase d'achat   ·   B ou Échap : fermer" };
+			var hint = new Label { Text = I18n.T("Clique sur un article pour l'acheter pendant la phase d'achat   ·   B ou Échap : fermer") };
 			hint.AddThemeColorOverride("font_color", new Color(0.7f, 0.73f, 0.78f));
 			_menuBox.AddChild(hint);
 
@@ -241,7 +242,7 @@ namespace Openesport.Online
 				if (items.Count == 0) continue;
 				var col = new VBoxContainer();
 				col.AddThemeConstantOverride("separation", 8);
-				var name = new Label { Text = cat, HorizontalAlignment = HorizontalAlignment.Center };
+				var name = new Label { Text = I18n.T(cat), HorizontalAlignment = HorizontalAlignment.Center };
 				name.AddThemeFontSizeOverride("font_size", 16);
 				name.AddThemeColorOverride("font_color", new Color(0.7f, 0.73f, 0.78f));
 				col.AddChild(name);
@@ -251,7 +252,7 @@ namespace Openesport.Online
 			var scroll = new ScrollContainer { CustomMinimumSize = new Vector2(0, 475), HorizontalScrollMode = ScrollContainer.ScrollMode.Auto, VerticalScrollMode = ScrollContainer.ScrollMode.Auto };
 			scroll.AddChild(columns);
 			_menuBox.AddChild(scroll);
-			var close = new Button { Text = "Fermer" };
+			var close = new Button { Text = I18n.T("Fermer") };
 			close.Pressed += CloseMenu;
 			_menuBox.AddChild(close);
 		}
@@ -274,7 +275,7 @@ namespace Openesport.Online
 			Texture2D icon = it.ItemId != ItemIds.None ? ItemIcons.Get(ItemDefs.Get(it.ItemId)?.Name)
 				: it.ShieldTier >= 0 && ResourceLoader.Exists(ItemTierStyle.ShieldIcon(it.ShieldTier)) ? GD.Load<Texture2D>(ItemTierStyle.ShieldIcon(it.ShieldTier)) : null;
 			box.AddChild(new TextureRect { Texture = icon, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(0, 44), SizeFlagsVertical = Control.SizeFlags.ExpandFill, MouseFilter = Control.MouseFilterEnum.Ignore });
-			var label = new Label { Text = it.Name, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, MouseFilter = Control.MouseFilterEnum.Ignore };
+			var label = new Label { Text = I18n.T(it.Name), HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, MouseFilter = Control.MouseFilterEnum.Ignore };
 			label.AddThemeFontSizeOverride("font_size", 12);
 			box.AddChild(label);
 			var price = new Label { Text = $"{it.Price} $", HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = Control.MouseFilterEnum.Ignore };
@@ -299,17 +300,17 @@ namespace Openesport.Online
 			switch (m.Mode)
 			{
 				case GameMode.Deathmatch:
-					l1 = $"Éliminations [b]{m.MyScore}[/b] / {m.Target}   ·   meilleur : {m.TopScore}"; l2 = timer;
+					l1 = I18n.T("Éliminations [b]{0}[/b] / {1}   ·   meilleur : {2}", m.MyScore, m.Target, m.TopScore); l2 = timer;
 					break;
 				case GameMode.TeamDeathmatch:
-					l1 = $"{Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   (objectif {m.Target})"; l2 = timer;
+					l1 = $"{Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   {I18n.T("(objectif {0})", m.Target)}"; l2 = timer;
 					break;
 				case GameMode.CaptureTheFlag:
-					l1 = $"{Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   ({m.Target} prises)   {timer}";
-					l2 = $"Drapeau {Side(0)} : {FlagText(m.Flag0)}   ·   Drapeau {Side(1)} : {FlagText(m.Flag1)}";
+					l1 = $"{Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   {I18n.T("({0} prises)", m.Target)}   {timer}";
+					l2 = I18n.T("Drapeau {0} : {1}", Side(0), FlagText(m.Flag0)) + "   ·   " + I18n.T("Drapeau {0} : {1}", Side(1), FlagText(m.Flag1));
 					break;
 				case GameMode.Control:
-					l1 = $"{Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   (objectif {m.Target})"; l2 = timer;
+					l1 = $"{Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   {I18n.T("(objectif {0})", m.Target)}"; l2 = timer;
 					for (int i = 0; i < 5; i++)
 					{
 						var c = m.Points[i];
@@ -320,21 +321,21 @@ namespace Openesport.Online
 					}
 					break;
 				case GameMode.Sabotage:
-					l1 = $"Manche {m.Round}   ·   {Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   (premier à {m.Target})";
+					l1 = I18n.T("Manche {0}", m.Round) + $"   ·   {Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   " + I18n.T("(premier à {0})", m.Target);
 					l2 = SabotageText(m, timer);
 					break;
 			}
 			if (_line1.Text != l1) _line1.Text = l1;
 			if (_line2.Text != l2) _line2.Text = l2;
 
-			string role = m.Mode == GameMode.Sabotage ? (m.MySide == 1 ? "Attaquant" : "Défenseur") + $"   ·   {m.Money} $" + (m.HasKit ? "   ·   kit de désamorçage" : "") : "";
-			string hint = m.Mode == GameMode.Sabotage ? (m.CanBuy ? "B : boutique" : "") : "C : classe (" + Loadouts.Get(m.ClassId).Name + ")";
-			if (m.Invulnerable) hint += "   (protégé)";
+			string role = m.Mode == GameMode.Sabotage ? (m.MySide == 1 ? I18n.T("Attaquant") : I18n.T("Défenseur")) + $"   ·   {m.Money} $" + (m.HasKit ? "   ·   " + I18n.T("kit de désamorçage") : "") : "";
+			string hint = m.Mode == GameMode.Sabotage ? (m.CanBuy ? I18n.T("B : boutique") : "") : I18n.T("C : classe ({0})", I18n.T(Loadouts.Get(m.ClassId).Name));
+			if (m.Invulnerable) hint += "   " + I18n.T("(protégé)");
 			_footer.Text = (role.Length > 0 ? role + "\n" : "") + hint;
 			_footer.Visible = phase != MatchPhase.Over;
 
 			_action.Visible = _actionLabel.Visible = m.Action != 0;
-			if (m.Action != 0) { _action.Value = m.ActionProgress; _actionLabel.Text = m.Action == 1 ? "Pose de la bombe…" : "Désamorçage…"; }
+			if (m.Action != 0) { _action.Value = m.ActionProgress; _actionLabel.Text = m.Action == 1 ? I18n.T("Pose de la bombe…") : I18n.T("Désamorçage…"); }
 			UpdateMessages(m, phase);
 		}
 
@@ -383,9 +384,9 @@ namespace Openesport.Online
 			var me = LocalPosition();
 			if (me == null) return coords;
 			float dx = p.X - me.Value.X, dz = p.Z - me.Value.Z;
-			string[] names = { "nord", "nord-est", "est", "sud-est", "sud", "sud-ouest", "ouest", "nord-ouest" };
+			string[] names = { /*T*/"nord", /*T*/"nord-est", /*T*/"est", /*T*/"sud-est", /*T*/"sud", /*T*/"sud-ouest", /*T*/"ouest", /*T*/"nord-ouest" };
 			int dir = ((int)MathF.Round(MathF.Atan2(dx, -dz) / (MathF.PI / 4f)) % 8 + 8) % 8;
-			return $"{coords}   ({MathF.Sqrt(dx * dx + dz * dz):0} m, {names[dir]})";
+			return $"{coords}   ({MathF.Sqrt(dx * dx + dz * dz):0} m, {I18n.T(names[dir])})";
 		}
 
 		private static readonly Color Gold = new Color(1f, 0.82f, 0.25f), Orange = new Color(1f, 0.55f, 0.15f), Green = new Color(0.4f, 0.9f, 0.5f);
@@ -404,9 +405,9 @@ namespace Openesport.Online
 			{
 				float total = Mathf.Max(1f, GameBalance.F("sabotage.buySeconds"));
 				_buyBar.Value = Mathf.Clamp(m.TimeLeft / total * 100f, 0f, 100f);
-				_buyText.Text = $"[b]PHASE D'ACHAT[/b]   ·   départ dans [b]{Clock(m.TimeLeft)}[/b]\n"
-					+ (attack ? "[color=#ff6152]Vous ATTAQUEZ[/color]" : "[color=#59a0ff]Vous DÉFENDEZ[/color]") + $"   ·   argent [b]{m.Money} $[/b]\n"
-					+ "[color=#ffd23f][b]B[/b][/color] : ouvrir la boutique";
+				_buyText.Text = I18n.T("[b]PHASE D'ACHAT[/b]   ·   départ dans [b]{0}[/b]", Clock(m.TimeLeft)) + "\n"
+					+ (attack ? I18n.T("[color=#ff6152]Vous ATTAQUEZ[/color]") : I18n.T("[color=#59a0ff]Vous DÉFENDEZ[/color]")) + "   ·   " + I18n.T("argent [b]{0} $[/b]", m.Money) + "\n"
+					+ I18n.T("[color=#ffd23f][b]B[/b][/color] : ouvrir la boutique");
 			}
 
 			// alerte : l'adversaire agit sur la bombe (pas moi : ma propre barre est au centre)
@@ -416,8 +417,8 @@ namespace Openesport.Online
 			{
 				string who = NameOf(m.BombActor);
 				_alert.Text = m.BombAction == 2
-					? (attack ? $"[color=#ff5040][b]⚠  {who} DÉSAMORCE LA BOMBE — {m.BombActionProgress} %[/b][/color]" : $"[color=#6fe08a][b]{who} désamorce la bombe — {m.BombActionProgress} %[/b][/color]")
-					: (attack ? $"[color=#6fe08a][b]{who} pose la bombe — {m.BombActionProgress} %[/b][/color]" : $"[color=#ff5040][b]⚠  {who} POSE LA BOMBE — {m.BombActionProgress} %[/b][/color]");
+					? (attack ? I18n.T("[color=#ff5040][b]⚠  {0} DÉSAMORCE LA BOMBE — {1} %[/b][/color]", who, m.BombActionProgress) : I18n.T("[color=#6fe08a][b]{0} désamorce la bombe — {1} %[/b][/color]", who, m.BombActionProgress))
+					: (attack ? I18n.T("[color=#6fe08a][b]{0} pose la bombe — {1} %[/b][/color]", who, m.BombActionProgress) : I18n.T("[color=#ff5040][b]⚠  {0} POSE LA BOMBE — {1} %[/b][/color]", who, m.BombActionProgress));
 			}
 
 			// annonces : seulement sur un changement d'état (jamais à la première image reçue)
@@ -426,69 +427,69 @@ namespace Openesport.Online
 			bool known = _prevKnown;
 			_prev = m; _prevKnown = true;
 			if (!known) return;
-			string role = attack ? "[color=#ff6152]Vous attaquez[/color]" : "[color=#59a0ff]Vous défendez[/color]";
+			string role = attack ? I18n.T("[color=#ff6152]Vous attaquez[/color]") : I18n.T("[color=#59a0ff]Vous défendez[/color]");
 
 			if (m.Stage != p.Stage || m.Round != p.Round)
 			{
-				if (stage == SabotageStage.Buy) Announce($"[b]MANCHE {m.Round}[/b]\n{role}", Gold, 3f, true);
+				if (stage == SabotageStage.Buy) Announce(I18n.T("[b]MANCHE {0}[/b]", m.Round) + "\n" + role, Gold, 3f, true);
 				else if (stage == SabotageStage.Round && (SabotageStage)p.Stage == SabotageStage.Buy)
 				{
-					string goal = !attack ? "Empêchez la pose de la bombe sur les sites A et B"
-						: m.BombCarrier == me ? "[b]Tu portes la bombe[/b] : rejoins un site (A ou B), sors-la (molette ou [b]5[/b]) puis maintiens le [b]clic gauche[/b]   ([b]X[/b] : la lâcher)"
-						: m.BombCarrier != 0xFFFF ? $"{NameOf(m.BombCarrier)} porte la bombe : protège-le jusqu'à un site" : "La bombe est au sol";
-					Announce($"[b]C'EST PARTI ![/b]\n{goal}", Green, 4f, true);
+					string goal = !attack ? I18n.T("Empêchez la pose de la bombe sur les sites A et B")
+						: m.BombCarrier == me ? I18n.T("[b]Tu portes la bombe[/b] : rejoins un site (A ou B), sors-la (molette ou [b]5[/b]) puis maintiens le [b]clic gauche[/b]   ([b]X[/b] : la lâcher)")
+						: m.BombCarrier != 0xFFFF ? I18n.T("{0} porte la bombe : protège-le jusqu'à un site", NameOf(m.BombCarrier)) : I18n.T("La bombe est au sol");
+					Announce(I18n.T("[b]C'EST PARTI ![/b]") + "\n" + goal, Green, 4f, true);
 				}
 				else if (stage == SabotageStage.Planted)
-					Announce($"[b]BOMBE POSÉE — SITE {(char)('A' + m.BombSite)}[/b]\n" + (attack ? "Défends-la jusqu'à l'explosion" : "Désamorcez-la : maintenez [b]E[/b] près de la bombe"), Orange, 4f, true);
+					Announce(I18n.T("[b]BOMBE POSÉE — SITE {0}[/b]", (char)('A' + m.BombSite)) + "\n" + (attack ? I18n.T("Défends-la jusqu'à l'explosion") : I18n.T("Désamorcez-la : maintenez [b]E[/b] près de la bombe")), Orange, 4f, true);
 			}
 
 			// la bombe change de main ou tombe
 			if (stage == SabotageStage.Round)
 			{
 				if (m.BombState == 1 && p.BombState != 1)
-					Announce($"[b]BOMBE AU SOL[/b]\n{Where(m.BombPos)}", Orange, 5f, true);
+					Announce(I18n.T("[b]BOMBE AU SOL[/b]") + "\n" + Where(m.BombPos), Orange, 5f, true);
 				else if (m.BombState == 0 && p.BombState == 1)
-					Announce(m.BombCarrier == me ? "[b]Tu as ramassé la bombe[/b]" : $"{NameOf(m.BombCarrier)} a ramassé la bombe", Gold, 3f);
+					Announce(m.BombCarrier == me ? I18n.T("[b]Tu as ramassé la bombe[/b]") : I18n.T("{0} a ramassé la bombe", NameOf(m.BombCarrier)), Gold, 3f);
 			}
 
 			// désamorçage vu par tous
 			if (m.BombAction == 2 && p.BombAction != 2 && attack)
-				Announce($"[b][color=#ff5040]DÉSAMORÇAGE EN COURS[/color][/b]\npar {NameOf(m.BombActor)} — empêchez-le !", Red, 3f, true);
+				Announce(I18n.T("[b][color=#ff5040]DÉSAMORÇAGE EN COURS[/color][/b]") + "\n" + I18n.T("par {0} — empêchez-le !", NameOf(m.BombActor)), Red, 3f, true);
 			else if (p.BombAction == 2 && m.BombAction == 0 && stage == SabotageStage.Planted)
-				Announce(attack ? "Désamorçage interrompu" : "[b]Désamorçage interrompu[/b]", Gold, 2.5f);
+				Announce(attack ? I18n.T("Désamorçage interrompu") : I18n.T("[b]Désamorçage interrompu[/b]"), Gold, 2.5f);
 
 			// fin de manche
 			if (m.BombState == 3 && p.BombState != 3)
-				Announce("[b]BOMBE DÉSAMORCÉE[/b]\n" + (attack ? "Les défenseurs gagnent la manche : votre équipe a perdu" : "Les défenseurs gagnent la manche"), attack ? Red : Green, 5f, true);
+				Announce(I18n.T("[b]BOMBE DÉSAMORCÉE[/b]") + "\n" + (attack ? I18n.T("Les défenseurs gagnent la manche : votre équipe a perdu") : I18n.T("Les défenseurs gagnent la manche")), attack ? Red : Green, 5f, true);
 			else if (m.BombState == 4 && p.BombState != 4)
-				Announce("[b]LA BOMBE A EXPLOSÉ[/b]\nLes attaquants gagnent la manche", attack ? Green : Red, 5f, true);
+				Announce(I18n.T("[b]LA BOMBE A EXPLOSÉ[/b]") + "\n" + I18n.T("Les attaquants gagnent la manche"), attack ? Green : Red, 5f, true);
 			else if (stage == SabotageStage.RoundEnd && (SabotageStage)p.Stage != SabotageStage.RoundEnd && m.BombState < 3 && m.RoundWinner != 255)
-				Announce($"[b]MANCHE GAGNÉE PAR LES {(m.RoundWinner == 1 ? "ATTAQUANTS" : "DÉFENSEURS")}[/b]", (m.RoundWinner == 1) == attack ? Green : Red, 4f, true);
+				Announce(m.RoundWinner == 1 ? I18n.T("[b]MANCHE GAGNÉE PAR LES ATTAQUANTS[/b]") : I18n.T("[b]MANCHE GAGNÉE PAR LES DÉFENSEURS[/b]"), (m.RoundWinner == 1) == attack ? Green : Red, 4f, true);
 		}
 
 		private string BombLine(ModeState m, string timer)
 		{
 			ushort me = MyId();
-			string state = m.BombState == 1 ? $"[color=#ff8c26][b]bombe au sol[/b][/color] : {Where(m.BombPos)}"
-				: m.BombCarrier == me ? "[b]tu portes la bombe[/b] (X : la lâcher)"
-				: m.BombCarrier != 0xFFFF && m.MySide == 1 ? $"la bombe est portée par {NameOf(m.BombCarrier)}"
-				: m.MySide == 1 ? "la bombe est tombée" : "empêche la pose de la bombe";
+			string state = m.BombState == 1 ? I18n.T("[color=#ff8c26][b]bombe au sol[/b][/color] : {0}", Where(m.BombPos))
+				: m.BombCarrier == me ? I18n.T("[b]tu portes la bombe[/b] (X : la lâcher)")
+				: m.BombCarrier != 0xFFFF && m.MySide == 1 ? I18n.T("la bombe est portée par {0}", NameOf(m.BombCarrier))
+				: m.MySide == 1 ? I18n.T("la bombe est tombée") : I18n.T("empêche la pose de la bombe");
 			return state;
 		}
 
-		private string FlagText(FlagState f) => f.State == 0 ? "à sa base" : f.State == 1 ? $"porté par {NameOf(f.Carrier)}" : "tombé au sol";
+		private string FlagText(FlagState f) => f.State == 0 ? I18n.T("à sa base") : f.State == 1 ? I18n.T("porté par {0}", NameOf(f.Carrier)) : I18n.T("tombé au sol");
 
 		private string SabotageText(ModeState m, string timer)
 		{
 			switch ((SabotageStage)m.Stage)
 			{
-				case SabotageStage.Buy: return $"[color=#ffd23f]Phase d'achat[/color]   ·   départ dans {timer}";
+				case SabotageStage.Buy: return I18n.T("[color=#ffd23f]Phase d'achat[/color]   ·   départ dans {0}", timer);
 				case SabotageStage.Round:
 					string bomb = BombLine(m, "");
 					return $"{timer}   ·   {bomb}";      // le texte de la bombe : porteur, ou « au sol » avec ses coordonnées
-				case SabotageStage.Planted: return $"[color=#ffcc33][b]BOMBE POSÉE — site {(char)('A' + m.BombSite)}[/b][/color]   ·   explosion dans {Math.Ceiling(m.BombTimer):0} s";
+				case SabotageStage.Planted: return I18n.T("[color=#ffcc33][b]BOMBE POSÉE — site {0}[/b][/color]   ·   explosion dans {1} s", (char)('A' + m.BombSite), Math.Ceiling(m.BombTimer).ToString("0"));
 				default:
-					return m.RoundWinner == 255 ? "" : $"Manche gagnée par les {(m.RoundWinner == 1 ? "attaquants" : "défenseurs")}";
+					return m.RoundWinner == 255 ? "" : m.RoundWinner == 1 ? I18n.T("Manche gagnée par les attaquants") : I18n.T("Manche gagnée par les défenseurs");
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using System;
 using Godot;
 using OpenEsport.Core;
@@ -32,20 +33,20 @@ namespace Openesport.Menus
 			var root = new Control();
 			root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(root);
-			root.AddChild(new ColorRect { Color = new Color(0.05f, 0.06f, 0.08f), AnchorRight = 1, AnchorBottom = 1 });
+			root.AddChild(MenuStyle.Backdrop());
 			var center = new CenterContainer();
 			center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			root.AddChild(center);
 			var box = new VBoxContainer { CustomMinimumSize = new Vector2(520, 0) };
 			box.AddThemeConstantOverride("separation", 14);
-			center.AddChild(box);
-			_title = new Label { Text = "Recherche d'une partie — " + Modes.Label(_mode, _teamSize), HorizontalAlignment = HorizontalAlignment.Center };
+			center.AddChild(MenuStyle.Card(box, margin: 28));
+			_title = new Label { Text = I18n.T("Recherche d'une partie — {0}", GameText.Label(_mode, _teamSize)), HorizontalAlignment = HorizontalAlignment.Center };
 			_title.AddThemeFontSizeOverride("font_size", 28);
 			box.AddChild(_title);
-			_status = new Label { Text = "Connexion au matchmaking…", HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+			_status = new Label { Text = I18n.T("Connexion au matchmaking…"), HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 			_status.AddThemeFontSizeOverride("font_size", 18);
 			box.AddChild(_status);
-			_cancel = new Button { Text = "Annuler", CustomMinimumSize = new Vector2(0, 44) };
+			_cancel = new Button { Text = I18n.T("Annuler"), CustomMinimumSize = new Vector2(0, 44) };
 			_cancel.Pressed += Cancel;
 			box.AddChild(_cancel);
 
@@ -58,7 +59,20 @@ namespace Openesport.Menus
 			_client?.Dispose();
 			_client = new MatchmakerClient();
 			_client.Start(_mmHost, _mmPort, _mode, _teamSize);
-			_cancel.Text = "Annuler";
+			_cancel.Text = I18n.T("Annuler");
+		}
+
+		/// <summary>Les messages du matchmaking viennent du service, en français : on les traduit ici (le nom du mode est recomposé avec la langue du joueur).</summary>
+		private string Localize(string message)
+		{
+			string core = (message ?? "").TrimEnd('.', '…');
+			if (core.StartsWith("Préparation d'une partie ")) return I18n.T("Préparation d'une partie {0}", GameText.Label(_mode, _teamSize));
+			if (core.StartsWith("Lancement d'une partie ")) return I18n.T("Lancement d'une partie {0}", GameText.Label(_mode, _teamSize));
+			foreach (var prefix in new[] { "Impossible de lancer un serveur de partie : ", "Adresse du matchmaking invalide : " })
+				if (core.StartsWith(prefix)) return I18n.T(prefix + "{0}", core.Substring(prefix.Length).Replace("{", "{{").Replace("}", "}}"));
+			string exact = I18n.T(message ?? "");
+			if (exact != message) return exact;                  // le message complet a une traduction
+			return I18n.T(core);
 		}
 
 		public override void _Process(double delta)
@@ -70,25 +84,25 @@ namespace Openesport.Menus
 			switch (_client.State)
 			{
 				case MatchmakingState.Searching:
-					_status.Text = _client.Message.TrimEnd('.', '…') + dots;
+					_status.Text = Localize(_client.Message) + dots;
 					break;
 				case MatchmakingState.Found:
-					_status.Text = $"Partie trouvée ({_client.Humans} joueur(s) dans la salle d'attente)…";
+					_status.Text = I18n.T("Partie trouvée ({0} joueur(s) dans la salle d'attente)…", _client.Humans);
 					var found = OnFound; string host = _client.Host; int port = _client.ServerPort;
 					_client.Dispose(); _client = null;
 					QueueFree();
 					found?.Invoke(host, port);
 					break;
 				case MatchmakingState.Failed:
-					_status.Text = _client.Message + $"\n(matchmaking : {_mmHost}:{_mmPort})";
-					_cancel.Text = "Retour";
+					_status.Text = Localize(_client.Message) + "\n" + I18n.T("(matchmaking : {0}:{1})", _mmHost, _mmPort);
+					_cancel.Text = I18n.T("Retour");
 					_client.Dispose(); _client = null;
-					var retry = new Button { Text = "Réessayer", CustomMinimumSize = new Vector2(0, 44) };
+					var retry = new Button { Text = I18n.T("Réessayer"), CustomMinimumSize = new Vector2(0, 44) };
 					retry.Pressed += () => { retry.QueueFree(); Start(); };
 					_cancel.GetParent().AddChild(retry);
 					_cancel.GetParent().MoveChild(retry, 2);
 					// développement : se connecter directement à un serveur lancé à la main (sans matchmaking)
-					var direct = new Button { Text = "Serveur direct (127.0.0.1:27015)", CustomMinimumSize = new Vector2(0, 44) };
+					var direct = new Button { Text = I18n.T("Serveur direct (127.0.0.1:27015)"), CustomMinimumSize = new Vector2(0, 44) };
 					direct.Pressed += () => { var f = OnFound; QueueFree(); f?.Invoke("127.0.0.1", 27015); };
 					_cancel.GetParent().AddChild(direct);
 					_cancel.GetParent().MoveChild(direct, 3);

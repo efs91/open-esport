@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -105,7 +106,7 @@ namespace Openesport.Online
 			worldRoot.AddChild(_pingView);
 			_pingView.Sync(_pings);
 			_hud.OnPingCancel = who => Client.SendPing(255, Vec3.Zero, who);      // clic gauche sur un ping dans la grande carte : on le retire (les bots cessent de l'honorer)
-			_hud.SetStatus($"Connexion à {host}:{port}…", 0f);
+			_hud.SetStatus(I18n.T("Connexion à {0}:{1}…", host, port), 0f);
 
 			var world = LoadWorld(worldPath, out uint checksum);
 			_worldCollision = world;
@@ -113,13 +114,13 @@ namespace Openesport.Online
 			var mapTex = GD.Load<Texture2D>(worldPath.GetBaseName() + ".png");    // dessin de la carte (tools/map/gen_minimap.py)
 			if (mapTex != null) _hud.SetMap(mapTex, world.Data.MinX, world.Data.MaxX, world.Data.MinZ, world.Data.MaxZ);
 			_weapons.WarmUp();
-			_hud.SetLoading(true, "Chargement des armes et des objets…");
+			_hud.SetLoading(true, I18n.T("Chargement des armes et des objets…"));
 			Client.Joined += OnJoined;
 			Client.EventReceived += OnServerEvent;
 			Client.InventoryChanged += () => _inventory.ApplyServerInventory(Client.Inventory);
 			Client.GrenadesChanged += () => _grenadeView.Apply(Client.Grenades);
 			Client.RosterChanged += RebuildRoster;
-			Client.Disconnected += reason => { _disconnectReason = reason; _hud.SetStatus("Déconnecté : " + reason, 0f); };
+			Client.Disconnected += reason => { _disconnectReason = reason; _hud.SetStatus(I18n.T("Déconnecté : {0}", I18n.T(reason)), 0f); };
 			_hud.OnLeave = LeaveToMenu;
 			Client.ErrorLog = e => GD.PrintErr("[OnlineGame] erreur de traitement d'un paquet : " + e);
 			Client.Connect(host, port, playerName, CharacterAppearance.Current.Pack(), AccountClient.Token);
@@ -146,7 +147,7 @@ namespace Openesport.Online
 			ShotTracer.WarmUp(_worldRoot);      // compile le shader des balles avant le premier tir
 			GameAudio.Shot(_worldRoot, new Vector3(0, -500f, 0), true, false);   // charge les sons de tir
 			RebuildRoster();
-			_hud.SetStatus($"En ligne — équipe {Client.TeamId + 1} — {Client.MaxPlayers} joueurs max");
+			_hud.SetStatus(I18n.T("En ligne — équipe {0} — {1} joueurs max", Client.TeamId + 1, Client.MaxPlayers));
 		}
 
 		private void RebuildRoster()
@@ -155,7 +156,7 @@ namespace Openesport.Online
 			foreach (var r in Client.Roster) _roster[r.Id] = r;
 		}
 
-		private string NameOf(int id) => _roster.TryGetValue(id, out var r) ? r.Name : "Joueur " + id;
+		private string NameOf(int id) => _roster.TryGetValue(id, out var r) ? r.Name : I18n.T("Joueur {0}", id);
 
 		private void OnServerEvent(ServerEvent e)
 		{
@@ -206,7 +207,7 @@ namespace Openesport.Online
 		{
 			if (Client == null) return;
 			using (LagTracer.Scope("Client.Poll")) Client.Poll();
-			if (Client.State == NetState.Failed) { _hud.SetStatus("Connexion impossible : " + Client.FailReason, 0f); _disconnectReason ??= Client.FailReason; return; }
+			if (Client.State == NetState.Failed) { _hud.SetStatus(I18n.T("Connexion impossible : {0}", I18n.T(Client.FailReason)), 0f); _disconnectReason ??= Client.FailReason; return; }
 			if (Client.State != NetState.Playing) return;
 
 			bool inLobby = Client.MatchKnown && Client.Match.Phase == MatchPhase.Lobby;
@@ -255,7 +256,7 @@ namespace Openesport.Online
 
 			_weapons.SetServerMagazine(Client.Magazine);
 			_hud.SetVitals(Client.Health, Client.Shield, Client.ShieldTier, Client.UsingItem, Client.UseProgress);
-			_hud.SetHint(Client.Match.CanRevive ? (Client.Match.Revive > 0 ? "Réanimation…" : "Maintenir E : réanimer ton coéquipier") : Client.Predicted.Stance == Stance.Climbing ? "Escalade…" : Client.Predicted.Stance == Stance.Zipping ? "Saut : se décrocher   —   tu peux tirer" : Client.ZiplineInReach ? "E : prendre la tyrolienne" : BombHint());
+			_hud.SetHint(Client.Match.CanRevive ? (Client.Match.Revive > 0 ? I18n.T("Réanimation…") : I18n.T("Maintenir E : réanimer ton coéquipier")) : Client.Predicted.Stance == Stance.Climbing ? I18n.T("Escalade…") : Client.Predicted.Stance == Stance.Zipping ? I18n.T("Saut : se décrocher   —   tu peux tirer") : Client.ZiplineInReach ? I18n.T("E : prendre la tyrolienne") : BombHint());
 			_weapons.SetUsingSupply(Client.UsingItem == 0 ? null : ItemDefs.Get(Client.UsingItem)?.Name);
 			if (active) HandleSupplyKeys(); else if (_radial.IsOpen) _radial.Close();
 			UpdatePings();
@@ -290,12 +291,12 @@ namespace Openesport.Online
 		{
 			var items = new (byte id, string name, Color color)[]
 			{
-				(ItemIds.HealSmall, "Petit soin", new Color(1f, 0.35f, 0.3f)),
-				(ItemIds.HealBig, "Grand soin", new Color(1f, 0.35f, 0.3f)),
-				(ItemIds.BothSmall, "Soin + bouclier", new Color(0.8f, 0.4f, 1f)),
-				(ItemIds.BothBig, "Grand soin + bouclier", new Color(0.8f, 0.4f, 1f)),
-				(ItemIds.ShieldBig, "Grand bouclier", new Color(0.35f, 0.65f, 1f)),
-				(ItemIds.ShieldSmall, "Petit bouclier", new Color(0.35f, 0.65f, 1f)),
+				(ItemIds.HealSmall, I18n.T("Petit soin"), new Color(1f, 0.35f, 0.3f)),
+				(ItemIds.HealBig, I18n.T("Grand soin"), new Color(1f, 0.35f, 0.3f)),
+				(ItemIds.BothSmall, I18n.T("Soin + bouclier"), new Color(0.8f, 0.4f, 1f)),
+				(ItemIds.BothBig, I18n.T("Grand soin + bouclier"), new Color(0.8f, 0.4f, 1f)),
+				(ItemIds.ShieldBig, I18n.T("Grand bouclier"), new Color(0.35f, 0.65f, 1f)),
+				(ItemIds.ShieldSmall, I18n.T("Petit bouclier"), new Color(0.35f, 0.65f, 1f)),
 			};
 			var slices = new List<RadialMenu.Slice>();
 			var owned = new List<byte>();
@@ -306,10 +307,10 @@ namespace Openesport.Online
 				owned.Add(it.id);
 				slices.Add(new RadialMenu.Slice { Label = it.name, Detail = $"x{count}", Icon = ItemIcons.Get(ItemDefs.Get(it.id)?.Name), Color = it.color, Enabled = count > 0 && Consumables.Useful(it.id, Client.Health, Client.Shield, Client.ShieldTier) });
 			}
-			if (slices.Count == 0) { _hud.SetStatus("Aucun soin ni bouclier dans le sac"); return; }
+			if (slices.Count == 0) { _hud.SetStatus(I18n.T("Aucun soin ni bouclier dans le sac")); return; }
 			_radial.OnChoose = (i, click) => Client.SendCommand(CommandType.UseItem, owned[i]);
 			_radialKind = 1; _radialAction = InputManager.Actions.USE_HEAL;
-			_radial.Open("SOINS", "relâche pour utiliser", slices);
+			_radial.Open(I18n.T("SOINS"), I18n.T("relâche pour utiliser"), slices);
 		}
 
 		/// <summary>Menu des grenades (touche G maintenue) : relâcher choisit la grenade (F la lance) ; un clic gauche la choisit et la lance tout de suite.</summary>
@@ -323,16 +324,16 @@ namespace Openesport.Online
 				int count = Client.Inventory.CountOf(GrenadeOrder[i]);
 				if (count <= 0) continue;          // seulement les types qu'on a
 				owned.Add(i);
-				slices.Add(new RadialMenu.Slice { Label = char.ToUpper(GrenadeNames[i][0]) + GrenadeNames[i].Substring(1), Detail = $"x{count}", Icon = ItemIcons.Get(ItemDefs.Get(GrenadeOrder[i])?.Name), Color = colors[i], Enabled = count > 0 });
+				slices.Add(new RadialMenu.Slice { Label = char.ToUpper(I18n.T(GrenadeNames[i])[0]) + I18n.T(GrenadeNames[i]).Substring(1), Detail = $"x{count}", Icon = ItemIcons.Get(ItemDefs.Get(GrenadeOrder[i])?.Name), Color = colors[i], Enabled = count > 0 });
 			}
-			if (slices.Count == 0) { _hud.SetStatus("Aucune grenade dans le sac"); return; }
+			if (slices.Count == 0) { _hud.SetStatus(I18n.T("Aucune grenade dans le sac")); return; }
 			_radial.OnChoose = (i, click) =>
 			{
 				_grenadePick = GrenadeOrder[owned[i]];
 				Client.SendCommand(CommandType.EquipGrenade, _grenadePick);       // en main : le clic gauche la lance
 			};
 			_radialKind = 2; _radialAction = InputManager.Actions.GRENADE_MENU;
-			_radial.Open("GRENADES", "relâche : en main", slices);
+			_radial.Open(I18n.T("GRENADES"), I18n.T("relâche : en main"), slices);
 		}
 
 		/// <summary>Tant que la touche du menu est tenue, la souris pilote le menu ; au relâchement on valide.</summary>
@@ -378,7 +379,7 @@ namespace Openesport.Online
 			if (e.C == 255) { _pings.RemoveAll(q => q.Owner == e.A); return; }      // ping retiré par son auteur (ou ordre abandonné par le serveur)
 			double now = Time.GetTicksMsec() / 1000.0;
 			_pings.RemoveAll(q => q.Owner == e.A);                                  // un seul ping par joueur : le nouveau remplace l'ancien
-			_pings.Add(new PingData { Owner = e.A, Type = e.C, Pos = new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z), Born = now, Name = e.A == Client.PlayerId ? "Moi" : NameOf(e.A) });
+			_pings.Add(new PingData { Owner = e.A, Type = e.C, Pos = new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z), Born = now, Name = e.A == Client.PlayerId ? I18n.T("Moi") : NameOf(e.A) });
 			GameAudio.Ping(_worldRoot, _player.GlobalPosition);
 		}
 
@@ -391,7 +392,7 @@ namespace Openesport.Online
 		}
 
 		private static readonly byte[] GrenadeOrder = { ItemIds.GrenadeFrag, ItemIds.GrenadeSticky, ItemIds.GrenadeFire, ItemIds.GrenadeFlash };
-		private static readonly string[] GrenadeNames = { "fragmentation", "collante", "incendiaire", "flash" };
+		private static readonly string[] GrenadeNames = { /*T*/"fragmentation", /*T*/"collante", /*T*/"incendiaire", /*T*/"flash" };
 		private byte _grenadePick = ItemIds.GrenadeFrag;
 
 		/// <summary>La grenade choisie, ou la première qu'on possède si celle-ci est épuisée ; 0 s'il n'y en a aucune.</summary>
@@ -412,8 +413,8 @@ namespace Openesport.Online
 				{
 						if (site.InSquare(Client.Predicted.Pos.X, Client.Predicted.Pos.Z)) onSite = true;
 					}
-			if (_inventory.BombInHand) return onSite ? "Maintiens le clic gauche : poser la bombe" : "Bombe en main : rejoins un site (A ou B) pour la poser";
-			return onSite ? "Molette ou [5] : sortir la bombe, puis clic gauche pour la poser" : "";
+			if (_inventory.BombInHand) return onSite ? I18n.T("Maintiens le clic gauche : poser la bombe") : I18n.T("Bombe en main : rejoins un site (A ou B) pour la poser");
+			return onSite ? I18n.T("Molette ou [5] : sortir la bombe, puis clic gauche pour la poser") : "";
 		}
 
 		/// <summary>Appui bref sur G : met en main la grenade choisie (ou la seule qu'on a) ; si une grenade est déjà en main, la range.</summary>
@@ -421,14 +422,14 @@ namespace Openesport.Online
 		{
 			if (_inventory.GrenadeInHand != 0) { Client.SendCommand(CommandType.EquipGrenade, 0); return; }
 			byte id = CurrentGrenade();                       // la grenade choisie, sinon la première qu'on possède (la seule, le plus souvent)
-			if (id == 0) { _hud.SetStatus("Aucune grenade dans le sac"); return; }
+			if (id == 0) { _hud.SetStatus(I18n.T("Aucune grenade dans le sac")); return; }
 			Client.SendCommand(CommandType.EquipGrenade, id);
 		}
 
 		private void ThrowGrenade()
 		{
 			byte id = CurrentGrenade();
-			if (id == 0) { _hud.SetStatus("Aucune grenade dans le sac"); return; }
+			if (id == 0) { _hud.SetStatus(I18n.T("Aucune grenade dans le sac")); return; }
 			Client.SendCommand(CommandType.ThrowGrenade, id);
 		}
 
@@ -451,10 +452,10 @@ namespace Openesport.Online
 		private void UpdateGrenadeHud()
 		{
 			byte id = CurrentGrenade();
-			string name = id == 0 ? "" : GrenadeNames[System.Array.IndexOf(GrenadeOrder, id)];
+			string name = id == 0 ? "" : I18n.T(GrenadeNames[System.Array.IndexOf(GrenadeOrder, id)]);
 			_hud.SetGrenade(id == 0 ? "" : _inventory.GrenadeInHand != 0
-				? $"Grenade {name} x{Client.Inventory.CountOf(id)} en main   —   clic gauche : lancer   [G] ranger   [V] changer"
-				: $"Grenade {name} x{Client.Inventory.CountOf(id)}   —   [G] la sortir   (maintenir G : menu)");
+				? I18n.T("Grenade {0} x{1} en main   —   clic gauche : lancer   [G] ranger   [V] changer", name, Client.Inventory.CountOf(id))
+				: I18n.T("Grenade {0} x{1}   —   [G] la sortir   (maintenir G : menu)", name, Client.Inventory.CountOf(id)));
 			// la trajectoire s'affiche tant qu'une grenade est en main
 			var cam = _head?.GetNodeOrNull<Camera3D>("Camera");
 			_preview.Refresh(cam, new Vector3(Client.Predicted.Vel.X, 0f, Client.Predicted.Vel.Z), _inventory.GrenadeInHand, _worldCollision, Client.Alive && !_radial.IsOpen);
@@ -468,11 +469,11 @@ namespace Openesport.Online
 			float needShield = shields && maxShield > 0f ? maxShield - Client.Shield : 0f;
 			if (needHealth <= 0.5f && needShield <= 0.5f)
 			{
-				_hud.SetStatus(heals && shields ? "Vie et bouclier déjà pleins" : heals ? "Vie déjà pleine" : maxShield <= 0f ? "Pas de bouclier équipé" : "Bouclier déjà plein");
+				_hud.SetStatus(heals && shields ? I18n.T("Vie et bouclier déjà pleins") : heals ? I18n.T("Vie déjà pleine") : maxShield <= 0f ? I18n.T("Pas de bouclier équipé") : I18n.T("Bouclier déjà plein"));
 				return;
 			}
 			bool haveSmall = Client.Inventory.CountOf(small) > 0, haveBig = Client.Inventory.CountOf(big) > 0;
-			if (!haveSmall && !haveBig) { _hud.SetStatus("Aucun objet de ce type dans le sac"); return; }
+			if (!haveSmall && !haveBig) { _hud.SetStatus(I18n.T("Aucun objet de ce type dans le sac")); return; }
 			float need = Mathf.Max(needHealth, needShield);
 			byte pick = haveBig && (!haveSmall || need > 50f) ? big : small;      // le petit tant qu'il suffit, le grand pour un gros manque
 			Client.SendCommand(CommandType.UseItem, pick);
@@ -662,9 +663,9 @@ namespace Openesport.Online
 			bool lobby = royale && m.Phase == MatchPhase.Lobby;
 			bool briefing = plane && st.FlightT < st.PlaneEnter - 1.5f;
 			string overlayText = "";
-			if (_loading) overlayText = "Chargement des armes et des objets…";
-			else if (lobby) overlayText = m.Countdown > 0 ? $"Départ dans {m.Countdown} s   —   {m.Lobby}/{m.Needed} joueur(s) dans la salle d'attente" : $"En attente de joueurs : {m.Lobby}/{m.Needed}";
-			else if (briefing) overlayText = $"L'avion arrive sur la carte dans {Mathf.Max(0, Mathf.CeilToInt(st.PlaneEnter - st.FlightT))} s   —   choisis où sauter";
+			if (_loading) overlayText = I18n.T("Chargement des armes et des objets…");
+			else if (lobby) overlayText = m.Countdown > 0 ? I18n.T("Départ dans {0} s   —   {1}/{2} joueur(s) dans la salle d'attente", m.Countdown, m.Lobby, m.Needed) : I18n.T("En attente de joueurs : {0}/{1}", m.Lobby, m.Needed);
+			else if (briefing) overlayText = I18n.T("L'avion arrive sur la carte dans {0} s   —   choisis où sauter", Mathf.Max(0, Mathf.CeilToInt(st.PlaneEnter - st.FlightT)));
 			bool overlay = _loading || lobby || briefing;
 			if (overlay != _overlayOn || overlayText != _overlayText) { _overlayOn = overlay; _overlayText = overlayText; _hud.SetLoading(overlay, overlayText); }
 
@@ -675,18 +676,18 @@ namespace Openesport.Online
 			string leaderName = team && m.JumpLeader != 0xFFFF ? NameOf(m.JumpLeader) : "";
 			if (plane && !briefing)
 			{
-				string eject = $"éjection automatique dans {Mathf.Max(0, Mathf.CeilToInt(st.PlaneExit - st.FlightT))} s";
-				text = !team ? $"SAUT : sauter de l'avion   —   {eject}"
-					: iLead ? $"Tu diriges le saut : SAUT = toute l'équipe saute   ·   TAB : passer le commandement   —   {eject}"
-					: $"{leaderName} dirige le saut de l'équipe (TAB : il peut te passer le commandement)   —   {eject}";
+				string eject = I18n.T("éjection automatique dans {0} s", Mathf.Max(0, Mathf.CeilToInt(st.PlaneExit - st.FlightT)));
+				text = !team ? I18n.T("SAUT : sauter de l'avion   —   {0}", eject)
+					: iLead ? I18n.T("Tu diriges le saut : SAUT = toute l'équipe saute   ·   TAB : passer le commandement   —   {0}", eject)
+					: I18n.T("{0} dirige le saut de l'équipe (TAB : il peut te passer le commandement)   —   {1}", leaderName, eject);
 			}
 			else if (dive)
 			{
 				float alt = view.Y - (_worldCollision?.HeightAt(view.X, view.Z) ?? 0f);
 				string stats = $"altitude {alt:F0} m   ·   {-st.Vel.Y * 3.6f:F0} km/h";
-				text = !iLead && Client.Passenger ? $"{leaderName} dirige la chute   ·   clic droit : regarder autour   ·   {stats}"
-					: team ? $"Tu diriges l'équipe   ·   Z : plonger (relâche pour ralentir)   ·   clic droit : figer la direction et regarder autour   ·   TAB : passer le commandement   ·   {stats}"
-					: $"Z : plonger (relâche pour ralentir)   ·   clic droit : figer la direction et regarder autour   ·   {stats}";
+				text = !iLead && Client.Passenger ? I18n.T("{0} dirige la chute   ·   clic droit : regarder autour   ·   {1}", leaderName, stats)
+					: team ? I18n.T("Tu diriges l'équipe   ·   Z : plonger (relâche pour ralentir)   ·   clic droit : figer la direction et regarder autour   ·   TAB : passer le commandement   ·   {0}", stats)
+					: I18n.T("Z : plonger (relâche pour ralentir)   ·   clic droit : figer la direction et regarder autour   ·   {0}", stats);
 			}
 			_hud.SetFlight(text);
 
@@ -694,15 +695,15 @@ namespace Openesport.Online
 			bool modal = Client.ModeKnown;
 			_hud.SetMatchStats(royale && !modal && m.Phase != MatchPhase.Lobby, m.PlayersAlive, m.TeamsAlive, m.TeamSize, m.Kills, m.Damage);
 			_hud.SetDowned(down, m.DownLeft, m.Revive, m.CanRevive);
-			string detail = $"Éliminations : {m.Kills}      Dégâts : {m.Damage}";
+			string detail = I18n.T("Éliminations : {0}      Dégâts : {1}", m.Kills, m.Damage);
 			if (royale && m.Phase == MatchPhase.Over)
 			{
-				if (m.Placement == 1) _hud.ShowEnd(true, "VICTOIRE !", detail, new Color(1f, 0.85f, 0.25f));
-				else _hud.ShowEnd(true, "PARTIE TERMINÉE", detail + $"\nClassement : {Mathf.Max(2, (int)m.Placement)}", Colors.White);
+				if (m.Placement == 1) _hud.ShowEnd(true, I18n.T("VICTOIRE !"), detail, new Color(1f, 0.85f, 0.25f));
+				else _hud.ShowEnd(true, I18n.T("PARTIE TERMINÉE"), detail + "\n" + I18n.T("Classement : {0}", Mathf.Max(2, (int)m.Placement)), Colors.White);
 			}
 			else if (royale && !modal && !Client.Alive && m.Phase == MatchPhase.Playing)
-				_hud.ShowEnd(true, m.Placement > 0 ? $"ÉLIMINÉ — #{m.Placement}" : "ÉLIMINÉ", detail + (m.Placement > 0 ? "" : "\nTon équipe est toujours en jeu."), new Color(1f, 0.4f, 0.35f));
-			else if (_disconnectReason != null) _hud.ShowEnd(true, "PARTIE TERMINÉE", _disconnectReason, Colors.White);
+				_hud.ShowEnd(true, m.Placement > 0 ? I18n.T("ÉLIMINÉ — #{0}", m.Placement) : I18n.T("ÉLIMINÉ"), detail + (m.Placement > 0 ? "" : "\n" + I18n.T("Ton équipe est toujours en jeu.")), new Color(1f, 0.4f, 0.35f));
+			else if (_disconnectReason != null) _hud.ShowEnd(true, I18n.T("PARTIE TERMINÉE"), I18n.T(_disconnectReason), Colors.White);
 			else _hud.ShowEnd(false);
 
 			// vue : arme rangée dans l'avion, en chute et à terre ; caméra à la troisième personne en chute
@@ -810,13 +811,13 @@ namespace Openesport.Online
 			float left = z.SecondsLeft(tick);
 			float startIn = z.Phase == ZonePhase.Idle ? left + z.WarningSeconds : left;          // avant le début du rétrécissement
 			float endIn = z.Phase == ZonePhase.Shrinking ? left : startIn + z.ShrinkSeconds;       // avant la fin du rétrécissement
-			string damageLine = $"Hors zone : {z.Damage:0.#} dégâts / {z.TickSeconds:0.#} s";
+			string damageLine = I18n.T("Hors zone : {0:0.#} dégâts / {1:0.#} s", z.Damage, z.TickSeconds);
 			string timer = z.Phase == ZonePhase.Collapsed
-				? $"Zone n°{z.Stage} : refermée, plus aucune place\n{damageLine}"
-				: $"Zone n°{z.Stage}{(z.NextVisible ? $"  (prochaine : n°{z.Stage + 1})" : "")}\n"
-					+ (z.Phase == ZonePhase.Shrinking ? "Rétrécissement en cours" : $"Rétrécissement dans {Clock(startIn)}") + "\n"
-					+ $"Fin du rétrécissement dans {Clock(endIn)}\n{damageLine}";
-			string warning = outside ? $"HORS DE LA ZONE — {z.Damage:0.#} dégâts toutes les {z.TickSeconds:0.#} s" : "";
+				? I18n.T("Zone n°{0} : refermée, plus aucune place", z.Stage) + "\n" + damageLine
+				: I18n.T("Zone n°{0}", z.Stage) + (z.NextVisible ? "  " + I18n.T("(prochaine : n°{0})", z.Stage + 1) : "") + "\n"
+					+ (z.Phase == ZonePhase.Shrinking ? I18n.T("Rétrécissement en cours") : I18n.T("Rétrécissement dans {0}", Clock(startIn))) + "\n"
+					+ I18n.T("Fin du rétrécissement dans {0}", Clock(endIn)) + "\n" + damageLine;
+			string warning = outside ? I18n.T("HORS DE LA ZONE — {0:0.#} dégâts toutes les {1:0.#} s", z.Damage, z.TickSeconds) : "";
 			float groundY = _worldCollision?.HeightAt(view.X, view.Z) ?? view.Y;
 			_zoneWall.SetZone(true, cx, cz, r, z.NextVisible, z.NextX, z.NextZ, z.NextRadius, groundY - 300f);
 			_hud.SetZone(true, cx, cz, r, z.NextVisible, z.NextX, z.NextZ, z.NextRadius, timer, outside, warning);

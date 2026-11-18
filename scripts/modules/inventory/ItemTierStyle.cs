@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using Godot;
 
 namespace Openesport.Inventory
@@ -17,7 +18,7 @@ namespace Openesport.Inventory
 		};
 
 		public static Color ColorOf(int tier) => Colors[Mathf.Clamp(tier, 0, Colors.Length - 1)];
-		public static string NameOf(int tier) => OpenEsport.Core.Tiers.Name((byte)Mathf.Clamp(tier, 0, 3));
+		public static string NameOf(int tier) => I18n.T(OpenEsport.Core.Tiers.Name((byte)Mathf.Clamp(tier, 0, 3)));
 
 		/// <summary>Niveau d'un objet : celui de l'arme, fixe pour les sacs à dos (le premier est rare, le second épique), classique sinon.</summary>
 		public static int TierOf(ItemDefinition def, int weaponTier)

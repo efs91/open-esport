@@ -191,7 +191,7 @@ namespace Openesport.Inventory
 
 		public void DropShield()
 		{
-			if (Network == null || ShieldTier < 0) { Message?.Invoke("Pas de bouclier à jeter"); return; }
+			if (Network == null || ShieldTier < 0) { Message?.Invoke(I18n.T("Pas de bouclier à jeter")); return; }
 			Network.SendCommand(OpenEsport.Core.CommandType.DropShield, 0);
 		}
 
@@ -239,13 +239,13 @@ namespace Openesport.Inventory
 			var weapon = ActiveWeapon >= 0 ? Weapons[ActiveWeapon] : null;
 			if (weapon == null)
 			{
-				Message?.Invoke("Prenez une arme en main pour y monter un viseur");
+				Message?.Invoke(I18n.T("Prenez une arme en main pour y monter un viseur"));
 				return;
 			}
 
 			if (!weapon.Definition.AcceptsOptic)
 			{
-				Message?.Invoke($"{weapon.Definition.DisplayName} n'accepte pas de viseur");
+				Message?.Invoke(I18n.T("{0} n'accepte pas de viseur", weapon.Definition.DisplayName));
 				return;
 			}
 
@@ -273,7 +273,7 @@ namespace Openesport.Inventory
 
 			if (Items.Count >= Capacity)
 			{
-				Message?.Invoke("Sac à dos plein");
+				Message?.Invoke(I18n.T("Sac à dos plein"));
 				return;
 			}
 
@@ -287,14 +287,14 @@ namespace Openesport.Inventory
 		{
 			if (Network != null) { Network.SendCommand(OpenEsport.Core.CommandType.EquipOpticOn, weaponSlot * 16 + index); return; }
 			if (weaponSlot == ActiveWeapon) EquipOpticFromBackpack(index);
-			else Message?.Invoke("Prenez cette arme en main pour y monter un viseur");
+			else Message?.Invoke(I18n.T("Prenez cette arme en main pour y monter un viseur"));
 		}
 
 		/// <summary>Glisser-déposer : jette à terre le viseur monté sur l'arme de cet emplacement.</summary>
 		public void DropOptic(int weaponSlot)
 		{
 			if (Network != null) { Network.SendCommand(OpenEsport.Core.CommandType.DropOptic, weaponSlot); return; }
-			Message?.Invoke("Jeter un viseur monté n'est possible qu'en ligne");
+			Message?.Invoke(I18n.T("Jeter un viseur monté n'est possible qu'en ligne"));
 		}
 
 		private void OnWeaponAttachmentsChanged(WeaponSlotState weapon)
@@ -427,7 +427,7 @@ namespace Openesport.Inventory
 			BombInHand = st.BombInHand;
 			GrenadeInHand = st.GrenadeInHand;
 			// objet en main : la bombe, ou la grenade sortie
-			_weaponManager.SetHeldObject(BombInHand ? "bomb" : st.GrenadeInHand != 0 ? OpenEsport.Core.ItemDefs.Get(st.GrenadeInHand)?.Name : null, BombInHand ? 1.6f : 2.4f);
+			_weaponManager.SetHeldObject(BombInHand ? "bomb" : st.GrenadeInHand != 0 ? OpenEsport.Core.ItemDefs.Get(st.GrenadeInHand)?.Name : null, BombInHand ? 1.6f : 1.0f);
 
 			var previouslyHeld = _weaponManager.HeldWeapon;
 			var wanted = st.ActiveSlot >= 0 ? Weapons[st.ActiveSlot] : null;
@@ -494,13 +494,13 @@ namespace Openesport.Inventory
 				weapon.OpticId = def.Id;
 				if (_weaponManager.HeldWeapon == weapon)
 					_weaponManager.RefreshAttachments();
-				Message?.Invoke($"{def.DisplayName} monté sur {weapon.Definition.DisplayName}");
+				Message?.Invoke(I18n.T("{0} monté sur {1}", def.DisplayName, weapon.Definition.DisplayName));
 				return true;
 			}
 
 			if (Items.Count >= Capacity)
 			{
-				Message?.Invoke("Sac à dos plein");
+				Message?.Invoke(I18n.T("Sac à dos plein"));
 				return false;
 			}
 
@@ -513,7 +513,7 @@ namespace Openesport.Inventory
 			int left = AddAmmo(def, item.Count);
 			if (left == item.Count)
 			{
-				Message?.Invoke("Sac à dos plein");
+				Message?.Invoke(I18n.T("Sac à dos plein"));
 				return false;
 			}
 
@@ -523,7 +523,7 @@ namespace Openesport.Inventory
 			if (left > 0)
 			{
 				item.Count = left;
-				Message?.Invoke($"Sac à dos plein : {left} laissées au sol");
+				Message?.Invoke(I18n.T("Sac à dos plein : {0} laissées au sol", left));
 				Changed?.Invoke();
 				return false;
 			}
@@ -535,7 +535,7 @@ namespace Openesport.Inventory
 		{
 			if (def.BackpackLevel <= BackpackLevel)
 			{
-				Message?.Invoke($"Vous portez déjà un sac à dos de niveau {BackpackLevel}");
+				Message?.Invoke(I18n.T("Vous portez déjà un sac à dos de niveau {0}", BackpackLevel));
 				return false;
 			}
 
@@ -545,7 +545,7 @@ namespace Openesport.Inventory
 			if (previous != null)
 				DropToGround(previous, null);
 
-			Message?.Invoke($"{def.DisplayName} équipé : {Capacity} emplacements");
+			Message?.Invoke(I18n.T("{0} équipé : {1} emplacements", def.DisplayName, Capacity));
 			return true;
 		}
 

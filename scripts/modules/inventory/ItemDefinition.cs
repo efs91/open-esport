@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using Godot;
 using System.Collections.Generic;
 
@@ -23,7 +24,9 @@ namespace Openesport.Inventory
 	public class ItemDefinition
 	{
 		public string Id;
-		public string DisplayName;
+		private string _displayName;
+		/// <summary>Nom affiché : traduit dans la langue choisie (le texte français d'origine sert de clé).</summary>
+		public string DisplayName { get => I18n.T(_displayName); set => _displayName = value; }
 		public ItemType Type;
 
 		/// <summary>Scène FPS (armes) ou modèle .glb (accessoires, sacs).</summary>

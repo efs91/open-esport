@@ -20,6 +20,7 @@ public partial class Main : Node
 		_logManager = GetNode<LogManager>(GlobalPaths.Managers.LOG_MANAGER);
 		Instance = this;
 		_logManager.Info("[Main] _Ready appelé");
+		language = LocalizationManager.SavedLanguage;
 		LocalizationManager.LoadLanguage(language);
 		InitializeManagers();
 		StartGame();

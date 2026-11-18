@@ -11,6 +11,15 @@ namespace Openesport.Managers
         private static Dictionary<string, string> _defaultTranslations = new(); // Traductions en français
         private static LogManager _logManager = new LogManager();
 
+        private const string LanguageFile = "user://language.cfg";
+
+        /// <summary>La langue choisie la dernière fois (français sinon) : elle est conservée d'une session à l'autre.</summary>
+        public static string SavedLanguage
+        {
+            get { var cfg = new ConfigFile(); return cfg.Load(LanguageFile) == Error.Ok ? (string)cfg.GetValue("language", "code", "français") : "français"; }
+            set { var cfg = new ConfigFile(); cfg.SetValue("language", "code", value); cfg.Save(LanguageFile); }
+        }
+
         public static void LoadLanguage(string languageCode)
         {
             _logManager.Info($"[LocalizationManager] Chargement de la langue : {languageCode}");
@@ -54,6 +63,16 @@ namespace Openesport.Managers
             {
                 _logManager.Error($"[LocalizationManager] Erreur lors du chargement de la langue : {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Traduit un texte écrit en français dans le code : le texte français sert de clé. Cherche la traduction dans la langue choisie ; sans traduction (ou en français),
+        /// le texte est rendu tel quel. Pas d'avertissement : un texte non traduit s'affiche simplement en français.
+        /// </summary>
+        public static string Translate(string french)
+        {
+            if (string.IsNullOrEmpty(french)) return french;
+            return _translations.TryGetValue(french, out string value) && !string.IsNullOrEmpty(value) ? value : french;
         }
 
         public static string GetTranslation(string key)

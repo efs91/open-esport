@@ -474,7 +474,7 @@ namespace Openesport.Inventory
 			// --- Bouclier ---
 			string shieldText = Inventory.ShieldTier >= 0
 				? $"Bouclier {ItemTierStyle.NameOf(Inventory.ShieldTier)} — {ItemTierStyle.ShieldPoints(Inventory.ShieldTier)} PS"
-				: "Pas de bouclier";
+				: I18n.T("Pas de bouclier");
 			var shieldButton = MakeSlotButton(shieldText, Inventory.ShieldTier >= 0, new Vector2(520, 64), null, () => Inventory.DropShield());
 			if (Inventory.ShieldTier >= 0)
 			{
@@ -488,7 +488,7 @@ namespace Openesport.Inventory
 			_panelContent.AddChild(shieldButton);
 
 			// --- Sac à dos ---
-			string backpack = Inventory.BackpackLevel > 1 ? $"Sac à dos niv. {Inventory.BackpackLevel} ({ItemTierStyle.NameOf(ItemTierStyle.TierOfBackpackLevel(Inventory.BackpackLevel))})" : "Sans sac à dos";
+			string backpack = Inventory.BackpackLevel > 1 ? I18n.T("Sac à dos niv. {0} ({1})", Inventory.BackpackLevel, ItemTierStyle.NameOf(ItemTierStyle.TierOfBackpackLevel(Inventory.BackpackLevel))) : I18n.T("Sans sac à dos");
 			_panelContent.AddChild(MakeLabel($"{backpack} — {Inventory.Items.Count} / {Inventory.Capacity} emplacements",
 				Inventory.BackpackLevel > 1 ? ItemTierStyle.ColorOf(ItemTierStyle.TierOfBackpackLevel(Inventory.BackpackLevel)) : DimTextColor));
 
@@ -518,7 +518,7 @@ namespace Openesport.Inventory
 			}
 
 			_panelContent.AddChild(MakeLabel(
-				"Clic gauche : équiper un viseur, prendre une arme, utiliser un soin  —  Clic droit : jeter  —  Glisser-déposer : un viseur sur une arme pour l'équiper, un objet hors du panneau pour le jeter  —  Tab : fermer",
+				I18n.T("Clic gauche : équiper un viseur, prendre une arme, utiliser un soin  —  Clic droit : jeter  —  Glisser-déposer : un viseur sur une arme pour l'équiper, un objet hors du panneau pour le jeter  —  Tab : fermer"),
 				DimTextColor, 13));
 		}
 	}

@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using Godot;
 using Openesport.Inventory;
 using OpenEsport.Core;
@@ -76,7 +77,7 @@ namespace Openesport.Online
 				DrawString(font, new Vector2(W - 62f, sy + sh - 2f), $"{Mathf.CeilToInt(_shownShield)}", HorizontalAlignment.Left, -1, 17, tc);
 			}
 			else
-				DrawString(font, new Vector2(0, sy + sh - 2f), "Pas de bouclier", HorizontalAlignment.Left, -1, 14, new Color(0.7f, 0.7f, 0.75f));
+				DrawString(font, new Vector2(0, sy + sh - 2f), I18n.T("Pas de bouclier"), HorizontalAlignment.Left, -1, 14, new Color(0.7f, 0.7f, 0.75f));
 
 			// --- vie
 			const float hy = 32f, hh = 20f;
@@ -168,10 +169,10 @@ namespace Openesport.Online
 			DrawRect(new Rect2(x0, y0, w, h), new Color(1, 1, 1, 0.6f), false, 1.5f);
 
 			float total = e.Seconds;
-			DrawString(font, new Vector2(x0, 20f), $"{def?.DisplayName ?? "Soin"}", HorizontalAlignment.Left, -1, 17, Colors.White);
+			DrawString(font, new Vector2(x0, 20f), $"{def?.DisplayName ?? I18n.T("Soin")}", HorizontalAlignment.Left, -1, 17, Colors.White);
 			string left = $"{Mathf.Max(0f, total * (1f - _progress)):F1} s";
 			DrawString(font, new Vector2(x0 + w - 48f, 20f), left, HorizontalAlignment.Left, -1, 17, new Color(1f, 0.95f, 0.6f));
-			DrawString(font, new Vector2(x0, H - 3f), "tirer ou la même touche : annuler", HorizontalAlignment.Left, -1, 11, new Color(0.75f, 0.8f, 0.85f));
+			DrawString(font, new Vector2(x0, H - 3f), I18n.T("tirer ou la même touche : annuler"), HorizontalAlignment.Left, -1, 11, new Color(0.75f, 0.8f, 0.85f));
 		}
 	}
 }

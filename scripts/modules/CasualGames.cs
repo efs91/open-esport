@@ -57,6 +57,12 @@ namespace Openesport.Modules
 			character.Properties["action"] = "open_character_panel";
 			_menuManager.AddElement(character);
 			_menuManager.RegisterActionHandler("open_character_panel", this);
+
+			// Déconnexion : retour à la scène de connexion
+			var logout = new MenuElement(id: 1249797515, name: "MENU_LOGOUT", type: MenuElementType.Button, parentId: 0, poids: 1);
+			logout.Properties["action"] = "logout";
+			_menuManager.AddElement(logout);
+			_menuManager.RegisterActionHandler("logout", this);
 		}
 
 		private void LoadConfiguration()
@@ -111,7 +117,7 @@ namespace Openesport.Modules
 				else if (arg.StartsWith("--name=")) name = arg.Substring(7);
 			}
 			if (Openesport.Online.AccountClient.LoggedIn) name = Openesport.Online.AccountClient.Login;      // le pseudo en jeu est l'identifiant du compte
-			if (string.IsNullOrWhiteSpace(name)) name = "Joueur";
+			if (string.IsNullOrWhiteSpace(name)) name = I18n.T("Joueur");
 
 			// pas de robot local : les autres joueurs viennent du serveur
 			_sceneManager.CurrentScene.GetNodeOrNull("AI_player")?.QueueFree();
@@ -132,8 +138,15 @@ namespace Openesport.Modules
 			if (!IsActive) return;
 		}
 
+		private async void Logout()
+		{
+			await Openesport.Online.AccountClient.LogoutAsync();
+			Main.Instance?.ShowLogin();
+		}
+
 		public override void ExecuteAction(string action)
 		{
+			if (action == "logout") { Logout(); return; }
 			if (action == "open_character_panel")
 			{
 				var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel", ShowStats = true };
@@ -144,7 +157,7 @@ namespace Openesport.Modules
 			if (action == "start_online_game")
 			{
 				// Multijoueur : d'abord le mode de jeu, puis le choix du personnage, puis la partie en ligne
-				var modeScreen = new Openesport.Menus.ModeScreen { Name = "ModeScreen" };
+				var modeScreen = new Openesport.Menus.ModeScreen { Name = "ModeScreen", OnBack = () => _menuManager.Show() };      // « Retour » : le menu principal
 				modeScreen.OnContinue = () =>
 				{
 					var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel" };

@@ -15,30 +15,30 @@ namespace Openesport.Menus
 
 		private static readonly (string Action, string Label)[] Rows =
 		{
-			(InputManager.Actions.MOVE_FORWARD, "Avancer"),
-			(InputManager.Actions.MOVE_BACK, "Reculer"),
-			(InputManager.Actions.MOVE_LEFT, "Aller à gauche"),
-			(InputManager.Actions.MOVE_RIGHT, "Aller à droite"),
-			(InputManager.Actions.JUMP, "Sauter"),
-			(InputManager.Actions.SPRINT, "Courir"),
-			(InputManager.Actions.CROUCH, "S'accroupir / glisser"),
-			(InputManager.Actions.SHOOT, "Tirer"),
-			(InputManager.Actions.AIM, "Viser"),
-			(InputManager.Actions.RELOAD, "Recharger"),
-			(InputManager.Actions.INTERACT, "Interagir / ramasser"),
-			(InputManager.Actions.WEAPON_SLOT_1, "Arme 1"),
-			(InputManager.Actions.WEAPON_SLOT_2, "Arme 2"),
-			(InputManager.Actions.HOLSTER, "Mains nues"),
-			(InputManager.Actions.INVENTORY, "Inventaire"),
-			(InputManager.Actions.USE_HEAL, "Menu des soins (maintenir, souris) ; appui bref : soin de vie"),
-			(InputManager.Actions.USE_SHIELD, "Utiliser un soin (bouclier)"),
-			(InputManager.Actions.USE_BOTH, "Utiliser un soin (bouclier + vie)"),
-			(InputManager.Actions.DROP_SHIELD, "Jeter le bouclier"),
-			(InputManager.Actions.GRENADE_MENU, "Menu des grenades (maintenir, souris)"),
-			(InputManager.Actions.THROW_GRENADE, "Lancer la grenade choisie"),
-			(InputManager.Actions.PING, "Ping : désigner un endroit à l'équipe (Maj : danger)"),
-			(InputManager.Actions.NEXT_GRENADE, "Changer de grenade"),
-			(InputManager.Actions.DROP_BOMB, "Lâcher la bombe (Sabotage)"),
+			(InputManager.Actions.MOVE_FORWARD, /*T*/"Avancer"),
+			(InputManager.Actions.MOVE_BACK, /*T*/"Reculer"),
+			(InputManager.Actions.MOVE_LEFT, /*T*/"Aller à gauche"),
+			(InputManager.Actions.MOVE_RIGHT, /*T*/"Aller à droite"),
+			(InputManager.Actions.JUMP, /*T*/"Sauter"),
+			(InputManager.Actions.SPRINT, /*T*/"Courir"),
+			(InputManager.Actions.CROUCH, /*T*/"S'accroupir / glisser"),
+			(InputManager.Actions.SHOOT, /*T*/"Tirer"),
+			(InputManager.Actions.AIM, /*T*/"Viser"),
+			(InputManager.Actions.RELOAD, /*T*/"Recharger"),
+			(InputManager.Actions.INTERACT, /*T*/"Interagir / ramasser"),
+			(InputManager.Actions.WEAPON_SLOT_1, /*T*/"Arme 1"),
+			(InputManager.Actions.WEAPON_SLOT_2, /*T*/"Arme 2"),
+			(InputManager.Actions.HOLSTER, /*T*/"Mains nues"),
+			(InputManager.Actions.INVENTORY, /*T*/"Inventaire"),
+			(InputManager.Actions.USE_HEAL, /*T*/"Menu des soins (maintenir, souris) ; appui bref : soin de vie"),
+			(InputManager.Actions.USE_SHIELD, /*T*/"Utiliser un soin (bouclier)"),
+			(InputManager.Actions.USE_BOTH, /*T*/"Utiliser un soin (bouclier + vie)"),
+			(InputManager.Actions.DROP_SHIELD, /*T*/"Jeter le bouclier"),
+			(InputManager.Actions.GRENADE_MENU, /*T*/"Menu des grenades (maintenir, souris)"),
+			(InputManager.Actions.THROW_GRENADE, /*T*/"Lancer la grenade choisie"),
+			(InputManager.Actions.PING, /*T*/"Ping : désigner un endroit à l'équipe (Maj : danger)"),
+			(InputManager.Actions.NEXT_GRENADE, /*T*/"Changer de grenade"),
+			(InputManager.Actions.DROP_BOMB, /*T*/"Lâcher la bombe (Sabotage)"),
 		};
 
 		private readonly Dictionary<string, Button> _buttons = new();
@@ -65,14 +65,14 @@ namespace Openesport.Menus
 			column.AddThemeConstantOverride("separation", 6);
 			margin.AddChild(column);
 
-			column.AddChild(new Label { Text = "COMMANDES", HorizontalAlignment = HorizontalAlignment.Center });
+			column.AddChild(new Label { Text = I18n.T("COMMANDES"), HorizontalAlignment = HorizontalAlignment.Center });
 
 			// mode de visée
 			var aimRow = new HBoxContainer();
-			aimRow.AddChild(new Label { Text = "Visée", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+			aimRow.AddChild(new Label { Text = I18n.T("Visée"), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
 			var aim = new OptionButton { CustomMinimumSize = new Vector2(240, 0) };
-			aim.AddItem("Basculer (un clic vise, un clic retire)");
-			aim.AddItem("Maintenir (visée tant que le bouton est tenu)");
+			aim.AddItem(I18n.T("Basculer (un clic vise, un clic retire)"));
+			aim.AddItem(I18n.T("Maintenir (visée tant que le bouton est tenu)"));
 			aim.Select((int)GameSettings.Aim);
 			aim.ItemSelected += i => GameSettings.Aim = (AimMode)i;
 			aimRow.AddChild(aim);
@@ -89,7 +89,7 @@ namespace Openesport.Menus
 			foreach (var (action, label) in Rows)
 			{
 				var row = new HBoxContainer();
-				row.AddChild(new Label { Text = label, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+				row.AddChild(new Label { Text = I18n.T(label), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
 				var button = new Button { CustomMinimumSize = new Vector2(240, 0), Text = CurrentText(action) };
 				string a = action;
 				button.Pressed += () => BeginRebind(a);
@@ -101,9 +101,9 @@ namespace Openesport.Menus
 			column.AddChild(new HSeparator());
 			var bottom = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
 			bottom.AddThemeConstantOverride("separation", 12);
-			var reset = new Button { Text = "Touches par défaut" };
+			var reset = new Button { Text = I18n.T("Touches par défaut") };
 			reset.Pressed += ResetAll;
-			var close = new Button { Text = "Retour" };
+			var close = new Button { Text = I18n.T("Retour") };
 			close.Pressed += Close;
 			bottom.AddChild(reset);
 			bottom.AddChild(close);
@@ -120,7 +120,7 @@ namespace Openesport.Menus
 		{
 			if (_waiting != null) _buttons[_waiting].Text = CurrentText(_waiting);
 			_waiting = action;
-			_buttons[action].Text = "Appuie sur une touche… (Échap : annuler)";
+			_buttons[action].Text = I18n.T("Appuie sur une touche… (Échap : annuler)");
 		}
 
 		public override void _Input(InputEvent e)

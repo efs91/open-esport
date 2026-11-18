@@ -160,7 +160,7 @@ namespace OpenEsport.Accounts
 					if (name == null || !GoodAppearance(c.Appearance)) return Error(400, "Personnage invalide (nom de 1 à 24 caractères).");
 					list.Add((name, c.Appearance));
 				}
-				return store.ReplaceCharacters(acc, list, req?.Selected ?? 0) ? Results.Ok() : Error(409, $"Tu ne peux pas avoir plus de {AccountStore.MaxCharacters} personnages.");
+				return store.ReplaceCharacters(acc, list, req?.Selected ?? 0) ? Results.Ok() : Error(409, "Tu as atteint le nombre maximal de personnages.");
 			});
 
 			app.MapPost("/api/characters", async (HttpContext ctx) =>
@@ -170,7 +170,7 @@ namespace OpenEsport.Accounts
 				string name = CleanName(req?.Name);
 				if (name == null || !GoodAppearance(req.Appearance)) return Error(400, "Personnage invalide (nom de 1 à 24 caractères).");
 				long id = store.AddCharacter(acc, name, req.Appearance);
-				if (id == 0) return Error(409, $"Tu as déjà {AccountStore.MaxCharacters} personnages.");
+				if (id == 0) return Error(409, "Tu as atteint le nombre maximal de personnages.");
 				return Results.Json(new { id }, statusCode: 201);
 			});
 

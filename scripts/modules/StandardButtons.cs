@@ -114,7 +114,7 @@ namespace Openesport.Modules
                                 { ""value"": ""português"", ""label"": ""Português"", ""iconPath"": ""res://assets/flags/português.png"" },
                                 { ""value"": ""nederlands"", ""label"": ""Nederlands"", ""iconPath"": ""res://assets/flags/nederlands.png"" },
                                 { ""value"": ""svenska"", ""label"": ""Svenska"", ""iconPath"": ""res://assets/flags/svenska.png"" },
-                                { ""value"": ""suomi"", ""label"": ""Suomi"", ""iconPath"": ""res://assets/flags/suomi.png"" },
+                                { ""value"": ""suomi"", ""label"": ""Suomi"", ""iconPath"": ""res://assets/flags/Suomi.png"" },
                                 { ""value"": ""dansk"", ""label"": ""Dansk"", ""iconPath"": ""res://assets/flags/dansk.png"" },
                                 { ""value"": ""ελληνικά"", ""label"": ""Ελληνικά"", ""iconPath"": ""res://assets/flags/ελληνικά.png"" },
                                 { ""value"": ""čeština"", ""label"": ""Čeština"", ""iconPath"": ""res://assets/flags/čeština.png"" },
@@ -125,7 +125,7 @@ namespace Openesport.Modules
                                 { ""value"": ""български"", ""label"": ""Български"", ""iconPath"": ""res://assets/flags/български.png"" },
                                 { ""value"": ""hrvatski"", ""label"": ""Hrvatski"", ""iconPath"": ""res://assets/flags/hrvatski.png"" },
                                 { ""value"": ""slovenščina"", ""label"": ""Slovenščina"", ""iconPath"": ""res://assets/flags/slovenščina.png"" },
-                                { ""value"": ""eesti"", ""label"": ""Eesti"", ""iconPath"": ""res://assets/flags/eesti.png"" },
+                                { ""value"": ""eesti"", ""label"": ""Eesti"", ""iconPath"": ""res://assets/flags/Eesti.png"" },
                                 { ""value"": ""latviešu"", ""label"": ""Latviešu"", ""iconPath"": ""res://assets/flags/latviešu.png"" },
                                 { ""value"": ""lietuvių"", ""label"": ""Lietuvių"", ""iconPath"": ""res://assets/flags/lietuvių.png"" }
                             ]

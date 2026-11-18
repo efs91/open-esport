@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using System.Collections.Generic;
 using Godot;
 
@@ -37,7 +38,7 @@ namespace Openesport.Online
 			_ => new Color(0.35f, 0.8f, 1f),        // ici : bleu clair
 		};
 
-		public static string NameOf(byte type) => type switch { 1 => "DANGER", 2 => "ENNEMI", _ => "ICI" };
+		public static string NameOf(byte type) => type switch { 1 => I18n.T("DANGER"), 2 => I18n.T("ENNEMI"), _ => I18n.T("ICI") };
 
 		private sealed class Entry { public Node3D Node, Gem; public Label3D Label; }
 

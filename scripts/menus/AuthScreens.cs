@@ -1,3 +1,4 @@
+using Openesport.Utils;
 using System;
 using Godot;
 using Openesport.Online;
@@ -112,20 +113,20 @@ namespace Openesport.Menus
 		private CheckBox _remember;
 		private bool _resuming;
 
-		protected override string Subtitle => "Connexion";
+		protected override string Subtitle => I18n.T("Connexion");
 
 		protected override void BuildForm()
 		{
-			_login = Field("Identifiant", text: AccountClient.LastLogin);
-			_password = Field("Mot de passe", secret: true);
-			_remember = new CheckBox { Text = "Rester connecté sur cet ordinateur", ButtonPressed = true };
+			_login = Field(I18n.T("Identifiant"), text: AccountClient.LastLogin);
+			_password = Field(I18n.T("Mot de passe"), secret: true);
+			_remember = new CheckBox { Text = I18n.T("Rester connecté sur cet ordinateur"), ButtonPressed = true };
 			Form.AddChild(_remember);
 			Inputs.Add(_remember);
 			_login.TextSubmitted += _ => _password.GrabFocus();
 			_password.TextSubmitted += _ => Submit();
-			Action("Se connecter", Submit, main: true);
-			Action("Pas encore de compte ? Créer un compte", OpenRegister);
-			Action("Quitter", () => GetTree().Quit());
+			Action(I18n.T("Se connecter"), Submit, main: true);
+			Action(I18n.T("Pas encore de compte ? Créer un compte"), OpenRegister);
+			Action(I18n.T("Quitter"), () => GetTree().Quit());
 			CallDeferred(nameof(Start));
 		}
 
@@ -133,7 +134,7 @@ namespace Openesport.Menus
 		{
 			// session mémorisée : on se reconnecte sans rien demander
 			_resuming = true;
-			Busy(true, "Reconnexion…");
+			Busy(true, I18n.T("Reconnexion…"));
 			bool ok = false;
 			try { ok = await AccountClient.ResumeAsync(); } catch (Exception e) { GD.PrintErr("[Compte] reprise de session : " + e.Message); }
 			_resuming = false;
@@ -148,8 +149,8 @@ namespace Openesport.Menus
 		{
 			if (_resuming) return;
 			string login = _login.Text.Trim();
-			if (login.Length == 0 || _password.Text.Length == 0) { Say("Entre ton identifiant et ton mot de passe.", true); return; }
-			Busy(true, "Connexion…");
+			if (login.Length == 0 || _password.Text.Length == 0) { Say(I18n.T("Entre ton identifiant et ton mot de passe."), true); return; }
+			Busy(true, I18n.T("Connexion…"));
 			string error = await AccountClient.LoginAsync(login, _password.Text, _remember.ButtonPressed);
 			if (!IsInstanceValid(this)) return;
 			if (error != null) { Busy(false); _password.Text = ""; Say(error, true); _password.GrabFocus(); return; }
@@ -172,18 +173,18 @@ namespace Openesport.Menus
 		public Action OnBack;
 		private LineEdit _login, _password, _confirm;
 
-		protected override string Subtitle => "Créer un compte";
+		protected override string Subtitle => I18n.T("Créer un compte");
 
 		protected override void BuildForm()
 		{
-			_login = Field("Identifiant (3 à 20 caractères : lettres, chiffres, _ et -)");
-			_password = Field("Mot de passe (8 caractères au moins)", secret: true);
-			_confirm = Field("Confirme le mot de passe", secret: true);
+			_login = Field(I18n.T("Identifiant (3 à 20 caractères : lettres, chiffres, _ et -)"));
+			_password = Field(I18n.T("Mot de passe (8 caractères au moins)"), secret: true);
+			_confirm = Field(I18n.T("Confirme le mot de passe"), secret: true);
 			_login.TextSubmitted += _ => _password.GrabFocus();
 			_password.TextSubmitted += _ => _confirm.GrabFocus();
 			_confirm.TextSubmitted += _ => Submit();
-			Action("Créer le compte", Submit, main: true);
-			Action("Retour à la connexion", Back);
+			Action(I18n.T("Créer le compte"), Submit, main: true);
+			Action(I18n.T("Retour à la connexion"), Back);
 			CallDeferred(nameof(FocusLogin));
 		}
 
@@ -192,10 +193,10 @@ namespace Openesport.Menus
 		private async void Submit()
 		{
 			string login = _login.Text.Trim();
-			if (login.Length < 3) { Say("L'identifiant doit faire au moins 3 caractères.", true); return; }
-			if (_password.Text.Length < 8) { Say("Le mot de passe doit faire au moins 8 caractères.", true); return; }
-			if (_password.Text != _confirm.Text) { Say("Les deux mots de passe ne sont pas identiques.", true); _confirm.GrabFocus(); return; }
-			Busy(true, "Création du compte…");
+			if (login.Length < 3) { Say(I18n.T("L'identifiant doit faire au moins 3 caractères."), true); return; }
+			if (_password.Text.Length < 8) { Say(I18n.T("Le mot de passe doit faire au moins 8 caractères."), true); return; }
+			if (_password.Text != _confirm.Text) { Say(I18n.T("Les deux mots de passe ne sont pas identiques."), true); _confirm.GrabFocus(); return; }
+			Busy(true, I18n.T("Création du compte…"));
 			string error = await AccountClient.RegisterAsync(login, _password.Text);
 			if (!IsInstanceValid(this)) return;
 			if (error != null) { Busy(false); Say(error, true); return; }

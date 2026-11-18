@@ -17,10 +17,19 @@ public partial class MenuManager : Control
     private const int RETURN_BUTTON_WEIGHT = -1; // Poids spécial pour le bouton retour
     /// <summary>Vrai quand le menu est ouvert depuis une partie (Échap) : pas de nouvelle partie, « Quitter » ramène au menu principal.</summary>
     private bool _inGame;
+    /// <summary>Le compte connecté, affiché en haut à droite du menu.</summary>
+    private Label _accountLabel;
 
     public override void _Ready()
     {
         _logManager = GetNode<LogManager>(GlobalPaths.Managers.LOG_MANAGER);
+        _accountLabel = new Label { HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = MouseFilterEnum.Ignore };
+        _accountLabel.AddThemeFontSizeOverride("font_size", 22);
+        _accountLabel.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.9f));
+        _accountLabel.AddThemeConstantOverride("outline_size", 6);
+        _accountLabel.SetAnchorsPreset(LayoutPreset.TopRight);
+        _accountLabel.OffsetLeft = -420; _accountLabel.OffsetRight = -24; _accountLabel.OffsetTop = 18; _accountLabel.OffsetBottom = 52;
+        AddChild(_accountLabel);
         //_logManager.Info("[MenuManager] _Ready appelé");
 
         _gameManager = GetNode<GameManager>(GlobalPaths.Managers.GAME_MANAGER);
@@ -31,6 +40,13 @@ public partial class MenuManager : Control
         //_logManager.Info("[MenuManager] Abonnement au signal GameStateChanged");
 
         //_logManager.Info($"[MenuManager] État initial : Visible={Visible}, ProcessMode={ProcessMode}");
+    }
+
+    public override void _Process(double delta)
+    {
+        // le nom du compte connecté, en haut à droite du menu (visible avec lui)
+        string who = Openesport.Online.AccountClient.LoggedIn ? Openesport.Utils.I18n.T("Connecté : {0}", Openesport.Online.AccountClient.Login) : "";
+        if (_accountLabel != null && _accountLabel.Text != who) _accountLabel.Text = who;
     }
 
     private void OnGameStateChanged(int newState)
@@ -342,7 +358,7 @@ public partial class MenuManager : Control
         {
             elements = elements
                 .Where(e => e.Name != "MENU_QUIT"
-                    && !(e.Properties.TryGetValue("action", out var a) && a is string act && (act.StartsWith("start_") || act == "open_character_panel")))
+                    && !(e.Properties.TryGetValue("action", out var a) && a is string act && (act.StartsWith("start_") || act == "open_character_panel" || act == "logout")))
                 .ToList();
             var resume = new MenuElement(-10, "MENU_RESUME", MenuElementType.Button, 0, 1000);
             resume.Properties["action"] = "resume_game";
@@ -686,6 +702,7 @@ public partial class MenuManager : Control
                         
                         // Recharger les traductions avec la nouvelle langue
                         LocalizationManager.LoadLanguage(Main.language);
+                        LocalizationManager.SavedLanguage = Main.language;      // conservée pour la prochaine fois
                         
                         // Recréer le menu pour mettre à jour les textes
                         DisplaySubMenu(0);

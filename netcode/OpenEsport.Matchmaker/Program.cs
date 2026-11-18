@@ -27,6 +27,7 @@ namespace OpenEsport.Matchmaker
 						case "--port": opt.Port = int.Parse(Next()); break;
 						case "--public-host": opt.PublicHost = Next(); break;
 						case "--probe-host": opt.ProbeHost = Next(); break;
+						case "--network": opt.Network = Next(); break;
 						case "--ports":
 							{ var r = Next().Split('-'); opt.PortFirst = int.Parse(r[0]); opt.PortLast = int.Parse(r[1]); break; }
 						case "--players": opt.Players = int.Parse(Next()); break;
@@ -62,7 +63,7 @@ namespace OpenEsport.Matchmaker
 			IServerLauncher launcher;
 			if (launcherKind == "docker")
 			{
-				var d = new DockerLauncher { Image = image, WorldFile = world, BalanceFile = balance, ZonesFile = opt.ZonesFile, Cpus = cpus, Memory = memory };
+				var d = new DockerLauncher { Image = image, WorldFile = world, BalanceFile = balance, ZonesFile = opt.ZonesFile, Cpus = cpus, Memory = memory, Network = opt.Network };
 				// sans --netcode-dir : on cherche le Dockerfile à partir du dossier courant et de l'exécutable, en remontant les dossiers
 				if (netcodeDir == null)
 				{
@@ -142,6 +143,7 @@ Options :
   --balance FICHIER     réglages du jeu (balance.json) montés dans chaque conteneur
   --zones NOM           zones du battle royale : apex (par défaut) ou fortnite
   --zones-file FICHIER  zones créées avec le panneau Godot (data/zones/*.json), montées dans chaque conteneur (prioritaire sur --zones)
+  --network NOM         réseau Docker du matchmaking : les serveurs de partie le rejoignent et sont sondés par leur nom (fiable) au lieu des ports publiés
   --cpus N --memory M   limites de chaque conteneur (2 / 1g)
   --netcode-dir DOSSIER construit l'image si elle n'existe pas (dossier contenant le Dockerfile)
   --no-build            ne construit jamais l'image

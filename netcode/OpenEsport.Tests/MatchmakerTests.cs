@@ -166,7 +166,10 @@ namespace OpenEsport.Tests
 			Assert.Equal("open-esport-trio-27105", args[args.IndexOf("--name") + 1]);      // un nom explicite, jamais anonyme
 			Assert.Contains("27105:27105/udp", args);
 			Assert.Contains("open-esport=1", args);
-			Assert.Contains("--rm", args);
+			Assert.DoesNotContain("--rm", args);      // le conteneur reste jusqu'à ce que le matchmaking le retire : on peut lire ses logs s'il plante
+			var lNet = new DockerLauncher { Image = "open-esport-server:latest", Network = "open-esport" };
+			var netArgs = lNet.BuildRunArgs(new ServerSpec { Name = "open-esport-trio-27105", Port = 27105, TeamSize = 3, Players = 30, MinPlayers = 1, LobbyCountdown = 5, IdleExitSeconds = 120 });
+			Assert.Equal("open-esport", netArgs[netArgs.IndexOf("--network") + 1]);
 			Assert.Equal("br", args[args.IndexOf("--mode") + 1]); Assert.Contains("--exit-when-over", args);
 			Assert.Contains("/data/frontiere01.world", args);
 			// un autre mode : sa carte, son nom

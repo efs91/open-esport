@@ -17,8 +17,8 @@ services:
     command:
       - --public-host
       - ${PUBLIC_HOST:?PUBLIC_HOST - adresse ou IP publique du serveur}
-      - --probe-host
-      - 127.0.0.1                       # réseau de la machine (network_mode: host) : les serveurs de partie sont joignables en local
+      - --network
+      - open-esport                     # les serveurs de partie rejoignent ce réseau et sont sondés par leur nom de conteneur (pas de traduction d'adresses de Docker)
       - --port
       - "27000"
       - --ports
@@ -42,12 +42,18 @@ services:
       - --admin-port
       - "27080"
       - --admin-bind
-      - 127.0.0.1                       # tableau de bord : local à la machine seulement (tunnel SSH ou proxy HTTPS pour y accéder)
+      - 0.0.0.0                         # dans le conteneur ; côté machine, le port n'est publié que sur 127.0.0.1 (voir ports)
     environment:
       OE_ADMIN_TOKEN: ${OE_ADMIN_TOKEN:-}
-    network_mode: host                  # écoute directement UDP 27000 ; évite le passage par la passerelle Docker pour sonder les serveurs de partie
+    ports:
+      - "27000:27000/udp"               # demandes des joueurs
+      - "127.0.0.1:27080:27080/tcp"     # tableau de bord : tunnel SSH ou proxy HTTPS pour y accéder
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - .:/netcode:ro                   # le code du serveur de partie (Dockerfile + sources) : le matchmaker reconstruit l'image avec
       - ${MAPS_DIR:-/opt/open-esport/maps}:${MAPS_DIR:-/opt/open-esport/maps}:ro
       - ${CONFIG_DIR:-/opt/open-esport/config}:${CONFIG_DIR:-/opt/open-esport/config}:ro
+
+networks:
+  default:
+    name: open-esport

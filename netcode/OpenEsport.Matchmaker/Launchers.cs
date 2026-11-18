@@ -45,16 +45,19 @@ namespace OpenEsport.Matchmaker
 		/// <summary>Réglage de zones (fichier .json sur la machine hôte) monté dans le conteneur ; sinon le préréglage nommé dans <see cref="ServerSpec.Zones"/>.</summary>
 		public string ZonesFile;
 		public string Cpus = "2", Memory = "1g";
+		/// <summary>Réseau Docker à rejoindre (voir <see cref="MatchmakerOptions.Network"/>) ; vide = réseau par défaut.</summary>
+		public string Network;
 		public string DockerCommand = "docker";
 		public Action<string> Log = s => Console.WriteLine(s);
 
 		/// <summary>Arguments de « docker run » pour un serveur (public pour pouvoir les vérifier sans Docker).</summary>
 		public List<string> BuildRunArgs(ServerSpec s)
 		{
-			var args = new List<string> { "run", "-d", "--rm", "--name", s.Name,
+			var args = new List<string> { "run", "-d", "--name", s.Name,       // sans --rm : un serveur qui plante garde ses logs et son code de sortie jusqu'à ce que le matchmaking le retire (voir Diagnose)
 				"--label", "open-esport=1", "--label", "open-esport.mode=" + Modes.Name(s.Mode, s.TeamSize), "--label", "open-esport.port=" + s.Port,
 				"--cpus", Cpus, "--memory", Memory, "--restart", "no",
 				"-p", $"{s.Port}:{s.Port}/udp" };
+			if (!string.IsNullOrEmpty(Network)) { args.Add("--network"); args.Add(Network); }
 			string world = null;
 			if (!string.IsNullOrEmpty(WorldFile))
 			{
@@ -82,6 +85,15 @@ namespace OpenEsport.Matchmaker
 		}
 
 		public void Stop(string name) { Run(new List<string> { "rm", "-f", name }); }
+
+		/// <summary>État du conteneur et fin de ses logs : pour comprendre pourquoi un serveur n'a pas démarré ou s'est arrêté.</summary>
+		public string Diagnose(string name)
+		{
+			var (c1, state) = Run(new List<string> { "inspect", "-f", "{{.State.Status}} code={{.State.ExitCode}} oom={{.State.OOMKilled}}", name });
+			if (c1 != 0) return "conteneur introuvable";
+			var (_, logs) = Run(new List<string> { "logs", "--tail", "15", name });
+			return state.Trim() + (string.IsNullOrWhiteSpace(logs) ? "  (aucun log)" : Environment.NewLine + logs.TrimEnd());
+		}
 
 		public void CleanupLeftovers()
 		{

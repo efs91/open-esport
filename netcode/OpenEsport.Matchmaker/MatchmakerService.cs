@@ -17,6 +17,8 @@ namespace OpenEsport.Matchmaker
 		public string PublicHost = "127.0.0.1";
 		/// <summary>Adresse à laquelle le service interroge ses serveurs (par défaut la même ; « host.docker.internal » si le service tourne lui-même dans Docker).</summary>
 		public string ProbeHost;
+		/// <summary>Réseau Docker commun au matchmaking et aux serveurs de partie : les serveurs y sont sondés par leur nom de conteneur, sans passer par les ports publiés de la machine (traduction d'adresses de Docker, peu fiable en UDP).</summary>
+		public string Network;
 		/// <summary>Ports UDP des serveurs de partie (un par partie en cours ou en attente).</summary>
 		public int PortFirst = 27100, PortLast = 27199;
 		/// <summary>Joueurs par partie (humains + bots) et humains nécessaires pour la lancer.</summary>
@@ -54,6 +56,8 @@ namespace OpenEsport.Matchmaker
 		/// <summary>Démarre le serveur (retourne dès que la commande de lancement est acceptée).</summary>
 		void Launch(ServerSpec spec);
 		void Stop(string name);
+		/// <summary>Texte de diagnostic (état, code de sortie, logs) d'un serveur qu'on va retirer ; null si le lanceur n'en fournit pas.</summary>
+		string Diagnose(string name) => null;
 		/// <summary>Supprime les serveurs restés d'une exécution précédente.</summary>
 		void CleanupLeftovers();
 	}
@@ -153,7 +157,7 @@ namespace OpenEsport.Matchmaker
 			{
 				try
 				{
-					var ep = NetUtils.MakeEndPoint(_opt.ProbeHostOrPublic, s.Spec.Port);
+					var ep = NetUtils.MakeEndPoint(string.IsNullOrEmpty(_opt.Network) ? _opt.ProbeHostOrPublic : s.Spec.Name, s.Spec.Port);
 					_net.SendUnconnectedMessage(status, 0, status.Length, ep);
 					_net.SendUnconnectedMessage(telemetry, 0, telemetry.Length, ep);
 				}
@@ -164,6 +168,7 @@ namespace OpenEsport.Matchmaker
 				if (dead)
 				{
 					Log($"Serveur {s.Spec.Name} {(s.Ready ? "ne répond plus" : "n'a pas démarré")} : retiré");
+					try { var why = _launcher.Diagnose(s.Spec.Name); if (!string.IsNullOrEmpty(why)) Log($"  diagnostic {s.Spec.Name} : {why}"); } catch { }
 					try { _launcher.Stop(s.Spec.Name); } catch { }
 					lock (_servers) _servers.Remove(s);
 				}

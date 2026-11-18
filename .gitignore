@@ -35,3 +35,6 @@ tools/meshy/raw/
 
 # Python
 __pycache__/
+
+# exports du jeu (lourds, générés)
+builds/

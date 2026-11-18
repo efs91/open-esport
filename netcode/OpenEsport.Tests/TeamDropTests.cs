@@ -54,6 +54,23 @@ namespace OpenEsport.Tests
 		}
 
 		[Fact]
+		public void The_Team_Lines_Up_Side_By_Side_Even_If_The_Leader_Looks_Backwards()
+		{
+			using var rig = Make(2, 2);
+			var team = Join(rig, 2);
+			rig.Run(8.2);
+			var lead = Leader(rig, team); var other = team.First(b => b != lead);
+			lead.Yaw = 2.5f;                                    // il regarde de côté / derrière au moment du saut
+			lead.Buttons = Buttons.Jump; rig.Run(0.4); lead.Buttons = Buttons.None;
+			var sl = rig.Server.GetPlayer(lead.C.PlayerId).State; var so = rig.Server.GetPlayer(other.C.PlayerId).State;
+			float hs = MathF.Sqrt(sl.Vel.X * sl.Vel.X + sl.Vel.Z * sl.Vel.Z);
+			Assert.True(hs > 1f, "le chef avance");
+			float dx = so.Pos.X - sl.Pos.X, dz = so.Pos.Z - sl.Pos.Z;
+			float along = MathF.Abs((dx * sl.Vel.X + dz * sl.Vel.Z) / hs), across = MathF.Abs((-dx * sl.Vel.Z + dz * sl.Vel.X) / hs);
+			Assert.True(across > 2f && along < 1f, $"côte à côte : devant/derrière {along:0.0} m, côté {across:0.0} m");
+		}
+
+		[Fact]
 		public void Tab_Passes_The_Lead_To_The_Next_Human()
 		{
 			using var rig = Make(2, 2);

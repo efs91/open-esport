@@ -558,7 +558,7 @@ namespace OpenEsport.Server
 			{
 				var sites = Points(MapPointKind.BombSite).OrderBy(pt => pt.Index).ToList();
 				for (int i = 0; i < 2; i++) _sites[i] = i < sites.Count ? sites[i] : (sites.Count > 0 ? sites[0] : default);
-				Score[0] = Score[1] = 0; _round = 0; _swapped = 0; _lossStreak[0] = _lossStreak[1] = 0;
+				Score[0] = Score[1] = 0; _round = 0; _swapped = S._opt.RandomSides ? Random.Shared.Next(2) : 0; _lossStreak[0] = _lossStreak[1] = 0;
 				foreach (var p in Players) { p.Money = (int)GameBalance.F("sabotage.startMoney"); p.HasKit = false; p.DiedThisRound = true; }
 				StartRound();
 			}

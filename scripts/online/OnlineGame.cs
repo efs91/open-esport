@@ -635,7 +635,7 @@ namespace Openesport.Online
 		private bool _loading = true;
 		private double _joinedAt = -1;
 		private Vec3 _flightFrom, _flightTo;
-		private bool _flightKnown;
+		private bool _flightKnown, _planeFaced;
 		private RemotePlayer _selfBody;
 		private float _camBack;
 		private StaticWorld _worldCollision;
@@ -656,6 +656,15 @@ namespace Openesport.Online
 			if (_loading && _weapons.WarmUpDone && now - _joinedAt > 0.8) _loading = false;
 
 			if (plane) { _flightFrom = st.PlaneFrom; _flightTo = st.PlaneTo; _flightKnown = true; }
+			// à l'arrivée dans l'avion, on regarde dans le sens du vol : vers la carte
+			if (plane && !_planeFaced && (st.PlaneTo.X != st.PlaneFrom.X || st.PlaneTo.Z != st.PlaneFrom.Z))
+			{
+				_planeFaced = true;
+				float yaw = Mathf.Atan2(-(st.PlaneTo.X - st.PlaneFrom.X), -(st.PlaneTo.Z - st.PlaneFrom.Z));
+				_player.GlobalRotation = new Vector3(0f, yaw, 0f);
+				_head.Rotation = new Vector3(0f, _head.Rotation.Y, _head.Rotation.Z);
+			}
+			else if (!plane) _planeFaced = false;
 			bool showPath = _flightKnown && (plane || dive);
 			_hud.SetFlightPath(new Vector3(_flightFrom.X, _flightFrom.Y, _flightFrom.Z), new Vector3(_flightTo.X, _flightTo.Y, _flightTo.Z), showPath);
 

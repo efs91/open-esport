@@ -26,6 +26,8 @@ namespace OpenEsport.Server
 		public bool StartingLoadout;
 		/// <summary>Complète les parties non pleines avec des bots.</summary>
 		public bool FillBots;
+		/// <summary>Sabotage : le camp de départ (attaquants ou défenseurs) est tiré au hasard à chaque partie ; sinon l'équipe 0 attaque d'abord (tests).</summary>
+		public bool RandomSides;
 		/// <summary>Nombre de joueurs visé en comptant les bots (0 = partie pleine).</summary>
 		public int BotFillTarget;
 		/// <summary>Nombre maximal de bots présents en même temps (-1 = sans limite, 0 = aucun).</summary>

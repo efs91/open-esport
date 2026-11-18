@@ -383,7 +383,9 @@ namespace OpenEsport.Server
 				int rank = 0;
 				foreach (var q in _players) { if (q == p) break; if (q.Team == p.Team && q != lead && InAir(q)) rank++; }
 				float side = ((rank / 2) + 1) * 3f * (rank % 2 == 0 ? 1f : -1f);
-				var right = new Vec3(MathF.Cos(inp.Yaw), 0f, -MathF.Sin(inp.Yaw));
+				// la ligne est perpendiculaire à la trajectoire du chef (sa vitesse), pas à sa caméra : s'il regarde derrière ou de côté, l'équipe reste côte à côte
+				var lv = lead.State.Vel; float hs = MathF.Sqrt(lv.X * lv.X + lv.Z * lv.Z);
+				var right = hs > 1f ? new Vec3(-lv.Z / hs, 0f, lv.X / hs) : new Vec3(MathF.Cos(inp.Yaw), 0f, -MathF.Sin(inp.Yaw));
 				var pos = lead.State.Pos + right * side;
 				if (_world.HeightAt(pos.X, pos.Z) < lead.State.Pos.Y - 1f) { p.State.Pos = pos; p.State.Vel = lead.State.Vel; }
 			}

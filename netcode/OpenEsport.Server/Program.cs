@@ -49,7 +49,7 @@ namespace OpenEsport.Server
 
 		public static int Main(string[] args)
 		{
-			var opt = new ServerOptions { Dropship = true, Royale = true, FillBots = true };       // en vrai, on arrive en avion ; les tests créent leurs options eux-mêmes (sans avion)
+			var opt = new ServerOptions { Dropship = true, Royale = true, FillBots = true, RandomSides = true };       // en vrai, on arrive en avion ; les tests créent leurs options eux-mêmes (sans avion)
 			string balancePath = null;
 			try
 			{

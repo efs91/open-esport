@@ -12,29 +12,21 @@ The project is designed to be **compatible with modern deployment environments**
 This solution is intended for developers, tournament organizers, open source communities, and anyone wishing to create, manage, and evolve a free, transparent, and sovereign esport platform.
 
 ## Current Project Status
-The project is currently in its initial development phase with the following features:
-- Functional main menu
-- Casual Game module: loads a character into a map
-- Character module: complete movement system
-- Basic shooting system with animation and sound
-- Footsteps system
-- Character model: capsule with arms
+The game is playable online with an authoritative dedicated server:
+- **6 game modes**: Battle Royale (plane drop, shrinking zone, loot), Deathmatch, Team Deathmatch, Capture the Flag, Sabotage (rounds, economy, shop, bomb) and Control
+- **Online play**: 2 to 100 players, teams of 2 to 5, bots filling empty slots, matchmaking that launches one Docker game server per match
+- **Accounts**: registration/login, up to 12 characters per account, overall and per-mode rankings with ratings and statistics (profile page)
+- **Combat**: Apex Legends-inspired weapons, shields, healing, grenades, optics, backpacks, downed/revive system in teams
+- **Bots**: cover and peek-and-hide behaviour, team orders through pings (attack / defend), loot sharing with human teammates
+- **Character creator** (body, face, clothes) and 24 languages, all texts translated
 
 ## Features
-- Dynamic and modular menu system
-- Advanced user input management
-- Flexible scene system
-- Modular and extensible architecture
-- Centralized logging system
-- Character system based on abilities:
-  - Walking
-  - Running
-  - Jumping
-  - Crouching
-  - Flying
-  - Swimming
-  - Air control
-  - Slope handling
+- Modular menu system and flexible scenes
+- Authoritative .NET server (LiteNetLib) with client-side prediction and interpolation
+- Matchmaker and accounts services, deployable with Docker Compose (see [netcode/README.md](netcode/README.md))
+- Tunable balance: weapons, grenades and modes in `netcode/balance.json`
+- Ability-based character controller (walking, running, jumping, crouching, sliding, swimming, air control, slopes)
+- Centralized logging and an automated test suite for the netcode (`netcode/OpenEsport.Tests`)
 
 ## Technologies Used
 - Godot Engine
@@ -54,6 +46,9 @@ open-esport-2025/
 │   ├── structures/           # Data structures
 │   ├── ui/                   # User interface components
 │   └── utils/                # Utilities
+├── netcode/                  # Dedicated server, matchmaker, accounts service, tests (.NET 8)
+├── localization/             # Translations (one .lang file per language)
+├── maps/                     # Map data
 ├── scenes/                   # Godot scenes
 ├── assets/                   # Assets (images, sounds, etc.)
 ├── configuration/            # Configuration files
@@ -80,8 +75,9 @@ The project follows a modular architecture with:
   - Slope handling
 
 ## Prerequisites
-- Godot Engine
-- .NET SDK
+- Godot Engine 4.7 (.NET / Mono edition)
+- .NET SDK 8
+- Docker (to host the servers)
 - Visual Studio or VS Code (recommended)
 
 ## Installation
@@ -93,8 +89,13 @@ git clone https://github.com/your-username/open-esport-2025.git
 3. Ensure that all addons are correctly installed
 
 ## Release
-Latest release (v0.2) for Windows 64-bit:
-- [Download](https://antisys.fr/Games/openesport2025/Open-eSport-2025-v0.2.7z)
+Latest release (v0.3) for Windows 64-bit:
+- [Download](https://github.com/efs91/open-esport-2025/releases/latest) — unzip, then run `open-esport-2025.exe`
+
+The client connects to the public server set in `data/network.cfg` (`host` / `port`).
+
+## Hosting your own server
+The server, matchmaker and accounts service run with Docker Compose from the `netcode/` folder. See [netcode/README.md](netcode/README.md).
 
 ## Contribution
 Contributions are welcome! Please follow these steps:

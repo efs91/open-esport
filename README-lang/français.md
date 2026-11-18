@@ -12,29 +12,21 @@ Le projet est conçu pour être **compatible avec les environnements de déploie
 Cette solution est destinée aux développeurs, aux organisateurs de tournois, aux communautés open source et à tous ceux qui souhaitent créer, gérer et faire évoluer une plateforme esport gratuite, transparente et souveraine.
 
 ## État actuel du projet
-Le projet est actuellement dans sa phase initiale de développement avec les fonctionnalités suivantes :
-- Menu principal fonctionnel
-- Module de jeu occasionnel : charge un personnage dans une carte
-- Module de personnage : système de mouvement complet
-- Système de tir basique avec animation et son
-- Système de pas
-- Modèle de personnage : capsule avec bras
+Le jeu est jouable en ligne avec un serveur dédié qui fait autorité :
+- **6 modes de jeu** : Battle Royale (saut d'avion, zone qui se réduit, butin), Deathmatch, Team Deathmatch, Capture du drapeau, Sabotage (manches, économie, boutique, bombe) et Contrôle
+- **Jeu en ligne** : de 2 à 100 joueurs, équipes de 2 à 5, bots pour compléter les places, matchmaking qui lance un serveur de jeu Docker par partie
+- **Comptes** : inscription/connexion, jusqu'à 12 personnages par compte, classements général et par mode avec points et statistiques (page profil)
+- **Combat** : armes inspirées d'Apex Legends, boucliers, soins, grenades, optiques, sacs à dos, système à terre/réanimation en équipe
+- **Bots** : abris et tirs en alternance avec mise à couvert, ordres d'équipe par pings (attaque / défense), partage du butin avec les coéquipiers humains
+- **Créateur de personnage** et 24 langues, tous les textes sont traduits
 
 ## Fonctionnalités
-- Système de menu dynamique et modulaire
-- Gestion avancée des entrées utilisateur
-- Système de scène flexible
-- Architecture modulaire et extensible
-- Système de journalisation centralisé
-- Système de personnage basé sur des capacités :
-  - Marche
-  - Course
-  - Saut
-  - Accroupissement
-  - Vol
-  - Nage
-  - Contrôle aérien
-  - Gestion des pentes
+- Système de menus modulaire et scènes flexibles
+- Serveur .NET qui fait autorité (LiteNetLib), avec prédiction et interpolation côté client
+- Services de matchmaking et de comptes, déployables avec Docker Compose (voir [netcode/README.md](../netcode/README.md))
+- Équilibrage réglable : armes, grenades et modes dans `netcode/balance.json`
+- Contrôleur de personnage par capacités (marche, course, saut, accroupi, glissade, nage, contrôle en l'air, pentes)
+- Journalisation centralisée et suite de tests automatisés du netcode (`netcode/OpenEsport.Tests`)
 
 ## Technologies utilisées
 - Moteur Godot
@@ -54,6 +46,9 @@ open-esport-2025/
 │   ├── structures/           # Structures de données
 │   ├── ui/                   # Composants d'interface utilisateur
 │   └── utils/                # Utilitaires
+├── netcode/                  # Serveur dédié, matchmaker, service de comptes, tests (.NET 8)
+├── localization/             # Traductions (un fichier .lang par langue)
+├── maps/                     # Données des cartes
 ├── scenes/                   # Scènes Godot
 ├── assets/                   # Ressources (images, sons, etc.)
 ├── configuration/            # Fichiers de configuration
@@ -93,8 +88,13 @@ git clone https://github.com/your-username/open-esport-2025.git
 3. Assurez-vous que tous les addons sont correctement installés
 
 ## Version
-Dernière version (v0.2) pour Windows 64-bit :
-- [Télécharger](https://antisys.fr/Games/openesport2025/Open-eSport-2025-v0.2.7z)
+Dernière version (v0.3) pour Windows 64 bits :
+- [Télécharger](https://github.com/efs91/open-esport-2025/releases/latest) — dézipper puis lancer `open-esport-2025.exe`
+
+Le client se connecte au serveur public défini dans `data/network.cfg` (`host` / `port`).
+
+## Héberger son propre serveur
+Le serveur, le matchmaker et le service de comptes tournent avec Docker Compose depuis le dossier `netcode/`. Voir [netcode/README.md](../netcode/README.md).
 
 ## Contribution
 Les contributions sont les bienvenues ! Veuillez suivre ces étapes :

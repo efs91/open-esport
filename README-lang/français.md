@@ -88,8 +88,8 @@ git clone https://github.com/efs91/open-esport.git
 3. Assurez-vous que tous les addons sont correctement installés
 
 ## Version
-Dernière version (v0.3) pour Windows 64 bits :
-- [Télécharger](https://github.com/efs91/open-esport/releases/latest) — dézipper puis lancer `open-esport.exe`
+Dernière version (v0.3) pour Windows 64 bits et Linux x86_64 :
+- [Télécharger](https://github.com/efs91/open-esport/releases/latest) — Windows : dézipper et lancer `open-esport.exe` ; Linux : `tar xzf open-esport-linux-v0.3.tar.gz` puis `./open-esport.x86_64`
 
 Le client se connecte au serveur public défini dans `data/network.cfg` (`host` / `port`).
 

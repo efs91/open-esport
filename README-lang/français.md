@@ -39,7 +39,7 @@ Le jeu est jouable en ligne avec un serveur dédié qui fait autorité :
 
 ## Structure du projet
 ```
-open-esport-2025/
+open-esport/
 ├── scripts/                  # Code source
 │   ├── managers/             # Gestionnaires globaux
 │   ├── modules/              # Modules fonctionnels
@@ -82,14 +82,14 @@ Le projet suit une architecture modulaire avec :
 ## Installation
 1. Clonez le dépôt :
 ```bash
-git clone https://github.com/your-username/open-esport-2025.git
+git clone https://github.com/efs91/open-esport.git
 ```
 2. Ouvrez le projet dans le moteur Godot
 3. Assurez-vous que tous les addons sont correctement installés
 
 ## Version
 Dernière version (v0.3) pour Windows 64 bits :
-- [Télécharger](https://github.com/efs91/open-esport-2025/releases/latest) — dézipper puis lancer `open-esport.exe`
+- [Télécharger](https://github.com/efs91/open-esport/releases/latest) — dézipper puis lancer `open-esport.exe`
 
 Le client se connecte au serveur public défini dans `data/network.cfg` (`host` / `port`).
 

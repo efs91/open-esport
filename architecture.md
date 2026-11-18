@@ -54,8 +54,8 @@
 - `default_bus_layout.tres` : Configuration audio
 
 #### Fichiers de Projet
-- `open-esport-2025.sln` : Solution Visual Studio
-- `open-esport-2025.csproj` : Projet C#
+- `open-esport.sln` : Solution Visual Studio
+- `open-esport.csproj` : Projet C#
 - `.editorconfig` : Configuration de l'éditeur
 - `.gitattributes` : Attributs Git
 - `.gitignore` : Fichiers ignorés par Git

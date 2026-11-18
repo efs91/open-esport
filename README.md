@@ -39,7 +39,7 @@ The game is playable online with an authoritative dedicated server:
 
 ## Project Structure
 ```
-open-esport-2025/
+open-esport/
 ├── scripts/                  # Source code
 │   ├── managers/             # Global managers
 │   ├── modules/              # Functional modules
@@ -83,14 +83,14 @@ The project follows a modular architecture with:
 ## Installation
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/open-esport-2025.git
+git clone https://github.com/efs91/open-esport.git
 ```
 2. Open the project in Godot Engine
 3. Ensure that all addons are correctly installed
 
 ## Release
 Latest release (v0.3) for Windows 64-bit:
-- [Download](https://github.com/efs91/open-esport-2025/releases/latest) — unzip, then run `open-esport.exe`
+- [Download](https://github.com/efs91/open-esport/releases/latest) — unzip, then run `open-esport.exe`
 
 The client connects to the public server set in `data/network.cfg` (`host` / `port`).
 

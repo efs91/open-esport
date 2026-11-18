@@ -55,7 +55,7 @@ namespace Openesport.Menus
 				Texture = GD.Load<Texture2D>("res://assets/textures/logo/logo_294x155.png"),
 				CustomMinimumSize = new Vector2(0, 120), ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
 			});
-			var title = new Label { Text = "Open Esport 2025", HorizontalAlignment = HorizontalAlignment.Center };
+			var title = new Label { Text = "Open Esport", HorizontalAlignment = HorizontalAlignment.Center };
 			title.AddThemeFontSizeOverride("font_size", 64);
 			Form.AddChild(title);
 			var sub = new Label { Text = Subtitle, HorizontalAlignment = HorizontalAlignment.Center };

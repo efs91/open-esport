@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "open-esport-2025", "open-esport-2025.csproj", "{AABF9B0C-F839-4EA4-888E-885448B28594}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "open-esport", "open-esport.csproj", "{AABF9B0C-F839-4EA4-888E-885448B28594}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

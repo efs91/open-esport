@@ -57,7 +57,7 @@ stretch_mode = 5
 [node name="Title" type="Label" parent="UI/MenuManager/MenuCenterContainer/MenuVBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
-text = "Open Esport 2025"
+text = "Open Esport"
 horizontal_alignment = 1
 
 [node name="ButtonsContainer" type="VBoxContainer" parent="UI/MenuManager/MenuCenterContainer/MenuVBoxContainer"]

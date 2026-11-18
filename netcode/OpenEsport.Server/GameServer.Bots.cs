@@ -142,7 +142,7 @@ namespace OpenEsport.Server
 
 			int n = _botNameCounter++;
 			string name = "BOT " + BotNames[n % BotNames.Length] + (n >= BotNames.Length ? " " + (n / BotNames.Length + 1) : "");
-			var bot = new ServerPlayer { Id = (ushort)slot, Name = name, Team = (byte)JoinTeam(), IsBot = true };
+			var bot = new ServerPlayer { Id = (ushort)slot, Name = name, Team = (byte)JoinTeam(0, bot: true), IsBot = true };
 			bot.State = PlayerMovement.Spawn(Modal ? ModalSpawn(bot) : PickSpawn(), _world);
 			bot.Appearance = RandomAppearance(7919 * (slot + 1) + n);
 			bot.Brain = new BotBrain(7919 * (slot + 1) + n, _opt.BotSkill);

@@ -18,6 +18,9 @@ services:
     restart: unless-stopped
     environment:
       OE_ACCOUNTS_KEY: ${ACCOUNTS_KEY:?ACCOUNTS_KEY - clé secrète partagée avec le matchmaking (openssl rand -hex 24)}
+      # tournois : clé API de ManageComp (facultatif ; sans elle, la liste des tournois reste vide)
+      MANAGECOMP_API_KEY: ${MANAGECOMP_API_KEY:-}
+      MANAGECOMP_URL: ${MANAGECOMP_URL:-https://api.managecomp.org}
     ports:
       - "${ACCOUNTS_PORT:-27090}:27090/tcp"
     volumes:

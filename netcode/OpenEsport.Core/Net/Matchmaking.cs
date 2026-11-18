@@ -24,8 +24,8 @@ namespace OpenEsport.Core
 
 		public static string BuildRequest(int teamSize) => BuildRequest(GameMode.BattleRoyale, teamSize);
 
-		/// <summary>Demande de partie : <c>MM?|version|taille d'équipe|mode</c> (le mode est l'identifiant court : br, dm, tdm, ctf, sab, ctl).</summary>
-		public static string BuildRequest(GameMode mode, int teamSize) => $"{RequestTag}|{Protocol.Version}|{teamSize}|{Modes.Get(mode).Key}";
+		/// <summary>Demande de partie : <c>MM?|version|taille d'équipe|mode|membres du groupe</c> (le mode est l'identifiant court : br, dm, tdm, ctf, sab, ctl).</summary>
+		public static string BuildRequest(GameMode mode, int teamSize, int party = 1, string tournament = null) => $"{RequestTag}|{Protocol.Version}|{teamSize}|{Modes.Get(mode).Key}|{party}" + (string.IsNullOrEmpty(tournament) ? "" : "|T" + tournament);
 	}
 
 	public enum MatchmakingState { Idle, Searching, Found, Failed }
@@ -36,7 +36,8 @@ namespace OpenEsport.Core
 		private readonly EventBasedNetListener _listener = new EventBasedNetListener();
 		private readonly NetManager _net;
 		private IPEndPoint _target;
-		private int _teamSize;
+		private int _teamSize, _party = 1;
+		private string _tournament;
 		private GameMode _mode = GameMode.BattleRoyale;
 		private double _nextSend, _startedAt;
 		private readonly System.Diagnostics.Stopwatch _clock = System.Diagnostics.Stopwatch.StartNew();
@@ -59,8 +60,9 @@ namespace OpenEsport.Core
 
 		public void Start(string host, int port, int teamSize) => Start(host, port, GameMode.BattleRoyale, teamSize);
 
-		public void Start(string host, int port, GameMode mode, int teamSize)
+		public void Start(string host, int port, GameMode mode, int teamSize, int party = 1, string tournament = null)
 		{
+			_party = Math.Max(1, party); _tournament = tournament;
 			_mode = mode;
 			_teamSize = teamSize;
 			try { _target = NetUtils.MakeEndPoint(host, port); }
@@ -83,7 +85,7 @@ namespace OpenEsport.Core
 			if (now >= _nextSend)
 			{
 				_nextSend = now + 1.0;
-				var bytes = Encoding.UTF8.GetBytes(Matchmaking.BuildRequest(_mode, _teamSize));
+				var bytes = Encoding.UTF8.GetBytes(Matchmaking.BuildRequest(_mode, _teamSize, _party, _tournament));
 				_net.SendUnconnectedMessage(bytes, 0, bytes.Length, _target);
 			}
 		}

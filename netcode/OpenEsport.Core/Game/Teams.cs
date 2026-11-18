@@ -45,17 +45,38 @@ namespace OpenEsport.Core
 
 		public int TeamCount => _counts.Count;
 
-		public int Join()
+		private readonly HashSet<int> _reserved = new HashSet<int>();
+
+		/// <summary>Première équipe avec de la place, sinon une nouvelle. Les équipes réservées à un groupe ne reçoivent que des bots (<paramref name="allowReserved"/>) ou les membres du groupe.</summary>
+		public int Join(bool allowReserved = false)
 		{
 			for (int t = 0; t < _counts.Count; t++)
-				if (_counts[t] < _teamSize) { _counts[t]++; return t; }
+				if (_counts[t] < _teamSize && (allowReserved || !_reserved.Contains(t))) { _counts[t]++; return t; }
 			_counts.Add(1);
 			return _counts.Count - 1;
 		}
 
+		/// <summary>Ouvre une équipe pour un groupe : elle est vide, et les autres joueurs seuls n'y entrent pas.</summary>
+		public int JoinReserved()
+		{
+			for (int t = 0; t < _counts.Count; t++)
+				if (_counts[t] == 0 && !_reserved.Contains(t)) { _counts[t] = 1; _reserved.Add(t); return t; }
+			_counts.Add(1);
+			_reserved.Add(_counts.Count - 1);
+			return _counts.Count - 1;
+		}
+
+		/// <summary>Un membre du groupe rejoint l'équipe du groupe, s'il y reste de la place.</summary>
+		public bool JoinTeam(int team)
+		{
+			if (team < 0 || team >= _counts.Count || _counts[team] >= _teamSize) return false;
+			_counts[team]++;
+			return true;
+		}
+
 		public void Leave(int team)
 		{
-			if (team >= 0 && team < _counts.Count && _counts[team] > 0) _counts[team]--;
+			if (team >= 0 && team < _counts.Count && _counts[team] > 0 && --_counts[team] == 0) _reserved.Remove(team);
 		}
 
 		public int CountIn(int team) => team >= 0 && team < _counts.Count ? _counts[team] : 0;

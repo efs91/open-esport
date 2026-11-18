@@ -39,15 +39,27 @@ namespace OpenEsport.Server
 
 		// ------------------------------------------------------------------ équipes, équipement, apparition
 
-		private int JoinTeam()
+		/// <summary>Équipe du groupe de chaque joueur : les membres d'un groupe jouent ensemble.</summary>
+		private readonly Dictionary<long, int> _partyTeam = new Dictionary<long, int>();
+
+		private int JoinTeam(long partyId = 0, bool bot = false)
 		{
-			if (Modal && _mode.Info.TwoTeams)
+			bool twoTeams = Modal && _mode.Info.TwoTeams;
+			if (partyId != 0 && _partyTeam.TryGetValue(partyId, out int known) && _players.Any(q => !q.IsBot && q.PartyId == partyId && q.Team == known))
+			{
+				if (twoTeams) return known;
+				if (_teams.JoinTeam(known)) return known;
+			}
+			int team;
+			if (twoTeams)
 			{
 				int c0 = 0, c1 = 0;
 				foreach (var q in _players) { if (q.Team == 0) c0++; else if (q.Team == 1) c1++; }
-				return c1 < c0 ? 1 : 0;
+				team = c1 < c0 ? 1 : 0;
 			}
-			return _teams.Join();
+			else team = partyId != 0 ? _teams.JoinReserved() : _teams.Join(allowReserved: bot);
+			if (partyId != 0) _partyTeam[partyId] = team;
+			return team;
 		}
 
 		private void LeaveTeam(byte team)
@@ -126,6 +138,10 @@ namespace OpenEsport.Server
 			}
 			_mode.OnStart();
 			BroadcastRoster();
+			// duel de tournoi : un camp qui ne s'est pas présenté perd par forfait (score limite à zéro)
+			if (!string.IsNullOrEmpty(_opt.TournamentMatch) && _opt.ScoreLimit > 0)
+				for (int side = 0; side < 2; side++)
+					if (!_humans.Any(h => h.Team == side) && _humans.Any(h => h.Team == 1 - side)) { _mode.Score[1 - side] = _opt.ScoreLimit; Log($"Forfait : le camp {side} est absent"); EndModal((byte)(1 - side)); }
 			Log($"Départ de la partie {Modes.Label(_opt.Mode, _m.TeamSize)} : {_players.Count} joueurs ({_humans.Count} humains, {BotCount} bots)");
 			SendStatusToAll();
 		}
@@ -284,7 +300,7 @@ namespace OpenEsport.Server
 		{
 			private readonly bool _ffa;
 			public ScoreMode(GameServer s, ModeInfo info, bool ffa) : base(s, info) { _ffa = ffa; }
-			private int Target => (int)GameBalance.F(_ffa ? "mode.dmKills" : "mode.tdmKills");
+			private int Target => S._opt.ScoreLimit > 0 && !_ffa ? S._opt.ScoreLimit : (int)GameBalance.F(_ffa ? "mode.dmKills" : "mode.tdmKills");
 
 			public override void OnStart()
 			{

@@ -25,6 +25,7 @@ namespace Openesport.Utils
 		private sealed class Data
 		{
 			public int Aim { get; set; } = (int)AimMode.Switch;
+			public float Sensitivity { get; set; } = 2.0f;
 			/// <summary>action → « key:CODE », « phys:CODE » ou « mouse:INDEX ».</summary>
 			public Dictionary<string, string> Keys { get; set; } = new();
 		}
@@ -37,6 +38,13 @@ namespace Openesport.Utils
 		{
 			get => (AimMode)D.Aim;
 			set { D.Aim = (int)value; Save(); }
+		}
+
+		/// <summary>Sensibilité de la souris (2 = valeur d'origine du contrôleur).</summary>
+		public static float MouseSensitivity
+		{
+			get => D.Sensitivity;
+			set { D.Sensitivity = Mathf.Clamp(value, 0.2f, 10f); Save(); }
 		}
 
 		public static IReadOnlyDictionary<string, string> KeyOverrides => D.Keys;

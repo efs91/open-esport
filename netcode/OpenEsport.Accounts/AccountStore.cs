@@ -51,7 +51,7 @@ namespace OpenEsport.Accounts
 	}
 
 	/// <summary>Base SQLite : comptes, sessions, personnages, statistiques par mode.</summary>
-	public sealed class AccountStore
+	public sealed partial class AccountStore
 	{
 		public const int MaxCharacters = 12, SessionDays = 30, MinGeneralMatches = 3;
 		private readonly string _connection;
@@ -70,6 +70,10 @@ namespace OpenEsport.Accounts
 				Exec(c, "CREATE TABLE IF NOT EXISTS mode_stats(account_id INTEGER NOT NULL, mode TEXT NOT NULL, matches INTEGER NOT NULL DEFAULT 0, wins INTEGER NOT NULL DEFAULT 0, kills INTEGER NOT NULL DEFAULT 0, deaths INTEGER NOT NULL DEFAULT 0, damage INTEGER NOT NULL DEFAULT 0, rating INTEGER NOT NULL DEFAULT 1000, best_placement INTEGER NOT NULL DEFAULT 0, last_played INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(account_id, mode))");
 				Exec(c, "CREATE INDEX IF NOT EXISTS mode_stats_rank ON mode_stats(mode, rating DESC)");
 				Exec(c, "CREATE TABLE IF NOT EXISTS matches(id TEXT PRIMARY KEY, at INTEGER NOT NULL)");
+				Exec(c, "CREATE TABLE IF NOT EXISTS friends(a INTEGER NOT NULL, b INTEGER NOT NULL, accepted INTEGER NOT NULL DEFAULT 0, created INTEGER NOT NULL, PRIMARY KEY(a, b))");
+				Exec(c, "CREATE INDEX IF NOT EXISTS friends_b ON friends(b)");
+				Exec(c, "CREATE TABLE IF NOT EXISTS tournaments(id INTEGER PRIMARY KEY AUTOINCREMENT, contest TEXT NOT NULL, title TEXT NOT NULL, mode TEXT NOT NULL, team_size INTEGER NOT NULL, races INTEGER NOT NULL, lobby_size INTEGER NOT NULL, start_at INTEGER NOT NULL, owner INTEGER NOT NULL, state TEXT NOT NULL, race INTEGER NOT NULL DEFAULT 0, score_limit INTEGER NOT NULL DEFAULT 0, created INTEGER NOT NULL)");
+				Exec(c, "CREATE TABLE IF NOT EXISTS tournament_players(tid INTEGER NOT NULL, account INTEGER NOT NULL, ref INTEGER NOT NULL, PRIMARY KEY(tid, account))");
 				return 0;
 			});
 		}
@@ -205,6 +209,49 @@ namespace OpenEsport.Accounts
 			Exec(c, "UPDATE accounts SET selected_character = @i WHERE id = @a", ("@i", id), ("@a", accountId));
 			return true;
 		});
+
+
+		// ------------------------------------------------------------------ amis
+
+		public const int MaxFriends = 200;
+
+		/// <summary>Ajoute un ami : demande envoyée, ou acceptée tout de suite si l'autre joueur nous avait déjà demandé. Retourne un message d'erreur ou null.</summary>
+		public string AddFriend(long me, long other) => Run(c =>
+		{
+			if (me == other) return "Tu ne peux pas t'ajouter toi-même.";
+			if (Count(c, "SELECT COUNT(*) FROM friends WHERE (a = @m OR b = @m)", ("@m", me)) >= MaxFriends) return "Ta liste d'amis est pleine.";
+			if (Count(c, "SELECT COUNT(*) FROM friends WHERE a = @a AND b = @b", ("@a", me), ("@b", other)) > 0) return null;       // déjà demandé ou déjà amis
+			if (Count(c, "SELECT COUNT(*) FROM friends WHERE a = @a AND b = @b", ("@a", other), ("@b", me)) > 0)
+			{
+				Exec(c, "UPDATE friends SET accepted = 1 WHERE a = @a AND b = @b", ("@a", other), ("@b", me));
+				return null;
+			}
+			Exec(c, "INSERT INTO friends(a, b, accepted, created) VALUES(@a, @b, 0, @t)", ("@a", me), ("@b", other), ("@t", Now()));
+			return null;
+		});
+
+		/// <summary>Accepte une demande reçue (refuser = <see cref="RemoveFriend"/>).</summary>
+		public bool AcceptFriend(long me, long from) => Run(c =>
+		{
+			if (Count(c, "SELECT COUNT(*) FROM friends WHERE a = @a AND b = @b AND accepted = 0", ("@a", from), ("@b", me)) == 0) return false;
+			Exec(c, "UPDATE friends SET accepted = 1 WHERE a = @a AND b = @b", ("@a", from), ("@b", me));
+			return true;
+		});
+
+		/// <summary>Retire un ami, annule une demande envoyée ou refuse une demande reçue.</summary>
+		public void RemoveFriend(long me, long other) => Run(c =>
+		{
+			Exec(c, "DELETE FROM friends WHERE (a = @m AND b = @o) OR (a = @o AND b = @m)", ("@m", me), ("@o", other));
+			return 0;
+		});
+
+		/// <summary>Amis du compte : (autre compte, état) avec état « friend », « sent » (demande envoyée) ou « received » (demande à accepter).</summary>
+		public List<(long id, string state)> Friends(long me) => Run(c =>
+			Query(c, "SELECT a, b, accepted FROM friends WHERE a = @m OR b = @m ORDER BY created", r =>
+			{
+				long a = r.GetInt64(0), b = r.GetInt64(1); bool ok = r.GetInt32(2) != 0;
+				return (a == me ? b : a, ok ? "friend" : a == me ? "sent" : "received");
+			}, ("@m", me)));
 
 		// ------------------------------------------------------------------ statistiques et classements
 

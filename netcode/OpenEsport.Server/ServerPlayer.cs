@@ -68,6 +68,8 @@ namespace OpenEsport.Server
 		public int Kills, Deaths;
 		/// <summary>Compte du joueur (service de comptes) ; 0 = sans compte (bot, ou serveur sans comptes).</summary>
 		public long AccountId;
+		/// <summary>Groupe du joueur (0 = aucun).</summary>
+		public long PartyId;
 		public float DamageDealt;
 		/// <summary>Classement de l'équipe quand elle est éliminée (0 = en jeu).</summary>
 		public byte Placement;

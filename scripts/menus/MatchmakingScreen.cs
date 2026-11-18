@@ -14,6 +14,10 @@ namespace Openesport.Menus
 	{
 		public Action<string, int> OnFound;
 		public Action OnCancel;
+		/// <summary>Manche de tournoi (« tournoi:manche:lobby ») : battle royale réservé aux joueurs du lobby ; sinon partie ordinaire.</summary>
+		public string Tournament;
+		/// <summary>Duel de tournoi (tag « D… ») : joueurs par équipe.</summary>
+		public int TournamentTeamSize = 1;
 
 		private MatchmakerClient _client;
 		private Label _status, _title;
@@ -29,7 +33,9 @@ namespace Openesport.Menus
 		{
 			Input.MouseMode = Input.MouseModeEnum.Visible;
 			_mode = MatchSettings.Mode;
-			_teamSize = Modes.ValidTeamSize(_mode, MatchSettings.TeamSize);
+			// un groupe joue ensemble : l'équipe est au moins aussi grande que le groupe (les places en plus sont prises par des bots)
+			_teamSize = Modes.ValidTeamSize(_mode, Math.Max(MatchSettings.TeamSize, SocialClient.PartySize));
+			if (!string.IsNullOrEmpty(Tournament)) { bool duel = Tournament.StartsWith("D"); _mode = duel ? GameMode.TeamDeathmatch : GameMode.BattleRoyale; _teamSize = duel ? Math.Clamp(TournamentTeamSize, 1, 2) : Math.Clamp(TournamentTeamSize, 1, 5); }
 			var root = new Control();
 			root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(root);
@@ -58,7 +64,7 @@ namespace Openesport.Menus
 			MatchSettings.MatchmakerAddress(out _mmHost, out _mmPort);
 			_client?.Dispose();
 			_client = new MatchmakerClient();
-			_client.Start(_mmHost, _mmPort, _mode, _teamSize);
+			_client.Start(_mmHost, _mmPort, _mode, _teamSize, string.IsNullOrEmpty(Tournament) ? SocialClient.PartySize : 1, Tournament);
 			_cancel.Text = I18n.T("Annuler");
 		}
 
@@ -89,6 +95,7 @@ namespace Openesport.Menus
 				case MatchmakingState.Found:
 					_status.Text = I18n.T("Partie trouvée ({0} joueur(s) dans la salle d'attente)…", _client.Humans);
 					var found = OnFound; string host = _client.Host; int port = _client.ServerPort;
+					if (SocialClient.InParty && string.IsNullOrEmpty(Tournament)) _ = SocialClient.PartyActionAsync("match", host: host, port: port, mode: Modes.Get(_mode).Key, teamSize: _teamSize);     // les autres membres rejoignent
 					_client.Dispose(); _client = null;
 					QueueFree();
 					found?.Invoke(host, port);

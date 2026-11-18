@@ -78,7 +78,7 @@ namespace Openesport.Modules
                             ""id"": 3,
                             ""name"": ""MENU_SETTINGS_KEYBOARD"",
                             ""type"": ""Button"",
-                            ""description"": ""Configurer le clavier"",
+                            ""description"": ""Configurer les contrôles"",
                             ""icon"": """",
                             ""action"": """",
                             ""parentId"": 2,

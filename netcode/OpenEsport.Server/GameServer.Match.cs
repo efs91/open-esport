@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using OpenEsport.Core;
 
 namespace OpenEsport.Server
@@ -24,13 +25,25 @@ namespace OpenEsport.Server
 
 		// ------------------------------------------------------------------ boucle
 
+		/// <summary>Combien de temps la salle d'attente patiente pour qu'un groupe soit au complet avant de lancer la partie sans ses retardataires.</summary>
+		private const double PartyWaitSeconds = 40;
+		private readonly Dictionary<long, (int wanted, DateTime deadline)> _partyWait = new Dictionary<long, (int wanted, DateTime deadline)>();
+
+		/// <summary>Vrai tant qu'un groupe attend encore ses membres : le départ est retardé pour que tout le groupe joue la même partie.</summary>
+		private bool PartyPending()
+		{
+			foreach (var kv in _partyWait)
+				if (DateTime.UtcNow < kv.Value.deadline && _humans.Count(h => h.PartyId == kv.Key) < kv.Value.wanted) return true;
+			return false;
+		}
+
 		private void TickMatch(float dt)
 		{
 			if (!Phased) return;
 			switch (Phase)
 			{
 				case MatchPhase.Lobby:
-					if (_humans.Count >= _opt.MinPlayers)
+					if (_humans.Count >= _opt.MinPlayers && !PartyPending() && !TournamentPending())
 					{
 						if (_countdown < 0f) { _countdown = _opt.LobbyCountdown; Log($"Départ dans {_countdown:F0} s ({_humans.Count} joueur(s))"); }
 						_countdown -= dt;

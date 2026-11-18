@@ -56,7 +56,7 @@ namespace Openesport.Menus
 			center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(center);
 
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(520, 0) };
+			var panel = new PanelContainer { CustomMinimumSize = new Vector2(Mathf.Min(1000f, GetViewport().GetVisibleRect().Size.X - 60f), 0) };
 			center.AddChild(panel);
 			var margin = new MarginContainer();
 			foreach (var side in new[] { "left", "right", "top", "bottom" }) margin.AddThemeConstantOverride("margin_" + side, 20);
@@ -77,10 +77,26 @@ namespace Openesport.Menus
 			aim.ItemSelected += i => GameSettings.Aim = (AimMode)i;
 			aimRow.AddChild(aim);
 			column.AddChild(aimRow);
+
+			// sensibilité de la souris
+			var sensRow = new HBoxContainer();
+			sensRow.AddChild(new Label { Text = I18n.T("Sensibilité de la souris"), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+			var sensValue = new Label { Text = GameSettings.MouseSensitivity.ToString("0.0"), CustomMinimumSize = new Vector2(44, 0), HorizontalAlignment = HorizontalAlignment.Right };
+			var sens = new HSlider { MinValue = 0.2, MaxValue = 10, Step = 0.1, Value = GameSettings.MouseSensitivity, CustomMinimumSize = new Vector2(240, 0), SizeFlagsVertical = Control.SizeFlags.ShrinkCenter };
+			sens.ValueChanged += v =>
+			{
+				GameSettings.MouseSensitivity = (float)v;
+				sensValue.Text = ((float)v).ToString("0.0");
+				foreach (var n in GetTree().GetNodesInGroup("head_movement"))
+					if (n is HeadMovement3D h) h.MouseSensitivity = (float)v;
+			};
+			sensRow.AddChild(sens);
+			sensRow.AddChild(sensValue);
+			column.AddChild(sensRow);
 			column.AddChild(new HSeparator());
 
 			// la liste défile : « Retour » reste visible même dans une petite fenêtre
-			var scroll = new ScrollContainer { CustomMinimumSize = new Vector2(0, Mathf.Min(420f, GetViewport().GetVisibleRect().Size.Y - 220f)) };
+			var scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, CustomMinimumSize = new Vector2(0, Mathf.Min(420f, GetViewport().GetVisibleRect().Size.Y - 220f)) };
 			var list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			list.AddThemeConstantOverride("separation", 6);
 			scroll.AddChild(list);

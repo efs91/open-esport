@@ -46,6 +46,16 @@ namespace Openesport.Modules
 			_menuManager.AddElement(online);
 			_menuManager.RegisterActionHandler("start_online_game", this);
 
+			// Groupe : quand le chef lance la partie, les autres membres rejoignent le même serveur
+			Openesport.Online.SocialClient.JoinPartyGame = (host, port, mode, teamSize) =>
+			{
+				var root = ((SceneTree)Engine.GetMainLoop()).Root;
+				foreach (var name in new[] { "ModeScreen", "CharacterPanel", "LoadoutScreen", "MatchmakingScreen" }) root.GetNodeOrNull(name)?.QueueFree();
+				if (OpenEsport.Core.Modes.TryParse(mode, out var m)) { Openesport.Online.MatchSettings.Mode = m; Openesport.Online.MatchSettings.TeamSize = teamSize; }
+				Openesport.Online.MatchSettings.AssignedHost = host; Openesport.Online.MatchSettings.AssignedPort = port;
+				StartGame("start_online_game");
+			};
+
 			// Profil : ses personnages (choisir, créer, modifier) et ses statistiques / classements
 			var character = new MenuElement(
 				id: 1249797514,
@@ -202,6 +212,16 @@ namespace Openesport.Modules
 			{
 				Openesport.Online.MatchSettings.AssignedHost = host; Openesport.Online.MatchSettings.AssignedPort = port;
 				StartGame("start_online_game");
+				return;
+			}
+			// en groupe, seul le chef lance la partie : les autres la rejoignent tout seuls
+			if (!Openesport.Online.SocialClient.IsLeaderOrAlone)
+			{
+				var dialog = new AcceptDialog { Title = I18n.T("Groupe"), DialogText = I18n.T("Seul le chef du groupe lance la partie : attends son lancement, ou quitte le groupe.") };
+				dialog.Confirmed += () => ExecuteAction("start_online_game");
+				dialog.Canceled += () => ExecuteAction("start_online_game");
+				((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, dialog);
+				dialog.CallDeferred(Window.MethodName.PopupCentered);
 				return;
 			}
 			var screen = new Openesport.Menus.MatchmakingScreen

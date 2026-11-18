@@ -19,9 +19,9 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Open Esport"
+run/main_scene="uid://d15rdh65of1ls"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Godot/app_userdata/open-esport-2025"
-run/main_scene="uid://d15rdh65of1ls"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 

@@ -18,6 +18,8 @@ public partial class HeadMovement3D : Marker3D
     public override void _Ready()
     {
         _actualRotation.Y = GetOwner<Node3D>().Rotation.Y;
+        MouseSensitivity = Openesport.Utils.GameSettings.MouseSensitivity;
+        AddToGroup("head_movement");
     }
 
     // Define mouse sensitivity

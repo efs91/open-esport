@@ -1,5 +1,6 @@
 [gd_scene format=4 uid="uid://cyouj0ivqvduv"]
 
+[ext_resource type="Script" path="res://scripts/modules/MountainBackdrop.cs" id="mnt_script"]
 [ext_resource type="Terrain3DAssets" uid="uid://bxdwwfup0w0g0" path="res://maps/frontiere01/terrain_assets.tres" id="1_c6f5l"]
 [ext_resource type="PackedScene" uid="uid://dvqk7jq0wqm1c" path="res://assets/environement/3D Scifi Starter Kit Free/_Meshes/Floors/Floor_Squared_01_6x6.FBX" id="2_21pj1"]
 [ext_resource type="PackedScene" uid="uid://b5by7h3ahr1dy" path="res://assets/environement/3D Scifi Starter Kit Free/_Meshes/Walls/Wall_Simple_01_Long.FBX" id="3_6wqau"]
@@ -71,7 +72,8 @@ world_background = 0
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_w3qjt"]
 sky_top_color = Color(0.32, 0.5, 0.78, 1)
 sky_horizon_color = Color(0.68, 0.74, 0.82, 1)
-ground_horizon_color = Color(0.55, 0.58, 0.6, 1)
+ground_horizon_color = Color(0.68, 0.74, 0.82, 1)
+ground_bottom_color = Color(0.5, 0.58, 0.66, 1)
 
 [sub_resource type="Sky" id="Sky_qp0pq"]
 sky_material = SubResource("ProceduralSkyMaterial_w3qjt")
@@ -95,8 +97,8 @@ glow_hdr_threshold = 1.4
 fog_enabled = true
 fog_light_color = Color(0.7, 0.76, 0.84, 1)
 fog_sun_scatter = 0.12
-fog_density = 0.00024
-fog_aerial_perspective = 0.25
+fog_density = 0.00006
+fog_aerial_perspective = 0.08
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0006
 volumetric_fog_albedo = Color(0.8, 0.87, 0.95, 1)
@@ -3461,6 +3463,9 @@ material = SubResource("Terrain3DMaterial_pnicg")
 assets = ExtResource("1_c6f5l")
 top_level = true
 metadata/_edit_lock_ = true
+
+[node name="Montagnes" type="MeshInstance3D" parent="."]
+script = ExtResource("mnt_script")
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=1230234716]
 transform = Transform3D(0.81915206, 0.4262504, -0.38379753, 0, 0.66913056, 0.74314487, 0.57357645, -0.6087487, 0.54811966, 0, 0, 0)

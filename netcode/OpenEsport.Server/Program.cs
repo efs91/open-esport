@@ -89,6 +89,11 @@ namespace OpenEsport.Server
 						case "--exit-when-over": opt.ExitWhenOver = true; break;
 						case "--accounts-url": opt.AccountsUrl = Next(); break;
 						case "--accounts-key": opt.AccountsKey = Next(); break;
+						case "--tournament": opt.Tournament = long.Parse(Next()); break;
+						case "--race": opt.TournamentRace = int.Parse(Next()); break;
+						case "--lobby": opt.TournamentLobby = int.Parse(Next()); break;
+						case "--match": opt.TournamentMatch = Next(); break;
+						case "--score-limit": opt.ScoreLimit = int.Parse(Next()); break;
 						case "--idle-exit": opt.IdleExitSeconds = float.Parse(Next(), System.Globalization.CultureInfo.InvariantCulture); break;
 						case "--bot-target": opt.BotFillTarget = int.Parse(Next()); break;
 						case "--max-bots": opt.MaxBots = int.Parse(Next()); opt.FillBots = opt.MaxBots != 0; break;

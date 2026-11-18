@@ -24,11 +24,18 @@ namespace OpenEsport.Accounts
 		public string Bind = "0.0.0.0";
 		/// <summary>Clé que présentent les serveurs de partie (en-tête X-Server-Key) pour vérifier un jeton et rapporter une partie. Vide : ces routes sont désactivées.</summary>
 		public string ServerKey;
+		/// <summary>API de ManageComp (tournois) : adresse et clé, sinon variables MANAGECOMP_URL et MANAGECOMP_API_KEY. <see cref="ManageCompHandler"/> remplace le réseau (tests).</summary>
+		public string ManageCompUrl, ManageCompKey;
+		public System.Net.Http.HttpMessageHandler ManageCompHandler;
 	}
 
 	public sealed class RegisterRequest { public string Login { get; set; } public string Password { get; set; } }
 	public sealed class CharacterRequest { public string Name { get; set; } public string Appearance { get; set; } }
 	public sealed class VerifyRequest { public string Token { get; set; } }
+	public sealed class TournamentRequest { public string Title { get; set; } public long StartAt { get; set; } public int Races { get; set; } public int LobbySize { get; set; } public string Mode { get; set; } public int TeamSize { get; set; } public int ScoreLimit { get; set; } }
+	public sealed class MatchReportRequest { public long TournamentId { get; set; } public string Key { get; set; } public int ScoreA { get; set; } public int ScoreB { get; set; } }
+	public sealed class RaceReport { public long TournamentId { get; set; } public int Race { get; set; } public int Lobby { get; set; } public System.Collections.Generic.List<PlayerResult> Players { get; set; } }
+	public sealed class PartyRequest { public string Login { get; set; } public long PartyId { get; set; } public string Host { get; set; } public int Port { get; set; } public string Mode { get; set; } public int TeamSize { get; set; } }
 	public sealed class CharacterListRequest { public System.Collections.Generic.List<CharacterRequest> Characters { get; set; } public int Selected { get; set; } }
 
 	/// <summary>Limite les essais : au bout de <c>max</c> échecs dans la fenêtre, la clé est bloquée un moment.</summary>
@@ -63,6 +70,11 @@ namespace OpenEsport.Accounts
 		public static WebApplication Build(AccountsOptions o, AccountStore store = null)
 		{
 			store ??= new AccountStore(o.DbPath);
+			var parties = new PartyBook();
+			var comp = ManageCompLink.FromEnvironment();
+			string mcUrl = o.ManageCompUrl ?? Environment.GetEnvironmentVariable("MANAGECOMP_URL"), mcKey = o.ManageCompKey ?? Environment.GetEnvironmentVariable("MANAGECOMP_API_KEY");
+			var tournaments = new TournamentService(store, new ManageCompApi(o.ManageCompHandler != null ? new System.Net.Http.HttpClient(o.ManageCompHandler) : new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(15) }, mcUrl, mcKey));
+			var seen = new ConcurrentDictionary<long, DateTime>();
 			var builder = WebApplication.CreateBuilder();
 			builder.Logging.ClearProviders();
 			builder.Logging.AddSimpleConsole(c => c.SingleLine = true);
@@ -145,6 +157,137 @@ namespace OpenEsport.Accounts
 				return Results.Json(Profile(store.FindById(id)));
 			});
 
+
+			// tournois annoncés (publiés dans ManageComp) : visibles sans compte, même depuis l'écran de connexion
+			// l'équipe d'un joueur pour un tournoi à deux : son groupe, s'il est chef d'un groupe de deux
+			System.Collections.Generic.IReadOnlyList<(long id, string login)> TeamOf(long me)
+			{
+				var v = parties.View(me).Party;
+				if (v == null || v.Leader != me || v.Members.Count < 2) return null;
+				return v.Members.Select(m => (m, store.FindById(m)?.Login ?? "?")).ToList();
+			}
+			app.MapGet("/api/tournaments", (HttpContext ctx) =>
+			{
+				string Name(long id) => store.FindById(id)?.Login ?? "?";
+				return Results.Json(new { configured = tournaments.Configured, tournaments = comp.Tournaments(), games = tournaments.List(Account(ctx), Name) });
+			});
+			app.MapGet("/api/tournaments/{id:long}", async (HttpContext ctx, long id) =>
+			{
+				var d = await tournaments.Details(id, Account(ctx), l => store.FindById(l)?.Login ?? "?");
+				return d == null ? Error(404, "Tournoi introuvable.") : Results.Json(d);
+			});
+			app.MapGet("/api/tournaments/{id:long}/me", async (HttpContext ctx, long id) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				var r = await tournaments.MyRace(id, me);
+				return r == null ? Error(404, "Pas de manche à jouer pour toi.") : Results.Json(r);
+			});
+			app.MapPost("/api/tournaments", async (HttpContext ctx) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				var req = await ctx.Request.ReadFromJsonAsync<TournamentRequest>() ?? new TournamentRequest();
+				var r = await tournaments.Create(me, req.Title, req.StartAt, req.Races, req.LobbySize, string.IsNullOrEmpty(req.Mode) ? "br" : req.Mode, req.TeamSize, req.ScoreLimit);
+				if (r.Error == null && req.TeamSize > 1) return Results.Json(new { id = r.Id });      // tournoi par équipes : le chef inscrit son équipe lui-même
+				if (r.Error != null) return Error(400, r.Error);
+				await tournaments.Join(r.Id, me, store.FindById(me).Login, TeamOf(me));           // l'organisateur joue aussi (il peut se désinscrire)
+				return Results.Json(new { id = r.Id });
+			});
+			app.MapPost("/api/tournaments/{id:long}/{action}", async (HttpContext ctx, long id, string action) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				TournamentResult r = action switch
+				{
+					"join" => await tournaments.Join(id, me, store.FindById(me).Login, TeamOf(me)),
+					"leave" => await tournaments.Leave(id, me),
+					"start" => await tournaments.Start(id, me),
+					_ => TournamentResult.Fail("Action inconnue."),
+				};
+				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
+			});
+
+			// ------------------------------------------------------------------ groupes (squads)
+			object PartyJson(long me)
+			{
+				var v = parties.View(me);
+				string Login(long id) => store.FindById(id)?.Login ?? "?";
+				return new
+				{
+					party = v.Party == null ? null : new
+					{
+						id = v.Party.Id, leader = Login(v.Party.Leader), isLeader = v.Party.Leader == me,
+						members = v.Party.Members.Select(m => new { id = m, login = Login(m) }),
+						pending = v.Party.Invites.Keys.Select(Login),
+						match = v.Party.Match == null ? null : new { seq = v.Party.Match.Seq, host = v.Party.Match.Host, port = v.Party.Match.Port, mode = v.Party.Match.Mode, teamSize = v.Party.Match.TeamSize }
+					},
+					invites = v.Invites.Select(i => new { partyId = i.partyId, from = Login(i.fromAccount) }),
+				};
+			}
+			IResult PartyReply(long me, string error) => error != null ? Error(400, error) : Results.Json(PartyJson(me));
+
+			app.MapGet("/api/party", (HttpContext ctx) =>
+			{
+				long me = Account(ctx);
+				if (me != 0) seen[me] = DateTime.UtcNow;
+				return me == 0 ? Error(401, "Session expirée : reconnecte-toi.") : Results.Json(PartyJson(me));
+			});
+			app.MapPost("/api/party/{action}", async (HttpContext ctx, string action) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				var req = (ctx.Request.ContentLength ?? 0) > 0 ? await ctx.Request.ReadFromJsonAsync<PartyRequest>() : null;
+				req ??= new PartyRequest();
+				AccountRow Target() => string.IsNullOrWhiteSpace(req.Login) ? null : store.FindByLogin(req.Login.Trim());
+				switch (action)
+				{
+					case "invite": { var t = Target(); return t == null ? Error(404, "Aucun joueur de ce nom.") : PartyReply(me, parties.Invite(me, t.Id)); }
+					case "accept": return PartyReply(me, parties.Accept(me, req.PartyId));
+					case "decline": parties.Decline(me, req.PartyId); return PartyReply(me, null);
+					case "leave": parties.Leave(me); return PartyReply(me, null);
+					case "kick": { var t = Target(); return t == null ? Error(404, "Aucun joueur de ce nom.") : PartyReply(me, parties.Kick(me, t.Id)); }
+					case "promote": { var t = Target(); return t == null ? Error(404, "Aucun joueur de ce nom.") : PartyReply(me, parties.Promote(me, t.Id)); }
+					case "match": return PartyReply(me, parties.SetMatch(me, string.IsNullOrWhiteSpace(req.Host) ? null : req.Host, req.Port, req.Mode, req.TeamSize));
+					default: return Error(404, "Action inconnue.");
+				}
+			});
+
+
+			// ------------------------------------------------------------------ amis et présence
+			// « en ligne » = a interrogé le service dans les 45 dernières secondes (le jeu le fait toutes les quelques secondes)
+			bool Online(long id) => seen.TryGetValue(id, out var t) && (DateTime.UtcNow - t).TotalSeconds < 45;
+			object FriendsJson(long me) => new
+			{
+				friends = store.Friends(me).Select(f =>
+				{
+					var a = store.FindById(f.id);
+					return new { login = a?.Login ?? "?", state = f.state, online = f.state == "friend" && Online(f.id), partyId = parties.PartyOf(f.id) };
+				}).OrderByDescending(f => f.state == "received").ThenByDescending(f => f.online).ThenBy(f => f.login, StringComparer.OrdinalIgnoreCase),
+			};
+			app.MapGet("/api/friends", (HttpContext ctx) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				seen[me] = DateTime.UtcNow;
+				return Results.Json(FriendsJson(me));
+			});
+			app.MapPost("/api/friends/{action}", async (HttpContext ctx, string action) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				var req = (ctx.Request.ContentLength ?? 0) > 0 ? await ctx.Request.ReadFromJsonAsync<PartyRequest>() : null;
+				var other = string.IsNullOrWhiteSpace(req?.Login) ? null : store.FindByLogin(req.Login.Trim());
+				if (other == null) return Error(404, "Aucun joueur de ce nom.");
+				switch (action)
+				{
+					case "add": { string e = store.AddFriend(me, other.Id); return e != null ? Error(400, e) : Results.Json(FriendsJson(me)); }
+					case "accept": return store.AcceptFriend(me, other.Id) ? Results.Json(FriendsJson(me)) : Error(400, "Cette demande n'existe plus.");
+					case "remove": store.RemoveFriend(me, other.Id); return Results.Json(FriendsJson(me));
+					default: return Error(404, "Action inconnue.");
+				}
+			});
+
 			static string CleanName(string n) { n = (n ?? "").Trim(); return n.Length is >= 1 and <= 24 ? n : null; }
 			static bool GoodAppearance(string a) => !string.IsNullOrEmpty(a) && a.Length <= 8000;
 
@@ -216,7 +359,38 @@ namespace OpenEsport.Accounts
 				if (acc == 0) return Error(401, "Jeton invalide.");
 				var a = store.FindById(acc);
 				var ch = store.Characters(acc).FirstOrDefault(c => c.Id == a.SelectedCharacter) ?? store.Characters(acc).FirstOrDefault();
-				return Results.Json(new { accountId = a.Id, login = a.Login, character = ch == null ? null : new { id = ch.Id, name = ch.Name, appearance = ch.Appearance } });
+				return Results.Json(new { accountId = a.Id, login = a.Login, partyId = parties.PartyOf(a.Id), partySize = parties.SizeOf(a.Id), character = ch == null ? null : new { id = ch.Id, name = ch.Name, appearance = ch.Appearance } });
+			});
+
+			app.MapGet("/internal/tournament/{id:long}/lobby/{lobby:int}", async (HttpContext ctx, long id, int lobby) =>
+			{
+				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
+				var t = store.Tournament(id);
+				if (t == null || t.State != "running") return Error(404, "Tournoi introuvable ou pas en cours.");
+				var all = await tournaments.Lobbies(id);
+				return Results.Json(new { race = t.Race, races = t.Races, accounts = all.Where(kv => kv.Value == lobby).Select(kv => kv.Key) });
+			});
+			app.MapGet("/internal/tournament/{id:long}/match/{key}", async (HttpContext ctx, long id, string key) =>
+			{
+				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
+				var sides = await tournaments.MatchSides(id, key);
+				return sides == null ? Error(404, "Match introuvable ou déjà joué.") : Results.Json(new { a = sides.Value.a, b = sides.Value.b, scoreLimit = sides.Value.scoreLimit, teamSize = sides.Value.teamSize });
+			});
+			app.MapPost("/internal/tournament-match", async (HttpContext ctx) =>
+			{
+				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
+				var rep = await ctx.Request.ReadFromJsonAsync<MatchReportRequest>();
+				if (rep == null) return Error(400, "Rapport invalide.");
+				var r = await tournaments.ReportMatch(rep.TournamentId, rep.Key, rep.ScoreA, rep.ScoreB);
+				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
+			});
+			app.MapPost("/internal/tournament-race", async (HttpContext ctx) =>
+			{
+				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
+				var report = await ctx.Request.ReadFromJsonAsync<RaceReport>();
+				if (report?.Players == null) return Error(400, "Rapport invalide.");
+				var r = await tournaments.ReportRace(report.TournamentId, report.Race, report.Lobby, report.Players.Select(p => (p.AccountId, p.Placement)).ToList());
+				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
 			});
 
 			app.MapPost("/internal/match", async (HttpContext ctx) =>

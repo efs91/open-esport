@@ -19,6 +19,8 @@ public partial class MenuManager : Control
     private bool _inGame;
     /// <summary>Le compte connecté, affiché en haut à droite du menu.</summary>
     private Label _accountLabel;
+    /// <summary>Tournois, groupe et amis (en haut à gauche) : seulement dans le menu principal, pas pendant une partie.</summary>
+    private Openesport.Menus.MenuSocial _social;
 
     public override void _Ready()
     {
@@ -30,6 +32,8 @@ public partial class MenuManager : Control
         _accountLabel.SetAnchorsPreset(LayoutPreset.TopRight);
         _accountLabel.OffsetLeft = -420; _accountLabel.OffsetRight = -24; _accountLabel.OffsetTop = 18; _accountLabel.OffsetBottom = 52;
         AddChild(_accountLabel);
+        _social = new Openesport.Menus.MenuSocial { Name = "MenuSocial" };
+        AddChild(_social);
         //_logManager.Info("[MenuManager] _Ready appelé");
 
         _gameManager = GetNode<GameManager>(GlobalPaths.Managers.GAME_MANAGER);
@@ -47,6 +51,7 @@ public partial class MenuManager : Control
         // le nom du compte connecté, en haut à droite du menu (visible avec lui)
         string who = Openesport.Online.AccountClient.LoggedIn ? Openesport.Utils.I18n.T("Connecté : {0}", Openesport.Online.AccountClient.Login) : "";
         if (_accountLabel != null && _accountLabel.Text != who) _accountLabel.Text = who;
+        if (_social != null) _social.Visible = !_inGame;
     }
 
     private void OnGameStateChanged(int newState)

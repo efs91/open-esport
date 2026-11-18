@@ -51,6 +51,10 @@ namespace OpenEsport.Server
 		/// <summary>Le serveur s'arrête une fois la partie terminée (serveur lancé à la demande par le matchmaking).</summary>
 		/// <summary>Service de comptes (http://hôte:27090) et clé du serveur : si l'adresse est renseignée, un joueur doit présenter un jeton de session valide pour entrer ; ses résultats sont rapportés en fin de partie.</summary>
 		public string AccountsUrl, AccountsKey;
+		/// <summary>Partie d'un tournoi : identifiant du tournoi (0 = aucun), manche et lobby. Seuls les inscrits de ce lobby entrent ; les places sont rapportées au service de comptes.</summary>
+		public long Tournament; public int TournamentRace, TournamentLobby;
+		/// <summary>Match de duel d'un tournoi (clé du match, vide = aucun) et nombre de victimes pour le gagner (0 = valeur du jeu).</summary>
+		public string TournamentMatch; public int ScoreLimit;
 		public bool ExitWhenOver;
 		/// <summary>Le serveur s'arrête si la salle d'attente reste vide ce nombre de secondes (0 = jamais).</summary>
 		public float IdleExitSeconds;
@@ -372,13 +376,14 @@ namespace OpenEsport.Server
 				if (peer.Tag != pending) return;
 				peer.Tag = null;
 				if (peer.ConnectionState != ConnectionState.Connected) return;           // il est parti pendant la vérification
+				if (account != null && TournamentRefusal(account.AccountId) is { } refusal) { Reject(peer, refusal); return; }
 				if (account == null) { Reject(peer, unreachable ? "Service de comptes injoignable : réessaie dans un instant." : "Session invalide : reconnecte-toi."); return; }
 				foreach (var h in _humans) if (h.AccountId == account.AccountId) { Reject(peer, "Ce compte est déjà connecté."); return; }
-				CompleteJoin(peer, account.Login, appearance, account.AccountId);
+				CompleteJoin(peer, account.Login, appearance, account.AccountId, account.PartyId, account.PartySize);
 			});
 		}
 
-		private void CompleteJoin(NetPeer peer, string name, byte[] appearance, long accountId)
+		private void CompleteJoin(NetPeer peer, string name, byte[] appearance, long accountId, long partyId = 0, int partySize = 0)
 		{
 			if (Phased && Phase != MatchPhase.Lobby) { Reject(peer, "Partie déjà commencée"); return; }
 
@@ -390,7 +395,8 @@ namespace OpenEsport.Server
 			if (slot < 0 && !TryFreeSlotFromBot(out slot)) { Reject(peer, "Serveur plein"); return; } // un bot cède sa place
 			if (slot < 0) { Reject(peer, "Serveur plein"); return; }
 
-			var p = new ServerPlayer { Id = (ushort)slot, Peer = peer, Name = SanitizeName(name, slot), Team = (byte)JoinTeam(), Appearance = appearance, AccountId = accountId };
+			if (partyId != 0 && partySize > 1 && !_partyWait.ContainsKey(partyId)) _partyWait[partyId] = (partySize, DateTime.UtcNow.AddSeconds(PartyWaitSeconds));
+			var p = new ServerPlayer { Id = (ushort)slot, Peer = peer, Name = SanitizeName(name, slot), Team = (byte)(_tournamentSide.TryGetValue(accountId, out int side) ? side : JoinTeam(partyId)), Appearance = appearance, AccountId = accountId, PartyId = partyId };
 			Vec3 spawn = Modal ? ModalSpawn(p) : PickSpawn();
 			p.State = (_opt.Dropship && !Royale) ? NewFlight() : PlayerMovement.Spawn(spawn, _world);
 			p.Yaw = 0;

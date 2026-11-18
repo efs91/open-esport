@@ -68,7 +68,7 @@ namespace Openesport.Online
 
 		private static string Url(string path) => MatchSettings.AccountsUrl().TrimEnd('/') + path;
 
-		private static async Task<(int code, string body)> SendAsync(HttpMethod method, string path, object payload = null, bool auth = true)
+		internal static async Task<(int code, string body)> SendAsync(HttpMethod method, string path, object payload = null, bool auth = true)
 		{
 			try
 			{
@@ -84,7 +84,7 @@ namespace Openesport.Online
 			}
 		}
 
-		private static string ErrorOf(int code, string body)
+		internal static string ErrorOf(int code, string body)
 		{
 			if (code == 0) return body;
 			try { var e = JsonDocument.Parse(body).RootElement; if (e.TryGetProperty("error", out var m)) return I18n.T(m.GetString()); } catch { }

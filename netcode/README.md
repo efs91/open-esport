@@ -175,3 +175,27 @@ Hors battle royale, pas de butin : on choisit sa classe (touche C : Assaut, Appu
 Cartes simples (un sol, des abris, les points d'attention), scènes dans `scenes/maps/` générées par `python tools/map/gen_mode_maps.py` puis éditables dans Godot :
 `CoverBox` (abris), `MapMarker` (apparitions, points de contrôle, bases de drapeau, sites de bombe). Onglet « Carte (export) » du panneau Open Esport : exporte la scène choisie en `.world`
 (ou : `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Arene.tscn --out=res://assets/maps/arene.world`).
+
+## Groupes, amis et tournois (service de comptes)
+
+- **Groupes** (`PartyBook`) : jusqu'à 5 joueurs, un chef, invitations par nom de compte (`/api/party/...`). Le chef lance la partie (matchmaking avec la taille du groupe) et publie le serveur ; les autres membres le rejoignent. Le serveur de partie lit le groupe du joueur à la vérification du jeton (`partyId`, `partySize`) : mêmes équipes, départ retardé (40 s max) tant que le groupe n'est pas au complet ; les bots complètent les équipes de groupe.
+- **Amis** (`/api/friends/...`) : demande puis acceptation, présence « en ligne » = a interrogé le service dans les 45 dernières secondes.
+- **Tournois** : l'organisation est faite par **ManageComp** (`MANAGECOMP_API_KEY`, `MANAGECOMP_URL` dans le `.env` du serveur). Format actuel : battle royale en N manches (phase « Lobby (série) », points par place, classement cumulé calculé par ManageComp).
+  1. un joueur crée le tournoi (`POST /api/tournaments`) : une compétition ManageComp est créée ; les joueurs s'inscrivent (`/join`) ;
+  2. l'organisateur le lance (`/start`) : ManageComp répartit les inscrits en lobbys ;
+  3. chaque joueur clique « Jouer la manche » : le matchmaking (`MM?…|T<tournoi>:<manche>:<lobby>`) lance un serveur réservé aux inscrits du lobby (`--tournament --race --lobby`), complété par des bots ;
+  4. à la fin, le serveur rapporte les places (`/internal/tournament-race`) : elles sont saisies dans ManageComp, qui calcule le classement ; le tournoi avance de manche.
+  Les tournois publiés directement dans ManageComp apparaissent aussi dans l'encart du menu (`/api/tournaments`, champ `tournaments`).
+
+### Tournois en duels (1 contre 1 / 2 contre 2)
+
+Format « duel » : poules puis tableau, calculés par ManageComp (formule par défaut). Chaque match est une partie de match à mort par équipes (TDM) sur un serveur réservé aux deux camps, sans bots, jouée jusqu'à N victimes (réglable à la création, 3 à 30, 10 par défaut).
+- 2 contre 2 : l'équipe est le **groupe de deux joueurs** ; son chef l'inscrit (un seul participant côté ManageComp, nommé « a & b »).
+- « Jouer mon match » : le jeu demande le match en attente du joueur (`/api/tournaments/{id}/me`, clé `p<poule>m<match>` ou `t<jeu>n<noeud>`), puis le matchmaking (`MM?…|TD<tournoi>:<clé>`) lance `--tournament --match <clé>` ; le serveur lit les camps (`/internal/tournament/{id}/match/{clé}`), impose les équipes, rejoue sans bots.
+- Un camp absent après 120 s perd par forfait. Une égalité (fin du temps) n'est pas enregistrée : le match reste à jouer.
+- À la fin, le score est saisi dans ManageComp (`/internal/tournament-match`) ; quand une phase est terminée, le tournoi passe à la suivante (poules → tableau → classement) puis se termine.
+
+### Battle royale par équipes et classement
+
+- Un tournoi battle royale peut se jouer par équipes de 2 à 5 : l'équipe est le groupe, son chef l'inscrit (un seul participant « a & b » côté ManageComp, toute l'équipe est placée dans le même lobby et dans la même équipe en partie).
+- « Classement » dans l'encart du menu : `GET /api/tournaments/{id}` renvoie `standings` (place, nom, détail), tiré du classement cumulé de ManageComp (battle royale) ou du classement final (duels).

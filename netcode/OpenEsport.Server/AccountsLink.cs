@@ -12,6 +12,9 @@ namespace OpenEsport.Server
 	{
 		public long AccountId;
 		public string Login;
+		/// <summary>Groupe du joueur (0 = aucun) : les membres d'un même groupe sont rangés dans la même équipe.</summary>
+		public long PartyId;
+		public int PartySize;
 	}
 
 	/// <summary>Un joueur dans le rapport de fin de partie envoyé au service de comptes.</summary>
@@ -57,13 +60,88 @@ namespace OpenEsport.Server
 				using var res = await _http.SendAsync(Request("/internal/verify", new { token }));
 				if (!res.IsSuccessStatusCode) return (null, false);
 				var root = JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement;
-				return (new VerifiedAccount { AccountId = root.GetProperty("accountId").GetInt64(), Login = root.GetProperty("login").GetString() }, false);
+				return (new VerifiedAccount { AccountId = root.GetProperty("accountId").GetInt64(), Login = root.GetProperty("login").GetString(), PartyId = root.TryGetProperty("partyId", out var pid) ? pid.GetInt64() : 0, PartySize = root.TryGetProperty("partySize", out var ps) ? ps.GetInt32() : 0 }, false);
 			}
 			catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException || e is JsonException)
 			{
 				Log($"Service de comptes injoignable : {e.Message}");
 				return (null, true);
 			}
+		}
+
+		/// <summary>Les comptes admis dans un lobby de tournoi et la manche en cours (null si le service ne répond pas ou si le tournoi n'est pas en cours).</summary>
+		public async Task<(int race, HashSet<long> accounts)?> TournamentLobbyAsync(long tournament, int lobby)
+		{
+			try
+			{
+				using var req = new HttpRequestMessage(HttpMethod.Get, $"{_url}/internal/tournament/{tournament}/lobby/{lobby}");
+				req.Headers.Add("X-Server-Key", _key);
+				using var res = await _http.SendAsync(req);
+				if (!res.IsSuccessStatusCode) return null;
+				var root = JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement;
+				var set = new HashSet<long>();
+				foreach (var a in root.GetProperty("accounts").EnumerateArray()) set.Add(a.GetInt64());
+				return (root.GetProperty("race").GetInt32(), set);
+			}
+			catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException || e is JsonException) { Log($"Tournoi : service de comptes injoignable ({e.Message})"); return null; }
+		}
+
+		/// <summary>Envoie les places d'une manche de tournoi (même principe que le rapport de partie : plusieurs essais).</summary>
+		public void ReportRace(long tournament, int race, int lobby, List<ReportedPlayer> players)
+		{
+			var body = new { tournamentId = tournament, race, lobby, players };
+			_ = Task.Run(async () =>
+			{
+				foreach (int wait in new[] { 0, 3, 10, 30 })
+				{
+					if (wait > 0) await Task.Delay(TimeSpan.FromSeconds(wait));
+					try
+					{
+						using var res = await _http.SendAsync(Request("/internal/tournament-race", body));
+						if (res.IsSuccessStatusCode) { Log($"Manche {race + 1} du tournoi {tournament} rapportée ({players.Count} joueur(s))"); return; }
+						Log($"Manche de tournoi refusée par le service de comptes ({(int)res.StatusCode})");
+						if ((int)res.StatusCode < 500) return;
+					}
+					catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException) { Log($"Manche de tournoi : service injoignable ({e.Message})"); }
+				}
+			});
+		}
+
+		/// <summary>Les camps d'un match de duel (comptes du camp 0 et du camp 1) et son score limite ; null si le match n'existe plus.</summary>
+		public async Task<(HashSet<long> a, HashSet<long> b, int scoreLimit)?> TournamentMatchAsync(long tournament, string key)
+		{
+			try
+			{
+				using var req = new HttpRequestMessage(HttpMethod.Get, $"{_url}/internal/tournament/{tournament}/match/{Uri.EscapeDataString(key)}");
+				req.Headers.Add("X-Server-Key", _key);
+				using var res = await _http.SendAsync(req);
+				if (!res.IsSuccessStatusCode) return null;
+				var root = JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement;
+				HashSet<long> Read(string name) { var set = new HashSet<long>(); foreach (var x in root.GetProperty(name).EnumerateArray()) set.Add(x.GetInt64()); return set; }
+				return (Read("a"), Read("b"), root.GetProperty("scoreLimit").GetInt32());
+			}
+			catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException || e is JsonException) { Log($"Tournoi : service de comptes injoignable ({e.Message})"); return null; }
+		}
+
+		/// <summary>Envoie le score d'un match de duel (plusieurs essais). Une égalité est refusée par le service : le match reste à jouer.</summary>
+		public void ReportDuel(long tournament, string key, int scoreA, int scoreB)
+		{
+			var body = new { tournamentId = tournament, key, scoreA, scoreB };
+			_ = Task.Run(async () =>
+			{
+				foreach (int wait in new[] { 0, 3, 10, 30 })
+				{
+					if (wait > 0) await Task.Delay(TimeSpan.FromSeconds(wait));
+					try
+					{
+						using var res = await _http.SendAsync(Request("/internal/tournament-match", body));
+						if (res.IsSuccessStatusCode) { Log($"Match {key} du tournoi {tournament} rapporté ({scoreA}-{scoreB})"); return; }
+						Log($"Match de tournoi refusé par le service de comptes ({(int)res.StatusCode})");
+						if ((int)res.StatusCode < 500) return;
+					}
+					catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException) { Log($"Match de tournoi : service injoignable ({e.Message})"); }
+				}
+			});
 		}
 
 		/// <summary>Envoie le rapport d'une partie en arrière-plan (jusqu'à 4 essais espacés).</summary>

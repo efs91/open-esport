@@ -90,7 +90,7 @@ git clone https://github.com/your-username/open-esport-2025.git
 
 ## Release
 Latest release (v0.3) for Windows 64-bit:
-- [Download](https://github.com/efs91/open-esport-2025/releases/latest) — unzip, then run `open-esport-2025.exe`
+- [Download](https://github.com/efs91/open-esport-2025/releases/latest) — unzip, then run `open-esport.exe`
 
 The client connects to the public server set in `data/network.cfg` (`host` / `port`).
 

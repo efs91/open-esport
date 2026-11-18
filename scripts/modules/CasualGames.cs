@@ -30,19 +30,7 @@ namespace Openesport.Modules
 
 			LoadConfiguration();
 			
-			// Créer et ajouter le bouton Casual Games
-			var element = new MenuElement(
-				id: 1249797512,
-				name: "MENU_STANDARD_GAMES",
-				type: MenuElementType.Button,
-				parentId: 0,
-				poids: 10,
-				uiPath: "res://scenes/ui/menu/buttons/standard_button.tscn"
-			);
-			element.Properties["action"] = "start_casual_game";
-			_menuManager.AddElement(element);
-			
-			// S'enregistrer comme gestionnaire de l'action start_casual_game
+			// (le lien « Partie standard » a été retiré : on joue en ligne)
 			_menuManager.RegisterActionHandler("start_casual_game", this);
 
 			// Parties en ligne : même carte, mais le serveur décide de tout
@@ -58,7 +46,7 @@ namespace Openesport.Modules
 			_menuManager.AddElement(online);
 			_menuManager.RegisterActionHandler("start_online_game", this);
 
-			// Personnages : choisir celui avec lequel on joue, en créer ou en modifier un
+			// Profil : ses personnages (choisir, créer, modifier) et ses statistiques / classements
 			var character = new MenuElement(
 				id: 1249797514,
 				name: "MENU_CHARACTER",
@@ -122,6 +110,7 @@ namespace Openesport.Modules
 				if (arg.StartsWith("--map=")) { _mapPath = arg.Substring(6); }
 				else if (arg.StartsWith("--name=")) name = arg.Substring(7);
 			}
+			if (Openesport.Online.AccountClient.LoggedIn) name = Openesport.Online.AccountClient.Login;      // le pseudo en jeu est l'identifiant du compte
 			if (string.IsNullOrWhiteSpace(name)) name = "Joueur";
 
 			// pas de robot local : les autres joueurs viennent du serveur
@@ -147,7 +136,7 @@ namespace Openesport.Modules
 		{
 			if (action == "open_character_panel")
 			{
-				var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel" };
+				var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel", ShowStats = true };
 				((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, panel);
 				return;
 			}

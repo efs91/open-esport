@@ -30,6 +30,35 @@ public static class CharacterLibrary
 
 	public static CharacterAppearance SelectedAppearance() => Selected.Appearance.Clone();
 
+	/// <summary>Vrai quand la bibliothèque est celle du compte connecté (elle est alors synchronisée avec le compte et non avec le fichier local).</summary>
+	private static bool _account;
+
+	/// <summary>Charge les personnages du compte connecté. Un compte neuf reçoit un premier personnage.</summary>
+	public static void UseAccount(Openesport.Online.AccountProfile profile)
+	{
+		_account = true;
+		Characters = new List<SavedCharacter>();
+		int selected = 0;
+		foreach (var c in profile.Characters)
+		{
+			try
+			{
+				if (c.Id == profile.SelectedCharacter) selected = Characters.Count;
+				Characters.Add(new SavedCharacter { Name = c.Name, Appearance = CharacterAppearance.FromDict(Json.ParseString(c.Appearance).AsGodotDictionary()) });
+			}
+			catch (Exception e) { GD.PrintErr("[CharacterLibrary] personnage du compte illisible : " + e.Message); }
+		}
+		bool fresh = Characters.Count == 0;
+		if (fresh) Characters.Add(new SavedCharacter { Name = "Personnage 1", Appearance = new CharacterAppearance() });
+		SelectedIndex = Math.Clamp(selected, 0, Characters.Count - 1);
+		CharacterAppearance.Current = SelectedAppearance();
+		if (fresh) Save();
+		SelectionChanged?.Invoke();
+	}
+
+	/// <summary>Déconnexion : on oublie les personnages du compte (la bibliothèque locale sera relue au besoin).</summary>
+	public static void LeaveAccount() { _account = false; Characters = null; SelectedIndex = 0; }
+
 	private static void Ensure()
 	{
 		if (Characters != null) return;
@@ -113,6 +142,7 @@ public static class CharacterLibrary
 
 	private static void Save()
 	{
+		if (_account) { Openesport.Online.AccountClient.PushCharacters(Characters, SelectedIndex); return; }
 		try
 		{
 			var list = new Godot.Collections.Array();

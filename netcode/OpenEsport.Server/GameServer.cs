@@ -47,6 +47,8 @@ namespace OpenEsport.Server
 		/// <summary>Après la fin de la partie, durée avant de renvoyer les joueurs au menu (s).</summary>
 		public float EndLinger = 15f;
 		/// <summary>Le serveur s'arrête une fois la partie terminée (serveur lancé à la demande par le matchmaking).</summary>
+		/// <summary>Service de comptes (http://hôte:27090) et clé du serveur : si l'adresse est renseignée, un joueur doit présenter un jeton de session valide pour entrer ; ses résultats sont rapportés en fin de partie.</summary>
+		public string AccountsUrl, AccountsKey;
 		public bool ExitWhenOver;
 		/// <summary>Le serveur s'arrête si la salle d'attente reste vide ce nombre de secondes (0 = jamais).</summary>
 		public float IdleExitSeconds;
@@ -142,6 +144,7 @@ namespace OpenEsport.Server
 			_worldChecksum = _data.Checksum();
 			_quant = new Quantizer(_data.MinX, _data.MinHeight - 32f, _data.MinZ);
 			_slots = new ServerPlayer[_m.MaxPlayers];
+			SetupAccounts(options);
 			if (_opt.FillBots) _nav = new NavGrid(_data);      // la grille de navigation des bots se construit une fois, au démarrage
 			_packed = new EntityState[_m.MaxPlayers];
 			_teams = new TeamRoster(_m.TeamSize);
@@ -340,8 +343,40 @@ namespace OpenEsport.Server
 			ushort version = _reader.ReadUInt16();
 			string name = _reader.ReadString();
 			var appearance = Messages.ReadAppearance(_reader);
+			string token = _reader.ReadString();
 			if (_reader.Overflow) return;
+			if (peer.Tag != null) return;                                   // déjà entré, ou vérification de son compte en cours
 			if (version != Protocol.Version) { Reject(peer, "Version du protocole différente"); return; }
+			if (Phased && Phase != MatchPhase.Lobby) { Reject(peer, "Partie déjà commencée"); return; }
+
+			if (_accounts != null)
+			{
+				// serveur en ligne : il faut un compte. Le jeton est vérifié sans bloquer le serveur, puis l'entrée se termine sur le fil principal.
+				if (string.IsNullOrEmpty(token)) { Reject(peer, "Compte requis : connecte-toi."); return; }
+				var pending = new object();
+				peer.Tag = pending;
+				_ = VerifyThenJoin(peer, pending, appearance, token);
+				return;
+			}
+			CompleteJoin(peer, name, appearance, 0);
+		}
+
+		private async System.Threading.Tasks.Task VerifyThenJoin(NetPeer peer, object pending, byte[] appearance, string token)
+		{
+			var (account, unreachable) = await _accounts.VerifyAsync(token);
+			_mainThreadActions.Enqueue(() =>
+			{
+				if (peer.Tag != pending) return;
+				peer.Tag = null;
+				if (peer.ConnectionState != ConnectionState.Connected) return;           // il est parti pendant la vérification
+				if (account == null) { Reject(peer, unreachable ? "Service de comptes injoignable : réessaie dans un instant." : "Session invalide : reconnecte-toi."); return; }
+				foreach (var h in _humans) if (h.AccountId == account.AccountId) { Reject(peer, "Ce compte est déjà connecté."); return; }
+				CompleteJoin(peer, account.Login, appearance, account.AccountId);
+			});
+		}
+
+		private void CompleteJoin(NetPeer peer, string name, byte[] appearance, long accountId)
+		{
 			if (Phased && Phase != MatchPhase.Lobby) { Reject(peer, "Partie déjà commencée"); return; }
 
 			int slot = -1;
@@ -352,7 +387,7 @@ namespace OpenEsport.Server
 			if (slot < 0 && !TryFreeSlotFromBot(out slot)) { Reject(peer, "Serveur plein"); return; } // un bot cède sa place
 			if (slot < 0) { Reject(peer, "Serveur plein"); return; }
 
-			var p = new ServerPlayer { Id = (ushort)slot, Peer = peer, Name = SanitizeName(name, slot), Team = (byte)JoinTeam(), Appearance = appearance };
+			var p = new ServerPlayer { Id = (ushort)slot, Peer = peer, Name = SanitizeName(name, slot), Team = (byte)JoinTeam(), Appearance = appearance, AccountId = accountId };
 			Vec3 spawn = Modal ? ModalSpawn(p) : PickSpawn();
 			p.State = (_opt.Dropship && !Royale) ? NewFlight() : PlayerMovement.Spawn(spawn, _world);
 			p.Yaw = 0;
@@ -393,8 +428,8 @@ namespace OpenEsport.Server
 		{
 			_tmp.Reset();
 			Messages.WriteReject(_tmp, reason);
-			peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.ReliableOrdered);
-			peer.Disconnect();
+			// le motif voyage dans le paquet de déconnexion lui-même : envoyé à part juste avant, il serait perdu
+			peer.Disconnect(_tmp.Buffer, 0, _tmp.ByteLength);
 		}
 
 		private void HandleInput(ServerPlayer p)

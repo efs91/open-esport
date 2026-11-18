@@ -14,6 +14,9 @@ namespace Openesport.Menus
 		/// <summary>Si renseigné (menu Multijoueur) : le bouton principal choisit le personnage puis lance cette action (la partie en ligne).</summary>
 		public Action OnPlay;
 
+		/// <summary>Scène « Mon profil » : ajoute la colonne des statistiques et du classement (compte connecté).</summary>
+		public bool ShowStats;
+
 		private ItemList _list;
 		private Button _choose, _edit, _delete;
 		private Label _info;
@@ -38,6 +41,7 @@ namespace Openesport.Menus
 			root.AddChild(split);
 			split.AddChild(BuildLeft());
 			split.AddChild(BuildPreview());
+			if (ShowStats) split.AddChild(BuildStats());
 
 			Refresh(CharacterLibrary.SelectedIndex);
 		}
@@ -47,7 +51,7 @@ namespace Openesport.Menus
 			var box = new VBoxContainer { CustomMinimumSize = new Vector2(380, 0) };
 			box.AddThemeConstantOverride("separation", 8);
 
-			var title = new Label { Text = OnPlay != null ? "Choisis ton personnage" : "Personnages" };
+			var title = new Label { Text = OnPlay != null ? "Choisis ton personnage" : ShowStats ? "Mon profil" : "Personnages" };
 			title.AddThemeFontSizeOverride("font_size", 26);
 			box.AddChild(title);
 			box.AddChild(new Label { Text = "Choisis le personnage avec lequel tu joues, ou crée-en un nouveau." });
@@ -84,6 +88,18 @@ namespace Openesport.Menus
 			back.Pressed += () => { Closed?.Invoke(); QueueFree(); };
 			box.AddChild(back);
 			return box;
+		}
+
+		private Control BuildStats()
+		{
+			var stats = new ProfileStats();
+			stats.OnLogout = async () =>
+			{
+				await Openesport.Online.AccountClient.LogoutAsync();
+				QueueFree();
+				Main.Instance?.ShowLogin();
+			};
+			return stats;
 		}
 
 		private Control BuildPreview()

@@ -87,6 +87,8 @@ namespace OpenEsport.Server
 						case "--revived-health": opt.RevivedHealth = float.Parse(Next(), System.Globalization.CultureInfo.InvariantCulture); break;
 						case "--end-linger": opt.EndLinger = float.Parse(Next(), System.Globalization.CultureInfo.InvariantCulture); break;
 						case "--exit-when-over": opt.ExitWhenOver = true; break;
+						case "--accounts-url": opt.AccountsUrl = Next(); break;
+						case "--accounts-key": opt.AccountsKey = Next(); break;
 						case "--idle-exit": opt.IdleExitSeconds = float.Parse(Next(), System.Globalization.CultureInfo.InvariantCulture); break;
 						case "--bot-target": opt.BotFillTarget = int.Parse(Next()); break;
 						case "--max-bots": opt.MaxBots = int.Parse(Next()); opt.FillBots = opt.MaxBots != 0; break;
@@ -160,6 +162,8 @@ Options :
   --end-linger S      délai après la fin de la partie avant de renvoyer les joueurs au menu (15)
   --exit-when-over    le serveur s'arrête une fois la partie terminée (serveur lancé par le matchmaking)
   --idle-exit S       le serveur s'arrête si la salle d'attente reste vide S secondes (0 = jamais)
+  --accounts-url URL  service de comptes : les joueurs doivent avoir un compte (jeton vérifié) et leurs résultats lui sont rapportés ; ou variable OE_ACCOUNTS_URL
+  --accounts-key CLÉ  clé de ce serveur auprès du service de comptes (ou variable OE_ACCOUNTS_KEY ; préférer la variable : une option se voit dans la liste des processus)
   --loadout           donne un fusil et des munitions à chaque joueur (essais de charge)
   --no-lag-comp       désactive la compensation de latence (comparaisons)
   --world FICHIER     carte exportée depuis Godot (sinon carte procédurale)

@@ -11,16 +11,18 @@ namespace Openesport.EditorTools
 		public const string File = "res://data/network.cfg";
 		private LineEdit _host;
 		private SpinBox _port;
+		private LineEdit _accounts;
 		private Label _status;
 
 		public override void _Ready()
 		{
 			var cfg = new ConfigFile();
-			string host = "127.0.0.1"; int port = 27000;
+			string host = "127.0.0.1", accounts = ""; int port = 27000;
 			if (cfg.Load(File) == Error.Ok)
 			{
 				host = (string)cfg.GetValue("network", "host", host);
 				port = (int)cfg.GetValue("network", "port", port);
+				accounts = (string)cfg.GetValue("network", "accounts", accounts);
 			}
 
 			AddChild(new Label { Text = "Serveur de matchmaking que le jeu contacte (adresse publique du serveur en ligne)." });
@@ -33,15 +35,19 @@ namespace Openesport.EditorTools
 			row.AddChild(_port);
 			AddChild(row);
 
+			AddChild(new Label { Text = "Service de comptes (connexion, profil, classements). Vide : http://<adresse ci-dessus>:27090 ; en ligne, préférer une adresse https://." });
+			_accounts = new LineEdit { Text = accounts, CustomMinimumSize = new Vector2(420, 0), PlaceholderText = "ex. https://comptes.mon-domaine.fr" };
+			AddChild(_accounts);
+
 			var buttons = new HBoxContainer();
 			var save = new Button { Text = "Enregistrer" };
 			save.Pressed += Save;
 			buttons.AddChild(save);
 			var online = new Button { Text = "Serveur en ligne (openesport.cosludia.fr)" };
-			online.Pressed += () => { _host.Text = "openesport.cosludia.fr"; _port.Value = 27000; Save(); };
+			online.Pressed += () => { _host.Text = "openesport.cosludia.fr"; _port.Value = 27000; _accounts.Text = ""; Save(); };
 			buttons.AddChild(online);
 			var local = new Button { Text = "Local (127.0.0.1)" };
-			local.Pressed += () => { _host.Text = "127.0.0.1"; _port.Value = 27000; Save(); };
+			local.Pressed += () => { _host.Text = "127.0.0.1"; _port.Value = 27000; _accounts.Text = ""; Save(); };
 			buttons.AddChild(local);
 			AddChild(buttons);
 
@@ -55,6 +61,7 @@ namespace Openesport.EditorTools
 			var cfg = new ConfigFile();
 			cfg.SetValue("network", "host", _host.Text.Trim());
 			cfg.SetValue("network", "port", (int)_port.Value);
+			cfg.SetValue("network", "accounts", _accounts.Text.Trim());
 			DirAccess.MakeDirRecursiveAbsolute(ProjectSettings.GlobalizePath("res://data"));
 			var err = cfg.Save(File);
 			_status.Text = err == Error.Ok ? $"Enregistré : {_host.Text.Trim()}:{(int)_port.Value}  ({File})" : $"Échec de l'enregistrement : {err}";

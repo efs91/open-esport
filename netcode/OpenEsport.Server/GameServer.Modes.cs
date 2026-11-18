@@ -120,7 +120,7 @@ namespace OpenEsport.Server
 			}
 			foreach (var p in _players)
 			{
-				p.Alive = true; p.Health = 100f; p.Kills = 0; p.DamageDealt = 0f; p.Placement = 0; p.LastAttacker = null;
+				p.Alive = true; p.Health = 100f; p.Kills = 0; p.Deaths = 0; p.DamageDealt = 0f; p.Placement = 0; p.LastAttacker = null;
 				if (p.Brain is BotBrain bb) p.ClassId = (byte)bb.Rng.Next(Loadouts.Kits.Length);
 				p.ProtectUntil = 0;
 			}
@@ -144,6 +144,7 @@ namespace OpenEsport.Server
 			_winnerTeam = winnerTeam;
 			foreach (var p in _players) p.Placement = (byte)(winnerTeam != 255 && p.Team == winnerTeam ? 1 : 2);
 			Log(winnerTeam == 255 ? "Fin de la partie : égalité" : $"Fin de la partie : l'équipe {winnerTeam} gagne");
+			ReportToAccounts(winnerTeam);
 			SendStatusToAll();
 		}
 
@@ -156,7 +157,7 @@ namespace OpenEsport.Server
 			victim.Health = 0f; victim.Shield = 0f;
 			victim.UseId = 0; victim.Reloading = false;
 			victim.State.Vel = Vec3.Zero;
-			victim.DiedThisRound = true;
+			victim.DiedThisRound = true; victim.Deaths++;
 			var delay = _mode.RespawnDelay(victim);
 			victim.RespawnTick = delay > 0f ? _tick + (uint)(delay * _m.TickRate) : uint.MaxValue;
 			_mode.OnKill(killer, victim, weaponId);
@@ -565,11 +566,12 @@ namespace OpenEsport.Server
 			private void StartRound()
 			{
 				_round++;
+				byte prevWinner = _roundWinner;      // le camp qui vient de gagner la manche : il garde tout son équipement, même ceux qui sont morts
 				// mi-temps : on échange les camps, argent et équipement repartent de zéro
 				bool half = _round == RoundsToWin;     // après (RoundsToWin - 1) manches jouées
 				if (half)
 				{
-					_swapped ^= 1; _lossStreak[0] = _lossStreak[1] = 0; _carried.Clear();
+					_swapped ^= 1; _lossStreak[0] = _lossStreak[1] = 0; _carried.Clear(); prevWinner = 255;      // mi-temps : tout repart de zéro
 					foreach (var p in Players) { p.Money = (int)GameBalance.F("sabotage.startMoney"); p.HasKit = false; p.DiedThisRound = true; }
 				}
 				_stage = SabotageStage.Buy; _stageTimer = GameBalance.F("sabotage.buySeconds");
@@ -579,8 +581,15 @@ namespace OpenEsport.Server
 				{
 					p.Alive = true; p.Health = 100f; p.LastAttacker = null; p.UseId = 0; p.Reloading = false; p.ProtectUntil = 0;
 					p.State = PlayerMovement.Spawn(Spawn(p), S._world);
-					if (p.DiedThisRound) { PistolOnly(p); p.HasKit = false; }
-					else { p.Shield = MathF.Max(p.Shield, 0f); S.SendInventory(p); }
+					bool won = prevWinner != 255 && SideOf(p) == prevWinner;
+					if (p.DiedThisRound && !won) { PistolOnly(p); p.HasKit = false; }
+					else
+					{
+						// vainqueurs : armes, munitions, soins et bouclier conservés (même pour ceux qui sont morts), le bouclier est rechargé à fond
+						if (won && p.Inventory.ShieldTier >= 0) p.Shield = Consumables.ShieldMaxOf(p.Inventory.ShieldTier);
+						else p.Shield = MathF.Max(p.Shield, 0f);
+						S.SendInventory(p);
+					}
 					p.DiedThisRound = false;
 					if (SideOf(p) == 1) attackers.Add(p);
 					if (p.Brain is BotBrain) BotBuy(p);
@@ -821,6 +830,15 @@ namespace OpenEsport.Server
 						var wpn = inv.Active;
 						if (wpn == null || !ItemDefs.Get(wpn.WeaponId).AcceptsOptic) return;
 						wpn.OpticId = item.ItemId;
+					}
+					else if (def.Kind == ItemKind.Ammo)
+					{
+						// munitions : on ne paie que si le sac en a pris (il peut être plein)
+						var none = new List<LootItem>();
+						var am = LootItem.Of(item.ItemId); am.Count = (ushort)item.Quantity;
+						int asked = am.Count;
+						inv.TryPickup(ref am, none);
+						if (am.Count >= asked) return;
 					}
 					else
 					{

@@ -65,7 +65,9 @@ namespace OpenEsport.Server
 
 		// partie battle royale
 		public bool Downed;
-		public int Kills;
+		public int Kills, Deaths;
+		/// <summary>Compte du joueur (service de comptes) ; 0 = sans compte (bot, ou serveur sans comptes).</summary>
+		public long AccountId;
 		public float DamageDealt;
 		/// <summary>Classement de l'équipe quand elle est éliminée (0 = en jeu).</summary>
 		public byte Placement;

@@ -47,6 +47,8 @@ namespace OpenEsport.Matchmaker
 		public string Cpus = "2", Memory = "1g";
 		/// <summary>Réseau Docker à rejoindre (voir <see cref="MatchmakerOptions.Network"/>) ; vide = réseau par défaut.</summary>
 		public string Network;
+		/// <summary>Service de comptes transmis aux serveurs de partie (adresse en clair ; la clé passe par la variable d'environnement OE_ACCOUNTS_KEY, sans apparaître dans une ligne de commande).</summary>
+		public string AccountsUrl;
 		public string DockerCommand = "docker";
 		public Action<string> Log = s => Console.WriteLine(s);
 
@@ -58,6 +60,11 @@ namespace OpenEsport.Matchmaker
 				"--cpus", Cpus, "--memory", Memory, "--restart", "no",
 				"-p", $"{s.Port}:{s.Port}/udp" };
 			if (!string.IsNullOrEmpty(Network)) { args.Add("--network"); args.Add(Network); }
+			if (!string.IsNullOrEmpty(AccountsUrl))
+			{
+				args.Add("-e"); args.Add("OE_ACCOUNTS_URL=" + AccountsUrl);
+				if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OE_ACCOUNTS_KEY"))) { args.Add("-e"); args.Add("OE_ACCOUNTS_KEY"); }      // sans valeur : Docker la prend dans l'environnement du matchmaking
+			}
 			string world = null;
 			if (!string.IsNullOrEmpty(WorldFile))
 			{
@@ -135,6 +142,7 @@ namespace OpenEsport.Matchmaker
 		public string ServerDll;
 		public string WorldFile;
 		public string ZonesFile;
+		public string AccountsUrl;
 		public Action<string> Log = s => Console.WriteLine(s);
 		private readonly Dictionary<string, Process> _procs = new Dictionary<string, Process>();
 
@@ -142,6 +150,7 @@ namespace OpenEsport.Matchmaker
 		{
 			var psi = new ProcessStartInfo("dotnet") { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = Path.GetDirectoryName(Path.GetFullPath(ServerDll)) };
 			psi.ArgumentList.Add(ServerDll);
+			if (!string.IsNullOrEmpty(AccountsUrl)) psi.Environment["OE_ACCOUNTS_URL"] = AccountsUrl;      // la clé (OE_ACCOUNTS_KEY) est héritée de l'environnement
 			if (!string.IsNullOrEmpty(ZonesFile)) s.Zones = Path.GetFullPath(ZonesFile);
 			foreach (var a in ServerArgs.For(s, WorldFile == null ? null : Path.GetDirectoryName(Path.GetFullPath(WorldFile)), WorldFile == null)) psi.ArgumentList.Add(a);
 			var p = Process.Start(psi);

@@ -7,6 +7,22 @@
 # il faut donc la socket Docker, et le dossier des cartes doit avoir LE MÊME chemin dans le conteneur et sur la machine
 # (c'est le démon de la machine qui monte les cartes dans chaque serveur de partie).
 services:
+  # comptes des joueurs : inscription, connexion, personnages, statistiques, classements (base SQLite dans un volume).
+  # Les mots de passe transitent par ce service : en ligne, mets-le derrière du HTTPS (voir README : proxy inverse) avant d'inviter des joueurs.
+  accounts:
+    image: open-esport-accounts:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.accounts
+    container_name: open-esport-accounts
+    restart: unless-stopped
+    environment:
+      OE_ACCOUNTS_KEY: ${ACCOUNTS_KEY:?ACCOUNTS_KEY - clé secrète partagée avec le matchmaking (openssl rand -hex 24)}
+    ports:
+      - "${ACCOUNTS_PORT:-27090}:27090/tcp"
+    volumes:
+      - accounts-data:/data
+
   matchmaker:
     image: open-esport-matchmaker:latest
     build:
@@ -47,6 +63,9 @@ services:
       - 0.0.0.0                         # dans le conteneur ; côté machine, le port n'est publié que sur 127.0.0.1 (voir ports)
     environment:
       OE_ADMIN_TOKEN: ${OE_ADMIN_TOKEN:-}
+      # comptes : les serveurs de partie (lancés par le matchmaking) l'exigent et lui rapportent les parties
+      OE_ACCOUNTS_URL: http://accounts:27090
+      OE_ACCOUNTS_KEY: ${ACCOUNTS_KEY:?ACCOUNTS_KEY - clé secrète partagée avec le service de comptes}
     ports:
       - "27000:27000/udp"               # demandes des joueurs
       - "127.0.0.1:27080:27080/tcp"     # tableau de bord : tunnel SSH ou proxy HTTPS pour y accéder
@@ -59,3 +78,7 @@ services:
 networks:
   default:
     name: open-esport
+
+volumes:
+  # NE PAS supprimer avec « docker compose down -v » : c'est la base des comptes
+  accounts-data:

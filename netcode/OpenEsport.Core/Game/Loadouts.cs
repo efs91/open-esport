@@ -43,6 +43,8 @@ namespace OpenEsport.Core
 		/// <summary>Identifiant d'objet acheté (arme, viseur, soin), ou 0 pour un bouclier ou un kit.</summary>
 		public byte ItemId;
 		public int ShieldTier = -1;
+		/// <summary>Munitions : nombre de balles par achat.</summary>
+		public int Quantity = 1;
 		public bool DefuseKit;
 		/// <summary>Réservé à un côté : 0 = défenseurs, 1 = attaquants, 255 = les deux.</summary>
 		public byte Side = 255;
@@ -63,13 +65,19 @@ namespace OpenEsport.Core
 			new ShopItem { Code = 9, Name = "Petit soin", Price = 100, ItemId = ItemIds.HealSmall },
 			new ShopItem { Code = 10, Name = "Petit bouclier (recharge)", Price = 200, ItemId = ItemIds.ShieldSmall },
 			new ShopItem { Code = 11, Name = "Viseur point rouge", Price = 300, ItemId = ItemIds.OpticRedDot },
-			new ShopItem { Code = 12, Name = "Viseur 4x", Price = 500, ItemId = ItemIds.Optic4x },
+			new ShopItem { Code = 20, Name = "Viseur holographique", Price = 350, ItemId = ItemIds.OpticHolo },
 			new ShopItem { Code = 14, Name = "Viseur holographique x2", Price = 400, ItemId = ItemIds.Optic2x },
+			new ShopItem { Code = 12, Name = "Viseur 4x", Price = 500, ItemId = ItemIds.Optic4x },
+			new ShopItem { Code = 21, Name = "Viseur 6x", Price = 700, ItemId = ItemIds.Optic6x },
 			new ShopItem { Code = 15, Name = "Fusil de précision (sniper)", Price = 4750, ItemId = ItemIds.Sniper },
 			new ShopItem { Code = 16, Name = "Grenade à fragmentation", Price = 300, ItemId = ItemIds.GrenadeFrag },
 			new ShopItem { Code = 17, Name = "Grenade flash", Price = 200, ItemId = ItemIds.GrenadeFlash },
 			new ShopItem { Code = 18, Name = "Grenade collante", Price = 350, ItemId = ItemIds.GrenadeSticky },
 			new ShopItem { Code = 19, Name = "Grenade incendiaire", Price = 400, ItemId = ItemIds.GrenadeFire },
+			new ShopItem { Code = 22, Name = "Munitions légères (x30)", Price = 100, ItemId = ItemIds.Ammo9mm, Quantity = 30 },
+			new ShopItem { Code = 23, Name = "Munitions lourdes (x30)", Price = 150, ItemId = ItemIds.AmmoRifle, Quantity = 30 },
+			new ShopItem { Code = 24, Name = "Cartouches (x8)", Price = 100, ItemId = ItemIds.AmmoShell, Quantity = 8 },
+			new ShopItem { Code = 25, Name = "Munitions de sniper (x8)", Price = 150, ItemId = ItemIds.AmmoSniper, Quantity = 8 },
 			new ShopItem { Code = 13, Name = "Kit de désamorçage", Price = 400, DefuseKit = true, Side = 0 },
 		};
 

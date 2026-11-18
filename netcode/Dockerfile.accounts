@@ -1,0 +1,18 @@
+# Service de comptes open-esport (inscription, connexion, personnages, statistiques, classements). Voir docker-compose.yml.
+# Construction (depuis le dossier netcode) :  docker build -f Dockerfile.accounts -t open-esport-accounts .
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY Directory.Build.props ./
+COPY OpenEsport.Core/ OpenEsport.Core/
+COPY OpenEsport.Accounts/ OpenEsport.Accounts/
+RUN dotnet publish OpenEsport.Accounts/OpenEsport.Accounts.csproj -c Release -o /app -p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app .
+# la base SQLite vit dans /data (un volume : elle survit aux mises à jour du conteneur)
+RUN mkdir -p /data && chown app /data
+USER app
+EXPOSE 27090
+ENTRYPOINT ["dotnet", "OpenEsport.Accounts.dll", "--db", "/data/accounts.db", "--port", "27090", "--bind", "0.0.0.0"]

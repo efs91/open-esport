@@ -82,7 +82,7 @@ namespace OpenEsport.Server
 			StartZone();
 			foreach (var p in _players)
 			{
-				p.Alive = true; p.Downed = false; p.Health = 100f; p.Kills = 0; p.DamageDealt = 0f; p.Placement = 0; p.LastAttacker = null; p.ReviveTarget = null;
+				p.Alive = true; p.Downed = false; p.Health = 100f; p.Kills = 0; p.Deaths = 0; p.DamageDealt = 0f; p.Placement = 0; p.LastAttacker = null; p.ReviveTarget = null;
 				p.Shield = Consumables.ShieldMaxOf(p.Inventory.ShieldTier);
 				p.State = _flight;
 				p.State.OnGround = false;
@@ -144,7 +144,7 @@ namespace OpenEsport.Server
 
 		private void EliminateCore(ServerPlayer victim, ServerPlayer killer, byte weaponId, bool announce)
 		{
-			victim.Alive = false; victim.Downed = false;
+			victim.Alive = false; victim.Downed = false; victim.Deaths++;
 			victim.Health = 0f; victim.Shield = 0f;
 			victim.UseId = 0; victim.Reloading = false; victim.ReviveTarget = null;
 			victim.State.Stance = Stance.Standing;
@@ -188,6 +188,7 @@ namespace OpenEsport.Server
 			foreach (var p in _players) if (p.Alive) { _winnerTeam = p.Team; break; }
 			if (_winnerTeam != 255) foreach (var p in _players) if (p.Team == _winnerTeam) p.Placement = 1;
 			Log(_winnerTeam == 255 ? "Fin de la partie : personne n'a gagné" : $"Fin de la partie : l'équipe {_winnerTeam} gagne");
+			ReportToAccounts(_winnerTeam);
 			SendStatusToAll();
 		}
 

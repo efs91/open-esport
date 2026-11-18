@@ -23,6 +23,7 @@ namespace OpenEsport.Core
 		private readonly BitReader _reader = new BitReader();
 		private readonly Stopwatch _clock = Stopwatch.StartNew();
 		private string _joinName = "Joueur";
+		private string _joinToken;
 		private byte[] _joinAppearance;
 
 		private readonly Dictionary<ushort, RemoteEntity> _entities = new Dictionary<ushort, RemoteEntity>();
@@ -151,8 +152,9 @@ namespace OpenEsport.Core
 			_listener.NetworkReceiveEvent += OnReceive;
 		}
 
-		public void Connect(string host, int port, string name, byte[] appearance = null)
+		public void Connect(string host, int port, string name, byte[] appearance = null, string token = null)
 		{
+			_joinToken = token;
 			_joinName = name;
 			_joinAppearance = appearance;
 			State = NetState.Connecting;
@@ -175,12 +177,23 @@ namespace OpenEsport.Core
 		{
 			State = NetState.Joining;
 			_writer.Reset();
-			Messages.WriteJoin(_writer, _joinName, _joinAppearance);
+			Messages.WriteJoin(_writer, _joinName, _joinAppearance, _joinToken);
 			peer.Send(_writer.Buffer, 0, _writer.ByteLength, DeliveryMethod.ReliableOrdered);
 		}
 
 		private void OnDisconnected(NetPeer peer, DisconnectInfo info)
 		{
+			// le serveur joint le motif d'un refus au paquet de déconnexion
+			if (State != NetState.Failed && info.AdditionalData.AvailableBytes > 0)
+			{
+				try
+				{
+					var data = info.AdditionalData.GetRemainingBytes();
+					_reader.Init(data, 0, data.Length);
+					if ((MsgType)_reader.ReadByte() == MsgType.JoinReject) { string why = _reader.ReadString(); if (!_reader.Overflow) { FailReason = why; State = NetState.Failed; } }
+				}
+				catch (Exception) { }
+			}
 			if (State != NetState.Failed) State = NetState.Disconnected;
 			Disconnected?.Invoke(info.Reason.ToString());
 		}

@@ -122,7 +122,7 @@ namespace Openesport.Online
 			Client.Disconnected += reason => { _disconnectReason = reason; _hud.SetStatus("Déconnecté : " + reason, 0f); };
 			_hud.OnLeave = LeaveToMenu;
 			Client.ErrorLog = e => GD.PrintErr("[OnlineGame] erreur de traitement d'un paquet : " + e);
-			Client.Connect(host, port, playerName, CharacterAppearance.Current.Pack());
+			Client.Connect(host, port, playerName, CharacterAppearance.Current.Pack(), AccountClient.Token);
 		}
 
 		public override void _ExitTree()

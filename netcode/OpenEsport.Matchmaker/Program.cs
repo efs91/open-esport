@@ -14,6 +14,7 @@ namespace OpenEsport.Matchmaker
 			string launcherKind = "docker", image = "open-esport-server:latest", world = null, balance = null, serverDll = null, netcodeDir = null;
 			string cpus = "2", memory = "1g";
 			bool noBuild = false;
+			string accountsUrl = Environment.GetEnvironmentVariable("OE_ACCOUNTS_URL");
 			int ask = 0; string askHost = "127.0.0.1";
 			try
 			{
@@ -28,6 +29,7 @@ namespace OpenEsport.Matchmaker
 						case "--public-host": opt.PublicHost = Next(); break;
 						case "--probe-host": opt.ProbeHost = Next(); break;
 						case "--network": opt.Network = Next(); break;
+						case "--accounts-url": accountsUrl = Next(); break;
 						case "--ports":
 							{ var r = Next().Split('-'); opt.PortFirst = int.Parse(r[0]); opt.PortLast = int.Parse(r[1]); break; }
 						case "--players": opt.Players = int.Parse(Next()); break;
@@ -63,7 +65,7 @@ namespace OpenEsport.Matchmaker
 			IServerLauncher launcher;
 			if (launcherKind == "docker")
 			{
-				var d = new DockerLauncher { Image = image, WorldFile = world, BalanceFile = balance, ZonesFile = opt.ZonesFile, Cpus = cpus, Memory = memory, Network = opt.Network };
+				var d = new DockerLauncher { Image = image, WorldFile = world, BalanceFile = balance, ZonesFile = opt.ZonesFile, Cpus = cpus, Memory = memory, Network = opt.Network, AccountsUrl = accountsUrl };
 				// sans --netcode-dir : on cherche le Dockerfile à partir du dossier courant et de l'exécutable, en remontant les dossiers
 				if (netcodeDir == null)
 				{
@@ -87,7 +89,7 @@ namespace OpenEsport.Matchmaker
 			else if (launcherKind == "process")
 			{
 				if (serverDll == null) { Console.Error.WriteLine("--server-dll est requis avec --launcher process"); return 2; }
-				launcher = new ProcessLauncher { ServerDll = serverDll, WorldFile = world, ZonesFile = opt.ZonesFile };
+				launcher = new ProcessLauncher { ServerDll = serverDll, WorldFile = world, ZonesFile = opt.ZonesFile, AccountsUrl = accountsUrl };
 			}
 			else { Console.Error.WriteLine("--launcher : docker ou process"); return 2; }
 
@@ -144,6 +146,7 @@ Options :
   --zones NOM           zones du battle royale : apex (par défaut) ou fortnite
   --zones-file FICHIER  zones créées avec le panneau Godot (data/zones/*.json), montées dans chaque conteneur (prioritaire sur --zones)
   --network NOM         réseau Docker du matchmaking : les serveurs de partie le rejoignent et sont sondés par leur nom (fiable) au lieu des ports publiés
+  --accounts-url URL    service de comptes transmis aux serveurs de partie (ou variable OE_ACCOUNTS_URL) ; la clé vient de la variable OE_ACCOUNTS_KEY. Avec lui, il faut un compte pour jouer
   --cpus N --memory M   limites de chaque conteneur (2 / 1g)
   --netcode-dir DOSSIER construit l'image si elle n'existe pas (dossier contenant le Dockerfile)
   --no-build            ne construit jamais l'image

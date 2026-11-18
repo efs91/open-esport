@@ -199,7 +199,7 @@ namespace Openesport.Online
 
 		// ------------------------------------------------------------------ boutique (comme celles de Valorant et de Counter-Strike : des familles en colonnes, des cases à cliquer)
 
-		private static readonly string[] ShopColumns = { "PISTOLET", "PROXIMITÉ", "FUSILS", "BOUCLIERS", "SOINS", "VISEURS", "GRENADES", "ÉQUIPEMENT" };
+		private static readonly string[] ShopColumns = { "PISTOLET", "PROXIMITÉ", "FUSILS", "BOUCLIERS", "SOINS", "VISEURS", "MUNITIONS", "GRENADES", "ÉQUIPEMENT" };
 
 		private static string ShopCategory(ShopItem it)
 		{
@@ -211,6 +211,7 @@ namespace Openesport.Online
 			{
 				ItemKind.Weapon => it.ItemId == ItemIds.C19 ? "PISTOLET" : it.ItemId == ItemIds.Smg45 || it.ItemId == ItemIds.Sawnoff ? "PROXIMITÉ" : "FUSILS",
 				ItemKind.Optic => "VISEURS",
+				ItemKind.Ammo => "MUNITIONS",
 				ItemKind.Grenade => "GRENADES",
 				ItemKind.Consumable => "SOINS",
 				_ => "ÉQUIPEMENT",

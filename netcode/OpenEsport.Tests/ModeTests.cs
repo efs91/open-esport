@@ -222,6 +222,65 @@ namespace OpenEsport.Tests
 		}
 
 		[Fact]
+		public void Sabotage_Optics_Are_Sold_In_The_Shop()
+		{
+			Balance(("sabotage.buySeconds", 30.0));
+			try
+			{
+				using var rig = Make(GameMode.Sabotage, 4, humans: 2);
+				var p = Join(rig, 2);
+				var a = p[0];
+				Assert.True(a.C.Mode.CanBuy);
+				rig.Give(a, ItemIds.Ak); rig.Run(0.3);
+				int money = SP(rig, a).Money;
+				Assert.Contains(Shop.Items, i => i.ItemId == ItemIds.OpticHolo);
+				Assert.Contains(Shop.Items, i => i.ItemId == ItemIds.Optic6x);
+				a.C.SendCommand(CommandType.Buy, 20); rig.Run(0.3);                      // viseur holographique : 350
+				Assert.Equal(money - 350, SP(rig, a).Money);
+				Assert.Equal(ItemIds.OpticHolo, SP(rig, a).Inventory.Active.OpticId);
+				a.C.SendCommand(CommandType.Buy, 21); rig.Run(0.3);                      // viseur 6x : 700, trop cher avec ce qui reste
+				Assert.Equal(money - 350, SP(rig, a).Money);
+				// munitions : 30 balles lourdes pour 150, ajoutées à la réserve de l'AK
+				int before = SP(rig, a).Inventory.GetAmmo(2);
+				a.C.SendCommand(CommandType.Buy, 23); rig.Run(0.3);
+				Assert.Equal(before + 30, SP(rig, a).Inventory.GetAmmo(2));
+				Assert.Equal(money - 350 - 150, SP(rig, a).Money);
+			}
+			finally { Reset("sabotage.buySeconds"); }
+		}
+
+		[Fact]
+		public void Sabotage_The_Winning_Side_Keeps_Its_Gear_Even_Those_Who_Died_And_The_Losers_Who_Died_Restart_With_A_Pistol()
+		{
+			Balance(("sabotage.buySeconds", 1.5), ("sabotage.endSeconds", 1.0), ("sabotage.roundsToWin", 5));
+			try
+			{
+				using var rig = Make(GameMode.Sabotage, 4, humans: 4);
+				var p = Join(rig, 4);
+				var defenders = p.Where(b => b.C.Mode.MySide == 0).ToList();
+				var attackers = p.Where(b => b.C.Mode.MySide == 1).ToList();
+				Assert.True(defenders.Count >= 2 && attackers.Count >= 2, $"{defenders.Count} défenseurs / {attackers.Count} attaquants");
+				Assert.True(RunUntil(rig, () => defenders[0].C.Mode.Stage == (byte)SabotageStage.Round, 4));
+				foreach (var b in p) rig.Give(b, ItemIds.Ak);
+				rig.Run(0.4);
+				bool Has(Rig.Bot b, byte weapon) => SP(rig, b).Inventory.Weapons.Any(w => w != null && w.WeaponId == weapon);
+				Assert.True(p.All(b => Has(b, ItemIds.Ak)));
+
+				// un défenseur meurt, puis les attaquants : les défenseurs gagnent la manche
+				rig.OnServer(() => rig.Server.AdminKill(attackers[0].C.PlayerId, defenders[0].C.PlayerId)); rig.Run(0.2);
+				foreach (var at in attackers) rig.OnServer(() => rig.Server.AdminKill(defenders[1].C.PlayerId, at.C.PlayerId));
+				Assert.True(RunUntil(rig, () => defenders[1].C.Mode.Round >= 2 && defenders[1].C.Mode.Stage == (byte)SabotageStage.Buy, 6));
+				rig.Run(0.3);
+
+				Assert.True(Has(defenders[0], ItemIds.Ak), "le défenseur mort, mais vainqueur, garde son arme");
+				Assert.True(Has(defenders[1], ItemIds.Ak), "le défenseur survivant garde son arme");
+				Assert.False(Has(attackers[0], ItemIds.Ak), "un perdant mort repart avec le pistolet seul");
+				Assert.True(Has(attackers[0], ItemIds.C19));
+			}
+			finally { Reset("sabotage.buySeconds", "sabotage.endSeconds", "sabotage.roundsToWin"); }
+		}
+
+		[Fact]
 		public void Sabotage_Defenders_Defuse_The_Bomb()
 		{
 			Balance(("sabotage.buySeconds", 0.3), ("sabotage.plantSeconds", 0.3), ("sabotage.bombSeconds", 20), ("sabotage.defuseSeconds", 0.5), ("sabotage.endSeconds", 5));

@@ -129,7 +129,7 @@ namespace OpenEsport.Core
 
 	public static class Protocol
 	{
-		public const ushort Version = 26;
+		public const ushort Version = 27;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";
@@ -215,12 +215,13 @@ namespace OpenEsport.Core
 
 	public static class Messages
 	{
-		public static void WriteJoin(BitWriter w, string name, byte[] appearance = null)
+		public static void WriteJoin(BitWriter w, string name, byte[] appearance = null, string token = null)
 		{
 			w.WriteByte((byte)MsgType.Join);
 			w.WriteUInt16(Protocol.Version);
 			w.WriteString(name, 24);
 			for (int i = 0; i < Protocol.AppearanceSize; i++) w.WriteByte(appearance != null && i < appearance.Length ? appearance[i] : (byte)0);
+			w.WriteString(token ?? "", 64);      // jeton de session du compte (le serveur le fait vérifier par le service de comptes)
 		}
 
 		public static byte[] ReadAppearance(BitReader r)

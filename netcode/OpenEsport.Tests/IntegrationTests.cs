@@ -52,12 +52,12 @@ namespace OpenEsport.Tests
 			Assert.True(started.Wait(5000), "le serveur n'a pas démarré");
 		}
 
-		public Bot Connect(string name, WorldData differentWorld = null, byte[] appearance = null)
+		public Bot Connect(string name, WorldData differentWorld = null, byte[] appearance = null, string token = null)
 		{
 			var w = differentWorld ?? World;
 			var bot = new Bot { C = new GameClient(new StaticWorld(w), w.Checksum()) };
 			bot.C.EventReceived += e => bot.Events.Add(e);
-			bot.C.Connect("127.0.0.1", Port, name, appearance);
+			bot.C.Connect("127.0.0.1", Port, name, appearance, token);
 			Bots.Add(bot);
 			return bot;
 		}

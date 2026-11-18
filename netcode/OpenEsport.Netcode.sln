@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenEsport.LoadTest", "Open
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenEsport.Matchmaker", "OpenEsport.Matchmaker\OpenEsport.Matchmaker.csproj", "{0C540D9A-CA98-4F47-8B9C-C9E46046EF78}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenEsport.Accounts", "OpenEsport.Accounts\OpenEsport.Accounts.csproj", "{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{0C540D9A-CA98-4F47-8B9C-C9E46046EF78}.Release|x64.Build.0 = Release|Any CPU
 		{0C540D9A-CA98-4F47-8B9C-C9E46046EF78}.Release|x86.ActiveCfg = Release|Any CPU
 		{0C540D9A-CA98-4F47-8B9C-C9E46046EF78}.Release|x86.Build.0 = Release|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Debug|x64.Build.0 = Debug|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Debug|x86.Build.0 = Debug|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Release|x64.ActiveCfg = Release|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Release|x64.Build.0 = Release|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{0ACAC19C-AD0A-4C6D-9275-4A2A92E609DA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

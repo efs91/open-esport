@@ -113,6 +113,21 @@ namespace Openesport.Online
 			}
 		}
 
+		/// <summary>Adresse du service de comptes (http://hôte:27090). Option <c>--accounts=url</c>, variable <c>OE_ACCOUNTS</c>, fichier <c>user://network.cfg</c> ou <c>res://data/network.cfg</c> (clé accounts) ; sinon l'hôte du matchmaking, port 27090.</summary>
+		public static string AccountsUrl()
+		{
+			foreach (var arg in OS.GetCmdlineUserArgs()) if (arg.StartsWith("--accounts=")) return arg.Substring(11);
+			string env = OS.GetEnvironment("OE_ACCOUNTS");
+			if (!string.IsNullOrWhiteSpace(env)) return env;
+			foreach (var file in new[] { Path, ProjectCfg })
+			{
+				var cfg = new ConfigFile();
+				if (cfg.Load(file) == Error.Ok && cfg.HasSectionKey("network", "accounts") && !string.IsNullOrWhiteSpace((string)cfg.GetValue("network", "accounts"))) return (string)cfg.GetValue("network", "accounts");
+			}
+			MatchmakerAddress(out string host, out _);
+			return $"http://{host}:27090";
+		}
+
 		private static void Split(string value, int defaultPort, out string host, out int port)
 		{
 			host = value; port = defaultPort;

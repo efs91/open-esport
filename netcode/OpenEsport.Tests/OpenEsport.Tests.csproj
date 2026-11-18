@@ -13,5 +13,6 @@
     <ProjectReference Include="..\OpenEsport.Core\OpenEsport.Core.csproj" />
     <ProjectReference Include="..\OpenEsport.Server\OpenEsport.Server.csproj" />
     <ProjectReference Include="..\OpenEsport.Matchmaker\OpenEsport.Matchmaker.csproj" />
+    <ProjectReference Include="..\OpenEsport.Accounts\OpenEsport.Accounts.csproj" />
   </ItemGroup>
 </Project>

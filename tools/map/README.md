@@ -3,6 +3,8 @@
 Carte multijoueur de 1,2 km (Terrain3D), 3 zones (A Complexe Orion, B Terminal Delta, C Bassin Nama), massif central, routes, forêt de sapins et désert de Namaqualand.
 La scène `res://scenes/maps/Frontiere01.tscn` est désormais la référence pour l'édition. Elle est sauvegardée sur disque et n'est pas générée au lancement du jeu. Ouvrir cette scène et enregistrer normalement dans Godot. `build_frontiere.gd` refuse d'écraser une scène existante.
 
+Description lisible de la carte (zones, centres, passes, routes, butin) : **[MAP.md](MAP.md)**, généré par `python tools/map/gen_map_md.py` (à relancer après une modification de la carte).
+
 ## Se repérer et tester
 
 - Les 711 instances de bâtiments et accessoires sont réparties dans `Zones/A_Orion`, `Zones/B_Delta` et `Zones/C_Nama`. Les groupes ont une transformation identité afin de conserver exactement les positions existantes.
@@ -20,6 +22,18 @@ Ces effets coûtent du temps GPU côté client. Ils n'ajoutent aucun message ré
 
 Cette passe conserve les positions, les volumes de collision, les régions Terrain3D et le monde exporté pour le serveur. Les collisions des bâtiments restent séparées sous `BuildingColliders`. Modifier la lumière ou les matériaux est purement visuel ; déplacer un mur, un obstacle ou modifier le relief nécessitera ensuite une mise à jour cohérente des collisions et du monde serveur. Déplacer seulement un mesh dans l'éditeur ne réalise pas cette synchronisation.
 
+
+## Zone A « Complexe Orion » — entièrement éditable dans Godot
+
+Orion n'est plus générée : chaque bâtiment est une **scène** (`res://scenes/maps/orion/*.tscn`) instanciée sous `Zones/A_Orion`. Ouvrir une scène (double-clic sur le nœud, ou **Ouvrir la scène**) pour déplacer un mur, supprimer une fenêtre, ajouter un étage ou une pièce du MegaKit. Les groupes de nœuds d'un bâtiment : `Sols`, `Murs`, `Cloisons`, `Escaliers`, `Garde-corps`, et le `StaticBody3D` **`Colliders`** (une `CollisionShape3D` boîte par obstacle).
+
+- **Bâtiments** : `Tour_Orion` (5×5, 4 niveaux, atrium vitré), `Aile_Laboratoires` (12×3, 3 niveaux), `Data_Center`, `Quartiers`, `Hangar` (nef + coursive), `Centrale_Energie`, `Poste_Securite`, `Centre_Medical`, quatre `Portail_*`. Passerelles : `Passerelle_*` (tubes vitrés ou ouvertes) et `Arche_Portail_*`. Rues, places et monument : `Rues_Orion`, décor : `Decor_Orion`, piliers : `Piliers_Passerelle`.
+- **Grille** : tuiles de 4 m, étages de 3 m, sol commun à 78,10 m (le relief du plateau varie de 77,6 à 78,06 m : la marche d'entrée fait au plus 0,46 m, sous le seuil de 0,5 m du netcode). Escaliers : `Platform_Stairs_4WideTall` étiré à 8 m, marches de collision de 0,25 m.
+- **Collisions** : modifier un mur sans déplacer sa boîte `Box_n` du `Colliders` laisse la collision à l'ancienne place. Déplacer le bâtiment entier déplace tout (collisions comprises). L'exporteur (`WorldExporter.cs`) lit directement toutes les `CollisionShape3D` boîtes sous `Zones` ; les boîtes (rotations multiples de 90°) sont converties en boîtes alignées sur les axes.
+- **Fenêtres** : un mur à fenêtre a deux boîtes (allège jusqu'à 1,35 m et linteau à partir de 2,35 m) : on voit et on tire à travers, on ne passe pas.
+- **Butin** : groupes de coffres prêts à poser dans `res://scenes/loot/groupes/` (`Coffres_U6`, `Coffres_Face4` [2 paires qui se font face], `Coffres_Ligne5`, `Coffres_Rond6`, `Coffres_Carre4`, `Coffres_Arc5`), instanciés dans `Loot/Coffres` sous le nom `Orion_<Forme>_NN`. Les objets au sol sont `Orion_Objet_NNN` dans `Loot/Objets`. Tous gardent la qualité par défaut. Ouvrir un groupe pour changer le nombre ou la qualité de ses coffres (le changement s'applique à toutes ses instances sauf celles qui l'ont redéfini).
+- **Après toute modification** : régénérer `assets/maps/frontiere01.world` (commande « Fichier serveur » ci-dessous).
+- **Premier jet** : `tools/map/gen_orion_once.py`, à **ne pas relancer** (il refuse si `scenes/maps/orion/` existe). Il a aussi retiré les anciens bâtiments, boîtes de collision et points de butin d'Orion de `Frontiere01.tscn` et de `buildings_final.json`. Les scripts `build_frontiere.gd` et `buildings.gd` reconstruisent toute la carte (et réécriraient Orion à l'ancienne) : ne pas les lancer.
 
 ## Coffres et butin (éditable dans la scène)
 

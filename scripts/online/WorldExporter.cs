@@ -184,6 +184,38 @@ namespace Openesport.Online
 				GD.Print($"[WorldExporter] avec la nature : {data.Boxes.Count} boîtes");
 			}
 
+			// bâtiments éditables dans Godot (Zones/A_Orion…) : les boîtes de collision (CollisionShape3D + BoxShape3D) posées dans les scènes
+			// de bâtiments sont lues directement, avec leur transformation dans la carte. Sans ces nœuds, rien n'est ajouté.
+			var zonesNode = scene.GetNodeOrNull<Node>("Zones");
+			if (zonesNode != null)
+			{
+				int sceneBoxes = 0;
+				void WalkBoxes(Node n)
+				{
+					foreach (var c in n.GetChildren())
+					{
+						if (c is CollisionShape3D cs && cs.Shape is BoxShape3D bs && !cs.Disabled)
+						{
+							var xf = cs.GlobalTransform;
+							var h = bs.Size / 2f;
+							var mn = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+							var mx = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+							for (int k = 0; k < 8; k++)
+							{
+								var p = xf * new Vector3((k & 1) == 0 ? -h.X : h.X, (k & 2) == 0 ? -h.Y : h.Y, (k & 4) == 0 ? -h.Z : h.Z);
+								mn = new Vector3(MathF.Min(mn.X, p.X), MathF.Min(mn.Y, p.Y), MathF.Min(mn.Z, p.Z));
+								mx = new Vector3(MathF.Max(mx.X, p.X), MathF.Max(mx.Y, p.Y), MathF.Max(mx.Z, p.Z));
+							}
+							data.Boxes.Add(new OpenEsport.Core.Aabb(new Vec3(mn.X, mn.Y, mn.Z), new Vec3(mx.X, mx.Y, mx.Z)));
+							sceneBoxes++;
+						}
+						WalkBoxes(c);
+					}
+				}
+				WalkBoxes(zonesNode);
+				if (sceneBoxes > 0) GD.Print($"[WorldExporter] boîtes des scènes de bâtiments (Zones) : {sceneBoxes}");
+			}
+
 			// tyroliennes : câbles, tremplins et piliers (tools/map/gen_ziplines.py)
 			string zipPath = "res://maps/frontiere01/data/ziplines.json";
 			if (Godot.FileAccess.FileExists(zipPath))

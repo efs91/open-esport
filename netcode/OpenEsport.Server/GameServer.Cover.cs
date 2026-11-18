@@ -12,6 +12,31 @@ namespace OpenEsport.Server
 		/// <summary>Distance en dessous de laquelle un bot laisse le butin à un joueur de son équipe (il l'attend plutôt que de sauter dessus).</summary>
 		private const float LootYieldDistance = 12f;
 
+		/// <summary>Rayon (m) autour du point regardé, et portée (m) du regard, dans lesquels un coéquipier humain « réserve » un objet : les bots ne le lui piquent pas, mais ramassent le reste.</summary>
+		private const float LootClaimRadius = 2.5f, LootClaimRange = 12f;
+
+		/// <summary>Un coéquipier humain est tout près de cet objet, ou le regarde (ou regarde juste à côté).</summary>
+		private bool HumanClaims(ServerPlayer p, Vec3 itemPos)
+		{
+			for (int i = 0; i < _humans.Count; i++)
+			{
+				var q = _humans[i];
+				if (q == p || !q.Alive || q.Team != p.Team) continue;
+				var eye = q.State.Pos + new Vec3(0, Sim.EyeFor(q.State.Stance), 0);
+				var to = itemPos - eye;
+				float dist = to.Length();
+				if (dist <= 1.8f) return true;                                  // il est dessus
+				if (dist > LootClaimRange) continue;
+				float cp = MathF.Cos(q.Pitch);
+				var dir = new Vec3(-MathF.Sin(q.Yaw) * cp, MathF.Sin(q.Pitch), -MathF.Cos(q.Yaw) * cp);
+				float along = to.X * dir.X + to.Y * dir.Y + to.Z * dir.Z;
+				if (along <= 0f) continue;                                      // derrière lui
+				float off2 = dist * dist - along * along;                       // distance de l'objet à l'axe du regard
+				if (off2 <= LootClaimRadius * LootClaimRadius) return true;
+			}
+			return false;
+		}
+
 		private bool HumanTeammateNear(ServerPlayer p, float radius)
 		{
 			for (int i = 0; i < _humans.Count; i++)

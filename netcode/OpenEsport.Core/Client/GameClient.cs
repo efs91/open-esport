@@ -476,10 +476,16 @@ namespace OpenEsport.Core
 		{
 			output.Clear();
 			var q = Quant;
+			bool airborne = Predicted.Stance == Stance.Plane || Predicted.Stance == Stance.Diving;
 			foreach (var e in _entities.Values)
 			{
 				if (e.Id == PlayerId && e.Kind == EntityKind.Player) continue;
-				if (e.Sample(_renderTick + alpha, q, out var s)) output.Add(s);
+				if (!e.Sample(_renderTick + alpha, q, out var s)) continue;
+				// en chute : le joueur local est prédit « maintenant », les autres sont vus dans le passé (retard d'interpolation + trajet réseau). À 50 m/s, ça les laissait loin derrière :
+				// on avance les équipiers en vol de ce retard pour qu'ils apparaissent à côté
+				if (airborne && s.Kind == EntityKind.Player && s.Team == TeamId && !s.Has(EntityFlags.OnGround) && !s.Has(EntityFlags.Dead))
+					s.Pos = s.Pos + s.Vel * (InterpTicks * Dt + (Passenger ? 0f : Ping / 1000f));
+				output.Add(s);
 			}
 		}
 

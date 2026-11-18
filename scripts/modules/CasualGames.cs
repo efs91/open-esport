@@ -161,10 +161,11 @@ namespace Openesport.Modules
 				modeScreen.OnContinue = () =>
 				{
 					var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel" };
-					// hors battle royale : après le personnage, on choisit son équipement de départ
+					// hors battle royale et Sabotage : après le personnage, on choisit sa classe d'équipement
 					panel.OnPlay = () =>
 					{
-						if (Openesport.Online.MatchSettings.Mode == OpenEsport.Core.GameMode.BattleRoyale) { FindOnlineGame(); return; }
+						var mode = Openesport.Online.MatchSettings.Mode;      // battle royale : on ramasse son équipement ; Sabotage : on l'achète dans la boutique
+						if (mode == OpenEsport.Core.GameMode.BattleRoyale || mode == OpenEsport.Core.GameMode.Sabotage) { FindOnlineGame(); return; }
 						var loadout = new Openesport.Menus.LoadoutScreen { Name = "LoadoutScreen", OnContinue = FindOnlineGame };
 						loadout.OnBack = () =>
 						{

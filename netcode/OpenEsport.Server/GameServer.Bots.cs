@@ -304,7 +304,7 @@ namespace OpenEsport.Server
 
 			bool fighting = !regroup && b.Target != null && b.Target.Alive && weapon != null;
 			bool holdCover = false;      // caché derrière son abri, accroupi : il est immobile exprès
-			bool yieldLoot = HumanTeammateNear(p, LootYieldDistance);      // un joueur de son équipe est à côté : il lui laisse le butin
+			bool yieldLoot = b.LootIdx >= 0 && b.LootIdx < _lootHigh && HumanClaims(p, _loot[b.LootIdx].Pos);      // son butin est celui que regarde un coéquipier humain : il le lui laisse
 			if (!fighting) b.Hiding = false;
 			bool modeGoal = false; Vec3 mGoal = default; float mArrive = 2f; Buttons mHold = Buttons.None;
 			if (Modal && !fighting && !defend) modeGoal = _mode.BotGoal(p, b, out mGoal, out mArrive, out mHold);
@@ -666,7 +666,6 @@ namespace OpenEsport.Server
 
 		private void SeekLoot(ServerPlayer p, BotBrain b, Vec3 pos)
 		{
-			if (HumanTeammateNear(p, LootYieldDistance)) { b.LootIdx = -1; return; }      // un joueur de son équipe est à côté : il lui laisse le butin
 			var scratch = _lootScratch;
 			// objet utile à proximité
 			var inv = p.Inventory;
@@ -705,6 +704,7 @@ namespace OpenEsport.Server
 					|| (def.Kind == ItemKind.Optic && !needWeapon && inv.Items.Count < inv.Capacity)
 					|| (def.Kind == ItemKind.Grenade && !needWeapon && inv.CountOf(def.Id) < def.StackSize && (inv.CountOf(def.Id) > 0 || inv.Items.Count < inv.Capacity));
 				if (!wanted) continue;
+				if (HumanClaims(p, _loot[idx].Pos)) continue;      // un coéquipier humain regarde cet objet (ou est dessus) : on le lui laisse
 				float d2 = Vec3.DistanceSquared(_loot[idx].Pos, pos);
 				if (d2 < bestLoot) { bestLoot = d2; bestIdx = idx; }
 			}

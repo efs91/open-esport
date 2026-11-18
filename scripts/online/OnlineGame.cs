@@ -662,7 +662,7 @@ namespace Openesport.Online
 				_planeFaced = true;
 				float yaw = Mathf.Atan2(-(st.PlaneTo.X - st.PlaneFrom.X), -(st.PlaneTo.Z - st.PlaneFrom.Z));
 				_player.GlobalRotation = new Vector3(0f, yaw, 0f);
-				_head.Rotation = new Vector3(0f, _head.Rotation.Y, _head.Rotation.Z);
+				_head.Rotation = new Vector3(-0.5f, _head.Rotation.Y, _head.Rotation.Z);      // et un peu vers le bas, on voit le sol
 			}
 			else if (!plane) _planeFaced = false;
 			bool showPath = _flightKnown && (plane || dive);

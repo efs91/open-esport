@@ -98,7 +98,7 @@ namespace OpenEsport.Server
 		private bool _lootDirty = true;
 		private readonly List<LootItem> _dropScratch = new List<LootItem>();
 		private readonly List<int> _lootScratch = new List<int>();
-		private readonly Random _rng = new Random(12345);
+		private Random _rng = new Random(12345);
 
 		private uint _tick;
 		private readonly System.Collections.Concurrent.ConcurrentQueue<Action> _mainThreadActions = new System.Collections.Concurrent.ConcurrentQueue<Action>();
@@ -137,7 +137,8 @@ namespace OpenEsport.Server
 		/// <param name="world">Carte à utiliser (sinon : fichier indiqué dans les options, ou carte procédurale).</param>
 		public GameServer(ServerOptions options, WorldData world)
 		{
-			_opt = options;
+		_opt = options;
+			if (options.RandomSides) _rng = new Random();      // en vrai : un tirage différent à chaque partie (trajet de l'avion, atterrissages des bots) ; les tests gardent une graine fixe
 			if (options.Mode != GameMode.BattleRoyale) { options.Royale = false; options.Dropship = false; options.Match.RespawnSeconds = Modes.Get(options.Mode).RespawnSeconds; }
 			if (options.Royale) { options.Match.RespawnSeconds = 0f; options.Dropship = true; }
 			_m = options.Match.Validated();

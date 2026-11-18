@@ -53,6 +53,19 @@ namespace OpenEsport.Tests
 		}
 
 		[Fact]
+		public void Cannot_Climb_Up_Through_A_Floor_Slab_Overhead()
+		{
+			// le plancher d'un étage (dalle de 0,3 m à 2,7 m du sol) au-dessus de la tête : sauter dessous ne doit pas hisser à travers
+			var d = WorldData.CreateFlat(300);
+			float g = d.HeightAt(0, 0);
+			d.Boxes.Add(new Aabb(new Vec3(-5, g + 2.7f, -8), new Vec3(5, g + 3.0f, 1f)));
+			var w = new StaticWorld(d);
+			var s = Run(w, 0f, 200, true, out bool climbed);
+			Assert.False(climbed, "on ne se hisse pas à travers un plafond");
+			Assert.True(s.Pos.Y < g + 2.0f, $"y = {s.Pos.Y - g}");
+		}
+
+		[Fact]
 		public void Without_Holding_Jump_There_Is_No_Climb()
 		{
 			var (w, _) = Setup(2.4f);

@@ -365,20 +365,20 @@ namespace OpenEsport.Server
 				if (partner != ItemIds.None)
 				{
 					float x = spawn.Pos.X + 0.6f, z = spawn.Pos.Z + 0.4f;
-					if (!AddLoot(BoostAmmo(LootItem.Rolled(partner, _rng)), new Vec3(x, _world.HeightAt(x, z), z))) break;
+					if (!AddLoot(BoostAmmo(LootItem.Rolled(partner, _rng)), new Vec3(x, LootGroundY(x, z, spawn.Pos.Y), z))) break;
 				}
 				// des munitions traînent aussi toutes seules, même sans arme à côté : une boîte de plus près de 4 emplacements sur 10
 				var kind = ItemDefs.Get(itemId)?.Kind;
 				if (kind != ItemKind.Ammo && _rng.NextDouble() < GameBalance.ExtraAmmoChance)
 				{
 					float x = spawn.Pos.X - 0.7f, z = spawn.Pos.Z - 0.5f;
-					if (!AddLoot(BoostAmmo(LootItem.Rolled(LootTable.RollAmmo(_rng), _rng)), new Vec3(x, _world.HeightAt(x, z), z))) break;
+					if (!AddLoot(BoostAmmo(LootItem.Rolled(LootTable.RollAmmo(_rng), _rng)), new Vec3(x, LootGroundY(x, z, spawn.Pos.Y), z))) break;
 				}
 				// et souvent un bouclier ou un soin posé à côté
 				if (_rng.NextDouble() < GameBalance.ExtraSupplyChance)
 				{
 					float x = spawn.Pos.X + 0.1f, z = spawn.Pos.Z - 0.9f;
-					if (!AddLoot(LootItem.Rolled(LootTable.RollSupply(_rng), _rng), new Vec3(x, _world.HeightAt(x, z), z))) break;
+					if (!AddLoot(LootItem.Rolled(LootTable.RollSupply(_rng), _rng), new Vec3(x, LootGroundY(x, z, spawn.Pos.Y), z))) break;
 				}
 			}
 			// les coffres de cette partie deviennent des obstacles pleins (le client pose les mêmes en les recevant)
@@ -426,7 +426,15 @@ namespace OpenEsport.Server
 		{
 			float x = around.X + (float)(_rng.NextDouble() * 2 - 1) * 1.5f;
 			float z = around.Z + (float)(_rng.NextDouble() * 2 - 1) * 1.5f;
-			AddLoot(item, new Vec3(x, _world.HeightAt(x, z), z));
+			AddLoot(item, new Vec3(x, LootGroundY(x, z, around.Y), z));
+		}
+
+		/// <summary>Hauteur où poser un objet en (x, z) : le sol du même niveau que le point de référence (étage, passerelle, toit) et non le relief en dessous.
+		/// Si ce niveau n'existe pas à cet endroit (vide d'un atrium, bord de dalle), l'objet reste à la hauteur du point de référence.</summary>
+		private float LootGroundY(float x, float z, float refY)
+		{
+			float g = _world.GroundAt(x, z, refY, 0.6f);
+			return MathF.Abs(g - refY) <= 0.7f ? g : refY;
 		}
 
 		private void DropAllLoot(ServerPlayer p)

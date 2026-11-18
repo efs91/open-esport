@@ -578,30 +578,30 @@ def outdoor():
         ex.col(x0, top - h, z0, x1, top, z1)
     road("Avenue_NordSud", -8, -96, 8, 96)
     road("Avenue_EstOuest", -92, -8, 92, 8)
-    road("Place_centrale", -14, -14, 14, 14, beton, top=0.02)
-    road("Parvis_Tour", 8, -56, 40, -28, beton, top=-0.03)
-    road("Parvis_Hangar", 14, 16, 46, 44, beton, top=-0.03)
-    road("Cour_Centrale", 52, 12, 92, 36, beton, top=-0.03)
-    road("Cour_Serveurs", -40, -36, -8, -12, beton, top=-0.03)
-    road("Aire_Securite", -66, 20, -22, 40, beton, top=-0.03)
-    road("Portail_Nord", -26, -92, 26, -76, beton, top=-0.03)
-    road("Portail_Sud", -26, 76, 26, 92, beton, top=-0.03)
-    road("Parvis_Labos", -62, -56, -10, -36, beton, top=-0.03)
-    road("Parvis_Quartiers", 40, -52, 64, -32, beton, top=-0.03)
+    road("Place_centrale", -14, -14, 14, 14, beton, top=0.10)
+    road("Parvis_Tour", 8, -56, 40, -28, beton, top=-0.15)
+    road("Parvis_Hangar", 14, 16, 46, 44, beton, top=-0.15)
+    road("Cour_Centrale", 52, 12, 92, 36, beton, top=-0.15)
+    road("Cour_Serveurs", -40, -36, -8, -12, beton, top=-0.15)
+    road("Aire_Securite", -66, 20, -22, 40, beton, top=-0.15)
+    road("Portail_Nord", -26, -92, 26, -76, beton, top=-0.15)
+    road("Portail_Sud", -26, 76, 26, 92, beton, top=-0.15)
+    road("Parvis_Labos", -62, -56, -10, -36, beton, top=-0.15)
+    road("Parvis_Quartiers", 40, -52, 64, -32, beton, top=-0.15)
     # lignes blanches au centre des avenues
     for z in range(-90, 90, 12):
         if abs(z) < 16:
             continue
-        ex.mesh_box("Ligne_NS_%d" % z, -0.15, 0.01, z, 0.15, 0.03, z + 6, ligne, 0.6)
+        ex.mesh_box("Ligne_NS_%d" % z, -0.15, 0.0, z, 0.15, 0.07, z + 6, ligne, 0.6)
     for x in range(-86, 90, 12):
         if abs(x) < 16:
             continue
-        ex.mesh_box("Ligne_EO_%d" % x, x, 0.01, -0.15, x + 6, 0.03, 0.15, ligne, 0.6)
+        ex.mesh_box("Ligne_EO_%d" % x, x, 0.0, -0.15, x + 6, 0.07, 0.15, ligne, 0.6)
     # monument central : disque + piliers lumineux
-    ex.piece("Monument", "mega|Platform_Round1", 0, 0.05, 0)
-    ex.col(-2.2, 0, -2.2, 2.2, 0.3, 2.2)
+    ex.piece("Monument", "mega|Platform_Round1", 0, 0.14, 0)
+    ex.col(-2.2, 0, -2.2, 2.2, 0.35, 2.2)
     for (px, pz) in ((-1.6, -1.6), (1.6, -1.6), (-1.6, 1.6), (1.6, 1.6)):
-        ex.piece("Monument", "mega|Column_Hollow", px, 0.05, pz, 0, 1.0, 0.6, 1.0)
+        ex.piece("Monument", "mega|Column_Hollow", px, 0.12, pz, 0, 1.0, 0.6, 1.0)
         ex.col(px - 0.6, 0, pz - 0.6, px + 0.6, 3.0, pz + 0.6)
     EXTRA.append((ex, 0, Y0, 0, 0))
 

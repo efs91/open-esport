@@ -413,14 +413,27 @@ public partial class CharacterController3D : CharacterBody3D
 		SwimAbility.SubmergedSpeedMultiplier = SubmergedSpeedMultiplier;
 	}
 
+	// Dernier instant (ms) où le contrôleur touchait le sol, et instant où il l'a quitté : en ligne, la position vient du serveur et monte
+	// d'un coup à chaque marche d'escalier ; le contrôleur « décolle » alors une ou deux images. Sans tolérance, chaque marche jouait
+	// un atterrissage et relançait le cycle des pas (bruits répétés, saccade).
+	private ulong _lastOnFloorMs, _leftFloorMs;
+	private const ulong FloorGraceMs = 160, MinAirMsForLanding = 250;
+
+	/// <summary>Au sol, avec une courte tolérance après avoir quitté le sol (marches, petites bosses).</summary>
+	public bool IsOnFloorStable() => IsOnFloor() || Time.GetTicksMsec() - _lastOnFloorMs < FloorGraceMs;
+
 	public void CheckLanded()
 	{
-		if (IsOnFloor() && !_lastIsOnFloor)
+		ulong now = Time.GetTicksMsec();
+		bool onFloor = IsOnFloor();
+		if (!onFloor && _lastIsOnFloor) _leftFloorMs = now;
+		if (onFloor && !_lastIsOnFloor && now - _leftFloorMs >= MinAirMsForLanding)
 		{
 			EmitSignal(SignalName.Landed);
 			ResetStep();
 		}
-		_lastIsOnFloor = IsOnFloor();
+		if (onFloor) _lastOnFloorMs = now;
+		_lastIsOnFloor = onFloor;
 	}
 
 	public void CheckStep(float delta)
@@ -429,9 +442,9 @@ public partial class CharacterController3D : CharacterBody3D
 		{
 			return;
 		}
-		if (IsStep(_horizontalVelocity.Length(), IsOnFloor(), delta))
+		if (IsStep(_horizontalVelocity.Length(), IsOnFloorStable(), delta))
 		{
-			Step(IsOnFloor());
+			Step(IsOnFloorStable());
 		}
 	}
 

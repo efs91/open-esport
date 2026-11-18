@@ -527,6 +527,8 @@ namespace Openesport.Online
 
 		private float _eyeY;
 		private bool _eyeInit;
+		private float _lastFootY, _stepSmooth;
+		private bool _stepInit;
 		private int _gcSeen;
 
 		public override void _Process(double delta)
@@ -558,7 +560,14 @@ namespace Openesport.Online
 			// (le contrôleur remet la position de la tête à chaque image physique : on lisse notre propre valeur, pas celle du nœud)
 			_eyeY = _eyeInit ? Mathf.Lerp(_eyeY, eyeWanted, 1f - Mathf.Exp(-22f * (float)delta)) : eyeWanted;
 			_eyeInit = true;
-			_head.Position = new Vector3(_head.Position.X, _eyeY, _head.Position.Z);
+			// escaliers : le serveur monte d'une marche (0,25 m) en un seul tick, ce qui faisait sauter la caméra à chaque pas.
+			// Sur le sol, une variation de hauteur modérée est absorbée : l'œil la rattrape en une fraction de seconde.
+			float footDy = v.Y - _lastFootY;
+			if (_stepInit && Client.Predicted.OnGround && Mathf.Abs(footDy) > 0.002f && Mathf.Abs(footDy) <= 0.6f) _stepSmooth = Mathf.Clamp(_stepSmooth - footDy, -0.6f, 0.6f);
+			_lastFootY = v.Y;
+			_stepInit = true;
+			_stepSmooth *= Mathf.Exp(-11f * (float)delta);
+			_head.Position = new Vector3(_head.Position.X, _eyeY + _stepSmooth, _head.Position.Z);
 
 			using (LagTracer.Scope("UpdateRemotes")) UpdateRemotes(alpha, (float)delta);
 			UpdateDropPhase(v, (float)delta);

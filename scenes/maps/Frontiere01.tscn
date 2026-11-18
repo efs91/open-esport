@@ -9292,7 +9292,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -426, 81.15, -262.5)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -426, 84.15, -259.5)
 
 [node name="Orion_Rond6_02" parent="Loot/Coffres" instance=ExtResource("orion_22")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -372, 78.15, -288)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -372, 78.25, -288)
 
 [node name="Orion_Carre4_05" parent="Loot/Coffres" instance=ExtResource("orion_24")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -396, 78.15, -312)

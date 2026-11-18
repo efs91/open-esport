@@ -262,6 +262,17 @@ namespace OpenEsport.Core
 				var fixedPos = world.ResolveObstacles(target, Sim.Radius, Sim.HeightStanding, Sim.StepHeight);
 				float mx = fixedPos.X - target.X, mz = fixedPos.Z - target.Z;
 				if (mx * mx + mz * mz > 0.3f * 0.3f) continue;     // pas la place de se tenir debout
+				// on ne se hisse pas à travers un plafond : la colonne au-dessus de la tête, jusqu'au rebord, doit être libre
+				// (sinon, sous le plancher d'un étage, un saut suffisait à le traverser)
+				bool blocked = false;
+				for (float py = pos.Y + 0.5f; py < ltop - 0.05f && !blocked; py += 0.4f)
+				{
+					var probe = new Vec3(pos.X, py, pos.Z);
+					var moved = world.ResolveObstacles(probe, Sim.Radius * 0.9f, Sim.HeightStanding, 0f);
+					float dx = moved.X - probe.X, dy = moved.Y - probe.Y, dz = moved.Z - probe.Z;
+					if (dx * dx + dy * dy + dz * dz > 0.02f * 0.02f) blocked = true;
+				}
+				if (blocked) continue;
 				landing = new Vec3(fixedPos.X, ltop, fixedPos.Z);
 				return true;
 			}
@@ -420,6 +431,14 @@ namespace OpenEsport.Core
 			else
 			{
 				np.Y = old.Y + vy * dt;
+				if (vy > 0f)
+				{
+					// plafond : si le haut du corps (au-dessus de 0,6 m, donc sans les marches basses) entre dans une boîte, la tête cogne et la montée s'arrête.
+					// Sans cela le moteur éjecte le joueur de côté hors d'une dalle d'étage, ce qui permettait de se hisser dessus.
+					var head = new Vec3(np.X, np.Y + 0.6f, np.Z);
+					var chk = world.ResolveObstacles(head, Sim.Radius, MathF.Max(0.1f, height - 0.6f), 0f);
+					if (chk.X != head.X || chk.Z != head.Z) { np.Y = old.Y; vy = 0f; }
+				}
 				if (np.Y <= ground && vy <= 0f)
 				{
 					np.Y = ground;

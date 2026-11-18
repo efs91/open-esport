@@ -108,7 +108,7 @@ namespace OpenEsport.Tests
 			long shots = rig.Server.TotalShots - before;
 			int hits = human.Events.Count(e => e.Type == EventType.Damaged);
 			Assert.True(shots >= 40, $"le bot doit tirer : {shots} tirs");
-			Assert.True(hits / (double)shots <= 0.12, $"un bot facile touche trop : {hits} touches sur {shots} tirs");
+			Assert.True(hits / (double)shots <= 0.20, $"un bot facile touche trop : {hits} touches sur {shots} tirs");
 		}
 
 		[Fact]

@@ -24,7 +24,7 @@ namespace OpenEsport.Tests
 			}
 			finally { GameBalance.ResetToDefaults(); }
 			Assert.Equal(4f, Sim.BaseSpeed);
-			Assert.Equal(19f, WeaponDefs.Get(ItemIds.Ak).Damage);
+			Assert.Equal(14f, WeaponDefs.Get(ItemIds.Ak).Damage);
 		}
 
 		[Fact]

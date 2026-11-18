@@ -20,13 +20,15 @@ namespace Openesport.Online
 		public byte Type;
 		public float Alpha;
 		public string Label;
+		/// <summary>Auteur du ping (pour le retirer d'un clic sur la grande carte).</summary>
+		public ushort Owner;
 	}
 
 	/// <summary>Dessine les pings dans le monde : un faisceau vertical, un losange visible à travers les murs, le nom du joueur et la distance.</summary>
 	public partial class PingView : Node3D
 	{
-		/// <summary>Durée de vie d'un ping (secondes) ; chaque joueur en garde deux au plus.</summary>
-		public const double Lifetime = 8.0;
+		/// <summary>Un ping ne s'efface pas tout seul : il reste jusqu'à ce que son auteur le remplace (autre ping) ou le retire (clic dessus sur la carte). Chaque joueur n'en a qu'un.</summary>
+		public const double Lifetime = 1e9;
 
 		public static Color ColorOf(byte type) => type switch
 		{

@@ -126,8 +126,8 @@ namespace OpenEsport.Tests
 			}
 			var sniper = WeaponDefs.Get(ItemIds.Sniper);
 			Assert.NotNull(sniper);
-			Assert.Equal(600f, sniper.Speed);
-			Assert.Equal(GameBalance.BulletSpeed, WeaponDefs.Get(ItemIds.Ak).Speed);
+			Assert.Equal(800f, sniper.Speed);
+			Assert.Equal(GameBalance.BulletSpeed, WeaponDefs.Get(ItemIds.Sawnoff).Speed);
 			Assert.Equal(ItemIds.AmmoSniper, ItemDefs.AmmoItemFor(sniper.AmmoType));
 		}
 	}

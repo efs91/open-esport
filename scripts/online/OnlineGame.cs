@@ -104,6 +104,7 @@ namespace Openesport.Online
 			_pingView = new PingView { Name = "Pings" };
 			worldRoot.AddChild(_pingView);
 			_pingView.Sync(_pings);
+			_hud.OnPingCancel = who => Client.SendPing(255, Vec3.Zero, who);      // clic gauche sur un ping dans la grande carte : on le retire (les bots cessent de l'honorer)
 			_hud.SetStatus($"Connexion à {host}:{port}…", 0f);
 
 			var world = LoadWorld(worldPath, out uint checksum);
@@ -355,6 +356,7 @@ namespace Openesport.Online
 			bool wall = _worldCollision.Raycast(new Vec3(o.X, o.Y, o.Z), new Vec3(d.X, d.Y, d.Z), MaxRange, out float hit);
 			if (!wall) hit = MaxRange;
 			byte type = 0;
+			ushort target = 0xFFFF;
 			// un adversaire sur la ligne de visée, avant le décor : « ennemi »
 			foreach (var kv in _remotes)
 			{
@@ -363,32 +365,28 @@ namespace Openesport.Online
 				float b = oc.Dot(d), disc = b * b - (oc.Dot(oc) - 0.85f * 0.85f);
 				if (disc < 0f) continue;
 				float t = -b - Mathf.Sqrt(disc);
-				if (t > 0f && t < hit) { hit = t; type = 2; wall = true; }
+				if (t > 0f && t < hit) { hit = t; type = 2; wall = true; target = kv.Key; }
 			}
 			if (!wall) return;      // le ciel ne se désigne pas
 			if (type == 0 && Input.IsKeyPressed(Key.Shift)) type = 1;
 			Vector3 p = o + d * hit;
-			Client.SendPing(type, new Vec3(p.X, p.Y, p.Z));
+			Client.SendPing(type, new Vec3(p.X, p.Y, p.Z), target);
 		}
 
 		private void OnPing(ServerEvent e)
 		{
+			if (e.C == 255) { _pings.RemoveAll(q => q.Owner == e.A); return; }      // ping retiré par son auteur (ou ordre abandonné par le serveur)
 			double now = Time.GetTicksMsec() / 1000.0;
+			_pings.RemoveAll(q => q.Owner == e.A);                                  // un seul ping par joueur : le nouveau remplace l'ancien
 			_pings.Add(new PingData { Owner = e.A, Type = e.C, Pos = new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z), Born = now, Name = e.A == Client.PlayerId ? "Moi" : NameOf(e.A) });
-			// deux pings au plus par joueur : le plus ancien disparaît
-			int mine = 0;
-			for (int i = _pings.Count - 1; i >= 0; i--)
-				if (_pings[i].Owner == e.A && ++mine > 2) _pings.RemoveAt(i);
 			GameAudio.Ping(_worldRoot, _player.GlobalPosition);
 		}
 
 		private void UpdatePings()
 		{
-			double now = Time.GetTicksMsec() / 1000.0;
-			_pings.RemoveAll(p => now - p.Born > PingView.Lifetime);
 			var marks = new List<PingMark>(_pings.Count);
 			foreach (var p in _pings)
-				marks.Add(new PingMark { Pos = p.Pos, Type = p.Type, Alpha = (float)Mathf.Clamp(PingView.Lifetime - (now - p.Born), 0.0, 1.0), Label = $"{p.Name} — {PingView.NameOf(p.Type)}" });
+				marks.Add(new PingMark { Pos = p.Pos, Type = p.Type, Alpha = 1f, Owner = p.Owner, Label = $"{p.Name} — {PingView.NameOf(p.Type)}" });
 			_hud.SetPings(marks);
 		}
 

@@ -440,11 +440,11 @@ namespace OpenEsport.Core
 		}
 
 		/// <summary>Désigne un endroit à son équipe (0 ici, 1 danger, 2 ennemi) : le serveur le renvoie aux équipiers.</summary>
-		public void SendPing(byte type, Vec3 pos)
+		public void SendPing(byte type, Vec3 pos, ushort target = 0xFFFF)
 		{
 			if (State != NetState.Playing) return;
 			_writer.Reset();
-			Messages.WritePing(_writer, type, pos);
+			Messages.WritePing(_writer, type, pos, target);
 			_peer?.Send(_writer.Buffer, 0, _writer.ByteLength, DeliveryMethod.ReliableOrdered);
 		}
 

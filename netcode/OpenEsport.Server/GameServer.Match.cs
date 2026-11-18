@@ -69,6 +69,7 @@ namespace OpenEsport.Server
 
 		private void StartMatch()
 		{
+			_orders.Clear();
 			if (Modal) { StartModalMatch(); return; }
 			Phase = MatchPhase.Playing;
 			_countdown = -1f;

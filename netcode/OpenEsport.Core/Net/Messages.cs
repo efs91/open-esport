@@ -9,7 +9,7 @@ namespace OpenEsport.Core
 		Join = 1,
 		Input = 2,
 		Command = 3,
-		/// <summary>Ping : le joueur désigne un endroit à son équipe. Octet de type (0 ici, 1 danger, 2 ennemi) puis la position.</summary>
+		/// <summary>Ping : le joueur désigne un endroit à son équipe. Octet de type (0 ici, 1 danger, 2 ennemi, 255 retirer), la position, puis l'adversaire désigné (type 2) ou l'auteur du ping à retirer (type 255) ; 0xFFFF = aucun.</summary>
 		Ping = 4,
 		// serveur -> client
 		JoinAccept = 10,
@@ -129,7 +129,7 @@ namespace OpenEsport.Core
 
 	public static class Protocol
 	{
-		public const ushort Version = 25;
+		public const ushort Version = 26;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";
@@ -248,11 +248,12 @@ namespace OpenEsport.Core
 			w.WriteByte(arg);
 		}
 
-		public static void WritePing(BitWriter w, byte type, Vec3 pos)
+		public static void WritePing(BitWriter w, byte type, Vec3 pos, ushort target = 0xFFFF)
 		{
 			w.WriteByte((byte)MsgType.Ping);
 			w.WriteByte(type);
 			w.WriteVec3(pos);
+			w.WriteUInt16(target);
 		}
 
 		public static void WriteReject(BitWriter w, string reason)

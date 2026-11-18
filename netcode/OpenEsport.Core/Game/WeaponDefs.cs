@@ -36,12 +36,12 @@ namespace OpenEsport.Core
 		static WeaponDefs()
 		{
 			Add(new WeaponDef { Id = ItemIds.Knife, Damage = 40, RoundsPerMinute = 90, Melee = true, Range = 2.2f, Automatic = false });
-			Add(new WeaponDef { Id = ItemIds.C19, Damage = 22, RoundsPerMinute = 450, MagazineSize = 19, Range = 120, SpreadDegrees = 0.5f, ReloadSeconds = 1.6f, AmmoType = 1 });
-			Add(new WeaponDef { Id = ItemIds.Smg45, Damage = 13, RoundsPerMinute = 900, MagazineSize = 25, Automatic = true, Range = 150, SpreadDegrees = 1.2f, ReloadSeconds = 1.8f, AmmoType = 1 });
-			Add(new WeaponDef { Id = ItemIds.Ak, Damage = 19, RoundsPerMinute = 600, MagazineSize = 30, Automatic = true, Range = 400, SpreadDegrees = 0.3f, ReloadSeconds = 2.3f, AmmoType = 2 });
-			Add(new WeaponDef { Id = ItemIds.Lmg63, Damage = 17, RoundsPerMinute = 700, MagazineSize = 100, Automatic = true, Range = 400, SpreadDegrees = 0.5f, ReloadSeconds = 4.5f, AmmoType = 2 });
-			Add(new WeaponDef { Id = ItemIds.Sniper, Damage = 75, RoundsPerMinute = 45, MagazineSize = 5, Range = 800, SpreadDegrees = 0.02f, ReloadSeconds = 3.2f, AmmoType = 4, BulletSpeed = 600 });
-			Add(new WeaponDef { Id = ItemIds.Sawnoff, Damage = 11, RoundsPerMinute = 120, MagazineSize = 2, Range = 40, SpreadDegrees = 4f, Pellets = 8, ReloadSeconds = 2.4f, AmmoType = 3 });
+			Add(new WeaponDef { Id = ItemIds.C19, Damage = 45, RoundsPerMinute = 150, MagazineSize = 6, Range = 300, SpreadDegrees = 0.25f, ReloadSeconds = 2.3f, AmmoType = 1, BulletSpeed = 500 });
+			Add(new WeaponDef { Id = ItemIds.Smg45, Damage = 12, RoundsPerMinute = 1080, MagazineSize = 20, Automatic = true, Range = 200, SpreadDegrees = 0.7f, ReloadSeconds = 1.9f, AmmoType = 1, BulletSpeed = 500 });
+			Add(new WeaponDef { Id = ItemIds.Ak, Damage = 14, RoundsPerMinute = 810, MagazineSize = 18, Automatic = true, Range = 400, SpreadDegrees = 0.3f, ReloadSeconds = 2.2f, AmmoType = 2, BulletSpeed = 560 });
+			Add(new WeaponDef { Id = ItemIds.Lmg63, Damage = 19, RoundsPerMinute = 540, MagazineSize = 35, Automatic = true, Range = 400, SpreadDegrees = 0.35f, ReloadSeconds = 3.6f, AmmoType = 2, BulletSpeed = 540 });
+			Add(new WeaponDef { Id = ItemIds.Sniper, Damage = 80, RoundsPerMinute = 33, MagazineSize = 4, Range = 800, SpreadDegrees = 0.02f, ReloadSeconds = 3.3f, AmmoType = 4, BulletSpeed = 800 });
+			Add(new WeaponDef { Id = ItemIds.Sawnoff, Damage = 11, RoundsPerMinute = 60, MagazineSize = 5, Range = 50, SpreadDegrees = 4f, Pellets = 11, ReloadSeconds = 2.5f, AmmoType = 3 });
 		}
 
 		private static void Add(WeaponDef d) => _byId[d.Id] = d;

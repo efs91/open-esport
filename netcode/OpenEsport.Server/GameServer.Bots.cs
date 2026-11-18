@@ -38,6 +38,12 @@ namespace OpenEsport.Server
 			public float RepathTimer, SteerTimer, StuckTimer;
 			public int StuckCount;
 			public bool PathFailed;
+			/// <summary>Défense d'un ping : nombre de places essayées qui se sont révélées inaccessibles.</summary>
+			public int DefendTry;
+			/// <summary>Combat : se met à couvert entre deux rafales (abri visé, phase de cache, temps restant à découvert / à l'abri, délai avant une nouvelle recherche).</summary>
+			public bool Hiding, HasCover;
+			public Vec3 CoverPos;
+			public float HideTimer, ExposeTimer = 1.2f, CoverSearchTimer;
 			/// <summary>Dans l'avion : instant du saut (temps de vol) et point d'atterrissage visé.</summary>
 			public float JumpAt;
 			public Vec3 LandTarget;
@@ -59,7 +65,7 @@ namespace OpenEsport.Server
 		public int BotCount { get { int n = 0; for (int i = 0; i < _players.Count; i++) if (_players[i].IsBot) n++; return n; } }
 		public int HumanCount => _humans.Count;
 		public int BotsWithWeapon { get { int n = 0; for (int i = 0; i < _players.Count; i++) if (_players[i].IsBot && (_players[i].Inventory.Weapons[0] != null || _players[i].Inventory.Weapons[1] != null)) n++; return n; } }
-		public string DebugBots() { var sb = new System.Text.StringBuilder(); for (int i = 0; i < _players.Count && i < 6; i++) { var p = _players[i]; var b = p.Brain as BotBrain; sb.AppendLine($"{p.Name} pos={p.State.Pos} alive={p.Alive} pending={p.PendingInputs} lootIdx={b?.LootIdx} target={b?.Target?.Name} yaw={b?.Yaw:F2} goal={b?.Goal} w0={p.Inventory.Weapons[0]?.WeaponId} items={p.Inventory.Items.Count}"); } return sb.ToString(); }
+		public string DebugBots() { var sb = new System.Text.StringBuilder(); for (int i = 0; i < _players.Count && i < 6; i++) { var p = _players[i]; var b = p.Brain as BotBrain; sb.AppendLine($"{p.Name} pos={p.State.Pos} alive={p.Alive} pending={p.PendingInputs} lootIdx={b?.LootIdx} target={b?.Target?.Name} yaw={b?.Yaw:F2} goal={b?.Goal} steer={b?.SteerPoint} pathN={b?.Path.Count} pathFail={b?.PathFailed} defTry={b?.DefendTry} stuck={b?.StuckCount} order={(p.IsBot ? OrderFor(p.Team) != null : false)} w0={p.Inventory.Weapons[0]?.WeaponId} items={p.Inventory.Items.Count}"); } return sb.ToString(); }
 		public long TotalKills { get; private set; }
 		public long TotalShots { get; private set; }
 
@@ -289,11 +295,19 @@ namespace OpenEsport.Server
 			bool zoneRun = BotZoneGoal(p, b, out Vec3 zoneGoal);
 			if (zoneRun && (b.Target == null || !b.Target.Alive || !_zone.Inside(pos.X, pos.Z))) { leader = null; b.LootIdx = -1; }
 			else zoneRun = false;
+			// ordre d'équipe (ping) : défendre un endroit, ou attaquer un adversaire (voir Perceive). La zone passe avant : un bot qui doit la rejoindre n'obéit pas.
+			var order = zoneRun ? null : BotOrder(p);
+			bool defend = order != null && !order.Attack;
+			if (order != null) leader = null;
+			if (defend && b.Target != null && FlatDistance(b.Target.State.Pos, order.Pos) > DefendLeash) b.Target = null;      // il ne poursuit pas un adversaire loin du ping
 			bool regroup = leader != null && leaderDist > FollowAbandonDistance; // trop loin : plus de combat ni de butin, on le rejoint
 
 			bool fighting = !regroup && b.Target != null && b.Target.Alive && weapon != null;
+			bool holdCover = false;      // caché derrière son abri, accroupi : il est immobile exprès
+			bool yieldLoot = HumanTeammateNear(p, LootYieldDistance);      // un joueur de son équipe est à côté : il lui laisse le butin
+			if (!fighting) b.Hiding = false;
 			bool modeGoal = false; Vec3 mGoal = default; float mArrive = 2f; Buttons mHold = Buttons.None;
-			if (Modal && !fighting) modeGoal = _mode.BotGoal(p, b, out mGoal, out mArrive, out mHold);
+			if (Modal && !fighting && !defend) modeGoal = _mode.BotGoal(p, b, out mGoal, out mArrive, out mHold);
 			if (fighting)
 			{
 				Vec3 eye = pos + new Vec3(0, Sim.EyeFor(p.State.Stance), 0);
@@ -334,7 +348,37 @@ namespace OpenEsport.Server
 				strafe = b.StrafeDir;
 				forward = horiz > (def.Range > 100 ? 40f : 15f) ? 1f : (horiz < 6f ? -1f : 0f);
 				if (b.NoRetreat > 0f && forward < 0f) forward = 0f;      // coincé contre un mur : il ne recule plus
-				if (b.SinceSeen > 0.6f)
+
+				// tirer, puis se mettre à couvert : à découvert un moment, puis il court derrière un obstacle proche, s'accroupit, attend, et ressort
+				if (!b.Hiding)
+				{
+					if (b.SinceSeen <= 0.6f) b.ExposeTimer -= dt;
+					b.CoverSearchTimer -= dt;
+					if (b.ExposeTimer <= 0f && b.CoverSearchTimer <= 0f)
+					{
+						b.CoverSearchTimer = 1f;
+						if (FindCover(p, b, pos, b.Target.State.Pos)) { b.Hiding = true; b.HideTimer = (1.3f + (float)b.Rng.NextDouble() * 1.4f) * (p.Health < 40f ? 1.7f : 1f); }
+						else b.ExposeTimer = 0.8f;      // rien pour s'abriter ici : il continue de se battre et réessaiera
+					}
+				}
+				else
+				{
+					b.HideTimer -= dt;
+					if (b.HideTimer <= 0f) { b.Hiding = false; b.ExposeTimer = 1.1f + (float)b.Rng.NextDouble() * 1.4f; }
+				}
+				if (b.Hiding)
+				{
+					float cdx = b.CoverPos.X - pos.X, cdz = b.CoverPos.Z - pos.Z;
+					if (MathF.Sqrt(cdx * cdx + cdz * cdz) > 0.9f)
+					{
+						var cs = Steer(p, b, b.CoverPos, dt);
+						if (b.PathFailed) { b.PathFailed = false; b.Hiding = false; b.ExposeTimer = 1f; }
+						desiredYaw = MathF.Atan2(-(cs.X - pos.X), -(cs.Z - pos.Z)); desiredPitch = 0f;
+						forward = 1f; strafe = 0f; buttons |= Buttons.Sprint;
+					}
+					else { forward = 0f; strafe = 0f; buttons |= Buttons.Crouch; holdCover = true; }      // à l'abri : accroupi, sans tirer
+				}
+				if (b.SinceSeen > 0.6f && !b.Hiding)
 				{
 					// cible perdue de vue (derrière un mur) : il la poursuit en contournant les obstacles, sans tirer dans le décor
 					var chase = Steer(p, b, b.Target.State.Pos, dt);
@@ -352,10 +396,34 @@ namespace OpenEsport.Server
 					else { b.PauseTimer = 0.15f + (float)b.Rng.NextDouble() * 0.4f * (1.2f - b.Skill); b.BurstTimer = b.PauseTimer; }
 				}
 				bool inBurst = b.PauseTimer <= 0f;
-				if (inBurst && b.SinceSeen <= 0.6f && !p.Reloading && weapon.Magazine > 0 && (def.Automatic || b.Toggle)) buttons |= Buttons.Fire;
+				if (inBurst && !b.Hiding && b.SinceSeen <= 0.6f && !p.Reloading && weapon.Magazine > 0 && (def.Automatic || b.Toggle)) buttons |= Buttons.Fire;
 				if (b.Rng.Next(120) == 0) buttons |= Buttons.Crouch;
 				b.GrenadeTimer -= dt;
 				if (b.GrenadeTimer <= 0f && b.SinceSeen < 0.3f) { b.GrenadeTimer = 3f; TryBotGrenade(p, b, horiz, d.Y); }
+			}
+			else if (defend)
+			{
+				// défendre le ping : rejoindre sa place sur l'anneau autour, puis y rester en regardant vers l'extérieur ; les adversaires qui approchent déclenchent le combat
+				Vec3 spot = ZoneClamp(DefendSpot(p, order.Pos, b.DefendTry));
+				float ddx = spot.X - pos.X, ddz = spot.Z - pos.Z;
+				float dh = MathF.Sqrt(ddx * ddx + ddz * ddz);
+				if (dh > 2f)
+				{
+					var steer = Steer(p, b, spot, dt);
+					if (b.PathFailed) { b.PathFailed = false; b.DefendTry++; b.Path.Clear(); }      // place inaccessible : une autre
+					desiredYaw = MathF.Atan2(-(steer.X - pos.X), -(steer.Z - pos.Z));
+					if (dh > 8f) buttons |= Buttons.Sprint;
+					b.JumpTimer -= dt;
+					if (b.JumpTimer <= 0f) { b.JumpTimer = 3f + (float)b.Rng.NextDouble() * 5f; if (b.Toggle && dh > 12f) buttons |= Buttons.Jump; }
+				}
+				else
+				{
+					forward = 0f;
+					desiredYaw = MathF.Atan2(-(spot.X - order.Pos.X), -(spot.Z - order.Pos.Z));
+					b.StrafeTimer -= dt;
+					if (b.StrafeTimer <= 0f) { b.StrafeDir = -b.StrafeDir; b.StrafeTimer = 1f + (float)b.Rng.NextDouble() * 2f; }
+					strafe = 0.4f * b.StrafeDir;
+				}
 			}
 			else if (modeGoal)
 			{
@@ -380,7 +448,7 @@ namespace OpenEsport.Server
 					if (mHold == Buttons.None) strafe = 0.5f * b.StrafeDir;
 				}
 			}
-			else if (!regroup && (leader == null || leaderDist < FollowLootDistance) && b.LootIdx >= 0 && b.LootIdx < _lootHigh && _loot[b.LootIdx].Active)
+			else if (!regroup && !yieldLoot && (leader == null || leaderDist < FollowLootDistance) && b.LootIdx >= 0 && b.LootIdx < _lootHigh && _loot[b.LootIdx].Active)
 			{
 				Vec3 d = _loot[b.LootIdx].Pos - pos;
 				float horiz = MathF.Sqrt(d.X * d.X + d.Z * d.Z);
@@ -442,7 +510,7 @@ namespace OpenEsport.Server
 			{
 				float mdx = pos.X - b.LastPos.X, mdz = pos.Z - b.LastPos.Z;
 				// en combat : s'il ne bouge pas malgré ses déplacements, il ne recule plus, change de côté, puis abandonne sa cible
-				if (fighting && mdx * mdx + mdz * mdz < 0.3f * 0.3f)
+				if (fighting && !holdCover && mdx * mdx + mdz * mdz < 0.3f * 0.3f)
 				{
 					b.NoRetreat = 2f; b.StrafeDir = -b.StrafeDir; b.StrafeTimer = 1f;
 					if (++b.FightStuck >= 3) { b.Target = null; b.FightStuck = 0; b.Path.Clear(); b.RepathTimer = 0f; }
@@ -514,6 +582,22 @@ namespace OpenEsport.Server
 				if (p.Inventory.Weapons[wi] != null && BotUsable(p, p.Inventory.Weapons[wi])) canFight = true;
 			if (!canFight) b.Target = null;
 
+			// ordre d'attaque (ping sur un adversaire) : le bot s'acharne sur celui-là, vu ou non (hors de vue il le poursuit) ; la zone passe avant
+			if (canFight && !(_zone != null && _zone.Phase != ZonePhase.None && !_zone.Inside(pos.X, pos.Z)))
+			{
+				var order = BotOrder(p);
+				var victim = order != null && order.Attack ? GetPlayer(order.Target) : null;
+				if (victim != null && victim.Alive && victim.State.Stance != Stance.Plane)
+				{
+					Vec3 to = victim.State.Pos + new Vec3(0, 1.0f, 0) - eye;
+					float dist = to.Length();
+					bool seen = dist > 0.01f && dist < 90f && !(_world.Raycast(eye, to / dist, dist, out float wall) && wall < dist - 0.5f);
+					if (seen) b.SinceSeen = 0f;
+					b.Target = victim; b.LootIdx = -1;
+					return;
+				}
+			}
+
 			ServerPlayer best = null;
 			if (canFight)
 			{
@@ -582,6 +666,7 @@ namespace OpenEsport.Server
 
 		private void SeekLoot(ServerPlayer p, BotBrain b, Vec3 pos)
 		{
+			if (HumanTeammateNear(p, LootYieldDistance)) { b.LootIdx = -1; return; }      // un joueur de son équipe est à côté : il lui laisse le butin
 			var scratch = _lootScratch;
 			// objet utile à proximité
 			var inv = p.Inventory;

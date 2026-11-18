@@ -22,6 +22,9 @@ namespace Openesport.Online
 		/// <summary>Appelé par le bouton « Retour au menu » de l'écran de fin de partie.</summary>
 		public System.Action OnLeave;
 		private bool _loading;
+		private Input.MouseModeEnum _mapPrevMouse = Input.MouseModeEnum.Captured;
+		/// <summary>Clic gauche sur un ping dans la grande carte : l'identifiant de son auteur (pour retirer son ping).</summary>
+		public System.Action<ushort> OnPingCancel;
 		private UseBar _useBar;
 		private double _hitTime, _flashTime;
 		private Color _flashColor = new Color(0.8f, 0.05f, 0.05f);
@@ -138,6 +141,7 @@ namespace Openesport.Online
 
 			_fullMap = new FullMap { MouseFilter = Control.MouseFilterEnum.Ignore, Visible = false };
 			_fullMap.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+			_fullMap.OnPingClick = id => OnPingCancel?.Invoke(id);
 			root.AddChild(_fullMap);
 
 			_team = new VBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
@@ -234,6 +238,10 @@ namespace Openesport.Online
 			if (e is InputEventKey { Pressed: true, Echo: false, Keycode: Key.M })
 			{
 				_fullMap.Visible = !_fullMap.Visible;
+				// carte ouverte : le curseur est libéré pour cliquer sur un ping (le retirer) ; à la fermeture on reprend la souris si elle était capturée
+				_fullMap.MouseFilter = _fullMap.Visible ? Control.MouseFilterEnum.Stop : Control.MouseFilterEnum.Ignore;
+				if (_fullMap.Visible) { _mapPrevMouse = Input.MouseMode; if (_mapPrevMouse == Input.MouseModeEnum.Captured) Input.MouseMode = Input.MouseModeEnum.Visible; }
+				else if (_mapPrevMouse == Input.MouseModeEnum.Captured) Input.MouseMode = Input.MouseModeEnum.Captured;
 				GetViewport().SetInputAsHandled();
 			}
 		}
@@ -462,6 +470,22 @@ namespace Openesport.Online
 	{
 		public bool Loading;
 		public string LoadingText = "";
+		public System.Action<ushort> OnPingClick;
+		private Vector2 _origin;
+		private float _side;
+
+		public override void _GuiInput(InputEvent e)
+		{
+			if (Loading || e is not InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } mb || _side <= 0f) return;
+			float best = 22f; ushort who = 0; bool found = false;
+			foreach (var pg in Pings)
+			{
+				var pp = _origin + new Vector2((pg.Pos.X - MinX) / (MaxX - MinX), (pg.Pos.Z - MinZ) / (MaxZ - MinZ)) * _side;
+				float d = pp.DistanceTo(mb.Position);
+				if (d < best) { best = d; who = pg.Owner; found = true; }
+			}
+			if (found) { OnPingClick?.Invoke(who); AcceptEvent(); }
+		}
 
 		public override void _Draw()
 		{
@@ -469,6 +493,7 @@ namespace Openesport.Online
 			DrawRect(new Rect2(Vector2.Zero, vp), new Color(0.02f, 0.03f, 0.05f, Loading ? 1f : 0.82f));
 			float side = Mathf.Min(vp.X, vp.Y) * 0.88f;
 			var origin = new Vector2((vp.X - side) / 2f, (vp.Y - side) / 2f + 10f);
+			_origin = origin; _side = side;
 			if (Tex != null) DrawTextureRect(Tex, new Rect2(origin, new Vector2(side, side)), false);
 			DrawRect(new Rect2(origin, new Vector2(side, side)), new Color(1, 1, 1, 0.9f), false, 3f);
 			Vector2 ToMap(Vector3 w) => origin + new Vector2((w.X - MinX) / (MaxX - MinX), (w.Z - MinZ) / (MaxZ - MinZ)) * side;
@@ -497,7 +522,7 @@ namespace Openesport.Online
 			var perp = new Vector2(-dir.Y, dir.X);
 			DrawColoredPolygon(new[] { me + dir * 15, me - dir * 9 + perp * 9, me - dir * 3, me - dir * 9 - perp * 9 }, new Color(0, 0, 0, 0.85f));
 			DrawColoredPolygon(new[] { me + dir * 12, me - dir * 7 + perp * 7, me - dir * 2.5f, me - dir * 7 - perp * 7 }, new Color(1f, 0.92f, 0.3f));
-			string title = Loading ? (ShowFlight ? "CHARGEMENT  —  trajectoire de l'avion en jaune, vous êtes dessus" : "CHARGEMENT  —  la carte de la partie") : "CARTE  —  vous : flèche jaune, équipiers : points bleus, avion : trait jaune   (M pour fermer)";
+			string title = Loading ? (ShowFlight ? "CHARGEMENT  —  trajectoire de l'avion en jaune, vous êtes dessus" : "CHARGEMENT  —  la carte de la partie") : "CARTE  —  vous : flèche jaune, équipiers : points bleus, avion : trait jaune   (M pour fermer)   —   clic gauche sur un ping : le retirer";
 			DrawString(ThemeDB.FallbackFont, new Vector2(origin.X, origin.Y - 8), title, HorizontalAlignment.Left, -1, 17, Colors.White);
 			if (Loading && !string.IsNullOrEmpty(LoadingText))
 				DrawString(ThemeDB.FallbackFont, new Vector2(origin.X, origin.Y + side + 28), LoadingText, HorizontalAlignment.Left, -1, 20, new Color(1f, 0.93f, 0.55f));

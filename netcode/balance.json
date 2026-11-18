@@ -54,68 +54,68 @@
   "weapon.knife.roundsPerMinute": 90,
   // Portée (knife). [m] (défaut : 2.2)
   "weapon.knife.range": 2.2,
-  // Dégâts par balle (c19). [PV] (défaut : 22)
-  "weapon.c19.damage": 22,
-  // Cadence de tir (c19). [coups/min] (défaut : 450)
-  "weapon.c19.roundsPerMinute": 450,
-  // Taille du chargeur (c19). [balles] (défaut : 19)
-  "weapon.c19.magazine": 19,
-  // Portée (c19). [m] (défaut : 120)
-  "weapon.c19.range": 120,
-  // Dispersion (c19). [°] (défaut : 0.5)
-  "weapon.c19.spread": 0.5,
-  // Durée du rechargement (c19). [s] (défaut : 1.6)
-  "weapon.c19.reloadSeconds": 1.6,
-  // Dégâts par balle (smg45). [PV] (défaut : 13)
-  "weapon.smg45.damage": 13,
-  // Cadence de tir (smg45). [coups/min] (défaut : 900)
-  "weapon.smg45.roundsPerMinute": 900,
-  // Taille du chargeur (smg45). [balles] (défaut : 25)
-  "weapon.smg45.magazine": 25,
-  // Portée (smg45). [m] (défaut : 150)
-  "weapon.smg45.range": 150,
-  // Dispersion (smg45). [°] (défaut : 1.2)
-  "weapon.smg45.spread": 1.2,
-  // Durée du rechargement (smg45). [s] (défaut : 1.8)
-  "weapon.smg45.reloadSeconds": 1.8,
-  // Dégâts par balle (ak). [PV] (défaut : 19)
-  "weapon.ak.damage": 19,
-  // Cadence de tir (ak). [coups/min] (défaut : 600)
-  "weapon.ak.roundsPerMinute": 600,
-  // Taille du chargeur (ak). [balles] (défaut : 30)
-  "weapon.ak.magazine": 30,
+  // Dégâts par balle (c19). [PV] (défaut : 45)
+  "weapon.c19.damage": 45,
+  // Cadence de tir (c19). [coups/min] (défaut : 150)
+  "weapon.c19.roundsPerMinute": 150,
+  // Taille du chargeur (c19). [balles] (défaut : 6)
+  "weapon.c19.magazine": 6,
+  // Portée (c19). [m] (défaut : 300)
+  "weapon.c19.range": 300,
+  // Dispersion (c19). [°] (défaut : 0.25)
+  "weapon.c19.spread": 0.25,
+  // Durée du rechargement (c19). [s] (défaut : 2.3)
+  "weapon.c19.reloadSeconds": 2.3,
+  // Dégâts par balle (smg45). [PV] (défaut : 12)
+  "weapon.smg45.damage": 12,
+  // Cadence de tir (smg45). [coups/min] (défaut : 1080)
+  "weapon.smg45.roundsPerMinute": 1080,
+  // Taille du chargeur (smg45). [balles] (défaut : 20)
+  "weapon.smg45.magazine": 20,
+  // Portée (smg45). [m] (défaut : 200)
+  "weapon.smg45.range": 200,
+  // Dispersion (smg45). [°] (défaut : 0.7)
+  "weapon.smg45.spread": 0.7,
+  // Durée du rechargement (smg45). [s] (défaut : 1.9)
+  "weapon.smg45.reloadSeconds": 1.9,
+  // Dégâts par balle (ak). [PV] (défaut : 14)
+  "weapon.ak.damage": 14,
+  // Cadence de tir (ak). [coups/min] (défaut : 810)
+  "weapon.ak.roundsPerMinute": 810,
+  // Taille du chargeur (ak). [balles] (défaut : 18)
+  "weapon.ak.magazine": 18,
   // Portée (ak). [m] (défaut : 400)
   "weapon.ak.range": 400,
-  // Dispersion (ak). [°] (défaut : 0.8)
+  // Dispersion (ak). [°] (défaut : 0.3)
   "weapon.ak.spread": 0.3,
-  // Durée du rechargement (ak). [s] (défaut : 2.3)
-  "weapon.ak.reloadSeconds": 2.3,
-  // Dégâts par balle (lmg63). [PV] (défaut : 17)
-  "weapon.lmg63.damage": 17,
-  // Cadence de tir (lmg63). [coups/min] (défaut : 700)
-  "weapon.lmg63.roundsPerMinute": 700,
-  // Taille du chargeur (lmg63). [balles] (défaut : 100)
-  "weapon.lmg63.magazine": 100,
+  // Durée du rechargement (ak). [s] (défaut : 2.2)
+  "weapon.ak.reloadSeconds": 2.2,
+  // Dégâts par balle (lmg63). [PV] (défaut : 19)
+  "weapon.lmg63.damage": 19,
+  // Cadence de tir (lmg63). [coups/min] (défaut : 540)
+  "weapon.lmg63.roundsPerMinute": 540,
+  // Taille du chargeur (lmg63). [balles] (défaut : 35)
+  "weapon.lmg63.magazine": 35,
   // Portée (lmg63). [m] (défaut : 400)
   "weapon.lmg63.range": 400,
-  // Dispersion (lmg63). [°] (défaut : 2)
-  "weapon.lmg63.spread": 0.5,
-  // Durée du rechargement (lmg63). [s] (défaut : 4.5)
-  "weapon.lmg63.reloadSeconds": 4.5,
+  // Dispersion (lmg63). [°] (défaut : 0.35)
+  "weapon.lmg63.spread": 0.35,
+  // Durée du rechargement (lmg63). [s] (défaut : 3.6)
+  "weapon.lmg63.reloadSeconds": 3.6,
   // Dégâts par balle (sawnoff). [PV] (défaut : 11)
   "weapon.sawnoff.damage": 11,
-  // Cadence de tir (sawnoff). [coups/min] (défaut : 120)
-  "weapon.sawnoff.roundsPerMinute": 120,
-  // Taille du chargeur (sawnoff). [balles] (défaut : 2)
-  "weapon.sawnoff.magazine": 2,
-  // Portée (sawnoff). [m] (défaut : 40)
-  "weapon.sawnoff.range": 40,
+  // Cadence de tir (sawnoff). [coups/min] (défaut : 60)
+  "weapon.sawnoff.roundsPerMinute": 60,
+  // Taille du chargeur (sawnoff). [balles] (défaut : 5)
+  "weapon.sawnoff.magazine": 5,
+  // Portée (sawnoff). [m] (défaut : 50)
+  "weapon.sawnoff.range": 50,
   // Dispersion (sawnoff). [°] (défaut : 4)
   "weapon.sawnoff.spread": 4,
-  // Nombre de plombs par tir (sawnoff). [plombs] (défaut : 8)
-  "weapon.sawnoff.pellets": 8,
-  // Durée du rechargement (sawnoff). [s] (défaut : 2.4)
-  "weapon.sawnoff.reloadSeconds": 2.4,
+  // Nombre de plombs par tir (sawnoff). [plombs] (défaut : 11)
+  "weapon.sawnoff.pellets": 11,
+  // Durée du rechargement (sawnoff). [s] (défaut : 2.5)
+  "weapon.sawnoff.reloadSeconds": 2.5,
   // Dégâts par balle (fists). [PV] (défaut : 12)
   "weapon.fists.damage": 12,
   // Cadence de tir (fists). [coups/min] (défaut : 140)

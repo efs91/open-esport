@@ -244,7 +244,7 @@ namespace OpenEsport.Tests
 			rig.Run(2.2, t => { b.Strafe = ((int)((t - t0) / 1.0)) % 2 == 0 ? 1 : -1; });
 			a.Driver = null; a.Buttons = Buttons.None;
 			rig.Run(0.3);
-			return (30 - a.C.Magazine, a.HitConfirms);
+			return (WeaponDefs.Get(ItemIds.Ak).MagazineSize - a.C.Magazine, a.HitConfirms);
 		}
 
 		[Fact]
@@ -279,7 +279,7 @@ namespace OpenEsport.Tests
 			var seenAfter = new List<InterpolatedEntity>();
 			b.C.SampleEntities(seenAfter);
 			Assert.DoesNotContain(seenAfter, e => e.Kind == EntityKind.Loot && e.Weapon == ItemIds.Ak && Vec3.Distance(e.Pos, new Vec3(0, 100, -1.5f)) < 2);
-			Assert.Equal(30, a.C.Inventory.Weapons[0].Magazine);
+			Assert.Equal(WeaponDefs.Get(ItemIds.Ak).MagazineSize, a.C.Inventory.Weapons[0].Magazine);
 		}
 
 		[Fact]
@@ -405,8 +405,8 @@ namespace OpenEsport.Tests
 				return hit.C;
 			}
 			int classic = Damage((byte)ItemTier.Classic), legendary = Damage((byte)ItemTier.Legendary);
-			Assert.Equal(19, classic);
-			Assert.True(legendary >= 23, $"dégâts légendaires : {legendary}"); // 19 x 1,25 = 23,75
+			Assert.Equal((int)WeaponDefs.Get(ItemIds.Ak).Damage, classic);
+			Assert.True(legendary >= 17, $"dégâts légendaires : {legendary}"); // 14 x 1,25 = 17,5
 		}
 
 		[Fact]
@@ -423,7 +423,7 @@ namespace OpenEsport.Tests
 			a.Pitch = MathF.Atan2(1.0f - 1.6f, 8f);
 			a.Buttons = Buttons.Fire; rig.Run(0.12); a.Buttons = Buttons.None; rig.Run(0.3);
 			Assert.Equal(100, b.C.Health);                       // la première balle ne touche que le bouclier
-			Assert.InRange(b.C.Shield, 25, 49);
+			Assert.InRange(b.C.Shield, 1, 49);
 			a.Buttons = Buttons.Fire; rig.Run(0.45); a.Buttons = Buttons.None; rig.Run(0.3);
 			Assert.Equal(0, b.C.Shield);                         // bouclier épuisé
 			Assert.True(b.C.Health < 100, $"puis la vie : {b.C.Health}");

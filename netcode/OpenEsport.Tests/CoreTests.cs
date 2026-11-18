@@ -488,7 +488,7 @@ namespace OpenEsport.Tests
 			Assert.Equal(inv.BackpackLevel, back.BackpackLevel);
 			Assert.Equal(inv.ActiveSlot, back.ActiveSlot);
 			Assert.Equal(ItemIds.Ak, back.Weapons[0].WeaponId);
-			Assert.Equal(30, back.Weapons[0].Magazine);
+			Assert.Equal(WeaponDefs.Get(ItemIds.Ak).MagazineSize, back.Weapons[0].Magazine);
 			Assert.Equal(45, back.GetAmmo(2));
 		}
 	}

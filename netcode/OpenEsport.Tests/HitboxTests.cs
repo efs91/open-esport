@@ -89,7 +89,7 @@ namespace OpenEsport.Tests
 			rig.Run(0.2);
 			a.Buttons = Buttons.None;
 			Assert.True(rig.WaitUntil(() => a.C.Reloading, 1.0), "tirer à vide doit lancer le rechargement");
-			Assert.True(rig.WaitUntil(() => a.C.Magazine == 30, 4.0), $"le chargeur doit se remplir (chargeur : {a.C.Magazine})");
+			Assert.True(rig.WaitUntil(() => a.C.Magazine == WeaponDefs.Get(ItemIds.Ak).MagazineSize, 4.0), $"le chargeur doit se remplir (chargeur : {a.C.Magazine})");
 		}
 	}
 }

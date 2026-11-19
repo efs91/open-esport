@@ -135,6 +135,8 @@ namespace OpenEsport.Server
 			{
 				var def = WeaponDefs.Get(weapon.WeaponId);
 				bool wantShoot = def.Automatic ? fire : (fire && !p.PrevFire);
+				// chargeur vide et détente tenue (même sans nouvel appui, arme semi-automatique comprise) : rechargement automatique
+				if (fire && !wantShoot && !p.Reloading && !def.Melee && def.MagazineSize > 0 && weapon.Magazine <= 0) StartReload(p);
 				if (wantShoot && !p.Reloading && p.ShotCooldown <= 0f)
 					Shoot(p, weapon, def, inp);
 			}

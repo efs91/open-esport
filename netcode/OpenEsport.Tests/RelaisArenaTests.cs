@@ -252,6 +252,20 @@ namespace OpenEsport.Tests
 		}
 
 		[Fact]
+		public void Holding_Fire_With_An_Empty_Semi_Automatic_Magazine_Starts_The_Reload()
+		{
+			using var rig = new Rig(o => o.Match.TeamSize = 1);
+			var a = rig.Connect("Alice"); Assert.True(rig.WaitPlaying(a));
+			rig.Give(a, ItemIds.Ammo9mm, 40);
+			rig.Give(a, ItemIds.P2020);
+			rig.OnServer(() => { var p = rig.Server.GetPlayer(a.C.PlayerId); p.Inventory.ActiveSlot = 0; p.Inventory.Weapons[0].Magazine = 1; });
+			a.Buttons = Buttons.Fire;           // un seul appui, puis la détente reste enfoncée
+			rig.Run(0.6);
+			Assert.True(OnServer(rig, () => { var p = rig.Server.GetPlayer(a.C.PlayerId); return p.Reloading || p.Inventory.Weapons[0].Magazine > 0; }), "le chargeur vidé pendant le tir se recharge sans relâcher la détente");
+			a.Buttons = Buttons.None;
+		}
+
+		[Fact]
 		public void The_P2020_Is_A_Light_Fast_Pistol()
 		{
 			var p = WeaponDefs.Get(ItemIds.P2020);

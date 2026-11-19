@@ -247,6 +247,7 @@ public partial class WeaponManager : Node3D
 
 		_switching = true;
 		_ads = false;
+		if (Openesport.Utils.GameSettings.Aim == Openesport.Utils.AimMode.Switch) _aimWanted = false;     // « basculer » : changer d'arme sort de la visée
 		_isReloading = false;
 
 		int token = ++_switchToken;
@@ -624,27 +625,33 @@ public partial class WeaponManager : Node3D
 	private void OnAimReleased()
 	{
 		if (Openesport.Utils.GameSettings.Aim == Openesport.Utils.AimMode.Hold)
+		{
 			_ads = false;
+			_aimWanted = false;
+		}
 	}
+
+	/// <summary>Le joueur veut viser (bouton tenu en mode « maintenir », visée enclenchée en mode « basculer ») : si l'arme n'est pas prête
+	/// (rechargement, sortie de l'arme), la visée reprend toute seule dès qu'elle l'est, sans avoir à relâcher et réappuyer.</summary>
+	private bool _aimWanted;
 
 	private void OnAimTriggered()
 	{
 		if (!IsGameplayInputActive())
 			return;
 
-		if (_ads)
+		bool toggle = Openesport.Utils.GameSettings.Aim == Openesport.Utils.AimMode.Switch;
+		if (_ads || (toggle && _aimWanted))
 		{
-			// en mode « basculer », un deuxième clic retire la visée ; en « maintenir » on reste en visée jusqu'au relâchement
-			if (Openesport.Utils.GameSettings.Aim == Openesport.Utils.AimMode.Switch)
-				_ads = false;
+			// en mode « basculer », un deuxième clic retire la visée (ou l'annule si elle attendait la fin du rechargement) ;
+			// en « maintenir » on reste en visée jusqu'au relâchement
+			if (toggle) { _ads = false; _aimWanted = false; }
 			return;
 		}
 
+		_aimWanted = true;
 		if (_isMelee || !IsReadyForAction())
-		{
-			_logManager.Debug("Tentative de visée impossible");
-			return;
-		}
+			return;      // reprise automatique dès que l'arme est prête (voir _Process)
 
 		_ads = true;
 	}
@@ -805,6 +812,7 @@ public partial class WeaponManager : Node3D
 		}
 
 		_isReloading = true;
+		if (_ads) _aimWanted = true;     // on reviendra en visée à la fin du rechargement
 		_ads = false;
 		_stateMachine.Travel("reload");
 	}
@@ -885,6 +893,16 @@ public partial class WeaponManager : Node3D
 			_fists.Visible = !HideViewmodels && (_weapon == null || _usingSupply);
 			if (_bombHeld != null && GodotObject.IsInstanceValid(_bombHeld)) _bombHeld.Visible = !HideViewmodels && !_usingSupply;
 			_fists.Attacking = _weapon == null && !_usingSupply && _bombHeld == null && _holdingFire; // à mains nues, tenir le clic = boxer (pas avec la bombe en main : le clic la pose)
+		}
+
+		if (_weapon != null && !_switching)
+		{
+			// chargeur vide en tenant la détente (même en pleine rafale) : le rechargement part tout seul
+			if (_holdingFire && !_isMelee && !_isReloading && _maxMagazine > 0 && _magazine <= 0 && IsReadyForAction() && GetReserve(CurrentAmmoType()) > 0)
+				Reload();
+			// visée demandée pendant le rechargement : elle reprend dès que l'arme est prête
+			if (_aimWanted && !_ads && !_isMelee && !_isReloading && IsReadyForAction() && IsGameplayInputActive())
+				_ads = true;
 		}
 
 		if (_weapon != null)

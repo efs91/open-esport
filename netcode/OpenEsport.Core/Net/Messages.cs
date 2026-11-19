@@ -137,7 +137,7 @@ namespace OpenEsport.Core
 
 	public static class Protocol
 	{
-		public const ushort Version = 30;
+		public const ushort Version = 31;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";

@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight.gltf" id="wall"]
+
+[sub_resource type="BoxShape3D" id="infill"]
+size = Vector3(0.4, 1, 4)
+
+[node name="OpaqueBay" instance=ExtResource("wall")]
+
+[node name="Infill" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Infill"]
+position = Vector3(-2, 1.85, 0)
+shape = SubResource("infill")

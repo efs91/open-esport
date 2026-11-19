@@ -147,8 +147,8 @@ namespace Openesport.Online
 
 			_team = new VBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
 			root.AddChild(_team);
-			_team.OffsetLeft = 14; _team.OffsetTop = 120;
-			_team.AddThemeConstantOverride("separation", 2);
+			_team.OffsetLeft = 14; _team.OffsetTop = 130;
+			_team.AddThemeConstantOverride("separation", 6);
 		}
 
 		private static Label MakeLabel(Control parent, int size, Color color)
@@ -305,21 +305,25 @@ namespace Openesport.Online
 			return l;
 		}
 
-		/// <summary>Liste des coéquipiers : nom et points de vie.</summary>
-		public void SetTeam(IList<(string name, int health, bool bot)> mates)
+		/// <summary>
+		/// Les équipiers, en permanence à gauche de l'écran : portrait, nom, barres de vie et de bouclier, et leur état (à terre, mort).
+		/// Une carte par équipier ; elles sont reconstruites seulement quand la composition de l'équipe change.
+		/// </summary>
+		public void SetTeam(IList<MateView> mates)
 		{
-			while (_team.GetChildCount() > mates.Count + 1) _team.GetChild(_team.GetChildCount() - 1).QueueFree();
-			while (_team.GetChildCount() < mates.Count + 1) MakeLabelIn(_team, "");
-			((Label)_team.GetChild(0)).Text = mates.Count > 0 ? I18n.T("ÉQUIPE") : "";
-			((Label)_team.GetChild(0)).HorizontalAlignment = HorizontalAlignment.Left;
-			for (int i = 0; i < mates.Count; i++)
+			string sig = string.Join("|", System.Linq.Enumerable.Select(mates, m => m.Id + ":" + (m.Appearance == null ? 0 : m.Appearance.Length)));
+			if (sig != _teamSig)
 			{
-				var l = (Label)_team.GetChild(i + 1);
-				l.HorizontalAlignment = HorizontalAlignment.Left;
-				l.Text = $"{mates[i].name}   {mates[i].health}";
-				l.Modulate = mates[i].health > 0 ? new Color(0.5f, 0.9f, 1f) : new Color(0.6f, 0.6f, 0.6f);
+				_teamSig = sig;
+				foreach (var c in _team.GetChildren()) { _team.RemoveChild(c); c.QueueFree(); }
+				_cards.Clear();
+				foreach (var m in mates) { var card = new MateCard(); _team.AddChild(card); _cards.Add(card); }
 			}
+			for (int i = 0; i < mates.Count && i < _cards.Count; i++) _cards[i].Set(mates[i]);
 		}
+
+		private string _teamSig = "";
+		private readonly List<MateCard> _cards = new();
 
 		public override void _Process(double delta)
 		{
@@ -411,6 +415,82 @@ namespace Openesport.Online
 				var c = a + u * t;
 				DrawColoredPolygon(new[] { c + u * dash * 1.6f, c - u * dash * 0.6f + n * dash, c - u * dash * 0.6f - n * dash }, col);
 			}
+		}
+	}
+
+	/// <summary>Ce que le HUD montre d'un équipier.</summary>
+	public struct MateView
+	{
+		public ushort Id;
+		public string Name;
+		public int Health, Shield;
+		public float ShieldMax;
+		public bool Downed, Dead, Bot;
+		public byte[] Appearance;
+	}
+
+	/// <summary>Carte d'un équipier : portrait, nom, barre de vie (rouge si à terre), barre de bouclier, état.</summary>
+	public partial class MateCard : PanelContainer
+	{
+		private const float BarW = 120f;
+		private TextureRect _portrait;
+		private Label _name, _state;
+		private ColorRect _health, _shield, _shieldBack;
+		private byte[] _look;
+
+		public MateCard()
+		{
+			MouseFilter = MouseFilterEnum.Ignore;
+			AddThemeStyleboxOverride("panel", new StyleBoxFlat { BgColor = new Color(0.03f, 0.04f, 0.07f, 0.55f), CornerRadiusTopLeft = 6, CornerRadiusTopRight = 6, CornerRadiusBottomLeft = 6, CornerRadiusBottomRight = 6, ContentMarginLeft = 4, ContentMarginRight = 8, ContentMarginTop = 4, ContentMarginBottom = 4 });
+			var row = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
+			row.AddThemeConstantOverride("separation", 8);
+			AddChild(row);
+			_portrait = new TextureRect { CustomMinimumSize = new Vector2(52, 52), ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered, MouseFilter = MouseFilterEnum.Ignore };
+			row.AddChild(_portrait);
+			var col = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
+			col.AddThemeConstantOverride("separation", 3);
+			row.AddChild(col);
+			var top = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
+			_name = new Label { MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(BarW - 40, 0), ClipText = true };
+			_name.AddThemeFontSizeOverride("font_size", 15);
+			_name.AddThemeColorOverride("font_outline_color", Colors.Black); _name.AddThemeConstantOverride("outline_size", 4);
+			_state = new Label { MouseFilter = MouseFilterEnum.Ignore };
+			_state.AddThemeFontSizeOverride("font_size", 13);
+			_state.AddThemeColorOverride("font_outline_color", Colors.Black); _state.AddThemeConstantOverride("outline_size", 4);
+			top.AddChild(_name); top.AddChild(_state);
+			col.AddChild(top);
+			col.AddChild(Bar(new Color(0.15f, 0.15f, 0.15f, 0.8f), new Color(0.35f, 0.9f, 0.4f), 7, out _health, out _));
+			col.AddChild(Bar(new Color(0.15f, 0.15f, 0.15f, 0.8f), new Color(0.45f, 0.75f, 1f), 5, out _shield, out _shieldBack));
+		}
+
+		private static Control Bar(Color back, Color fill, float h, out ColorRect front, out ColorRect bg)
+		{
+			var holder = new Control { CustomMinimumSize = new Vector2(BarW, h), MouseFilter = MouseFilterEnum.Ignore };
+			bg = new ColorRect { Color = back, Size = new Vector2(BarW, h), MouseFilter = MouseFilterEnum.Ignore };
+			front = new ColorRect { Color = fill, Size = new Vector2(BarW, h), MouseFilter = MouseFilterEnum.Ignore };
+			holder.AddChild(bg); holder.AddChild(front);
+			return holder;
+		}
+
+		public void Set(in MateView m)
+		{
+			_name.Text = m.Name;
+			if (m.Appearance != null && (_look == null || !System.Linq.Enumerable.SequenceEqual(_look, m.Appearance)))
+			{
+				_look = m.Appearance;
+				_portrait.Texture = TeamPortraits.Get(m.Appearance);
+			}
+			float hp = m.Dead ? 0f : Mathf.Clamp(m.Health / 100f, 0f, 1f);
+			_health.Size = new Vector2(BarW * hp, _health.Size.Y);
+			// à terre : la barre devient rouge et se vide (le temps qu'il reste avant la mort)
+			_health.Color = m.Downed ? new Color(0.95f, 0.3f, 0.2f) : new Color(0.35f, 0.9f, 0.4f);
+			bool hasShield = m.ShieldMax > 0.5f && !m.Dead && !m.Downed;
+			_shieldBack.Visible = _shield.Visible = hasShield;
+			if (hasShield) _shield.Size = new Vector2(BarW * Mathf.Clamp(m.Shield / m.ShieldMax, 0f, 1f), _shield.Size.Y);
+			_state.Text = m.Dead ? I18n.T("MORT") : m.Downed ? I18n.T("À TERRE") : "";
+			_state.Modulate = m.Dead ? new Color(0.7f, 0.7f, 0.7f) : new Color(1f, 0.55f, 0.2f);
+			_portrait.Modulate = m.Dead ? new Color(0.35f, 0.35f, 0.35f, 0.8f) : m.Downed ? new Color(1f, 0.6f, 0.5f) : Colors.White;
+			_name.Modulate = m.Dead ? new Color(0.6f, 0.6f, 0.6f) : new Color(0.55f, 0.85f, 1f);
 		}
 	}
 

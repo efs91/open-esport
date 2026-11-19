@@ -508,5 +508,9 @@
     "Classement": "Класиране",
     "Battle royale en duo (équipes de 2)": "Battle royale по двойки (отбори от 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale по трима (отбори от 3)",
-    "Pas encore de classement.": "Все още няма класиране."
+    "Pas encore de classement.": "Все още няма класиране.",
+    "MORT": "МЪРТЪВ",
+    "À TERRE": "ПОВАЛЕН",
+    "Marcher dessus : {0}": "Мини отгоре: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Арена: мини през оръжията и лековете, за да ги вземеш"
 }

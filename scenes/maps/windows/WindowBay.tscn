@@ -1,0 +1,72 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="metal"]
+albedo_color = Color(0.32, 0.39, 0.45, 1)
+metallic = 0.55
+roughness = 0.48
+
+[sub_resource type="StandardMaterial3D" id="glass"]
+transparency = 1
+albedo_color = Color(0.44, 0.76, 0.85, 0.32)
+roughness = 0.12
+
+[sub_resource type="BoxShape3D" id="shape"]
+resource_local_to_scene = true
+size = Vector3(0.08, 1, 4)
+
+[sub_resource type="BoxMesh" id="sill"]
+size = Vector3(0.4, 1.35, 4)
+material = SubResource("metal")
+
+[sub_resource type="BoxMesh" id="header"]
+size = Vector3(0.4, 0.65, 4)
+material = SubResource("metal")
+
+[sub_resource type="BoxMesh" id="pane"]
+size = Vector3(0.08, 1, 4)
+material = SubResource("glass")
+
+[sub_resource type="BoxMesh" id="rail"]
+size = Vector3(0.20, 0.09, 4)
+material = SubResource("metal")
+
+[sub_resource type="BoxMesh" id="post"]
+size = Vector3(0.20, 0.82, 0.09)
+material = SubResource("metal")
+
+[node name="WindowBay" type="StaticBody3D"]
+
+[node name="Sill" type="MeshInstance3D" parent="."]
+position = Vector3(-2, 0.675, 0)
+mesh = SubResource("sill")
+
+[node name="Header" type="MeshInstance3D" parent="."]
+position = Vector3(-2, 2.675, 0)
+mesh = SubResource("header")
+
+[node name="Pane" type="CollisionShape3D" parent="." groups=["window_panes"]]
+position = Vector3(-2, 1.85, 0)
+shape = SubResource("shape")
+
+[node name="Glass" type="MeshInstance3D" parent="Pane"]
+position = Vector3(0, 0, 0)
+mesh = SubResource("pane")
+
+[node name="Reinforcement" type="Node3D" parent="Pane"]
+visible = false
+
+[node name="Top" type="MeshInstance3D" parent="Pane/Reinforcement"]
+position = Vector3(0, 0.455, 0)
+mesh = SubResource("rail")
+
+[node name="Bottom" type="MeshInstance3D" parent="Pane/Reinforcement"]
+position = Vector3(0, -0.455, 0)
+mesh = SubResource("rail")
+
+[node name="Left" type="MeshInstance3D" parent="Pane/Reinforcement"]
+position = Vector3(0, 0, -1.955)
+mesh = SubResource("post")
+
+[node name="Right" type="MeshInstance3D" parent="Pane/Reinforcement"]
+position = Vector3(0, 0, 1.955)
+mesh = SubResource("post")

@@ -508,5 +508,9 @@
     "Classement": "Reitingas",
     "Battle royale en duo (équipes de 2)": "Battle royale poromis (komandos po 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale trejetais (komandos po 3)",
-    "Pas encore de classement.": "Reitingo dar nėra."
+    "Pas encore de classement.": "Reitingo dar nėra.",
+    "MORT": "ŽUVĘS",
+    "À TERRE": "PARVERSTAS",
+    "Marcher dessus : {0}": "Užlipk ant: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: užlipk ant ginklų ir gydymo, kad juos paimtum"
 }

@@ -508,5 +508,9 @@
     "Classement": "Lestvica",
     "Battle royale en duo (équipes de 2)": "Battle royale v dvojicah (ekipe po 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale v trojicah (ekipe po 3)",
-    "Pas encore de classement.": "Lestvice še ni."
+    "Pas encore de classement.": "Lestvice še ni.",
+    "MORT": "MRTEV",
+    "À TERRE": "NA TLEH",
+    "Marcher dessus : {0}": "Stopi nanj: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: stopi na orožje in zdravila, da jih pobereš"
 }

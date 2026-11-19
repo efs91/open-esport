@@ -508,5 +508,9 @@
     "Classement": "Pořadí",
     "Battle royale en duo (équipes de 2)": "Battle royale ve dvojicích (týmy po 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale ve trojicích (týmy po 3)",
-    "Pas encore de classement.": "Zatím žádné pořadí."
+    "Pas encore de classement.": "Zatím žádné pořadí.",
+    "MORT": "MRTVÝ",
+    "À TERRE": "NA ZEMI",
+    "Marcher dessus : {0}": "Přejdi přes: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Aréna: přejdi přes zbraně a léčení, abys je sebral"
 }

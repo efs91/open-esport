@@ -3,31 +3,18 @@
 [ext_resource type="Script" path="res://scripts/online/SimpleMap.cs" id="1_map"]
 [ext_resource type="Script" path="res://scripts/online/CoverBox.cs" id="2_cover"]
 [ext_resource type="Script" path="res://scripts/online/MapMarker.cs" id="3_marker"]
-
-[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
-sky_top_color = Color(0.32, 0.5, 0.78, 1)
-sky_horizon_color = Color(0.72, 0.78, 0.86, 1)
-
-[sub_resource type="Sky" id="sky"]
-sky_material = SubResource("sky_mat")
-
-[sub_resource type="Environment" id="env"]
-background_mode = 2
-sky = SubResource("sky")
-ambient_light_source = 3
-tonemap_mode = 2
+[ext_resource type="Environment" path="res://scenes/maps/lighting/arena_daylight.tres" id="daylight"]
+[ext_resource type="PackedScene" path="res://scenes/maps/lighting/afternoon_sun.tscn" id="sun"]
 
 [node name="Drapeau" type="Node3D"]
 script = ExtResource("1_map")
 Size = Vector2(160, 80)
 GroundColor = Color(0.33, 0.36, 0.27, 1)
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.8, -0.35, 0.49, 0, 0.81, 0.58, -0.6, -0.46, 0.65, 0, 20, 0)
-shadow_enabled = true
+[node name="Sun" parent="." instance=ExtResource("sun")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("env")
+environment = ExtResource("daylight")
 
 [node name="SpawnPoint" type="Marker3D" parent="."]
 position = Vector3(-64, 0.2, -12)

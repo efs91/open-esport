@@ -72,6 +72,22 @@ namespace Openesport.Online
 		private CollisionShape3D _shape;
 		private Node3D _decor;
 
+		private Material _material;
+		private PackedScene _unitModel;
+		private Node3D _modelInstance;
+		// Optional visual authored in a centred, one-metre cube. The same Size drives the server box.
+		[Export] public PackedScene UnitModel
+		{
+			get => _unitModel;
+			set
+			{
+				if (_unitModel == value) return;
+				_unitModel = value;
+				if (_modelInstance != null) { _modelInstance.QueueFree(); _modelInstance = null; }
+				Rebuild();
+			}
+		}
+		[Export] public Material BoxMaterial { get => _material; set { _material = value; Rebuild(); } }
 		[Export] public Vector3 Size { get => _size; set { _size = value; Rebuild(); } }
 		[Export] public Color Color { get => _color; set { _color = value; Rebuild(); } }
 		[Export] public Surface Surface { get => _surface; set { _surface = value; Rebuild(); } }
@@ -94,10 +110,21 @@ namespace Openesport.Online
 			if (_mesh == null || !IsInstanceValid(_mesh)) return;
 			_mesh.Mesh = new BoxMesh { Size = _size };
 			_mesh.Position = new Vector3(0, _size.Y / 2f, 0);
-			_mesh.MaterialOverride = _surface == Surface.Unie
+			_mesh.MaterialOverride = _material ?? (_surface == Surface.Unie
 				? new StandardMaterial3D { AlbedoColor = _color, Roughness = 0.9f }
-				: Surfaces.Material(_surface, _color);
+				: Surfaces.Material(_surface, _color));
 			_mesh.CastShadow = _solid ? GeometryInstance3D.ShadowCastingSetting.On : GeometryInstance3D.ShadowCastingSetting.Off;
+			_mesh.Visible = _unitModel == null;
+			if (_unitModel != null)
+			{
+				if (_modelInstance == null)
+				{
+					_modelInstance = _unitModel.Instantiate<Node3D>();
+					AddChild(_modelInstance, false, InternalMode.Front);
+				}
+				_modelInstance.Position = _mesh.Position;
+				_modelInstance.Scale = _size;
+			}
 			_shape.Shape = new BoxShape3D { Size = _size };
 			_shape.Position = new Vector3(0, _size.Y / 2f, 0);
 			_shape.Disabled = !_solid;

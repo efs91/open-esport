@@ -508,5 +508,9 @@
     "Classement": "Ranglista",
     "Battle royale en duo (équipes de 2)": "Battle royale párban (2 fős csapatok)",
     "Battle royale en trio (équipes de 3)": "Battle royale triókban (3 fős csapatok)",
-    "Pas encore de classement.": "Még nincs ranglista."
+    "Pas encore de classement.": "Még nincs ranglista.",
+    "MORT": "HALOTT",
+    "À TERRE": "LEVERVE",
+    "Marcher dessus : {0}": "Sétálj rá: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Aréna: sétálj át a fegyvereken és gyógyítókon a felvételhez"
 }

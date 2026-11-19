@@ -508,5 +508,9 @@
     "Classement": "Κατάταξη",
     "Battle royale en duo (équipes de 2)": "Battle royale σε ζευγάρια (ομάδες των 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale σε τρίο (ομάδες των 3)",
-    "Pas encore de classement.": "Δεν υπάρχει ακόμη κατάταξη."
+    "Pas encore de classement.": "Δεν υπάρχει ακόμη κατάταξη.",
+    "MORT": "ΝΕΚΡΟΣ",
+    "À TERRE": "ΚΑΤΩ",
+    "Marcher dessus : {0}": "Πέρασε από πάνω: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Αρένα: πέρασε πάνω από όπλα και θεραπείες για να τα πάρεις"
 }

@@ -508,5 +508,9 @@
     "Classement": "Klassement",
     "Battle royale en duo (équipes de 2)": "Battle royale in duo (teams van 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale in trio (teams van 3)",
-    "Pas encore de classement.": "Nog geen klassement."
+    "Pas encore de classement.": "Nog geen klassement.",
+    "MORT": "DOOD",
+    "À TERRE": "NEERGEHAALD",
+    "Marcher dessus : {0}": "Loop eroverheen: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: loop over wapens en genezing om ze op te pakken"
 }

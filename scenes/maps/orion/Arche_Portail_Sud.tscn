@@ -1,8 +1,10 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Window_Wide.gltf" id="e1"]
+[ext_resource type="PackedScene" path="res://scenes/maps/windows/WindowBay.tscn" id="WindowBay"]
+[ext_resource type="PackedScene" path="res://scenes/maps/windows/SolidBay.tscn" id="SolidBay"]
+
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Metal.gltf" id="e1"]
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Simple2.gltf" id="e2"]
-[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Straight.gltf" id="e3"]
 
 [sub_resource type="BoxShape3D" id="s1"]
 size = Vector3(4, 1.35, 0.4)
@@ -27,10 +29,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3, 0)
 
 [node name="Parois" type="Node3D" parent="."]
 
-[node name="WallWindow_Straight_3" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_3" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2, 0, 0)
 
-[node name="WallWindow_Straight_4" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_4" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2, 0, 0)
 
 [node name="Platform_Window_Wide_5" parent="Sol" instance=ExtResource("e1")]
@@ -39,10 +41,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
 [node name="Platform_Simple2_6" parent="Toit" instance=ExtResource("e2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3, 0)
 
-[node name="WallWindow_Straight_7" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_7" parent="Parois" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 6, 0, 0)
 
-[node name="WallWindow_Straight_8" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_8" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 0, 0)
 
 [node name="Platform_Window_Wide_9" parent="Sol" instance=ExtResource("e1")]
@@ -51,10 +53,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
 [node name="Platform_Simple2_10" parent="Toit" instance=ExtResource("e2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 3, 0)
 
-[node name="WallWindow_Straight_11" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_11" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10, 0, 0)
 
-[node name="WallWindow_Straight_12" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_12" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 10, 0, 0)
 
 [node name="Platform_Window_Wide_13" parent="Sol" instance=ExtResource("e1")]
@@ -63,10 +65,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 0)
 [node name="Platform_Simple2_14" parent="Toit" instance=ExtResource("e2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 3, 0)
 
-[node name="WallWindow_Straight_15" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_15" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 14, 0, 0)
 
-[node name="WallWindow_Straight_16" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_16" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 14, 0, 0)
 
 [node name="Platform_Window_Wide_17" parent="Sol" instance=ExtResource("e1")]
@@ -75,10 +77,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
 [node name="Platform_Simple2_18" parent="Toit" instance=ExtResource("e2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 3, 0)
 
-[node name="WallWindow_Straight_19" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_19" parent="Parois" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 18, 0, 0)
 
-[node name="WallWindow_Straight_20" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_20" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 18, 0, 0)
 
 [node name="Platform_Window_Wide_21" parent="Sol" instance=ExtResource("e1")]
@@ -87,10 +89,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, 0)
 [node name="Platform_Simple2_22" parent="Toit" instance=ExtResource("e2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 3, 0)
 
-[node name="WallWindow_Straight_23" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_23" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 22, 0, 0)
 
-[node name="WallWindow_Straight_24" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_24" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 22, 0, 0)
 
 [node name="Colliders" type="StaticBody3D" parent="."]

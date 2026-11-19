@@ -66,6 +66,12 @@ namespace Openesport.Online
 						data.Boxes.Add(new OpenEsport.Core.Aabb(new Vec3(b.Position.X, b.Position.Y, b.Position.Z), new Vec3(b.End.X, b.End.Y, b.End.Z)));
 						boxes++;
 					}
+					else if (c is ArenaJumpPad jp) data.Jumps.Add(jp.ToPad());
+					else if (c is ArenaTeleporter tp) data.Teleports.Add(tp.ToTeleporter());
+					else if (c is LootPoint lp)
+					{
+						if (lp.Activation != LootPoint.ActivationEnum.Désactivé) { var g = lp.GlobalPosition; data.LootSpawns.Add(lp.ToSpawn(new Vec3(g.X, g.Y, g.Z))); }
+					}
 					else if (c is MapMarker mm)
 					{
 						var g = mm.GlobalPosition;
@@ -80,7 +86,7 @@ namespace Openesport.Online
 			string path = ProjectSettings.GlobalizePath(output);
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 			using (var fs = File.Create(path)) data.Save(fs);
-			GD.Print($"[WorldExporter] carte simple écrite : {path} ({new FileInfo(path).Length / 1024} Ko), {boxes} obstacles, {data.Points.Count} points d'attention, empreinte {data.Checksum():X8}");
+			GD.Print($"[WorldExporter] carte simple écrite : {path} ({new FileInfo(path).Length / 1024} Ko), {boxes} obstacles, {data.Points.Count} points d'attention, {data.LootSpawns.Count} objets, {data.Jumps.Count} tremplins, {data.Teleports.Count} téléporteurs, empreinte {data.Checksum():X8}");
 		}
 
 		private static SimpleMap FindSimple(Node n)
@@ -206,7 +212,8 @@ namespace Openesport.Online
 								mn = new Vector3(MathF.Min(mn.X, p.X), MathF.Min(mn.Y, p.Y), MathF.Min(mn.Z, p.Z));
 								mx = new Vector3(MathF.Max(mx.X, p.X), MathF.Max(mx.Y, p.Y), MathF.Max(mx.Z, p.Z));
 							}
-							data.Boxes.Add(new OpenEsport.Core.Aabb(new Vec3(mn.X, mn.Y, mn.Z), new Vec3(mx.X, mx.Y, mx.Z)));
+							var collection = cs.IsInGroup("window_panes") ? data.Panes : data.Boxes;
+							collection.Add(new OpenEsport.Core.Aabb(new Vec3(mn.X, mn.Y, mn.Z), new Vec3(mx.X, mx.Y, mx.Z)));
 							sceneBoxes++;
 						}
 						WalkBoxes(c);

@@ -508,5 +508,9 @@
     "Classement": "Rangú",
     "Battle royale en duo (équipes de 2)": "Battle royale i mbeirteanna (foirne de 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale i dtriúracha (foirne de 3)",
-    "Pas encore de classement.": "Níl aon rangú ann go fóill."
+    "Pas encore de classement.": "Níl aon rangú ann go fóill.",
+    "MORT": "MARBH",
+    "À TERRE": "AR LÁR",
+    "Marcher dessus : {0}": "Siúil air: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Réimse: siúil thar airm agus leigheasanna chun iad a phiocadh suas"
 }

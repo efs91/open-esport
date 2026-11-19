@@ -508,5 +508,9 @@
     "Classement": "Poredak",
     "Battle royale en duo (équipes de 2)": "Battle royale u paru (timovi od 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale u trojkama (timovi od 3)",
-    "Pas encore de classement.": "Još nema poretka."
+    "Pas encore de classement.": "Još nema poretka.",
+    "MORT": "MRTAV",
+    "À TERRE": "NA TLU",
+    "Marcher dessus : {0}": "Prijeđi preko: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: prijeđi preko oružja i ljekova da ih pokupiš"
 }

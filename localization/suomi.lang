@@ -508,5 +508,9 @@
     "Classement": "Sijoitukset",
     "Battle royale en duo (équipes de 2)": "Battle royale duona (2 hengen joukkueet)",
     "Battle royale en trio (équipes de 3)": "Battle royale trioina (3 hengen joukkueet)",
-    "Pas encore de classement.": "Ei vielä sijoituksia."
+    "Pas encore de classement.": "Ei vielä sijoituksia.",
+    "MORT": "KUOLLUT",
+    "À TERRE": "MAASSA",
+    "Marcher dessus : {0}": "Kävele päälle: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Areena: kävele aseiden ja parannusten yli poimiaksesi ne"
 }

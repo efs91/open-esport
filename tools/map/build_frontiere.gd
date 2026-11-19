@@ -68,6 +68,8 @@ func _build() -> void:
 	await process_frame
 	await process_frame
 	terrain.material.world_background = Terrain3DMaterial.NONE
+	terrain.material.shader_override = preload("res://shaders/frontiere_terrain.gdshader")
+	terrain.material.shader_override_enabled = true
 	terrain.material.set_shader_param("blend_sharpness", 0.8)
 
 	# --- relief et peinture
@@ -96,33 +98,14 @@ func _build() -> void:
 	terrain.collision_enabled = true
 	terrain.collision_mode = Terrain3D.CollisionMode.FULL_GAME
 
-	var sun := DirectionalLight3D.new()
-	sun.name = "Sun"
-	sun.rotation_degrees = Vector3(-48, -35, 0)
-	sun.light_energy = 1.1
-	sun.shadow_enabled = true
-	sun.directional_shadow_max_distance = 220.0
+	var sun := preload("res://scenes/maps/lighting/afternoon_sun.tscn").instantiate() as DirectionalLight3D
+	sun.light_angular_distance = 0.0
 	scene.add_child(sun)
 	sun.owner = scene
 
 	var env := WorldEnvironment.new()
 	env.name = "WorldEnvironment"
-	var e := Environment.new()
-	var sky := Sky.new()
-	var pano := ProceduralSkyMaterial.new()
-	pano.sky_top_color = Color(0.32, 0.5, 0.78)
-	pano.sky_horizon_color = Color(0.68, 0.74, 0.82)
-	pano.ground_horizon_color = Color(0.55, 0.58, 0.6)
-	sky.sky_material = pano
-	e.sky = sky
-	e.background_mode = Environment.BG_SKY
-	e.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	e.ambient_light_energy = 0.9
-	e.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	e.fog_enabled = true
-	e.fog_light_color = Color(0.7, 0.76, 0.84)
-	e.fog_density = 0.00018
-	env.environment = e
+	env.environment = preload("res://scenes/maps/lighting/frontiere_daylight.tres")
 	scene.add_child(env)
 	env.owner = scene
 

@@ -24,10 +24,17 @@ class Map:
     def __init__(self, name, size, ground, sky_top=(0.35, 0.5, 0.75)):
         self.name, self.size, self.ground = name, size, ground
         self.boxes, self.markers = [], []
+        self.environment = 'res://scenes/maps/lighting/arena_daylight.tres'
+        self.scenery = None
+        self.ground_material = None
+        self.surface_materials = {}
+        self.box_models = {}
+        self.sun_angle = None
         self.ground_surface = 0         # matière du sol (voir CoverBox.cs : Surface) ; 0 = couleur unie
 
-    def box(self, x, z, sx, sy, sz, color=COVER, y=0.0, surface=0, style=0, solid=True):
+    def box(self, x, z, sx, sy, sz, color=COVER, y=0.0, surface=0, style=0, solid=True, model=None):
         """Une boîte pleine : centre (x, z), dimensions, couleur ; `y` = hauteur du dessous (0 = posée au sol ; plus haut : toit de tunnel, passerelle)."""
+        if model: self.box_models[len(self.boxes)] = model
         self.boxes.append((x, z, sx, sy, sz, color, y, surface, style, solid))
 
     def walls(self):
@@ -59,28 +66,34 @@ class Map:
         o.append('[gd_scene format=4]\n')
         o.append('[ext_resource type="Script" path="res://scripts/online/SimpleMap.cs" id="1_map"]')
         o.append('[ext_resource type="Script" path="res://scripts/online/CoverBox.cs" id="2_cover"]')
-        o.append('[ext_resource type="Script" path="res://scripts/online/MapMarker.cs" id="3_marker"]\n')
-        o.append('[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]')
-        o.append('sky_top_color = Color(0.32, 0.5, 0.78, 1)')
-        o.append('sky_horizon_color = Color(0.72, 0.78, 0.86, 1)\n')
-        o.append('[sub_resource type="Sky" id="sky"]')
-        o.append('sky_material = SubResource("sky_mat")\n')
-        o.append('[sub_resource type="Environment" id="env"]')
-        o.append('background_mode = 2')
-        o.append('sky = SubResource("sky")')
-        o.append('ambient_light_source = 3')
-        o.append('tonemap_mode = 2\n')
+        o.append('[ext_resource type="Script" path="res://scripts/online/MapMarker.cs" id="3_marker"]')
+        models = {path: f"prop_{i}" for i, path in enumerate(sorted(set(self.box_models.values())))}
+        if not export:
+            for path, key in models.items():
+                o.append(f'[ext_resource type="PackedScene" path="{path}" id="{key}"]')
+            o.append(f'[ext_resource type="Environment" path="{self.environment}" id="daylight"]')
+            if self.scenery:
+                o.append(f'[ext_resource type="PackedScene" path="{self.scenery}" id="scenery"]')
+            if self.ground_material:
+                o.append(f'[ext_resource type="Material" path="{self.ground_material}" id="ground_mat"]')
+            for surface, path in self.surface_materials.items():
+                o.append(f'[ext_resource type="Material" path="{path}" id="material_{surface}"]')
+            o.append('[ext_resource type="PackedScene" path="res://scenes/maps/lighting/afternoon_sun.tscn" id="sun"]')
+        o.append('')
         o.append(f'[node name="{self.name}" type="Node3D"]')
         o.append('script = ExtResource("1_map")')
         o.append(f'Size = Vector2({w}, {d})')
         o.append(f'GroundColor = Color({self.ground[0]}, {self.ground[1]}, {self.ground[2]}, 1)')
+        if self.ground_material and not export: o.append('GroundMaterial = ExtResource("ground_mat")')
         if self.ground_surface and not export: o.append(f'GroundSurface = {self.ground_surface}')
         o.append('')
-        o.append('[node name="Sun" type="DirectionalLight3D" parent="."]')
-        o.append('transform = Transform3D(0.8, -0.35, 0.49, 0, 0.81, 0.58, -0.6, -0.46, 0.65, 0, 20, 0)')
-        o.append('shadow_enabled = true\n')
-        o.append('[node name="WorldEnvironment" type="WorldEnvironment" parent="."]')
-        o.append('environment = SubResource("env")\n')
+        if not export:
+            o.append('[node name="Sun" parent="." instance=ExtResource("sun")]')
+            if self.sun_angle is not None: o.append(f'light_angular_distance = {self.sun_angle}')
+            o.append('')
+            if self.scenery: o.append('[node name="Terminal" parent="." instance=ExtResource("scenery")]\n')
+            o.append('[node name="WorldEnvironment" type="WorldEnvironment" parent="."]')
+            o.append('environment = ExtResource("daylight")\n')
         o.append('[node name="SpawnPoint" type="Marker3D" parent="."]')
         o.append(f'position = Vector3({sx}, 0.2, {sz})\n')
         o.append('[node name="Points" type="Node3D" parent="."]\n')
@@ -103,6 +116,8 @@ class Map:
             o.append(f'Color = Color({c[0]}, {c[1]}, {c[2]}, 1)')
             if not export:
                 if surface: o.append(f'Surface = {surface}')
+                if surface in self.surface_materials: o.append(f'BoxMaterial = ExtResource("material_{surface}")')
+                if i in self.box_models: o.append(f'UnitModel = ExtResource("{models[self.box_models[i]]}")')
                 if style: o.append(f'Style = {style}')
                 if not solid: o.append('Solid = false')
             o.append('')
@@ -151,7 +166,7 @@ def write_minimap(m, path, px=1024):
         font = ImageFont.load_default()
     for kind, x, z, team, index, radius in m.markers:
         if kind == SITE:
-            dr.ellipse([*P(x - radius, z - radius), *P(x + radius, z + radius)], fill=None, outline=(255, 214, 64), width=5)
+            dr.rectangle([*P(x - radius, z - radius), *P(x + radius, z + radius)], fill=None, outline=(255, 214, 64), width=5)
             cx, cy = P(x, z)
             dr.text((cx - 20, cy - 40), 'AB'[index], fill=(255, 255, 255), font=font, stroke_width=4, stroke_fill=(0, 0, 0))
         elif kind == TEAM:

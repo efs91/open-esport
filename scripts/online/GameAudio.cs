@@ -7,7 +7,7 @@ namespace Openesport.Online
 	{
 		private const string StepDir = "res://assets/sounds/foosteps/conctrete/";
 		private static AudioStream[] _jog, _jump, _land;
-		private static AudioStreamWav _shot, _shotLight, _boom, _bang, _ping;
+		private static AudioStreamWav _shot, _shotLight, _boom, _bang, _ping, _teleport, _pickup;
 
 		private static AudioStream[] Load(string prefix, int count)
 		{
@@ -32,6 +32,31 @@ namespace Openesport.Online
 			_boom = Synthesize(1.3f, 48f, 4f, 1.3f);
 			_bang = Synthesize(0.5f, 260f, 14f, 1.0f);
 			_ping = Synthesize(0.18f, 1100f, 20f, 0.35f);
+			_teleport = Sweep(0.55f, 180f, 1400f, 0.5f, 0.45f);
+			_pickup = Sweep(0.22f, 660f, 990f, 0.05f, 0.4f);
+		}
+
+		/// <summary>Glissando synthétisé (téléporteur, ramassage d'arène) : sinus de <paramref name="fromHz"/> à <paramref name="toHz"/>, un peu de souffle, attaque douce.</summary>
+		private static AudioStreamWav Sweep(float seconds, float fromHz, float toHz, float noiseAmount, float gain)
+		{
+			const int rate = 32000;
+			int n = (int)(seconds * rate);
+			var data = new byte[n * 2];
+			var rng = new System.Random(9);
+			float phase = 0f, lp = 0f;
+			for (int i = 0; i < n; i++)
+			{
+				float t = i / (float)rate, k = t / seconds;
+				float hz = fromHz + (toHz - fromHz) * k * k;
+				phase += Mathf.Tau * hz / rate;
+				lp += ((float)(rng.NextDouble() * 2 - 1) - lp) * 0.2f;
+				float env = Mathf.Min(1f, t * 40f) * Mathf.Pow(1f - k, 1.6f);
+				float v = Mathf.Clamp((Mathf.Sin(phase) * 0.8f + Mathf.Sin(phase * 2.01f) * 0.25f + lp * noiseAmount) * env * gain, -1f, 1f);
+				short s16 = (short)(v * 32000);
+				data[i * 2] = (byte)(s16 & 0xFF);
+				data[i * 2 + 1] = (byte)((s16 >> 8) & 0xFF);
+			}
+			return new AudioStreamWav { Data = data, Format = AudioStreamWav.FormatEnum.Format16Bits, MixRate = rate, Stereo = false };
 		}
 
 		/// <summary>Coup de feu synthétisé : claquement (bruit) + grondement grave qui s'éteint.</summary>
@@ -92,6 +117,12 @@ namespace Openesport.Online
 
 		/// <summary>Explosion de grenade : grave et longue, audible de très loin.</summary>
 		public static void Boom(Node parent, Vector3 pos, float gain) { Init(); PlayAt(parent, _boom, pos, 4f + 6f * gain, 340f, 26f, 0.92f + (float)Rng.NextDouble() * 0.12f); }
+
+		/// <summary>Passage d'un téléporteur (à la sortie).</summary>
+		public static void Teleport(Node parent, Vector3 pos) { Init(); PlayAt(parent, _teleport, pos, 0f, 50f, 10f, 1f); }
+
+		/// <summary>Objet d'arène ramassé (arme, soin, bouclier, munitions).</summary>
+		public static void Pickup(Node parent, Vector3 pos) { Init(); PlayAt(parent, _pickup, pos, -3f, 30f, 8f, 1f); }
 
 		/// <summary>Petit « bip » d'un ping d'équipe.</summary>
 		public static void Ping(Node parent, Vector3 pos) { Init(); PlayAt(parent, _ping, pos, -2f, 80f, 40f, 1f); }

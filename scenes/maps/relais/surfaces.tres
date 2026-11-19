@@ -1,0 +1,31 @@
+[gd_resource type="ShaderMaterial" load_steps=14 format=3]
+
+[ext_resource type="Shader" path="res://scenes/maps/relais/surfaces.gdshader" id="1"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/MetalPlates004/MetalPlates004_Color.jpg" id="f0a"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/MetalPlates004/MetalPlates004_NormalGL.jpg" id="f0n"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/MetalPlates006/MetalPlates006_Color.jpg" id="f1a"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/MetalPlates006/MetalPlates006_NormalGL.jpg" id="f1n"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/MetalPlates017A/MetalPlates017A_Color.jpg" id="f2a"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/MetalPlates017A/MetalPlates017A_NormalGL.jpg" id="f2n"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/Concrete042A/Concrete042A_Color.jpg" id="wa"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/Concrete042A/Concrete042A_NormalGL.jpg" id="wn"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/CorrugatedSteel009/CorrugatedSteel009_Color.jpg" id="pa"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/CorrugatedSteel009/CorrugatedSteel009_NormalGL.jpg" id="pn"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/SheetMetal004/SheetMetal004_Color.jpg" id="ca"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/SheetMetal004/SheetMetal004_NormalGL.jpg" id="cn"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1")
+shader_parameter/floor0_albedo = ExtResource("f0a")
+shader_parameter/floor0_normal = ExtResource("f0n")
+shader_parameter/floor1_albedo = ExtResource("f1a")
+shader_parameter/floor1_normal = ExtResource("f1n")
+shader_parameter/floor2_albedo = ExtResource("f2a")
+shader_parameter/floor2_normal = ExtResource("f2n")
+shader_parameter/wall_albedo = ExtResource("wa")
+shader_parameter/wall_normal = ExtResource("wn")
+shader_parameter/panel_albedo = ExtResource("pa")
+shader_parameter/panel_normal = ExtResource("pn")
+shader_parameter/ceiling_albedo = ExtResource("ca")
+shader_parameter/ceiling_normal = ExtResource("cn")

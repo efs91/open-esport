@@ -508,5 +508,9 @@
     "Classement": "Rangliste",
     "Battle royale en duo (équipes de 2)": "Battle Royale im Duo (Teams zu 2)",
     "Battle royale en trio (équipes de 3)": "Battle Royale im Trio (Teams zu 3)",
-    "Pas encore de classement.": "Noch keine Rangliste."
+    "Pas encore de classement.": "Noch keine Rangliste.",
+    "MORT": "TOT",
+    "À TERRE": "AM BODEN",
+    "Marcher dessus : {0}": "Darüberlaufen: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: über Waffen und Heilung laufen, um sie aufzuheben"
 }

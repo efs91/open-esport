@@ -1,6 +1,8 @@
 [gd_scene format=4 uid="uid://cyouj0ivqvduv"]
 
-[ext_resource type="Script" path="res://scripts/modules/MountainBackdrop.cs" id="mnt_script"]
+[ext_resource type="Shader" path="res://shaders/frontiere_terrain.gdshader" id="terrain_shader"]
+[ext_resource type="Environment" path="res://scenes/maps/lighting/frontiere_daylight.tres" id="daylight"]
+[ext_resource type="PackedScene" path="res://scenes/maps/lighting/afternoon_sun.tscn" id="sun"]
 [ext_resource type="Terrain3DAssets" uid="uid://bxdwwfup0w0g0" path="res://maps/frontiere01/terrain_assets.tres" id="1_c6f5l"]
 [ext_resource type="PackedScene" uid="uid://unjgwga62wel" path="res://maps/frontiere01/models/zip_pad.glb" id="27_03qqq"]
 [ext_resource type="Script" uid="uid://bmf42x1iqg3em" path="res://scripts/online/LootEntry.cs" id="29_8ryjp"]
@@ -115,42 +117,8 @@ _shader_parameters = {
 &"vertex_normals_distance": null
 }
 world_background = 0
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_w3qjt"]
-sky_top_color = Color(0.32, 0.5, 0.78, 1)
-sky_horizon_color = Color(0.68, 0.74, 0.82, 1)
-ground_horizon_color = Color(0.68, 0.74, 0.82, 1)
-ground_bottom_color = Color(0.5, 0.58, 0.66, 1)
-
-[sub_resource type="Sky" id="Sky_qp0pq"]
-sky_material = SubResource("ProceduralSkyMaterial_w3qjt")
-
-[sub_resource type="Environment" id="Environment_l0657"]
-background_mode = 2
-sky = SubResource("Sky_qp0pq")
-ambient_light_source = 3
-ambient_light_energy = 0.48
-tonemap_mode = 3
-ssao_enabled = true
-ssao_radius = 1.2
-ssao_intensity = 1.15
-ssao_power = 1.3
-ssil_enabled = true
-ssil_radius = 3.0
-ssil_intensity = 0.35
-glow_enabled = true
-glow_intensity = 0.15
-glow_hdr_threshold = 1.4
-fog_enabled = true
-fog_light_color = Color(0.7, 0.76, 0.84, 1)
-fog_sun_scatter = 0.12
-fog_density = 0.00006
-fog_aerial_perspective = 0.08
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.0006
-volumetric_fog_albedo = Color(0.8, 0.87, 0.95, 1)
-volumetric_fog_length = 160.0
-volumetric_fog_ambient_inject = 0.25
+shader_override = ExtResource("terrain_shader")
+shader_override_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glitx"]
 resource_name = "zip_orange"
@@ -1221,20 +1189,11 @@ assets = ExtResource("1_c6f5l")
 top_level = true
 metadata/_edit_lock_ = true
 
-[node name="Montagnes" type="MeshInstance3D" parent="."]
-script = ExtResource("mnt_script")
-
-[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1230234716]
-transform = Transform3D(0.81915206, 0.4262504, -0.38379753, 0, 0.66913056, 0.74314487, 0.57357645, -0.6087487, 0.54811966, 0, 0, 0)
-light_color = Color(1, 0.93, 0.82, 1)
-light_energy = 1.55
-light_angular_distance = 0.35
-shadow_enabled = true
-directional_shadow_blend_splits = true
-directional_shadow_max_distance = 180.0
+[node name="Sun" parent="." instance=ExtResource("sun")]
+light_angular_distance = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=742803323]
-environment = SubResource("Environment_l0657")
+environment = ExtResource("daylight")
 
 [node name="Zones" type="Node3D" parent="." unique_id=136827659]
 

@@ -1,54 +1,47 @@
 [gd_scene format=3]
 
+[ext_resource type="Material" path="res://maps/frontiere01/wet_pavement.tres" id="paving"]
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Round1.gltf" id="e1"]
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Hollow.gltf" id="e2"]
 
-[sub_resource type="StandardMaterial3D" id="s1"]
-albedo_color = Color(0.13, 0.14, 0.17, 1)
-roughness = 0.85
-
 [sub_resource type="BoxMesh" id="s2"]
-material = SubResource("s1")
+material = ExtResource("paving")
 size = Vector3(16, 1, 192)
 
 [sub_resource type="BoxMesh" id="s3"]
-material = SubResource("s1")
+material = ExtResource("paving")
 size = Vector3(184, 1, 16)
 
-[sub_resource type="StandardMaterial3D" id="s4"]
-albedo_color = Color(0.62, 0.64, 0.67, 1)
-roughness = 0.85
-
 [sub_resource type="BoxMesh" id="s5"]
-material = SubResource("s4")
+material = ExtResource("paving")
 size = Vector3(28, 1, 28)
 
 [sub_resource type="BoxMesh" id="s6"]
-material = SubResource("s4")
+material = ExtResource("paving")
 size = Vector3(32, 1, 28)
 
 [sub_resource type="BoxMesh" id="s7"]
-material = SubResource("s4")
+material = ExtResource("paving")
 size = Vector3(40, 1, 24)
 
 [sub_resource type="BoxMesh" id="s8"]
-material = SubResource("s4")
+material = ExtResource("paving")
 size = Vector3(32, 1, 24)
 
 [sub_resource type="BoxMesh" id="s9"]
-material = SubResource("s4")
+material = ExtResource("paving")
 size = Vector3(44, 1, 20)
 
 [sub_resource type="BoxMesh" id="s10"]
-material = SubResource("s4")
+material = ExtResource("paving")
 size = Vector3(52, 1, 16)
 
 [sub_resource type="BoxMesh" id="s11"]
-material = SubResource("s4")
+material = ExtResource("paving")
 size = Vector3(52, 1, 20)
 
 [sub_resource type="BoxMesh" id="s12"]
-material = SubResource("s4")
+material = ExtResource("paving")
 size = Vector3(24, 1, 20)
 
 [sub_resource type="StandardMaterial3D" id="s13"]

@@ -21,7 +21,7 @@ namespace Openesport.Menus
 
 		private static string WeaponName(byte id) => id switch
 		{
-			ItemIds.Ak => "AK-74", ItemIds.Smg45 => "SMG-45", ItemIds.Lmg63 => "LMG-63", ItemIds.Sawnoff => I18n.T("Fusil à canon scié"), ItemIds.C19 => "C19", ItemIds.Sniper => "Sniper", _ => ""
+			ItemIds.Ak => "AK-74", ItemIds.Smg45 => "SMG-45", ItemIds.Lmg63 => "LMG-63", ItemIds.Sawnoff => I18n.T("Fusil à canon scié"), ItemIds.C19 => "C19", ItemIds.P2020 => "P2020", ItemIds.Sniper => "Sniper", _ => ""
 		};
 
 		private static string OpticName(byte id) => id switch

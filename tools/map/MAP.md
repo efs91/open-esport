@@ -6,7 +6,7 @@
 ## Repère et dimensions
 
 - Carte de 1 536 m × 1 536 m (1 pixel = 1 m), origine au centre : **X** vers l'est, **Z** vers le sud (le nord est en **Z négatif**), **Y** = altitude.
-- Zone jouable : ±600 m autour de l'origine ; au-delà, rebord montagneux (puis le décor de montagnes lointaines, nœud `Montagnes`).
+- Zone jouable : ±600 m autour de l'origine ; au-delà, rebord montagneux puis panorama alpin.
 - Terrain : nœud `Terrain3D` (données dans `maps/frontiere01/terrain/`, hauteur brute dans `maps/frontiere01/data/height.r32`, altitudes de 26 m à 311 m).
 - Positions ci-dessous : `(x, z)` en mètres.
 
@@ -79,7 +79,7 @@ Les trois zones sont de grands **plateaux plats** reliés par des routes ; le ma
 |---|---|
 | `Terrain3D` | le relief et sa peinture (aucun enfant) |
 | `Sun`, `WorldEnvironment` | lumière, ciel, brouillard, occlusion ambiante |
-| `Montagnes` | décor de montagnes lointaines autour de la carte (`scripts/modules/MountainBackdrop.cs`) |
+| `WorldEnvironment` | panorama alpin derrière les crêtes de Terrain3D |
 | `BuildingColliders` | 0 boîtes de collision des bâtiments (séparées des modèles) |
 | `Loot/Coffres`, `Loot/Objets` | 194 coffres, 759 objets au sol (points de butin éditables) |
 | `Ziplines` | 645 éléments de tyroliennes (piliers, câbles, tremplins) |

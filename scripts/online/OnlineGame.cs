@@ -110,6 +110,7 @@ namespace Openesport.Online
 
 			var world = LoadWorld(worldPath, out uint checksum);
 			_worldCollision = world;
+			BindWindows(worldRoot);
 			Client = new GameClient(world, checksum, updateTimeMs: 1);
 			var mapTex = GD.Load<Texture2D>(worldPath.GetBaseName() + ".png");    // dessin de la carte (tools/map/gen_minimap.py)
 			if (mapTex != null) _hud.SetMap(mapTex, world.Data.MinX, world.Data.MaxX, world.Data.MinZ, world.Data.MaxZ);
@@ -117,6 +118,13 @@ namespace Openesport.Online
 			_hud.SetLoading(true, I18n.T("Chargement des armes et des objets…"));
 			Client.Joined += OnJoined;
 			Client.EventReceived += OnServerEvent;
+			// téléporteur : la caméra se tourne vers la sortie
+			Client.Teleported += yaw =>
+			{
+				_player.Rotation = new Vector3(_player.Rotation.X, yaw, _player.Rotation.Z);
+				var p = Client.Predicted.Pos;
+				GameAudio.Teleport(_worldRoot, new Vector3(p.X, p.Y + 1f, p.Z));
+			};
 			Client.InventoryChanged += () => _inventory.ApplyServerInventory(Client.Inventory);
 			Client.GrenadesChanged += () => _grenadeView.Apply(Client.Grenades);
 			Client.RosterChanged += RebuildRoster;
@@ -142,6 +150,8 @@ namespace Openesport.Online
 
 		private void OnJoined()
 		{
+			for (int i = 0; i < _windowViews.Count; i++)
+				if (!_windowViews[i].Visible || _windowViews[i].GetNode<Node3D>("Reinforcement").Visible) UpdateWindowView(i);
 			_prevView = _currView = Client.ViewPosition;
 			_hasView = true;
 			ShotTracer.WarmUp(_worldRoot);      // compile le shader des balles avant le premier tir
@@ -158,12 +168,26 @@ namespace Openesport.Online
 
 		private string NameOf(int id) => _roster.TryGetValue(id, out var r) ? r.Name : I18n.T("Joueur {0}", id);
 
+		/// <summary>Durée pendant laquelle un adversaire touché (ou repéré, en Sabotage) reste montré.</summary>
+		private const double RevealSeconds = 3.0;
+		private readonly Dictionary<ushort, double> _barsUntil = new(), _spottedUntil = new();
+		/// <summary>Dernier état connu de chaque équipier (il peut sortir du voisinage répliqué) : le HUD le montre en permanence.</summary>
+		private readonly Dictionary<ushort, MateView> _mateCache = new();
+
 		private void OnServerEvent(ServerEvent e)
 		{
 			if (e.Type != EventType.Shot) LagTracer.Event($"événement serveur : {e.Type}");
 			switch (e.Type)
 			{
+				case EventType.WindowChanged:
+					if (e.A < _windowViews.Count) UpdateWindowView(e.A);
+					break;
 				case EventType.HitConfirm: _hud.HitMarker((e.D & 0x80) != 0); break;
+				// notre équipe a touché un adversaire : ses barres de vie et de bouclier 3 s (et il est repéré)
+				case EventType.TeamHit: { double t = Time.GetTicksMsec() / 1000.0 + RevealSeconds; _barsUntil[e.A] = t; _spottedUntil[e.A] = t; break; }
+				// Sabotage : un adversaire vu par notre équipe apparaît 3 s sur les cartes
+				case EventType.Spotted: _spottedUntil[e.A] = Time.GetTicksMsec() / 1000.0 + RevealSeconds; break;
+				case EventType.ArenaPickup: GameAudio.Pickup(_worldRoot, new Vector3(e.Pos.X, e.Pos.Y + 0.5f, e.Pos.Z)); break;
 				case EventType.Damaged: _hud.DamageFlash(Client.Shield > 0 && Client.Health >= 100); break;
 				case EventType.Shot: OnShot(e); break;
 				case EventType.Explosion: GrenadeFx.Explosion(_worldRoot, e.C, new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z)); break;
@@ -234,6 +258,7 @@ namespace Openesport.Online
 			_slotRequest = 0;
 
 			// Sabotage, phase d'achat : on ne bouge pas (le serveur fait de même, la prédiction reste donc juste)
+			Openesport.Inventory.InventoryUI.WalkPickup = Client.ModeKnown && Client.Mode.Mode == GameMode.Deathmatch;
 			bool frozen = Client.ModeKnown && Client.Mode.Mode == GameMode.Sabotage && Client.Mode.Stage == (byte)SabotageStage.Buy && Client.Match.Phase == MatchPhase.Playing;
 			if (frozen) { forward = 0f; strafe = 0f; buttons &= ~(Buttons.Jump | Buttons.Sprint | Buttons.Fire | Buttons.Crouch); }
 			InputManager.AirborneLock = Client.Predicted.Stance == Stance.Plane || Client.Predicted.Stance == Stance.Diving;
@@ -256,7 +281,7 @@ namespace Openesport.Online
 
 			_weapons.SetServerMagazine(Client.Magazine);
 			_hud.SetVitals(Client.Health, Client.Shield, Client.ShieldTier, Client.UsingItem, Client.UseProgress);
-			_hud.SetHint(Client.Match.CanRevive ? (Client.Match.Revive > 0 ? I18n.T("Réanimation…") : I18n.T("Maintenir E : réanimer ton coéquipier")) : Client.Predicted.Stance == Stance.Climbing ? I18n.T("Escalade…") : Client.Predicted.Stance == Stance.Zipping ? I18n.T("Saut : se décrocher   —   tu peux tirer") : Client.ZiplineInReach ? I18n.T("E : prendre la tyrolienne") : BombHint());
+			_hud.SetHint(Client.Match.CanRevive ? (Client.Match.Revive > 0 ? I18n.T("Réanimation…") : I18n.T("Maintenir E : réanimer ton coéquipier")) : Client.Predicted.Stance == Stance.Climbing ? I18n.T("Escalade…") : Client.Predicted.Stance == Stance.Zipping ? I18n.T("Saut : se décrocher   —   tu peux tirer") : Client.ZiplineInReach ? I18n.T("E : prendre la tyrolienne") : _windowHint ?? BombHint());
 			_weapons.SetUsingSupply(Client.UsingItem == 0 ? null : ItemDefs.Get(Client.UsingItem)?.Name);
 			if (active) HandleSupplyKeys(); else if (_radial.IsOpen) _radial.Close();
 			UpdatePings();
@@ -582,16 +607,24 @@ namespace Openesport.Online
 		/// </summary>
 		private ushort FindInteractTarget()
 		{
-			var item = _inventory.Target;
-			if (item != null && GodotObject.IsInstanceValid(item))
-				foreach (var kv in _loot)
-					if (kv.Value == item) return kv.Key;
-
+			_windowHint = null;
 			var cam = _head.GetNodeOrNull<Camera3D>("Camera");
 			if (cam == null) return PlayerInput.NoTarget;
 			Vector3 origin = cam.GlobalPosition, dir = -cam.GlobalBasis.Z;
 			ushort best = PlayerInput.NoTarget;
 			float bestT = 3.2f;
+			int aimedPane = -1;
+			if (_worldCollision.Windows.Length > 0)
+			{
+				_worldCollision.Raycast(new Vec3(origin.X, origin.Y, origin.Z), new Vec3(dir.X, dir.Y, dir.Z),
+					WindowState.Reach, out float distance, out aimedPane, includeBroken: true);
+				if (aimedPane >= 0) bestT = distance;
+			}
+			var item = _inventory.Target;
+			if (item != null && GodotObject.IsInstanceValid(item) && (aimedPane < 0 || origin.DistanceTo(item.GlobalPosition) < bestT))
+				foreach (var kv in _loot)
+					if (kv.Value == item) return kv.Key;
+
 			foreach (var kv in _chests)
 			{
 				var chest = kv.Value;
@@ -604,6 +637,14 @@ namespace Openesport.Online
 				float t = origin.DistanceTo(chest.GlobalTransform * box.GetCenter());
 				if (t < bestT) { bestT = t; best = kv.Key; }
 			}
+			if (best == PlayerInput.NoTarget && aimedPane >= 0)
+			{
+				var window = _worldCollision.Windows[aimedPane];
+				string action = window.Health < window.Capacity ? I18n.T("E · Réparer") :
+					window.Reinforced ? I18n.T("Vitre renforcée") : I18n.T("E · Renforcer");
+				_windowHint = $"{action}   {window.Health}/{window.Capacity} PV";
+				return window.ActionTarget(aimedPane);
+			}
 			return best;
 		}
 
@@ -613,6 +654,39 @@ namespace Openesport.Online
 			var def = ItemDefs.Get(e.Weapon);
 			if (def == null) return 0;
 			return def.Kind == ItemKind.Weapon || def.Kind == ItemKind.Shield ? (e.Count >> 8) & 3 : Tiers.Of(e.Weapon, 0);
+		}
+
+		private string _windowHint;
+		private readonly List<CollisionShape3D> _windowViews = new();
+
+		private void UpdateWindowView(int index)
+		{
+			var pane = _windowViews[index];
+			var state = _worldCollision.Windows[index];
+			pane.Disabled = state.Health == 0;
+			pane.Visible = state.Health > 0;
+			var shape = (BoxShape3D)pane.Shape;
+			shape.Size = new Vector3(state.Reinforced ? 0.16f : 0.08f, shape.Size.Y, shape.Size.Z);
+			pane.GetNode<Node3D>("Glass").Scale = new Vector3(state.Reinforced ? 2f : 1f, 1f, 1f);
+			pane.GetNode<Node3D>("Reinforcement").Visible = state.Reinforced;
+		}
+
+		private void BindWindows(Node root)
+		{
+			if (_worldCollision.Windows.Length == 0) return;
+			// Same depth-first order as WorldExporter.WalkBoxes. Verify geometry before binding network IDs.
+			foreach (var node in root.FindChildren("*", "CollisionShape3D", true, false))
+				if (node is CollisionShape3D pane && pane.IsInGroup("window_panes"))
+				{
+					int i = _windowViews.Count;
+					var pos = pane.GlobalPosition;
+					if (i >= _worldCollision.Windows.Length ||
+						Vec3.Distance(new Vec3(pos.X, pos.Y, pos.Z), (_worldCollision.Data.Panes[i].Min + _worldCollision.Data.Panes[i].Max) * 0.5f) > 0.02f)
+						throw new InvalidDataException("Les vitres de la scène et du fichier .world ne correspondent pas.");
+					_windowViews.Add(pane);
+				}
+			if (_windowViews.Count != _worldCollision.Windows.Length)
+				throw new InvalidDataException("Nombre de vitres différent entre la scène et le fichier .world.");
 		}
 
 		private float _groundLift;
@@ -861,7 +935,7 @@ namespace Openesport.Online
 			_budgetStart = Time.GetTicksUsec();
 			Client.SampleEntities(_seen, alpha);
 			_live.Clear();
-			var mates = new List<(string, int, bool)>();
+			bool sabotage = Client.ModeKnown && Client.Mode.Mode == GameMode.Sabotage;
 			var radar = new List<MapMark>();
 			double nowSec = Time.GetTicksMsec() / 1000.0;
 
@@ -881,17 +955,30 @@ namespace Openesport.Online
 						if (Time.GetTicksMsec() - t0 > 40) GD.Print($"[lag] création d'un joueur : {Time.GetTicksMsec() - t0} ms");
 					}
 					bool friendly = e.Team == Client.TeamId;
+					remote.BarsUntil = _barsUntil.TryGetValue(e.Id, out double bu) ? bu : 0;
 					remote.Apply(e, NameOf(e.Id), friendly, delta);
 					if (!e.Has(EntityFlags.Dead) && e.Zip != 3)
 					{
 						var wp = new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z);
 						if (friendly) radar.Add(new MapMark { Pos = wp, Friendly = true, Alpha = 1f, Name = NameOf(e.Id) });
+						else if (sabotage)
+						{
+							// Sabotage : un adversaire n'apparaît que s'il est vu ou touché par notre équipe, pendant 3 s (pas de détection au bruit)
+							if (_spottedUntil.TryGetValue(e.Id, out double su) && su > nowSec)
+								radar.Add(new MapMark { Pos = wp, Friendly = false, Alpha = Mathf.Clamp((float)(su - nowSec) / 0.8f, 0.25f, 1f) });
+						}
 						else if (remote.NoiseUntil > nowSec && new Vector2(wp.X - _player.GlobalPosition.X, wp.Z - _player.GlobalPosition.Z).Length() <= remote.NoiseRange)
 							// un adversaire n'apparaît que s'il fait un bruit perceptible, et s'efface avec lui
 							radar.Add(new MapMark { Pos = wp, Friendly = false, Alpha = Mathf.Clamp((float)(remote.NoiseUntil - nowSec) / 0.8f, 0.25f, 1f) });
 					}
-						if (_roster.TryGetValue(e.Id, out var look)) remote.SetLook(look.Appearance);
-					if (friendly) mates.Add((NameOf(e.Id), e.Has(EntityFlags.Dead) ? 0 : e.Health, _roster.TryGetValue(e.Id, out var r) && r.IsBot));
+					bool hasLook = _roster.TryGetValue(e.Id, out var look);
+					if (hasLook) remote.SetLook(look.Appearance);
+					if (friendly)
+						_mateCache[e.Id] = new MateView
+						{
+							Id = e.Id, Name = NameOf(e.Id), Health = e.Health, Shield = e.Shield, ShieldMax = e.ShieldTier > 0 ? Consumables.ShieldMaxOf(e.ShieldTier - 1) : 0f,
+							Downed = e.Zip == 5, Dead = e.Has(EntityFlags.Dead), Bot = hasLook && look.IsBot, Appearance = hasLook ? look.Appearance : null
+						};
 				}
 				else
 				{
@@ -954,6 +1041,15 @@ namespace Openesport.Online
 				ShowTrolley(-1, new Vector3(v.X, v.Y, v.Z), new Vector3(Client.Predicted.Vel.X, Client.Predicted.Vel.Y, Client.Predicted.Vel.Z));
 			}
 			CleanTrolleys();
+			// équipiers : tous ceux de la liste des joueurs, avec leur dernier état connu (même hors de vue)
+			var mates = new List<MateView>();
+			foreach (var r in Client.Roster)
+			{
+				if (r.Team != Client.TeamId || r.Id == Client.PlayerId) continue;
+				if (!_mateCache.TryGetValue(r.Id, out var mv)) mv = new MateView { Id = r.Id, Name = r.Name, Health = 100, Bot = r.IsBot };
+				mv.Name = r.Name; mv.Appearance ??= r.Appearance;
+				mates.Add(mv);
+			}
 			_hud.SetTeam(mates);
 			_hud.SetRadar(_player.GlobalPosition, _player.GlobalRotation.Y, radar);
 		}

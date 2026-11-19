@@ -1,0 +1,4442 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Vent_Big.gltf" id="Prop_Vent_Big"]
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Fan_Small.gltf" id="Prop_Fan_Small"]
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Light_Wide.gltf" id="Prop_Light_Wide"]
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_PipeHolder.gltf" id="Prop_PipeHolder"]
+
+[sub_resource type="StandardMaterial3D" id="iron"]
+albedo_color = Color(0.19,0.23,0.25,1)
+metallic = 0.52
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="zinc"]
+albedo_color = Color(0.57,0.62,0.63,1)
+metallic = 0.52
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="ochre"]
+albedo_color = Color(0.92,0.55,0.12,1)
+metallic = 0.52
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="teal"]
+albedo_color = Color(0.11,0.52,0.57,1)
+metallic = 0.52
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="ivory"]
+albedo_color = Color(0.88,0.86,0.74,1)
+metallic = 0.52
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="glass"]
+albedo_color = Color(0.09,0.24,0.3,1)
+metallic = 0.52
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="lamp"]
+albedo_color = Color(1,0.68,0.32,1)
+metallic = 0.52
+roughness = 0.42
+emission_enabled = true
+emission = Color(1,0.55,0.22,1)
+emission_energy_multiplier = 2.8
+
+[sub_resource type="BoxMesh" id="box"]
+size = Vector3(1,1,1)
+
+[sub_resource type="CylinderMesh" id="drum"]
+top_radius = 0.5
+bottom_radius = 0.5
+height = 1
+radial_segments = 24
+
+[node name="Terminal" type="Node3D"]
+
+[node name="Portique_A" type="Node3D" parent="."]
+position = Vector3(-64, 0, -11)
+rotation = Vector3(0, 0, 0)
+
+[node name="Longeron_1" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(0, 8.35, -12)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(32.8, 0.28, 0.55)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Longeron_2" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(0, 10.05, -12)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(32.8, 0.28, 0.55)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_3" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-14.6667, 9.2, -12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_4" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-12, 9.2, -12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_5" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-9.3333, 9.2, -12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_6" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-6.6667, 9.2, -12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_7" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-4, 9.2, -12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_8" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-1.3333, 9.2, -12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_9" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(1.3333, 9.2, -12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_10" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(4, 9.2, -12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_11" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(6.6667, 9.2, -12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_12" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(9.3333, 9.2, -12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_13" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(12, 9.2, -12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_14" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(14.6667, 9.2, -12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Longeron_15" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(0, 8.35, 12)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(32.8, 0.28, 0.55)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Longeron_16" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(0, 10.05, 12)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(32.8, 0.28, 0.55)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_17" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-14.6667, 9.2, 12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_18" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-12, 9.2, 12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_19" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-9.3333, 9.2, 12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_20" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-6.6667, 9.2, 12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_21" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-4, 9.2, 12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_22" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-1.3333, 9.2, 12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_23" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(1.3333, 9.2, 12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_24" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(4, 9.2, 12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_25" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(6.6667, 9.2, 12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_26" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(9.3333, 9.2, 12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_27" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(12, 9.2, 12)
+rotation = Vector3(0, 0, 0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Treillis_28" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(14.6667, 9.2, 12)
+rotation = Vector3(0, 0, -0.5675)
+scale = Vector3(3.1625, 0.19, 0.27)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Traverse_29" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-16, 8.6, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.56, 0.62, 24.5)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Traverse_30" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(16, 8.6, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.56, 0.62, 24.5)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Traverse_31" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(4, 8.6, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.56, 0.62, 24.5)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Treuil_32" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(4, 8.55, 3)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(2.4, 1.5, 3.2)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Elingue_33" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(3.55, 6.8, 3)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.07, 2.4, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Elingue_34" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(4.45, 6.8, 3)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.07, 2.4, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Palonnier_35" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(4, 5.61, 3)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(2.9, 0.24, 0.45)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Plaque_36" type="MeshInstance3D" parent="Portique_A"]
+position = Vector3(-9, 9.19, 12.32)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(8.8, 1.2, 0.12)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Signal_37" type="Label3D" parent="Portique_A"]
+position = Vector3(-9, 9.2, 12.4)
+rotation = Vector3(0, 0, 0)
+text = "A   /   FRET"
+font_size = 100
+pixel_size = 0.011
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="Station_B" type="Node3D" parent="."]
+position = Vector3(72, 0, -31)
+rotation = Vector3(0, 0, 0)
+
+[node name="Aerorefrigerant_38" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(-5, 9, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(5.7, 4, 5.7)
+mesh = SubResource("drum")
+material_override = SubResource("zinc")
+
+[node name="Aerorefrigerant_39" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(-5, 11.5, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(6.2, 1.3, 6.2)
+mesh = SubResource("drum")
+material_override = SubResource("teal")
+
+[node name="Aerorefrigerant_40" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(-5, 12.27, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(6.45, 0.26, 6.45)
+mesh = SubResource("drum")
+material_override = SubResource("iron")
+
+[node name="Prop_Fan_Small_41" parent="Station_B" instance=ExtResource("Prop_Fan_Small")]
+position = Vector3(-5, 12.42, 0)
+scale = Vector3(2.6, 1, 2.6)
+rotation = Vector3(0, 0, 0)
+
+[node name="Conduite_42" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(-5, 9.7, 2)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.4, 0.4, 6)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Conduite_43" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(-5, 9.7, 4.4)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.4, 0.4, 6)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Aerorefrigerant_44" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(3, 9, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(5.7, 4, 5.7)
+mesh = SubResource("drum")
+material_override = SubResource("zinc")
+
+[node name="Aerorefrigerant_45" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(3, 11.5, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(6.2, 1.3, 6.2)
+mesh = SubResource("drum")
+material_override = SubResource("teal")
+
+[node name="Aerorefrigerant_46" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(3, 12.27, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(6.45, 0.26, 6.45)
+mesh = SubResource("drum")
+material_override = SubResource("iron")
+
+[node name="Prop_Fan_Small_47" parent="Station_B" instance=ExtResource("Prop_Fan_Small")]
+position = Vector3(3, 12.42, 0)
+scale = Vector3(2.6, 1, 2.6)
+rotation = Vector3(0, 0, 0)
+
+[node name="Conduite_48" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(3, 9.7, 2)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.4, 0.4, 6)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Conduite_49" type="MeshInstance3D" parent="Station_B"]
+position = Vector3(3, 9.7, 4.4)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.4, 0.4, 6)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Vigie" type="Node3D" parent="."]
+position = Vector3(-2, 0, -6)
+rotation = Vector3(0, 0, 0)
+
+[node name="Vitrage_50" type="MeshInstance3D" parent="Vigie"]
+position = Vector3(0, 4.8, 2.86)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(7.56, 1.65, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("glass")
+
+[node name="Montant_51" type="MeshInstance3D" parent="Vigie"]
+position = Vector3(-3.65, 4.85, 2.88)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.16, 2, 0.22)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Montant_52" type="MeshInstance3D" parent="Vigie"]
+position = Vector3(0, 4.85, 2.88)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.16, 2, 0.22)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Montant_53" type="MeshInstance3D" parent="Vigie"]
+position = Vector3(3.65, 4.85, 2.88)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.16, 2, 0.22)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Toiture_54" type="MeshInstance3D" parent="Vigie"]
+position = Vector3(0, 5.96, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(8.4, 0.32, 6.3)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Mat_55" type="MeshInstance3D" parent="Vigie"]
+position = Vector3(2.4, 8.6, -1.4)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.16, 5.2, 0.16)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Balise_56" type="MeshInstance3D" parent="Vigie"]
+position = Vector3(2.4, 11.25, -1.4)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.22, 0.24, 0.22)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_1" type="Node3D" parent="."]
+position = Vector3(-78, 0, -32)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_57" type="MeshInstance3D" parent="Facade_1"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_58" type="MeshInstance3D" parent="Facade_1"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_59" type="MeshInstance3D" parent="Facade_1"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_60" type="MeshInstance3D" parent="Facade_1"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_61" type="MeshInstance3D" parent="Facade_1"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_62" type="MeshInstance3D" parent="Facade_1"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_63" type="MeshInstance3D" parent="Facade_1"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_64" type="MeshInstance3D" parent="Facade_1"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_2" type="Node3D" parent="."]
+position = Vector3(-74, 0, 12)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_65" type="MeshInstance3D" parent="Facade_2"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_66" type="MeshInstance3D" parent="Facade_2"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_67" type="MeshInstance3D" parent="Facade_2"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_68" type="MeshInstance3D" parent="Facade_2"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_69" type="MeshInstance3D" parent="Facade_2"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_70" type="MeshInstance3D" parent="Facade_2"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_71" type="MeshInstance3D" parent="Facade_2"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_72" type="MeshInstance3D" parent="Facade_2"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_3" type="Node3D" parent="."]
+position = Vector3(-62, 0, -56)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_Vent_Big_73" parent="Facade_3" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_74" parent="Facade_3" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_4" type="Node3D" parent="."]
+position = Vector3(-58, 0, 40)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_75" type="MeshInstance3D" parent="Facade_4"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_76" type="MeshInstance3D" parent="Facade_4"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_77" type="MeshInstance3D" parent="Facade_4"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_78" type="MeshInstance3D" parent="Facade_4"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_79" type="MeshInstance3D" parent="Facade_4"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_80" type="MeshInstance3D" parent="Facade_4"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_81" type="MeshInstance3D" parent="Facade_4"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_82" type="MeshInstance3D" parent="Facade_4"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_5" type="Node3D" parent="."]
+position = Vector3(-50, 0, -32)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_83" type="MeshInstance3D" parent="Facade_5"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_84" type="MeshInstance3D" parent="Facade_5"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_85" type="MeshInstance3D" parent="Facade_5"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_86" type="MeshInstance3D" parent="Facade_5"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_87" type="MeshInstance3D" parent="Facade_5"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_88" type="MeshInstance3D" parent="Facade_5"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_89" type="MeshInstance3D" parent="Facade_5"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_90" type="MeshInstance3D" parent="Facade_5"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_6" type="Node3D" parent="."]
+position = Vector3(-38, 0, -80)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_Vent_Big_91" parent="Facade_6" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_92" parent="Facade_6" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_7" type="Node3D" parent="."]
+position = Vector3(-38, 0, -16)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_93" type="MeshInstance3D" parent="Facade_7"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_94" type="MeshInstance3D" parent="Facade_7"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_95" type="MeshInstance3D" parent="Facade_7"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_96" type="MeshInstance3D" parent="Facade_7"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_97" type="MeshInstance3D" parent="Facade_7"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_98" type="MeshInstance3D" parent="Facade_7"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_99" type="MeshInstance3D" parent="Facade_7"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_100" type="MeshInstance3D" parent="Facade_7"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_8" type="Node3D" parent="."]
+position = Vector3(-34, 0, 44)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_101" type="MeshInstance3D" parent="Facade_8"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_102" type="MeshInstance3D" parent="Facade_8"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_103" type="MeshInstance3D" parent="Facade_8"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_104" type="MeshInstance3D" parent="Facade_8"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_105" type="MeshInstance3D" parent="Facade_8"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_106" type="MeshInstance3D" parent="Facade_8"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_107" type="MeshInstance3D" parent="Facade_8"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_108" type="MeshInstance3D" parent="Facade_8"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_9" type="Node3D" parent="."]
+position = Vector3(-30, 0, 64)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_Vent_Big_109" parent="Facade_9" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_110" parent="Facade_9" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_10" type="Node3D" parent="."]
+position = Vector3(-26, 0, -52)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_111" type="MeshInstance3D" parent="Facade_10"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_112" type="MeshInstance3D" parent="Facade_10"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_113" type="MeshInstance3D" parent="Facade_10"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_114" type="MeshInstance3D" parent="Facade_10"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_115" type="MeshInstance3D" parent="Facade_10"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_116" type="MeshInstance3D" parent="Facade_10"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_117" type="MeshInstance3D" parent="Facade_10"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_118" type="MeshInstance3D" parent="Facade_10"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_11" type="Node3D" parent="."]
+position = Vector3(-14, 0, -88)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_119" type="MeshInstance3D" parent="Facade_11"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_120" type="MeshInstance3D" parent="Facade_11"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_121" type="MeshInstance3D" parent="Facade_11"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_122" type="MeshInstance3D" parent="Facade_11"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_123" type="MeshInstance3D" parent="Facade_11"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_124" type="MeshInstance3D" parent="Facade_11"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_125" type="MeshInstance3D" parent="Facade_11"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_126" type="MeshInstance3D" parent="Facade_11"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_12" type="Node3D" parent="."]
+position = Vector3(14, 0, -88)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_Vent_Big_127" parent="Facade_12" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_128" parent="Facade_12" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_13" type="Node3D" parent="."]
+position = Vector3(2, 0, 32)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_129" type="MeshInstance3D" parent="Facade_13"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_130" type="MeshInstance3D" parent="Facade_13"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_131" type="MeshInstance3D" parent="Facade_13"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_132" type="MeshInstance3D" parent="Facade_13"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_133" type="MeshInstance3D" parent="Facade_13"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_134" type="MeshInstance3D" parent="Facade_13"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_135" type="MeshInstance3D" parent="Facade_13"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_136" type="MeshInstance3D" parent="Facade_13"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_14" type="Node3D" parent="."]
+position = Vector3(6, 0, -24)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_137" type="MeshInstance3D" parent="Facade_14"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_138" type="MeshInstance3D" parent="Facade_14"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_139" type="MeshInstance3D" parent="Facade_14"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_140" type="MeshInstance3D" parent="Facade_14"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_141" type="MeshInstance3D" parent="Facade_14"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_142" type="MeshInstance3D" parent="Facade_14"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_143" type="MeshInstance3D" parent="Facade_14"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_144" type="MeshInstance3D" parent="Facade_14"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_15" type="Node3D" parent="."]
+position = Vector3(18, 0, 36)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_Vent_Big_145" parent="Facade_15" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_146" parent="Facade_15" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_16" type="Node3D" parent="."]
+position = Vector3(46, 0, 36)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_147" type="MeshInstance3D" parent="Facade_16"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_148" type="MeshInstance3D" parent="Facade_16"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_149" type="MeshInstance3D" parent="Facade_16"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_150" type="MeshInstance3D" parent="Facade_16"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_151" type="MeshInstance3D" parent="Facade_16"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_152" type="MeshInstance3D" parent="Facade_16"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_153" type="MeshInstance3D" parent="Facade_16"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_154" type="MeshInstance3D" parent="Facade_16"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_17" type="Node3D" parent="."]
+position = Vector3(18, 0, 64)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_155" type="MeshInstance3D" parent="Facade_17"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_156" type="MeshInstance3D" parent="Facade_17"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_157" type="MeshInstance3D" parent="Facade_17"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_158" type="MeshInstance3D" parent="Facade_17"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_159" type="MeshInstance3D" parent="Facade_17"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_160" type="MeshInstance3D" parent="Facade_17"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_161" type="MeshInstance3D" parent="Facade_17"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_162" type="MeshInstance3D" parent="Facade_17"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_18" type="Node3D" parent="."]
+position = Vector3(26, 0, -80)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_Vent_Big_163" parent="Facade_18" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_164" parent="Facade_18" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_19" type="Node3D" parent="."]
+position = Vector3(26, 0, -20)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_165" type="MeshInstance3D" parent="Facade_19"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_166" type="MeshInstance3D" parent="Facade_19"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_167" type="MeshInstance3D" parent="Facade_19"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_168" type="MeshInstance3D" parent="Facade_19"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_169" type="MeshInstance3D" parent="Facade_19"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_170" type="MeshInstance3D" parent="Facade_19"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_171" type="MeshInstance3D" parent="Facade_19"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_172" type="MeshInstance3D" parent="Facade_19"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_20" type="Node3D" parent="."]
+position = Vector3(50, 0, -52)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_173" type="MeshInstance3D" parent="Facade_20"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_174" type="MeshInstance3D" parent="Facade_20"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_175" type="MeshInstance3D" parent="Facade_20"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_176" type="MeshInstance3D" parent="Facade_20"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_177" type="MeshInstance3D" parent="Facade_20"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_178" type="MeshInstance3D" parent="Facade_20"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_179" type="MeshInstance3D" parent="Facade_20"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_180" type="MeshInstance3D" parent="Facade_20"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_21" type="Node3D" parent="."]
+position = Vector3(50, 0, -24)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_Vent_Big_181" parent="Facade_21" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_182" parent="Facade_21" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_22" type="Node3D" parent="."]
+position = Vector3(74, 0, -24)
+rotation = Vector3(0, 0, 0)
+
+[node name="Dormant_183" type="MeshInstance3D" parent="Facade_22"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_184" type="MeshInstance3D" parent="Facade_22"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_185" type="MeshInstance3D" parent="Facade_22"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_186" type="MeshInstance3D" parent="Facade_22"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_187" type="MeshInstance3D" parent="Facade_22"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_188" type="MeshInstance3D" parent="Facade_22"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_189" type="MeshInstance3D" parent="Facade_22"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_190" type="MeshInstance3D" parent="Facade_22"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_23" type="Node3D" parent="."]
+position = Vector3(-78, 0, 8)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_191" type="MeshInstance3D" parent="Facade_23"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_192" type="MeshInstance3D" parent="Facade_23"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_193" type="MeshInstance3D" parent="Facade_23"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_194" type="MeshInstance3D" parent="Facade_23"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_195" type="MeshInstance3D" parent="Facade_23"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_196" type="MeshInstance3D" parent="Facade_23"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_197" type="MeshInstance3D" parent="Facade_23"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_198" type="MeshInstance3D" parent="Facade_23"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_24" type="Node3D" parent="."]
+position = Vector3(-70, 0, 56)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Prop_Vent_Big_199" parent="Facade_24" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_200" parent="Facade_24" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_25" type="Node3D" parent="."]
+position = Vector3(-50, 0, -44)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_201" type="MeshInstance3D" parent="Facade_25"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_202" type="MeshInstance3D" parent="Facade_25"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_203" type="MeshInstance3D" parent="Facade_25"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_204" type="MeshInstance3D" parent="Facade_25"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_205" type="MeshInstance3D" parent="Facade_25"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_206" type="MeshInstance3D" parent="Facade_25"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_207" type="MeshInstance3D" parent="Facade_25"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_208" type="MeshInstance3D" parent="Facade_25"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_26" type="Node3D" parent="."]
+position = Vector3(-22, 0, -44)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_209" type="MeshInstance3D" parent="Facade_26"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_210" type="MeshInstance3D" parent="Facade_26"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_211" type="MeshInstance3D" parent="Facade_26"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_212" type="MeshInstance3D" parent="Facade_26"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_213" type="MeshInstance3D" parent="Facade_26"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_214" type="MeshInstance3D" parent="Facade_26"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_215" type="MeshInstance3D" parent="Facade_26"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_216" type="MeshInstance3D" parent="Facade_26"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_27" type="Node3D" parent="."]
+position = Vector3(-42, 0, 76)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Prop_Vent_Big_217" parent="Facade_27" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_218" parent="Facade_27" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_28" type="Node3D" parent="."]
+position = Vector3(-30, 0, 52)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_219" type="MeshInstance3D" parent="Facade_28"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_220" type="MeshInstance3D" parent="Facade_28"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_221" type="MeshInstance3D" parent="Facade_28"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_222" type="MeshInstance3D" parent="Facade_28"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_223" type="MeshInstance3D" parent="Facade_28"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_224" type="MeshInstance3D" parent="Facade_28"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_225" type="MeshInstance3D" parent="Facade_28"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_226" type="MeshInstance3D" parent="Facade_28"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_29" type="Node3D" parent="."]
+position = Vector3(-26, 0, -68)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_227" type="MeshInstance3D" parent="Facade_29"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_228" type="MeshInstance3D" parent="Facade_29"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_229" type="MeshInstance3D" parent="Facade_29"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_230" type="MeshInstance3D" parent="Facade_29"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_231" type="MeshInstance3D" parent="Facade_29"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_232" type="MeshInstance3D" parent="Facade_29"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_233" type="MeshInstance3D" parent="Facade_29"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_234" type="MeshInstance3D" parent="Facade_29"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_30" type="Node3D" parent="."]
+position = Vector3(2, 0, -68)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Prop_Vent_Big_235" parent="Facade_30" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_236" parent="Facade_30" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_31" type="Node3D" parent="."]
+position = Vector3(-22, 0, 8)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_237" type="MeshInstance3D" parent="Facade_31"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_238" type="MeshInstance3D" parent="Facade_31"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_239" type="MeshInstance3D" parent="Facade_31"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_240" type="MeshInstance3D" parent="Facade_31"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_241" type="MeshInstance3D" parent="Facade_31"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_242" type="MeshInstance3D" parent="Facade_31"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_243" type="MeshInstance3D" parent="Facade_31"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_244" type="MeshInstance3D" parent="Facade_31"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_32" type="Node3D" parent="."]
+position = Vector3(-14, 0, 88)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_245" type="MeshInstance3D" parent="Facade_32"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_246" type="MeshInstance3D" parent="Facade_32"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_247" type="MeshInstance3D" parent="Facade_32"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_248" type="MeshInstance3D" parent="Facade_32"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_249" type="MeshInstance3D" parent="Facade_32"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_250" type="MeshInstance3D" parent="Facade_32"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_251" type="MeshInstance3D" parent="Facade_32"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_252" type="MeshInstance3D" parent="Facade_32"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_33" type="Node3D" parent="."]
+position = Vector3(14, 0, 88)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Prop_Vent_Big_253" parent="Facade_33" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_254" parent="Facade_33" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_34" type="Node3D" parent="."]
+position = Vector3(2, 0, 24)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_255" type="MeshInstance3D" parent="Facade_34"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_256" type="MeshInstance3D" parent="Facade_34"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_257" type="MeshInstance3D" parent="Facade_34"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_258" type="MeshInstance3D" parent="Facade_34"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_259" type="MeshInstance3D" parent="Facade_34"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_260" type="MeshInstance3D" parent="Facade_34"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_261" type="MeshInstance3D" parent="Facade_34"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_262" type="MeshInstance3D" parent="Facade_34"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_35" type="Node3D" parent="."]
+position = Vector3(14, 0, 12)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_263" type="MeshInstance3D" parent="Facade_35"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_264" type="MeshInstance3D" parent="Facade_35"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_265" type="MeshInstance3D" parent="Facade_35"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_266" type="MeshInstance3D" parent="Facade_35"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_267" type="MeshInstance3D" parent="Facade_35"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_268" type="MeshInstance3D" parent="Facade_35"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_269" type="MeshInstance3D" parent="Facade_35"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_270" type="MeshInstance3D" parent="Facade_35"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_36" type="Node3D" parent="."]
+position = Vector3(18, 0, 44)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Prop_Vent_Big_271" parent="Facade_36" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_272" parent="Facade_36" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_37" type="Node3D" parent="."]
+position = Vector3(26, 0, 76)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_273" type="MeshInstance3D" parent="Facade_37"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_274" type="MeshInstance3D" parent="Facade_37"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_275" type="MeshInstance3D" parent="Facade_37"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_276" type="MeshInstance3D" parent="Facade_37"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_277" type="MeshInstance3D" parent="Facade_37"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_278" type="MeshInstance3D" parent="Facade_37"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_279" type="MeshInstance3D" parent="Facade_37"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_280" type="MeshInstance3D" parent="Facade_37"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_38" type="Node3D" parent="."]
+position = Vector3(38, 0, -40)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_281" type="MeshInstance3D" parent="Facade_38"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_282" type="MeshInstance3D" parent="Facade_38"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_283" type="MeshInstance3D" parent="Facade_38"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_284" type="MeshInstance3D" parent="Facade_38"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_285" type="MeshInstance3D" parent="Facade_38"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_286" type="MeshInstance3D" parent="Facade_38"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_287" type="MeshInstance3D" parent="Facade_38"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_288" type="MeshInstance3D" parent="Facade_38"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_39" type="Node3D" parent="."]
+position = Vector3(38, 0, 4)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Prop_Vent_Big_289" parent="Facade_39" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_290" parent="Facade_39" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_40" type="Node3D" parent="."]
+position = Vector3(54, 0, 28)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_291" type="MeshInstance3D" parent="Facade_40"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_292" type="MeshInstance3D" parent="Facade_40"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_293" type="MeshInstance3D" parent="Facade_40"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_294" type="MeshInstance3D" parent="Facade_40"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_295" type="MeshInstance3D" parent="Facade_40"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_296" type="MeshInstance3D" parent="Facade_40"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_297" type="MeshInstance3D" parent="Facade_40"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_298" type="MeshInstance3D" parent="Facade_40"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_41" type="Node3D" parent="."]
+position = Vector3(58, 0, 52)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Dormant_299" type="MeshInstance3D" parent="Facade_41"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_300" type="MeshInstance3D" parent="Facade_41"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_301" type="MeshInstance3D" parent="Facade_41"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_302" type="MeshInstance3D" parent="Facade_41"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_303" type="MeshInstance3D" parent="Facade_41"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_304" type="MeshInstance3D" parent="Facade_41"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_305" type="MeshInstance3D" parent="Facade_41"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_306" type="MeshInstance3D" parent="Facade_41"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_42" type="Node3D" parent="."]
+position = Vector3(78, 0, 16)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Prop_Vent_Big_307" parent="Facade_42" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_308" parent="Facade_42" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_43" type="Node3D" parent="."]
+position = Vector3(-84, 0, -26)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_309" type="MeshInstance3D" parent="Facade_43"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_310" type="MeshInstance3D" parent="Facade_43"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_311" type="MeshInstance3D" parent="Facade_43"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_312" type="MeshInstance3D" parent="Facade_43"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_313" type="MeshInstance3D" parent="Facade_43"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_314" type="MeshInstance3D" parent="Facade_43"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_315" type="MeshInstance3D" parent="Facade_43"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_316" type="MeshInstance3D" parent="Facade_43"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_44" type="Node3D" parent="."]
+position = Vector3(-84, 0, 2)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_317" type="MeshInstance3D" parent="Facade_44"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_318" type="MeshInstance3D" parent="Facade_44"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_319" type="MeshInstance3D" parent="Facade_44"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_320" type="MeshInstance3D" parent="Facade_44"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_321" type="MeshInstance3D" parent="Facade_44"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_322" type="MeshInstance3D" parent="Facade_44"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_323" type="MeshInstance3D" parent="Facade_44"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_324" type="MeshInstance3D" parent="Facade_44"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_45" type="Node3D" parent="."]
+position = Vector3(-80, 0, 18)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Prop_Vent_Big_325" parent="Facade_45" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_326" parent="Facade_45" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_46" type="Node3D" parent="."]
+position = Vector3(-72, 0, -46)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_327" type="MeshInstance3D" parent="Facade_46"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_328" type="MeshInstance3D" parent="Facade_46"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_329" type="MeshInstance3D" parent="Facade_46"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_330" type="MeshInstance3D" parent="Facade_46"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_331" type="MeshInstance3D" parent="Facade_46"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_332" type="MeshInstance3D" parent="Facade_46"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_333" type="MeshInstance3D" parent="Facade_46"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_334" type="MeshInstance3D" parent="Facade_46"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_47" type="Node3D" parent="."]
+position = Vector3(-52, 0, 62)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_335" type="MeshInstance3D" parent="Facade_47"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_336" type="MeshInstance3D" parent="Facade_47"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_337" type="MeshInstance3D" parent="Facade_47"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_338" type="MeshInstance3D" parent="Facade_47"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_339" type="MeshInstance3D" parent="Facade_47"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_340" type="MeshInstance3D" parent="Facade_47"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_341" type="MeshInstance3D" parent="Facade_47"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_342" type="MeshInstance3D" parent="Facade_47"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_48" type="Node3D" parent="."]
+position = Vector3(-44, 0, -74)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Prop_Vent_Big_343" parent="Facade_48" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_344" parent="Facade_48" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_49" type="Node3D" parent="."]
+position = Vector3(-20, 0, 82)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_345" type="MeshInstance3D" parent="Facade_49"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_346" type="MeshInstance3D" parent="Facade_49"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_347" type="MeshInstance3D" parent="Facade_49"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_348" type="MeshInstance3D" parent="Facade_49"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_349" type="MeshInstance3D" parent="Facade_49"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_350" type="MeshInstance3D" parent="Facade_49"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_351" type="MeshInstance3D" parent="Facade_49"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_352" type="MeshInstance3D" parent="Facade_49"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_50" type="Node3D" parent="."]
+position = Vector3(-16, 0, -18)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_353" type="MeshInstance3D" parent="Facade_50"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_354" type="MeshInstance3D" parent="Facade_50"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_355" type="MeshInstance3D" parent="Facade_50"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_356" type="MeshInstance3D" parent="Facade_50"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_357" type="MeshInstance3D" parent="Facade_50"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_358" type="MeshInstance3D" parent="Facade_50"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_359" type="MeshInstance3D" parent="Facade_50"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_360" type="MeshInstance3D" parent="Facade_50"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_51" type="Node3D" parent="."]
+position = Vector3(-16, 0, 14)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Prop_Vent_Big_361" parent="Facade_51" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_362" parent="Facade_51" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_52" type="Node3D" parent="."]
+position = Vector3(-12, 0, -38)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_363" type="MeshInstance3D" parent="Facade_52"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_364" type="MeshInstance3D" parent="Facade_52"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_365" type="MeshInstance3D" parent="Facade_52"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_366" type="MeshInstance3D" parent="Facade_52"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_367" type="MeshInstance3D" parent="Facade_52"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_368" type="MeshInstance3D" parent="Facade_52"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_369" type="MeshInstance3D" parent="Facade_52"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_370" type="MeshInstance3D" parent="Facade_52"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_53" type="Node3D" parent="."]
+position = Vector3(-8, 0, 58)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_371" type="MeshInstance3D" parent="Facade_53"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_372" type="MeshInstance3D" parent="Facade_53"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_373" type="MeshInstance3D" parent="Facade_53"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_374" type="MeshInstance3D" parent="Facade_53"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_375" type="MeshInstance3D" parent="Facade_53"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_376" type="MeshInstance3D" parent="Facade_53"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_377" type="MeshInstance3D" parent="Facade_53"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_378" type="MeshInstance3D" parent="Facade_53"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_54" type="Node3D" parent="."]
+position = Vector3(32, 0, -62)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Prop_Vent_Big_379" parent="Facade_54" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_380" parent="Facade_54" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_55" type="Node3D" parent="."]
+position = Vector3(36, 0, 50)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_381" type="MeshInstance3D" parent="Facade_55"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_382" type="MeshInstance3D" parent="Facade_55"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_383" type="MeshInstance3D" parent="Facade_55"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_384" type="MeshInstance3D" parent="Facade_55"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_385" type="MeshInstance3D" parent="Facade_55"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_386" type="MeshInstance3D" parent="Facade_55"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_387" type="MeshInstance3D" parent="Facade_55"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_388" type="MeshInstance3D" parent="Facade_55"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_56" type="Node3D" parent="."]
+position = Vector3(44, 0, -18)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_389" type="MeshInstance3D" parent="Facade_56"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_390" type="MeshInstance3D" parent="Facade_56"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_391" type="MeshInstance3D" parent="Facade_56"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_392" type="MeshInstance3D" parent="Facade_56"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_393" type="MeshInstance3D" parent="Facade_56"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_394" type="MeshInstance3D" parent="Facade_56"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_395" type="MeshInstance3D" parent="Facade_56"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_396" type="MeshInstance3D" parent="Facade_56"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_57" type="Node3D" parent="."]
+position = Vector3(44, 0, 10)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Prop_Vent_Big_397" parent="Facade_57" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_398" parent="Facade_57" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_58" type="Node3D" parent="."]
+position = Vector3(48, 0, 22)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_399" type="MeshInstance3D" parent="Facade_58"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_400" type="MeshInstance3D" parent="Facade_58"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_401" type="MeshInstance3D" parent="Facade_58"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_402" type="MeshInstance3D" parent="Facade_58"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_403" type="MeshInstance3D" parent="Facade_58"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_404" type="MeshInstance3D" parent="Facade_58"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_405" type="MeshInstance3D" parent="Facade_58"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_406" type="MeshInstance3D" parent="Facade_58"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_59" type="Node3D" parent="."]
+position = Vector3(56, 0, -34)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Dormant_407" type="MeshInstance3D" parent="Facade_59"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_408" type="MeshInstance3D" parent="Facade_59"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_409" type="MeshInstance3D" parent="Facade_59"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_410" type="MeshInstance3D" parent="Facade_59"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_411" type="MeshInstance3D" parent="Facade_59"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_412" type="MeshInstance3D" parent="Facade_59"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_413" type="MeshInstance3D" parent="Facade_59"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_414" type="MeshInstance3D" parent="Facade_59"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_60" type="Node3D" parent="."]
+position = Vector3(-64, 0, 30)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Prop_Vent_Big_415" parent="Facade_60" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_416" parent="Facade_60" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_61" type="Node3D" parent="."]
+position = Vector3(-56, 0, -38)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_417" type="MeshInstance3D" parent="Facade_61"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_418" type="MeshInstance3D" parent="Facade_61"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_419" type="MeshInstance3D" parent="Facade_61"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_420" type="MeshInstance3D" parent="Facade_61"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_421" type="MeshInstance3D" parent="Facade_61"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_422" type="MeshInstance3D" parent="Facade_61"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_423" type="MeshInstance3D" parent="Facade_61"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_424" type="MeshInstance3D" parent="Facade_61"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_62" type="Node3D" parent="."]
+position = Vector3(-52, 0, 14)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_425" type="MeshInstance3D" parent="Facade_62"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_426" type="MeshInstance3D" parent="Facade_62"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_427" type="MeshInstance3D" parent="Facade_62"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_428" type="MeshInstance3D" parent="Facade_62"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_429" type="MeshInstance3D" parent="Facade_62"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_430" type="MeshInstance3D" parent="Facade_62"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_431" type="MeshInstance3D" parent="Facade_62"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_432" type="MeshInstance3D" parent="Facade_62"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_63" type="Node3D" parent="."]
+position = Vector3(-44, 0, -26)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Prop_Vent_Big_433" parent="Facade_63" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_434" parent="Facade_63" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_64" type="Node3D" parent="."]
+position = Vector3(-44, 0, 2)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_435" type="MeshInstance3D" parent="Facade_64"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_436" type="MeshInstance3D" parent="Facade_64"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_437" type="MeshInstance3D" parent="Facade_64"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_438" type="MeshInstance3D" parent="Facade_64"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_439" type="MeshInstance3D" parent="Facade_64"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_440" type="MeshInstance3D" parent="Facade_64"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_441" type="MeshInstance3D" parent="Facade_64"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_442" type="MeshInstance3D" parent="Facade_64"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_65" type="Node3D" parent="."]
+position = Vector3(-36, 0, 58)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_443" type="MeshInstance3D" parent="Facade_65"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_444" type="MeshInstance3D" parent="Facade_65"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_445" type="MeshInstance3D" parent="Facade_65"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_446" type="MeshInstance3D" parent="Facade_65"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_447" type="MeshInstance3D" parent="Facade_65"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_448" type="MeshInstance3D" parent="Facade_65"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_449" type="MeshInstance3D" parent="Facade_65"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_450" type="MeshInstance3D" parent="Facade_65"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_66" type="Node3D" parent="."]
+position = Vector3(-32, 0, -62)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Prop_Vent_Big_451" parent="Facade_66" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_452" parent="Facade_66" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_67" type="Node3D" parent="."]
+position = Vector3(0, 0, -42)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_453" type="MeshInstance3D" parent="Facade_67"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_454" type="MeshInstance3D" parent="Facade_67"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_455" type="MeshInstance3D" parent="Facade_67"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_456" type="MeshInstance3D" parent="Facade_67"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_457" type="MeshInstance3D" parent="Facade_67"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_458" type="MeshInstance3D" parent="Facade_67"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_459" type="MeshInstance3D" parent="Facade_67"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_460" type="MeshInstance3D" parent="Facade_67"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_68" type="Node3D" parent="."]
+position = Vector3(8, 0, 18)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_461" type="MeshInstance3D" parent="Facade_68"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_462" type="MeshInstance3D" parent="Facade_68"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_463" type="MeshInstance3D" parent="Facade_68"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_464" type="MeshInstance3D" parent="Facade_68"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_465" type="MeshInstance3D" parent="Facade_68"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_466" type="MeshInstance3D" parent="Facade_68"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_467" type="MeshInstance3D" parent="Facade_68"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_468" type="MeshInstance3D" parent="Facade_68"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_69" type="Node3D" parent="."]
+position = Vector3(8, 0, 58)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Prop_Vent_Big_469" parent="Facade_69" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_470" parent="Facade_69" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_70" type="Node3D" parent="."]
+position = Vector3(20, 0, -2)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_471" type="MeshInstance3D" parent="Facade_70"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_472" type="MeshInstance3D" parent="Facade_70"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_473" type="MeshInstance3D" parent="Facade_70"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_474" type="MeshInstance3D" parent="Facade_70"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_475" type="MeshInstance3D" parent="Facade_70"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_476" type="MeshInstance3D" parent="Facade_70"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_477" type="MeshInstance3D" parent="Facade_70"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_478" type="MeshInstance3D" parent="Facade_70"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_71" type="Node3D" parent="."]
+position = Vector3(20, 0, 82)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_479" type="MeshInstance3D" parent="Facade_71"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_480" type="MeshInstance3D" parent="Facade_71"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_481" type="MeshInstance3D" parent="Facade_71"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_482" type="MeshInstance3D" parent="Facade_71"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_483" type="MeshInstance3D" parent="Facade_71"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_484" type="MeshInstance3D" parent="Facade_71"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_485" type="MeshInstance3D" parent="Facade_71"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_486" type="MeshInstance3D" parent="Facade_71"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_72" type="Node3D" parent="."]
+position = Vector3(44, 0, -74)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Prop_Vent_Big_487" parent="Facade_72" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_488" parent="Facade_72" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_73" type="Node3D" parent="."]
+position = Vector3(52, 0, 58)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_489" type="MeshInstance3D" parent="Facade_73"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_490" type="MeshInstance3D" parent="Facade_73"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_491" type="MeshInstance3D" parent="Facade_73"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_492" type="MeshInstance3D" parent="Facade_73"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_493" type="MeshInstance3D" parent="Facade_73"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_494" type="MeshInstance3D" parent="Facade_73"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_495" type="MeshInstance3D" parent="Facade_73"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_496" type="MeshInstance3D" parent="Facade_73"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_74" type="Node3D" parent="."]
+position = Vector3(68, 0, -46)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_497" type="MeshInstance3D" parent="Facade_74"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_498" type="MeshInstance3D" parent="Facade_74"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_499" type="MeshInstance3D" parent="Facade_74"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_500" type="MeshInstance3D" parent="Facade_74"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_501" type="MeshInstance3D" parent="Facade_74"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_502" type="MeshInstance3D" parent="Facade_74"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_503" type="MeshInstance3D" parent="Facade_74"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_504" type="MeshInstance3D" parent="Facade_74"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_75" type="Node3D" parent="."]
+position = Vector3(76, 0, 26)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Prop_Vent_Big_505" parent="Facade_75" instance=ExtResource("Prop_Vent_Big")]
+position = Vector3(0, 2.15, 0.035)
+scale = Vector3(1.6, 1.4, 1.6)
+rotation = Vector3(1.5708, 0, 0)
+
+[node name="Prop_Light_Wide_506" parent="Facade_75" instance=ExtResource("Prop_Light_Wide")]
+position = Vector3(1.15, 3.55, 0.1)
+scale = Vector3(0.95, 0.95, 0.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Facade_76" type="Node3D" parent="."]
+position = Vector3(84, 0, -18)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_507" type="MeshInstance3D" parent="Facade_76"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_508" type="MeshInstance3D" parent="Facade_76"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_509" type="MeshInstance3D" parent="Facade_76"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_510" type="MeshInstance3D" parent="Facade_76"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_511" type="MeshInstance3D" parent="Facade_76"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_512" type="MeshInstance3D" parent="Facade_76"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_513" type="MeshInstance3D" parent="Facade_76"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_514" type="MeshInstance3D" parent="Facade_76"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Facade_77" type="Node3D" parent="."]
+position = Vector3(84, 0, 10)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Dormant_515" type="MeshInstance3D" parent="Facade_77"]
+position = Vector3(0, 2, 0.035)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.4, 4, 0.08)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Rideau_516" type="MeshInstance3D" parent="Facade_77"]
+position = Vector3(0, 1.85, 0.09)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.9, 3.65, 0.07)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Lame_517" type="MeshInstance3D" parent="Facade_77"]
+position = Vector3(0, 0.75, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_518" type="MeshInstance3D" parent="Facade_77"]
+position = Vector3(0, 1.65, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_519" type="MeshInstance3D" parent="Facade_77"]
+position = Vector3(0, 2.55, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lame_520" type="MeshInstance3D" parent="Facade_77"]
+position = Vector3(0, 3.45, 0.135)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(3.85, 0.07, 0.035)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Marquise_521" type="MeshInstance3D" parent="Facade_77"]
+position = Vector3(0, 3.89, 0.28)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(4.6, 0.18, 0.72)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Lampe_522" type="MeshInstance3D" parent="Facade_77"]
+position = Vector3(0, 3.78, 0.48)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.45, 0.07, 0.1)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="A_Fret" type="Node3D" parent="."]
+position = Vector3(-70, 0, -32)
+rotation = Vector3(0, 0, 0)
+
+[node name="Enseigne_523" type="MeshInstance3D" parent="A_Fret"]
+position = Vector3(0, 4.85, 0.11)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(9.8, 1.9, 0.18)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Signal_524" type="Label3D" parent="A_Fret"]
+position = Vector3(0, 4.86, 0.23)
+rotation = Vector3(0, 0, 0)
+text = "A  /  QUAI"
+font_size = 100
+pixel_size = 0.0105
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="B_Turbines" type="Node3D" parent="."]
+position = Vector3(74, 0, -24)
+rotation = Vector3(0, 0, 0)
+
+[node name="Enseigne_525" type="MeshInstance3D" parent="B_Turbines"]
+position = Vector3(0, 4.85, 0.11)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(9.8, 1.9, 0.18)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Signal_526" type="Label3D" parent="B_Turbines"]
+position = Vector3(0, 4.86, 0.23)
+rotation = Vector3(0, 0, 0)
+text = "B  /  TURBINES"
+font_size = 100
+pixel_size = 0.0105
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="A_Retour" type="Node3D" parent="."]
+position = Vector3(-84, 0, -13)
+rotation = Vector3(0, 1.5708, 0)
+
+[node name="Enseigne_527" type="MeshInstance3D" parent="A_Retour"]
+position = Vector3(0, 4.85, 0.11)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(9.8, 1.9, 0.18)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Signal_528" type="Label3D" parent="A_Retour"]
+position = Vector3(0, 4.86, 0.23)
+rotation = Vector3(0, 0, 0)
+text = "A   01"
+font_size = 100
+pixel_size = 0.0105
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="B_Retour" type="Node3D" parent="."]
+position = Vector3(84, 0, -3)
+rotation = Vector3(0, -1.5708, 0)
+
+[node name="Enseigne_529" type="MeshInstance3D" parent="B_Retour"]
+position = Vector3(0, 4.85, 0.11)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(9.8, 1.9, 0.18)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Signal_530" type="Label3D" parent="B_Retour"]
+position = Vector3(0, 4.86, 0.23)
+rotation = Vector3(0, 0, 0)
+text = "B   02"
+font_size = 100
+pixel_size = 0.0105
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="Transit" type="Node3D" parent="."]
+position = Vector3(-4, 0, -24)
+rotation = Vector3(0, 0, 0)
+
+[node name="Enseigne_531" type="MeshInstance3D" parent="Transit"]
+position = Vector3(0, 4.85, 0.11)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(9.8, 1.9, 0.18)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Signal_532" type="Label3D" parent="Transit"]
+position = Vector3(0, 4.86, 0.23)
+rotation = Vector3(0, 0, 0)
+text = "TRANSIT"
+font_size = 100
+pixel_size = 0.0105
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="Depart_Sud" type="Node3D" parent="."]
+position = Vector3(0, 0, 88)
+rotation = Vector3(0, 3.1416, 0)
+
+[node name="Enseigne_533" type="MeshInstance3D" parent="Depart_Sud"]
+position = Vector3(0, 4.85, 0.11)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(9.8, 1.9, 0.18)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Signal_534" type="Label3D" parent="Depart_Sud"]
+position = Vector3(0, 4.86, 0.23)
+rotation = Vector3(0, 0, 0)
+text = "TERMINAL SUD"
+font_size = 100
+pixel_size = 0.0105
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="Depart_Nord" type="Node3D" parent="."]
+position = Vector3(0, 0, -88)
+rotation = Vector3(0, 0, 0)
+
+[node name="Enseigne_535" type="MeshInstance3D" parent="Depart_Nord"]
+position = Vector3(0, 4.85, 0.11)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(9.8, 1.9, 0.18)
+mesh = SubResource("box")
+material_override = SubResource("iron")
+
+[node name="Signal_536" type="Label3D" parent="Depart_Nord"]
+position = Vector3(0, 4.86, 0.23)
+rotation = Vector3(0, 0, 0)
+text = "DOUANE NORD"
+font_size = 100
+pixel_size = 0.0105
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="Marquage_A" type="Node3D" parent="."]
+position = Vector3(-64, 0, -12)
+rotation = Vector3(0, 0, 0)
+
+[node name="Ligne_537" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(-8, 0.014, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.14, 0.015, 16)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Ligne_538" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(0, 0.014, -8)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.015, 0.14)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Ligne_539" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(8, 0.014, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.14, 0.015, 16)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Ligne_540" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(0, 0.014, 8)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.015, 0.14)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Hachure_541" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(-6.5, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Hachure_542" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(-4.7, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Hachure_543" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(-2.9, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Hachure_544" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(-1.1, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Hachure_545" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(0.7, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Hachure_546" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(2.5, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Hachure_547" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(4.3, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Hachure_548" type="MeshInstance3D" parent="Marquage_A"]
+position = Vector3(6.1, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("ochre")
+
+[node name="Marquage_B" type="Node3D" parent="."]
+position = Vector3(64, 0, -4)
+rotation = Vector3(0, 0, 0)
+
+[node name="Ligne_549" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(-8, 0.014, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.14, 0.015, 16)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Ligne_550" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(0, 0.014, -8)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.015, 0.14)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Ligne_551" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(8, 0.014, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.14, 0.015, 16)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Ligne_552" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(0, 0.014, 8)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.015, 0.14)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Hachure_553" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(-6.5, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Hachure_554" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(-4.7, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Hachure_555" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(-2.9, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Hachure_556" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(-1.1, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Hachure_557" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(0.7, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Hachure_558" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(2.5, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Hachure_559" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(4.3, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Hachure_560" type="MeshInstance3D" parent="Marquage_B"]
+position = Vector3(6.1, 0.02, 8.6)
+rotation = Vector3(0, -0.52, 0)
+scale = Vector3(0.24, 0.016, 1.4)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Halle_est" type="Node3D" parent="."]
+position = Vector3(76, 0, -4)
+rotation = Vector3(0, 0, 0)
+
+[node name="Poutre_561" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 6.02, -14)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.25, 0.33)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Reglette_562" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 5.87, -14)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(5.8, 0.07, 0.13)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Poutre_563" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 6.02, -7)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.25, 0.33)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Reglette_564" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 5.87, -7)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(5.8, 0.07, 0.13)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Poutre_565" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 6.02, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.25, 0.33)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Reglette_566" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 5.87, 0)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(5.8, 0.07, 0.13)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Poutre_567" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 6.02, 7)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.25, 0.33)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Reglette_568" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 5.87, 7)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(5.8, 0.07, 0.13)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Poutre_569" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 6.02, 14)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(16, 0.25, 0.33)
+mesh = SubResource("box")
+material_override = SubResource("teal")
+
+[node name="Reglette_570" type="MeshInstance3D" parent="Halle_est"]
+position = Vector3(0, 5.87, 14)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(5.8, 0.07, 0.13)
+mesh = SubResource("box")
+material_override = SubResource("lamp")
+
+[node name="Lot_A" type="Node3D" parent="."]
+position = Vector3(-71, 0, -12.48)
+rotation = Vector3(0, 0, 0)
+
+[node name="Verrou_571" type="MeshInstance3D" parent="Lot_A"]
+position = Vector3(-1.52, 1.5, 0.025)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.055, 2.73, 0.055)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Verrou_572" type="MeshInstance3D" parent="Lot_A"]
+position = Vector3(1.52, 1.5, 0.025)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.055, 2.73, 0.055)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Signal_573" type="Label3D" parent="Lot_A"]
+position = Vector3(0, 2.19, 0.035)
+rotation = Vector3(0, 0, 0)
+text = "TC  071"
+font_size = 100
+pixel_size = 0.0048
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="Lot_B" type="Node3D" parent="."]
+position = Vector3(56, 0, -7.98)
+rotation = Vector3(0, 0, 0)
+
+[node name="Verrou_574" type="MeshInstance3D" parent="Lot_B"]
+position = Vector3(-3.04, 1.55, 0.025)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.055, 2.821, 0.055)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Verrou_575" type="MeshInstance3D" parent="Lot_B"]
+position = Vector3(3.04, 1.55, 0.025)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.055, 2.821, 0.055)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Signal_576" type="Label3D" parent="Lot_B"]
+position = Vector3(0, 2.263, 0.035)
+rotation = Vector3(0, 0, 0)
+text = "TC  209"
+font_size = 100
+pixel_size = 0.0048
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="Lot_B2" type="Node3D" parent="."]
+position = Vector3(72, 0, 3.02)
+rotation = Vector3(0, 0, 0)
+
+[node name="Verrou_577" type="MeshInstance3D" parent="Lot_B2"]
+position = Vector3(-1.52, 1.35, 0.025)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.055, 2.457, 0.055)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Verrou_578" type="MeshInstance3D" parent="Lot_B2"]
+position = Vector3(1.52, 1.35, 0.025)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(0.055, 2.457, 0.055)
+mesh = SubResource("box")
+material_override = SubResource("zinc")
+
+[node name="Signal_579" type="Label3D" parent="Lot_B2"]
+position = Vector3(0, 1.971, 0.035)
+rotation = Vector3(0, 0, 0)
+text = "TC  214"
+font_size = 100
+pixel_size = 0.0048
+outline_size = 0
+modulate = Color(0.98,0.94,0.81,1)
+double_sided = false
+
+[node name="Service_couvert" type="Node3D" parent="."]
+position = Vector3(68, 5.68, 33)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_PipeHolder_580" parent="Service_couvert" instance=ExtResource("Prop_PipeHolder")]
+position = Vector3(0, 0.02, -4)
+scale = Vector3(1.2, 1.2, 1.2)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_PipeHolder_581" parent="Service_couvert" instance=ExtResource("Prop_PipeHolder")]
+position = Vector3(0, 0.02, 0)
+scale = Vector3(1.2, 1.2, 1.2)
+rotation = Vector3(0, 0, 0)
+
+[node name="Prop_PipeHolder_582" parent="Service_couvert" instance=ExtResource("Prop_PipeHolder")]
+position = Vector3(0, 0.02, 4)
+scale = Vector3(1.2, 1.2, 1.2)
+rotation = Vector3(0, 0, 0)
+
+[node name="Collecteur_583" type="MeshInstance3D" parent="Service_couvert"]
+position = Vector3(-1, 0.85, 0)
+rotation = Vector3(1.5708, 0, 0)
+scale = Vector3(0.56, 13.5, 0.56)
+mesh = SubResource("drum")
+material_override = SubResource("teal")
+
+[node name="Collecteur_584" type="MeshInstance3D" parent="Service_couvert"]
+position = Vector3(1, 0.85, 0)
+rotation = Vector3(1.5708, 0, 0)
+scale = Vector3(0.56, 13.5, 0.56)
+mesh = SubResource("drum")
+material_override = SubResource("teal")

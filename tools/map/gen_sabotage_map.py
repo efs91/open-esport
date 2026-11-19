@@ -1,50 +1,15 @@
 #!/usr/bin/env python3
-"""Carte du Sabotage « Poste Frontière », dans l'esprit des cartes de Counter-Strike (Dust 2) et de Valorant (Bind, Ascent) :
-deux sites de bombe, trois routes d'approche, des goulets d'étranglement, des rotations, des couvertures.
-
-    python tools/map/gen_sabotage_map.py            # écrit scenes/maps/Sabotage.tscn (écrase l'ancienne) + un plan de contrôle (PNG)
-    python tools/map/gen_sabotage_map.py --check    # seulement les vérifications (accès, distances) et le plan
-
-La carte est dessinée sur une grille de 36 x 34 cases de 4 m (144 m x 136 m). Tout ce qui n'est pas creusé est un bloc plein de 6 m de haut ; les rues,
-cours et sites sont des rectangles creusés. Le plan ci-dessous donne les noms des lieux (à utiliser dans les messages et les annonces) :
-
-        Nord = -Z · Est = +X
-        ┌──────────────────────────────────────────────┐
-        │  Site A  ◄── Couloir ──  Apparition  ── Couloir ──►  Site B   │
-        │ (Hangar)     nord       défenseurs        nord       (Entrepôt)│
-        │   ▲  ◄ Short A ─  Place centrale  ─ Short B ►  ▲        │
-        │   │              ▲ Mid (rue centrale)           │ Tunnel B │
-        │  Long A          │                              │ (couvert)│
-        │   └─────  Cour d'assaut ─── Apparition attaquants ───┘     │
-        └──────────────────────────────────────────────┘
-
-Ne pas relancer sur une carte retouchée dans Godot : ce script la réécrirait (c'est le but ici : « refaire la carte »).
+"""Terminal des Cimes : scène, collisions et mini-carte du mode Sabotage.
+python tools/map/gen_sabotage_map.py --check vérifie les accès sans réécrire la scène.
 """
 import math, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from gen_mode_maps import Map, TEAM, SITE, COVER, LOW, WALL
+from gen_mode_maps import Map, TEAM, SITE, ROOT, write_minimap
 
-CELL, W, H = 4.0, 36, 34
-X0, Z0 = -W * CELL / 2, -H * CELL / 2           # coin nord-ouest
-WALL_H = 6.0
-
-SAND = (0.74, 0.66, 0.52)
-SAND_DARK = (0.62, 0.55, 0.43)
-A_COL = (0.82, 0.52, 0.30)          # côté du site A : ocre
-B_COL = (0.36, 0.50, 0.72)          # côté du site B : bleu acier
-T_COL = (0.68, 0.34, 0.30)          # apparition des attaquants : rouille
-CT_COL = (0.30, 0.40, 0.58)         # apparition des défenseurs : acier
-CRATE = (0.50, 0.38, 0.24)
-METAL = (0.42, 0.46, 0.52)
-
-SITE_A = (-48.0, -30.0)
-SITE_B = (48.0, -30.0)
-SITE_R = 9.0
-
-
-def cx(c): return X0 + CELL * c + CELL / 2
-def cz(r): return Z0 + CELL * r + CELL / 2
-
+CELL, W, H = 4, 48, 46
+X0, Z0 = -W * CELL // 2, -H * CELL // 2
+SITE_A, SITE_B = (-64, -12), (64, -4)
+SITE_R = 8
 
 class Grid:
     def __init__(self):
@@ -54,13 +19,6 @@ class Grid:
         for r in range(r0, r1 + 1):
             for c in range(c0, c1 + 1):
                 self.g[r][c] = ch
-
-    def solid(self, c0, r0, c1=None, r1=None):
-        c1 = c0 if c1 is None else c1
-        r1 = r0 if r1 is None else r1
-        for r in range(r0, r1 + 1):
-            for c in range(c0, c1 + 1):
-                self.g[r][c] = '#'
 
     def rects(self):
         """Blocs pleins : rectangles de cases, fusionnés au plus large puis au plus haut."""
@@ -84,119 +42,107 @@ class Grid:
 
 
 def layout():
-    g = Grid()
-    # ---- apparitions
-    g.carve(14, 30, 21, 33)            # attaquants (sud)
-    g.carve(16, 29, 19, 29)            # porte de leur apparition vers la cour
-    g.carve(12, 1, 23, 4)              # défenseurs (nord)
-    # ---- cour d'assaut et les trois routes
-    g.carve(1, 23, 34, 28)             # cour d'assaut
-    g.carve(1, 14, 4, 22)              # Long A : grand couloir ouvert (voie du sniper)
-    g.carve(16, 16, 19, 22)            # Mid : rue centrale
-    g.carve(28, 16, 30, 22)            # Tunnel B (couvert)
-    # ---- sites et place centrale
-    g.carve(2, 5, 9, 13)               # site A (Hangar)
-    g.carve(26, 5, 33, 13)             # site B (Entrepôt)
-    g.carve(13, 8, 22, 15)             # place centrale
-    g.carve(28, 14, 30, 15)            # sortie du tunnel B vers le site B
-    # ---- liaisons
-    g.carve(10, 10, 12, 11)            # Short A : place -> site A
-    g.carve(23, 10, 25, 11)            # Short B : place -> site B
-    g.carve(17, 5, 18, 7)              # portes du milieu : apparition défenseurs -> place
-    g.carve(8, 3, 11, 4)               # couloir nord vers A
-    g.carve(24, 3, 27, 4)              # couloir nord vers B
-    g.carve(5, 18, 15, 18)             # porte « long-mid » : Long A <-> Mid
-    g.carve(20, 19, 27, 19)            # couloir est : Mid <-> Tunnel B
-    # ---- le kiosque au centre de la place
-    g.solid(17, 11, 18, 12)
-    return g
+    grid = Grid()
+
+    def room(x0, z0, x1, z1):
+        # World metres, east and south edges excluded. All room boundaries meet on the 4 m grid.
+        grid.carve((x0-X0)//CELL, (z0-Z0)//CELL, (x1-X0)//CELL-1, (z1-Z0)//CELL-1)
+
+    # North yard. Two offset service entrances give each site its own return route.
+    room(-20,-88, 20,-68)
+    room(-44,-80, -16,-68); room(-44,-76, -32,-48)
+    room(-68,-56, -32,-44); room(-72,-52, -56,-28)
+    room(16,-80, 44,-68); room(32,-72, 44,-44)
+    room(32,-52, 68,-40); room(56,-44, 68,-20)
+
+    # West loading dock and east turbine hall, linked through the dispatch square.
+    room(-84,-32, -44,8); room(44,-24, 84,16)
+    room(-48,-16, -28,-4); room(-36,-12, -24,4); room(-28,-4, -12,8)
+    room(16,-20, 32,-8); room(24,-16, 36,0); room(32,-8, 48,4)
+    room(-16,-24, 20,12)
+    room(-12,-48, 0,-20); room(-32,-52, -8,-44)
+
+    # South concourse splits before the midpoint. West has two successive courtyards.
+    # East switches sides under a roof. Mid is broken by the dispatch booth.
+    room(-20,68, 20,88)
+    room(-48,64, -12,76); room(-52,44, -36,72)
+    room(-76,40, -40,56); room(-80,16, -64,48)
+    room(-80,12, -56,24); room(-64,4, -52,20)
+    room(12,64, 48,76); room(36,44, 52,72)
+    room(40,36, 72,52); room(60,20, 76,48)
+    room(48,16, 72,28); room(48,12, 60,20)
+    room(-8,44, 8,72); room(-16,32, 12,52)
+    room(-16,16, -4,40); room(-16,8, 8,24)
+    # Crosscuts are staggered so the whole width cannot be seen from either end.
+    room(-40,44, -12,52); room(8,36, 44,44)
+    return grid
 
 
-# matières (voir CoverBox.cs : Surface) et style de bâtiment
-BETON, ASPHALTE, ROCHE, TERRE, HERBE, METALMAT, CAISSE = 1, 2, 3, 4, 5, 6, 7
-BATIMENT = 1
+CONCRETE, ASPHALT, STEEL, CARGO = 1, 2, 6, 7
+SLATE, OCHRE, BLUE = (0.57,0.64,0.66), (0.83,0.46,0.20), (0.18,0.48,0.55)
+ART = 'res://scenes/maps/sabotage/'
 
 
 def build():
-    g = layout()
-    m = Map('Sabotage', (W * CELL, H * CELL), (0.95, 0.88, 0.76))
-    m.ground_surface = TERRE
+    m = Map('Sabotage', (W*CELL,H*CELL), SLATE)
+    m.environment = 'res://scenes/maps/lighting/frontiere_daylight.tres'
+    m.sun_angle = 0.0
+    m.scenery = ART + 'Terminal.tscn'
+    m.ground_surface = ASPHALT
+    m.ground_material = 'res://maps/frontiere01/wet_pavement.tres'
+    m.surface_materials = {CONCRETE: ART+'Cladding.tres', CARGO: ART+'Freight.tres'}
 
-    # ---- les bâtiments : blocs pleins (béton ; grès côté A), avec socle, corniche et fenêtres. Teinte selon le quartier.
-    def look(x, z):
-        def near(p, d): return math.hypot(x - p[0], z - p[1]) < d
-        if near(SITE_A, 30): return ROCHE, (1.0, 0.86, 0.74)
-        if near(SITE_B, 30): return BETON, (0.74, 0.84, 1.0)
-        if z > 40 and abs(x) < 40: return BETON, (1.0, 0.78, 0.7)
-        if z < -40 and abs(x) < 34: return BETON, (0.7, 0.78, 0.95)
-        return BETON, (0.96, 0.93, 0.86)
-    for c0, r0, c1, r1 in g.rects():
-        x0, x1 = X0 + CELL * c0, X0 + CELL * (c1 + 1)
-        z0, z1 = Z0 + CELL * r0, Z0 + CELL * (r1 + 1)
-        xm, zm = (x0 + x1) / 2, (z0 + z1) / 2
-        surface, tint = look(xm, zm)
-        m.box(xm, zm, round(x1 - x0, 2), WALL_H, round(z1 - z0, 2), tint, surface=surface, style=BATIMENT)
+    for c,r,c1,r1 in layout().rects():
+        x0,z0 = X0+c*CELL, Z0+r*CELL
+        width,depth = (c1-c+1)*CELL,(r1-r+1)*CELL
+        height = (6.2, 8.0, 7.2, 9.6)[(c+3*r)%4]
+        m.box(x0+width/2,z0+depth/2,width,height,depth,SLATE,surface=CONCRETE)
 
-    # ---- sol : dalles et plaques d'herbe (visuelles seulement : ni collision ni obstacle exporté)
-    def slab(x0, z0, x1, z1, surface, tint, h):
-        m.box((x0 + x1) / 2, (z0 + z1) / 2, x1 - x0, h, z1 - z0, tint, surface=surface, solid=False)
-    slab(-68, 24, 68, 48, ASPHALTE, (0.92, 0.92, 0.95), 0.02)                    # cour d'assaut
-    slab(-16, 48, 16, 68, BETON, (1.0, 0.9, 0.84), 0.03)                          # apparition des attaquants
-    slab(-24, -64, 24, -48, BETON, (0.84, 0.9, 1.0), 0.03)                        # apparition des défenseurs
-    slab(-8, -16, 8, 24, ASPHALTE, (0.92, 0.92, 0.95), 0.02)                      # rue du milieu
-    slab(-20, -48, 20, -16, BETON, (0.95, 0.92, 0.86), 0.03)                      # place centrale
-    slab(-64, -48, -32, -12, BETON, (1.0, 0.88, 0.76), 0.03)                      # site A
-    slab(32, -48, 64, -12, BETON, (0.82, 0.9, 1.0), 0.03)                         # site B
-    slab(40, -4, 52, 24, BETON, (0.72, 0.74, 0.78), 0.03)                         # tunnel B
-    for x0, z0, x1, z1 in [(-64, -24, -54, -12), (-40, -48, -32, -40), (-68, -12, -62, 24), (-54, 8, -52, 24)]:
-        slab(x0, z0, x1, z1, HERBE, (0.85, 0.95, 0.75), 0.045)                    # herbe : coins du site A et bord de Long A
-    for x0, z0, x1, z1 in [(54, -24, 64, -12), (32, -48, 40, -40), (-20, -20, -14, -16), (14, -48, 20, -42)]:
-        slab(x0, z0, x1, z1, HERBE, (0.85, 0.95, 0.75), 0.045)                    # coins du site B et de la place
+    # Cargo lanes use ISO-sized loads and low equipment pallets; the central booth
+    # forces a decision on entry to the square while keeping both exits visible.
+    loads = [(-71,-17, 4,3,9),(-57,-7, 6,1.2,3),(-78,0, 4,2.7,5),
+             (56,-10, 8,3.1,4),(72,-1, 4,2.7,8),(62,10, 5,1.2,3),
+             (-72,32, 4,2.7,7),(-47,48, 4,1.25,3),(67,36, 4,2.6,6),
+             (-2,-6, 8,3.8,6),(10,-18, 3,1.25,4),(-9,34, 3,1.2,3),
+             (-37,-62, 3,1.25,4),(38,-55, 3,2.6,5)]
+    for x,z,w,h,d in loads:
+        m.box(x,z,w,h,d,OCHRE if x<0 else BLUE,surface=CARGO)
 
-    # ---- toit du tunnel B (on y entre de plein pied)
-    m.box(46.0, 11.0, 12.0, 0.8, 22.0, (0.62, 0.62, 0.66), y=3.4, surface=BETON)
+    # Stacked freight and the dispatch cabin have the same volume in the scene and on the server.
+    unit_crate = 'res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Crate3.gltf'
+    for z in (-19.6,-17,-14.4):
+        m.box(-71,z,1.35,1.35,1.35,OCHRE,y=3,surface=CARGO,model=unit_crate)
+    for x,z in [(-74,4),(-58,14),(75,6),(70,42),(-7,-21)]:
+        m.box(x,z,2.1,1.9,2.1,SLATE,surface=STEEL,model=unit_crate)
+    m.box(-2,-6,7.6,2,5.7,(0.15,0.25,0.30),y=3.8,surface=STEEL)
+    # B opens into a half-covered turbine hall. Its open half keeps the sky visible.
+    m.box(76,-4,16,0.45,30,BLUE,y=6.15,surface=STEEL)
+    for z in (-18,10):
+        m.box(68.4,z,0.8,6.15,0.8,BLUE,surface=STEEL)
+    # Light concrete loading pads break up the wet road. Site paint sits above these slabs.
+    for x,z,w,d in [(-64,-12,22,23),(64,-4,23,21),(-2,0,12,12),(0,-78,25,13),(0,78,25,13)]:
+        m.box(x,z,w,0.012,d,(0.84,0.84,0.79),surface=ASPHALT,solid=False)
 
-    # ---- plateformes : « Heaven » (A) et le balcon (B), avec leurs marches
-    METAL_T = (0.8, 0.86, 0.92)
-    def stairs(x, z, direction, width, n=3, run=1.5, rise=0.45):
-        """Marches qui montent à partir de (x, z) en allant vers `direction` (-1 = nord, +1 = sud) ; la plus basse est la plus loin."""
-        for i in range(n):
-            h = rise * (n - i)
-            m.box(x, z + direction * (run * i + run / 2), width, h, run, METAL_T, surface=METALMAT)
-    m.box(-60.0, -45.0, 8.0, 1.8, 6.0, METAL_T, surface=METALMAT)
-    stairs(-60.0, -42.0, +1, 6.0)
-    m.box(60.0, -45.0, 8.0, 1.8, 6.0, METAL_T, surface=METALMAT)
-    stairs(60.0, -42.0, +1, 6.0)
+    # Walkable gallery against the west wall. The projected server navigation
+    # also has a clear ground route alongside its steps.
+    m.box(-81,-14,5,1.6,15,SLATE,surface=STEEL)
+    for i in range(4):
+        m.box(-81,-6.5+1.3*(i+0.5),5,1.28-i*0.32,1.3,SLATE,surface=STEEL)
 
-    def crate(x, z, sx, sy, sz):
-        m.box(x, z, sx, sy, sz, (1.0, 1.0, 1.0), surface=CAISSE)
-    # ---- site A : le « défaut » (caisses autour du point de pose)
-    cxA, czA = SITE_A
-    for dx, dz, sx, sy, sz in [(-7, -8, 3, 2.5, 3), (7, -9, 2, 2.5, 6), (-8, 5, 4, 1.4, 2), (9, 4, 3, 2.5, 3), (0, 9, 6, 1.2, 2), (-2, -13, 3, 2.5, 3)]:
-        crate(cxA + dx, czA + dz, sx, sy, sz)
-    # ---- site B : disposition différente (pas un miroir)
-    cxB, czB = SITE_B
-    for dx, dz, sx, sy, sz in [(7, -8, 3, 2.5, 3), (-7, -3, 2, 2.5, 7), (8, 6, 4, 1.4, 2), (-9, 8, 3, 2.5, 3), (1, 10, 3, 1.2, 4), (3, -13, 4, 2.5, 3)]:
-        crate(cxB + dx, czB + dz, sx, sy, sz)
-    # ---- Long A, Mid, place centrale, cour d'assaut : couvertures
-    for x, z, sx, sy, sz in [(-60, 18, 3, 2.5, 3), (-56, 4, 3, 1.4, 6), (-62, -6, 3, 2.5, 3), (-55, 22, 4, 1.2, 2),
-                             (-3, 18, 3, 1.2, 3), (3, 8, 3, 1.2, 3), (-3, -2, 3, 1.2, 3),
-                             (-12, -10, 4, 1.2, 2), (12, -10, 4, 1.2, 2), (-12, -30, 3, 2.5, 3), (12, -30, 3, 2.5, 3),
-                             (-30, 33, 4, 2.5, 4), (-8, 30, 3, 1.4, 3), (10, 32, 3, 1.4, 3), (30, 33, 4, 2.5, 4), (-44, 40, 3, 1.2, 3), (44, 40, 3, 1.2, 3)]:
-        crate(x, z, sx, sy, sz)
-    # ---- Tunnel B : colonnes
-    for x, z, sx, sy, sz in [(43, 2, 2, 3, 2), (49, 8, 2, 3, 2), (43, 14, 2, 3, 2), (49, 20, 2, 3, 2)]:
-        m.box(x, z, sx, sy, sz, METAL_T, surface=METALMAT)
+    # Roof over the eastern bend; a second entrance from mid stays open to the sky.
+    m.box(68,33,16,0.55,14,BLUE,y=5.4,surface=STEEL)
+    for x in (60.5,75.5):
+        for z in (26.5,39.5):
+            m.box(x,z,0.72,5.4,0.72,SLATE,surface=STEEL)
 
-    # ---- apparitions : attaquants (camp 1) au sud, défenseurs (camp 0) au nord
-    for x in (-14, -7, 0, 7, 14):
-        for z in (58, 64):
-            m.marker(TEAM, x, z, 1)
-        for z in (-60, -53):
-            m.marker(TEAM, x, z, 0)
-    # ---- sites de bombe
-    m.marker(SITE, SITE_A[0], SITE_A[1], 255, 0, SITE_R)
-    m.marker(SITE, SITE_B[0], SITE_B[1], 255, 1, SITE_R)
+    # Gantry supports are authoritative obstacles as well as visual geometry.
+    for x in (-80,-48):
+        for z in (-23,1):
+            m.box(x,z,0.85,8.4,0.85,OCHRE,surface=STEEL)
+    for x in (-12,-6,0,6,12):
+        for z in (76,82): m.marker(TEAM,x,z,1)
+        for z in (-82,-76): m.marker(TEAM,x,z,0)
+    for i,(x,z) in enumerate((SITE_A,SITE_B)): m.marker(SITE,x,z,255,i,SITE_R)
     return m
 
 
@@ -218,21 +164,24 @@ def blocked_map(m, res=1.0, radius=0.45, max_h=0.6):
 
 
 def distances(blocked, start, res=1.0):
-    from collections import deque
+    from heapq import heappop, heappush
     d, w = len(blocked), len(blocked[0])
     si, sj = int((start[0] - X0) / res), int((start[1] - Z0) / res)
     dist = {(si, sj): 0.0}
-    q = deque([(si, sj)])
+    q = [(0.0, si, sj)]
     while q:
-        i, j = q.popleft()
+        length, i, j = heappop(q)
+        if length > dist[(i,j)]: continue
         for di, dj, cost in ((1, 0, 1), (-1, 0, 1), (0, 1, 1), (0, -1, 1), (1, 1, 1.414), (1, -1, 1.414), (-1, 1, 1.414), (-1, -1, 1.414)):
             ni, nj = i + di, j + dj
-            if not (0 <= ni < w and 0 <= nj < d) or blocked[nj][ni] or (ni, nj) in dist:
+            if not (0 <= ni < w and 0 <= nj < d) or blocked[nj][ni]:
                 continue
             if di and dj and (blocked[j][ni] or blocked[nj][i]):
                 continue
-            dist[(ni, nj)] = dist[(i, j)] + cost * res
-            q.append((ni, nj))
+            new_length = length + cost * res
+            if new_length < dist.get((ni,nj), float("inf")):
+                dist[(ni,nj)] = new_length
+                heappush(q, (new_length,ni,nj))
     return dist
 
 
@@ -298,4 +247,7 @@ if __name__ == '__main__':
         sys.exit(1)
     if '--check' not in sys.argv:
         sys.argv.append('--force')
+        from sabotage_terminal import write_terminal
+        write_terminal(os.path.join(ROOT, "scenes/maps/sabotage/Terminal.tscn"), layout(), X0, Z0, CELL)
         m.write()
+        write_minimap(m, os.path.join(ROOT, "assets/maps/sabotage.png"))

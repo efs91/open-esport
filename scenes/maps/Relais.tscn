@@ -1,0 +1,5998 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://scripts/online/SimpleMap.cs" id="map"]
+[ext_resource type="Script" path="res://scripts/online/CoverBox.cs" id="cover"]
+[ext_resource type="Script" path="res://scripts/online/MapMarker.cs" id="marker"]
+[ext_resource type="Script" path="res://scripts/online/ArenaJumpPad.cs" id="pad"]
+[ext_resource type="Script" path="res://scripts/online/ArenaTeleporter.cs" id="tele"]
+[ext_resource type="PackedScene" path="res://scenes/loot/ObjetButin.tscn" id="loot"]
+[ext_resource type="Material" path="res://scenes/maps/relais/surfaces.tres" id="m_surf"]
+[ext_resource type="Material" path="res://scenes/maps/relais/stairs.tres" id="m_stairs"]
+[ext_resource type="Material" path="res://scenes/maps/relais/rail.tres" id="m_rail"]
+[ext_resource type="Material" path="res://scenes/maps/relais/glow_orange.tres" id="m_orange"]
+[ext_resource type="Material" path="res://scenes/maps/relais/glow_cyan.tres" id="m_cyan"]
+[ext_resource type="Material" path="res://scenes/maps/relais/glow_purple.tres" id="m_purple"]
+[ext_resource type="Material" path="res://scenes/maps/relais/lamp.tres" id="m_lamp"]
+[ext_resource type="Material" path="res://scenes/maps/relais/core.tres" id="m_core"]
+[ext_resource type="Material" path="res://scenes/maps/relais/skylight.tres" id="m_sky"]
+[ext_resource type="Environment" path="res://scenes/maps/relais/relais_env.tres" id="env"]
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Crate3.gltf" id="crate"]
+
+[node name="Relais" type="Node3D"]
+script = ExtResource("map")
+Size = Vector2(96.0, 96.0)
+GroundColor = Color(0.35, 0.36, 0.4, 1)
+GroundMaterial = ExtResource("m_surf")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("env")
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+position = Vector3(-28.0, 0.2, -26.0)
+
+[node name="Structure" type="Node3D" parent="."]
+
+[node name="Bloc_001" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 0.0, -47.0)
+script = ExtResource("cover")
+Size = Vector3(96.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_002" type="StaticBody3D" parent="Structure"]
+position = Vector3(-47.0, 0.0, 1.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 94.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_003" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 0.0, -44.0)
+script = ExtResource("cover")
+Size = Vector3(92.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_004" type="StaticBody3D" parent="Structure"]
+position = Vector3(47.0, 0.0, 1.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 94.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_005" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_006" type="StaticBody3D" parent="Structure"]
+position = Vector3(-26.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(20.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_007" type="StaticBody3D" parent="Structure"]
+position = Vector3(-14.0, 4.0, -39.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_008" type="StaticBody3D" parent="Structure"]
+position = Vector3(-10.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_009" type="StaticBody3D" parent="Structure"]
+position = Vector3(-6.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_010" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(8.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_011" type="StaticBody3D" parent="Structure"]
+position = Vector3(6.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_012" type="StaticBody3D" parent="Structure"]
+position = Vector3(10.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_013" type="StaticBody3D" parent="Structure"]
+position = Vector3(14.0, 4.0, -39.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_014" type="StaticBody3D" parent="Structure"]
+position = Vector3(26.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(20.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_015" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 0.0, -41.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_016" type="StaticBody3D" parent="Structure"]
+position = Vector3(-43.0, 0.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_017" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 4.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_018" type="StaticBody3D" parent="Structure"]
+position = Vector3(-26.0, 4.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(20.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_019" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 4.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_020" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 4.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(20.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_021" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 4.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_022" type="StaticBody3D" parent="Structure"]
+position = Vector3(26.0, 4.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(20.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_023" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 4.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_024" type="StaticBody3D" parent="Structure"]
+position = Vector3(43.0, 0.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_025" type="StaticBody3D" parent="Structure"]
+position = Vector3(-44.0, 0.0, 5.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 82.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_026" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 0.0, -26.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 20.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_027" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 4.0, -23.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 26.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_028" type="StaticBody3D" parent="Structure"]
+position = Vector3(-33.0, 0.0, -35.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_029" type="StaticBody3D" parent="Structure"]
+position = Vector3(-28.0, 4.0, -23.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 26.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_030" type="StaticBody3D" parent="Structure"]
+position = Vector3(-18.0, 0.0, -35.0)
+script = ExtResource("cover")
+Size = Vector3(16.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_031" type="StaticBody3D" parent="Structure"]
+position = Vector3(-7.0, 0.0, -33.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 8.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_032" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 4.0, -32.0)
+script = ExtResource("cover")
+Size = Vector3(8.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_033" type="StaticBody3D" parent="Structure"]
+position = Vector3(7.0, 0.0, -33.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 8.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_034" type="StaticBody3D" parent="Structure"]
+position = Vector3(18.0, 0.0, -35.0)
+script = ExtResource("cover")
+Size = Vector3(16.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_035" type="StaticBody3D" parent="Structure"]
+position = Vector3(28.0, 4.0, -23.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 26.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_036" type="StaticBody3D" parent="Structure"]
+position = Vector3(33.0, 0.0, -35.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_037" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 4.0, -23.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 26.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_038" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 0.0, -26.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 20.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_039" type="StaticBody3D" parent="Structure"]
+position = Vector3(44.0, 0.0, 5.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 82.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_040" type="StaticBody3D" parent="Structure"]
+position = Vector3(-35.0, 0.0, -32.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_041" type="StaticBody3D" parent="Structure"]
+position = Vector3(-32.0, 4.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_042" type="StaticBody3D" parent="Structure"]
+position = Vector3(-24.0, 4.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_043" type="StaticBody3D" parent="Structure"]
+position = Vector3(-16.0, 0.0, -32.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 12.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_044" type="StaticBody3D" parent="Structure"]
+position = Vector3(16.0, 0.0, -32.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 12.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_045" type="StaticBody3D" parent="Structure"]
+position = Vector3(24.0, 4.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_046" type="StaticBody3D" parent="Structure"]
+position = Vector3(32.0, 4.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_047" type="StaticBody3D" parent="Structure"]
+position = Vector3(35.0, 0.0, -32.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_048" type="StaticBody3D" parent="Structure"]
+position = Vector3(-35.0, 4.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_049" type="StaticBody3D" parent="Structure"]
+position = Vector3(-16.0, 4.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_050" type="StaticBody3D" parent="Structure"]
+position = Vector3(-7.0, 4.0, -29.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_051" type="StaticBody3D" parent="Structure"]
+position = Vector3(7.0, 4.0, -29.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_052" type="StaticBody3D" parent="Structure"]
+position = Vector3(16.0, 4.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_053" type="StaticBody3D" parent="Structure"]
+position = Vector3(35.0, 4.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_054" type="StaticBody3D" parent="Structure"]
+position = Vector3(-7.0, 4.0, -27.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_055" type="StaticBody3D" parent="Structure"]
+position = Vector3(7.0, 4.0, -27.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_056" type="StaticBody3D" parent="Structure"]
+position = Vector3(-35.0, 0.0, -18.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 16.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_057" type="StaticBody3D" parent="Structure"]
+position = Vector3(-13.0, 0.0, -23.0)
+script = ExtResource("cover")
+Size = Vector3(18.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_058" type="StaticBody3D" parent="Structure"]
+position = Vector3(13.0, 0.0, -23.0)
+script = ExtResource("cover")
+Size = Vector3(18.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_059" type="StaticBody3D" parent="Structure"]
+position = Vector3(35.0, 0.0, -18.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 16.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_060" type="StaticBody3D" parent="Structure"]
+position = Vector3(-32.0, 0.0, -16.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_061" type="StaticBody3D" parent="Structure"]
+position = Vector3(-24.0, 0.0, -16.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_062" type="StaticBody3D" parent="Structure"]
+position = Vector3(24.0, 0.0, -16.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_063" type="StaticBody3D" parent="Structure"]
+position = Vector3(32.0, 0.0, -16.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_064" type="StaticBody3D" parent="Structure"]
+position = Vector3(-21.0, 0.0, -12.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 16.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_065" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, -19.0)
+script = ExtResource("cover")
+Size = Vector3(40.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_066" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 8.0, -19.0)
+script = ExtResource("cover")
+Size = Vector3(40.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_067" type="StaticBody3D" parent="Structure"]
+position = Vector3(21.0, 0.0, -12.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 16.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_068" type="StaticBody3D" parent="Structure"]
+position = Vector3(-19.0, 3.6, -10.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 16.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_069" type="StaticBody3D" parent="Structure"]
+position = Vector3(-19.0, 8.0, -10.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 16.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_070" type="StaticBody3D" parent="Structure"]
+position = Vector3(-16.0, 0.0, -17.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_071" type="StaticBody3D" parent="Structure"]
+position = Vector3(-16.0, 8.0, -17.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_072" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, -17.0)
+script = ExtResource("cover")
+Size = Vector3(28.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_073" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 8.0, -17.0)
+script = ExtResource("cover")
+Size = Vector3(28.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_074" type="StaticBody3D" parent="Structure"]
+position = Vector3(16.0, 0.0, -17.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_075" type="StaticBody3D" parent="Structure"]
+position = Vector3(16.0, 8.0, -17.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_076" type="StaticBody3D" parent="Structure"]
+position = Vector3(19.0, 3.6, -10.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 16.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_077" type="StaticBody3D" parent="Structure"]
+position = Vector3(19.0, 8.0, -10.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 16.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_078" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 4.0, -14.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_079" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 0.0, -15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_080" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 8.0, -15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_081" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 0.0, -15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_082" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 7.6, -15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_083" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, -14.0)
+script = ExtResource("cover")
+Size = Vector3(28.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_084" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 7.6, -14.0)
+script = ExtResource("cover")
+Size = Vector3(28.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_085" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 0.0, -15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_086" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 7.6, -15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_087" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 0.0, -15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_088" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 8.0, -15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_089" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 4.0, -14.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_090" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 3.6, -9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_091" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 8.0, -9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_092" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 3.6, -9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_093" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 7.6, -9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_094" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 3.6, -9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_095" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 7.6, -9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_096" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 3.6, -9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_097" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 8.0, -9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_098" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 0.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_099" type="StaticBody3D" parent="Structure"]
+position = Vector3(-13.0, 3.6, 2.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 28.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_100" type="StaticBody3D" parent="Structure"]
+position = Vector3(-13.0, 7.6, 2.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 28.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_101" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, -7.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_102" type="StaticBody3D" parent="Structure"]
+position = Vector3(13.0, 3.6, 2.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 28.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_103" type="StaticBody3D" parent="Structure"]
+position = Vector3(13.0, 7.6, 2.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 28.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_104" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 0.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_105" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 3.6, -6.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_106" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 8.0, -6.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_107" type="StaticBody3D" parent="Structure"]
+position = Vector3(-33.0, 0.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_108" type="StaticBody3D" parent="Structure"]
+position = Vector3(-33.0, 8.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_109" type="StaticBody3D" parent="Structure"]
+position = Vector3(-28.0, 3.6, -6.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_110" type="StaticBody3D" parent="Structure"]
+position = Vector3(-28.0, 8.0, -6.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_111" type="StaticBody3D" parent="Structure"]
+position = Vector3(-25.0, 0.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_112" type="StaticBody3D" parent="Structure"]
+position = Vector3(-25.0, 8.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_113" type="StaticBody3D" parent="Structure"]
+position = Vector3(-23.0, 0.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_114" type="StaticBody3D" parent="Structure"]
+position = Vector3(23.0, 0.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_115" type="StaticBody3D" parent="Structure"]
+position = Vector3(25.0, 0.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_116" type="StaticBody3D" parent="Structure"]
+position = Vector3(25.0, 8.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_117" type="StaticBody3D" parent="Structure"]
+position = Vector3(28.0, 3.6, -6.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_118" type="StaticBody3D" parent="Structure"]
+position = Vector3(28.0, 8.0, -6.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_119" type="StaticBody3D" parent="Structure"]
+position = Vector3(33.0, 0.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_120" type="StaticBody3D" parent="Structure"]
+position = Vector3(33.0, 8.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_121" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 3.6, -6.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_122" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 8.0, -6.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_123" type="StaticBody3D" parent="Structure"]
+position = Vector3(-33.0, 3.6, -3.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_124" type="StaticBody3D" parent="Structure"]
+position = Vector3(-33.0, 8.0, -3.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_125" type="StaticBody3D" parent="Structure"]
+position = Vector3(-23.0, 3.6, -3.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_126" type="StaticBody3D" parent="Structure"]
+position = Vector3(-23.0, 8.0, -3.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_127" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 0.0, -3.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_128" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 8.0, -3.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_129" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_130" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_131" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_132" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_133" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 0.0, -3.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_134" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 8.0, -3.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_135" type="StaticBody3D" parent="Structure"]
+position = Vector3(23.0, 3.6, -3.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_136" type="StaticBody3D" parent="Structure"]
+position = Vector3(23.0, 8.0, -3.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_137" type="StaticBody3D" parent="Structure"]
+position = Vector3(33.0, 3.6, -3.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_138" type="StaticBody3D" parent="Structure"]
+position = Vector3(33.0, 8.0, -3.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_139" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_140" type="StaticBody3D" parent="Structure"]
+position = Vector3(-29.0, 3.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(22.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_141" type="StaticBody3D" parent="Structure"]
+position = Vector3(-29.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(22.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_142" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_143" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_144" type="StaticBody3D" parent="Structure"]
+position = Vector3(-7.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_145" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_146" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_147" type="StaticBody3D" parent="Structure"]
+position = Vector3(7.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_148" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_149" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_150" type="StaticBody3D" parent="Structure"]
+position = Vector3(29.0, 3.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(22.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_151" type="StaticBody3D" parent="Structure"]
+position = Vector3(29.0, 7.6, 0.0)
+script = ExtResource("cover")
+Size = Vector3(22.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_152" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_153" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 0.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_154" type="StaticBody3D" parent="Structure"]
+position = Vector3(-36.0, 3.6, 3.0)
+script = ExtResource("cover")
+Size = Vector3(8.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_155" type="StaticBody3D" parent="Structure"]
+position = Vector3(-36.0, 8.0, 3.0)
+script = ExtResource("cover")
+Size = Vector3(8.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_156" type="StaticBody3D" parent="Structure"]
+position = Vector3(-30.0, 3.6, 3.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_157" type="StaticBody3D" parent="Structure"]
+position = Vector3(-23.0, 3.6, 3.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_158" type="StaticBody3D" parent="Structure"]
+position = Vector3(-23.0, 8.0, 3.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_159" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 0.0, 3.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_160" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 8.0, 3.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_161" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, 7.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_162" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 0.0, 3.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_163" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 8.0, 3.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_164" type="StaticBody3D" parent="Structure"]
+position = Vector3(23.0, 3.6, 3.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_165" type="StaticBody3D" parent="Structure"]
+position = Vector3(23.0, 8.0, 3.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_166" type="StaticBody3D" parent="Structure"]
+position = Vector3(30.0, 3.6, 3.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_167" type="StaticBody3D" parent="Structure"]
+position = Vector3(36.0, 3.6, 3.0)
+script = ExtResource("cover")
+Size = Vector3(8.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_168" type="StaticBody3D" parent="Structure"]
+position = Vector3(36.0, 8.0, 3.0)
+script = ExtResource("cover")
+Size = Vector3(8.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_169" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 0.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_170" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 3.6, 7.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_171" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 8.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_172" type="StaticBody3D" parent="Structure"]
+position = Vector3(-34.0, 0.0, 9.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_173" type="StaticBody3D" parent="Structure"]
+position = Vector3(-34.0, 8.0, 9.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_174" type="StaticBody3D" parent="Structure"]
+position = Vector3(-31.0, 0.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_175" type="StaticBody3D" parent="Structure"]
+position = Vector3(-29.0, 3.6, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_176" type="StaticBody3D" parent="Structure"]
+position = Vector3(-27.0, 3.6, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_177" type="StaticBody3D" parent="Structure"]
+position = Vector3(-27.0, 8.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_178" type="StaticBody3D" parent="Structure"]
+position = Vector3(-25.0, 0.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_179" type="StaticBody3D" parent="Structure"]
+position = Vector3(-25.0, 8.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_180" type="StaticBody3D" parent="Structure"]
+position = Vector3(-22.0, 0.0, 13.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 18.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_181" type="StaticBody3D" parent="Structure"]
+position = Vector3(-18.0, 3.6, 9.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_182" type="StaticBody3D" parent="Structure"]
+position = Vector3(-18.0, 8.0, 9.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_183" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 3.6, 9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_184" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 7.6, 9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_185" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 3.6, 9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_186" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 7.6, 9.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_187" type="StaticBody3D" parent="Structure"]
+position = Vector3(18.0, 3.6, 9.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_188" type="StaticBody3D" parent="Structure"]
+position = Vector3(18.0, 8.0, 9.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_189" type="StaticBody3D" parent="Structure"]
+position = Vector3(22.0, 0.0, 13.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 18.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_190" type="StaticBody3D" parent="Structure"]
+position = Vector3(25.0, 0.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_191" type="StaticBody3D" parent="Structure"]
+position = Vector3(25.0, 8.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_192" type="StaticBody3D" parent="Structure"]
+position = Vector3(27.0, 3.6, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_193" type="StaticBody3D" parent="Structure"]
+position = Vector3(27.0, 8.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_194" type="StaticBody3D" parent="Structure"]
+position = Vector3(29.0, 3.6, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_195" type="StaticBody3D" parent="Structure"]
+position = Vector3(31.0, 0.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_196" type="StaticBody3D" parent="Structure"]
+position = Vector3(34.0, 0.0, 9.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_197" type="StaticBody3D" parent="Structure"]
+position = Vector3(34.0, 8.0, 9.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_198" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 3.6, 7.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_199" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 8.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_200" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 4.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 26.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_201" type="StaticBody3D" parent="Structure"]
+position = Vector3(-31.0, 0.0, 16.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_202" type="StaticBody3D" parent="Structure"]
+position = Vector3(-28.0, 4.0, 25.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 30.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_203" type="StaticBody3D" parent="Structure"]
+position = Vector3(-25.0, 0.0, 16.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_204" type="StaticBody3D" parent="Structure"]
+position = Vector3(25.0, 0.0, 16.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_205" type="StaticBody3D" parent="Structure"]
+position = Vector3(28.0, 4.0, 25.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 30.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_206" type="StaticBody3D" parent="Structure"]
+position = Vector3(31.0, 0.0, 16.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_207" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 4.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 26.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_208" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 4.0, 14.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_209" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, 14.0)
+script = ExtResource("cover")
+Size = Vector3(24.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_210" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 7.6, 14.0)
+script = ExtResource("cover")
+Size = Vector3(24.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_211" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 4.0, 14.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_212" type="StaticBody3D" parent="Structure"]
+position = Vector3(-34.0, 8.0, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_213" type="StaticBody3D" parent="Structure"]
+position = Vector3(-19.0, 3.6, 17.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_214" type="StaticBody3D" parent="Structure"]
+position = Vector3(-19.0, 8.0, 17.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_215" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 0.0, 16.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_216" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 8.0, 16.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_217" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 0.0, 15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_218" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 7.6, 15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_219" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 0.0, 15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_220" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 7.6, 15.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_221" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 0.0, 16.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_222" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 8.0, 16.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_223" type="StaticBody3D" parent="Structure"]
+position = Vector3(19.0, 3.6, 17.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_224" type="StaticBody3D" parent="Structure"]
+position = Vector3(19.0, 8.0, 17.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_225" type="StaticBody3D" parent="Structure"]
+position = Vector3(34.0, 8.0, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_226" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 0.0, 26.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 20.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_227" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 0.0, 17.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_228" type="StaticBody3D" parent="Structure"]
+position = Vector3(-15.0, 8.0, 17.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_229" type="StaticBody3D" parent="Structure"]
+position = Vector3(-12.0, 3.6, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_230" type="StaticBody3D" parent="Structure"]
+position = Vector3(-12.0, 8.0, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_231" type="StaticBody3D" parent="Structure"]
+position = Vector3(-8.0, 3.6, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_232" type="StaticBody3D" parent="Structure"]
+position = Vector3(-8.0, 7.6, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_233" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, 18.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_234" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 8.0, 18.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_235" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 3.6, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_236" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 7.6, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_237" type="StaticBody3D" parent="Structure"]
+position = Vector3(12.0, 3.6, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_238" type="StaticBody3D" parent="Structure"]
+position = Vector3(12.0, 8.0, 18.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_239" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 0.0, 17.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_240" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 8.0, 17.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_241" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 0.0, 26.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 20.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_242" type="StaticBody3D" parent="Structure"]
+position = Vector3(-16.0, 3.6, 19.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_243" type="StaticBody3D" parent="Structure"]
+position = Vector3(-16.0, 8.0, 19.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_244" type="StaticBody3D" parent="Structure"]
+position = Vector3(16.0, 3.6, 19.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_245" type="StaticBody3D" parent="Structure"]
+position = Vector3(16.0, 8.0, 19.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_246" type="StaticBody3D" parent="Structure"]
+position = Vector3(-16.0, 0.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(8.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_247" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 0.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_248" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 8.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_249" type="StaticBody3D" parent="Structure"]
+position = Vector3(-9.0, 0.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_250" type="StaticBody3D" parent="Structure"]
+position = Vector3(-9.0, 7.6, 23.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_251" type="StaticBody3D" parent="Structure"]
+position = Vector3(-7.0, 0.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_252" type="StaticBody3D" parent="Structure"]
+position = Vector3(-5.0, 0.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_253" type="StaticBody3D" parent="Structure"]
+position = Vector3(5.0, 0.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_254" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 0.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_255" type="StaticBody3D" parent="Structure"]
+position = Vector3(15.0, 0.0, 23.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_256" type="StaticBody3D" parent="Structure"]
+position = Vector3(-35.0, 0.0, 24.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_257" type="StaticBody3D" parent="Structure"]
+position = Vector3(-32.0, 4.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_258" type="StaticBody3D" parent="Structure"]
+position = Vector3(-24.0, 4.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_259" type="StaticBody3D" parent="Structure"]
+position = Vector3(-21.0, 0.0, 24.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_260" type="StaticBody3D" parent="Structure"]
+position = Vector3(21.0, 0.0, 24.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_261" type="StaticBody3D" parent="Structure"]
+position = Vector3(24.0, 4.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_262" type="StaticBody3D" parent="Structure"]
+position = Vector3(32.0, 4.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 12.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_263" type="StaticBody3D" parent="Structure"]
+position = Vector3(35.0, 0.0, 24.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_264" type="StaticBody3D" parent="Structure"]
+position = Vector3(-35.0, 4.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_265" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 4.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_266" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 3.6, 28.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_267" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 8.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_268" type="StaticBody3D" parent="Structure"]
+position = Vector3(-9.0, 3.6, 28.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_269" type="StaticBody3D" parent="Structure"]
+position = Vector3(-9.0, 7.6, 28.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_270" type="StaticBody3D" parent="Structure"]
+position = Vector3(-7.0, 4.0, 27.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_271" type="StaticBody3D" parent="Structure"]
+position = Vector3(-5.0, 4.0, 27.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_272" type="StaticBody3D" parent="Structure"]
+position = Vector3(5.0, 4.0, 27.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_273" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 4.0, 27.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_274" type="StaticBody3D" parent="Structure"]
+position = Vector3(16.0, 4.0, 27.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_275" type="StaticBody3D" parent="Structure"]
+position = Vector3(35.0, 4.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_276" type="StaticBody3D" parent="Structure"]
+position = Vector3(-7.0, 3.6, 29.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_277" type="StaticBody3D" parent="Structure"]
+position = Vector3(-7.0, 7.6, 29.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_278" type="StaticBody3D" parent="Structure"]
+position = Vector3(-5.0, 3.6, 29.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_279" type="StaticBody3D" parent="Structure"]
+position = Vector3(-5.0, 8.0, 29.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_280" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, 32.0)
+script = ExtResource("cover")
+Size = Vector3(8.0, 0.4, 8.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_281" type="StaticBody3D" parent="Structure"]
+position = Vector3(5.0, 3.6, 29.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_282" type="StaticBody3D" parent="Structure"]
+position = Vector3(5.0, 8.0, 29.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_283" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 3.6, 29.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_284" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 7.6, 29.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_285" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 3.6, 29.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_286" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 8.0, 29.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_287" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 4.0, 29.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_288" type="StaticBody3D" parent="Structure"]
+position = Vector3(-35.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_289" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_290" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_291" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 8.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_292" type="StaticBody3D" parent="Structure"]
+position = Vector3(-8.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_293" type="StaticBody3D" parent="Structure"]
+position = Vector3(-8.0, 7.6, 33.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_294" type="StaticBody3D" parent="Structure"]
+position = Vector3(-5.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_295" type="StaticBody3D" parent="Structure"]
+position = Vector3(-5.0, 8.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_296" type="StaticBody3D" parent="Structure"]
+position = Vector3(5.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_297" type="StaticBody3D" parent="Structure"]
+position = Vector3(5.0, 8.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_298" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_299" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 7.6, 33.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_300" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_301" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 8.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_302" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(10.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_303" type="StaticBody3D" parent="Structure"]
+position = Vector3(35.0, 0.0, 33.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 12.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_304" type="StaticBody3D" parent="Structure"]
+position = Vector3(-32.0, 0.0, 35.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_305" type="StaticBody3D" parent="Structure"]
+position = Vector3(-24.0, 0.0, 35.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_306" type="StaticBody3D" parent="Structure"]
+position = Vector3(24.0, 0.0, 35.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_307" type="StaticBody3D" parent="Structure"]
+position = Vector3(32.0, 0.0, 35.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_308" type="StaticBody3D" parent="Structure"]
+position = Vector3(-41.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_309" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 4.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_310" type="StaticBody3D" parent="Structure"]
+position = Vector3(-33.0, 4.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_311" type="StaticBody3D" parent="Structure"]
+position = Vector3(-19.0, 4.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(14.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_312" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 3.6, 38.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_313" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 8.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_314" type="StaticBody3D" parent="Structure"]
+position = Vector3(-8.0, 3.6, 38.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_315" type="StaticBody3D" parent="Structure"]
+position = Vector3(-8.0, 7.6, 38.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_316" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 3.6, 38.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_317" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 8.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_318" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 3.6, 38.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_319" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 7.6, 38.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_320" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 3.6, 38.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 0.4, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_321" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 8.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_322" type="StaticBody3D" parent="Structure"]
+position = Vector3(19.0, 4.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(14.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_323" type="StaticBody3D" parent="Structure"]
+position = Vector3(33.0, 4.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(6.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_324" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 4.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_325" type="StaticBody3D" parent="Structure"]
+position = Vector3(41.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 8.0, 10.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_326" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 0.0, 43.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_327" type="StaticBody3D" parent="Structure"]
+position = Vector3(-26.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(20.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_328" type="StaticBody3D" parent="Structure"]
+position = Vector3(-14.0, 4.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_329" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_330" type="StaticBody3D" parent="Structure"]
+position = Vector3(-11.0, 8.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_331" type="StaticBody3D" parent="Structure"]
+position = Vector3(-8.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_332" type="StaticBody3D" parent="Structure"]
+position = Vector3(-8.0, 7.6, 41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_333" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_334" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 8.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(12.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_335" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_336" type="StaticBody3D" parent="Structure"]
+position = Vector3(8.0, 7.6, 41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.4, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_337" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_338" type="StaticBody3D" parent="Structure"]
+position = Vector3(11.0, 8.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(2.0, 4.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_339" type="StaticBody3D" parent="Structure"]
+position = Vector3(14.0, 4.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_340" type="StaticBody3D" parent="Structure"]
+position = Vector3(26.0, 0.0, 41.0)
+script = ExtResource("cover")
+Size = Vector3(20.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_341" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 0.0, 43.0)
+script = ExtResource("cover")
+Size = Vector3(4.0, 8.0, 6.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_342" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 0.0, 44.0)
+script = ExtResource("cover")
+Size = Vector3(72.0, 8.0, 4.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Bloc_343" type="StaticBody3D" parent="Structure"]
+position = Vector3(0.0, 0.0, 47.0)
+script = ExtResource("cover")
+Size = Vector3(92.0, 12.0, 2.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Plafond" type="Node3D" parent="."]
+
+[node name="Plafond" type="StaticBody3D" parent="Plafond"]
+position = Vector3(0.0, 12.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(96.0, 0.6, 96.0)
+BoxMaterial = ExtResource("m_surf")
+
+[node name="Escaliers" type="Node3D" parent="."]
+
+[node name="Marche_001" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-4.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 0.25, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_002" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-4.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 0.5, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_003" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-5.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 0.75, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_004" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-5.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 1.0, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_005" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-6.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 1.25, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_006" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-6.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 1.5, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_007" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-7.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 1.75, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_008" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-7.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 2.0, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_009" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-8.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 2.25, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_010" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-8.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 2.5, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_011" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-9.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 2.75, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_012" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-9.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 3.0, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_013" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-10.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 3.25, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_014" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-10.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 3.5, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_015" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-11.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 3.75, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_016" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-11.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 4.0, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_017" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(4.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 0.25, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_018" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(4.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 0.5, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_019" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(5.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 0.75, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_020" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(5.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 1.0, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_021" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(6.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 1.25, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_022" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(6.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 1.5, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_023" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(7.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 1.75, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_024" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(7.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 2.0, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_025" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(8.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 2.25, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_026" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(8.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 2.5, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_027" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(9.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 2.75, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_028" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(9.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 3.0, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_029" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(10.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 3.25, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_030" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(10.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 3.5, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_031" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(11.25, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 3.75, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_032" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(11.75, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.5, 4.0, 4.0)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_033" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 9.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_034" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 9.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_035" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 8.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_036" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 8.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_037" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 7.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_038" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 7.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_039" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 6.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_040" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 6.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_041" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 5.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_042" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 5.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_043" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 4.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_044" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 4.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_045" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 3.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_046" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 3.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_047" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 2.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_048" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-30.0, 4.0, 2.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_049" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 9.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_050" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 9.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_051" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 8.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_052" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 8.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_053" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 7.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_054" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 7.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_055" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 6.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_056" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 6.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_057" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 5.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_058" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 5.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_059" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 4.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_060" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 4.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_061" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 3.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_062" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 3.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_063" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 2.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_064" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(30.0, 4.0, 2.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_065" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 21.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_066" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 21.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_067" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 20.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_068" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 20.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_069" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 19.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_070" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 19.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_071" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 18.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_072" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 18.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_073" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 17.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_074" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 17.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_075" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 16.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_076" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 16.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_077" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 15.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_078" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 15.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_079" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 14.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_080" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(-34.0, 0.0, 14.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_081" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 21.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_082" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 21.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_083" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 20.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 0.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_084" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 20.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_085" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 19.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_086" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 19.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_087" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 18.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 1.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_088" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 18.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_089" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 17.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_090" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 17.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_091" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 16.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 2.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_092" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 16.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_093" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 15.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.25, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_094" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 15.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.5, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_095" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 14.75)
+script = ExtResource("cover")
+Size = Vector3(4.0, 3.75, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="Marche_096" type="StaticBody3D" parent="Escaliers"]
+position = Vector3(34.0, 0.0, 14.25)
+script = ExtResource("cover")
+Size = Vector3(4.0, 4.0, 0.5)
+BoxMaterial = ExtResource("m_stairs")
+
+[node name="GardeCorps" type="Node3D" parent="."]
+
+[node name="Rambarde_001" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(-12.08, 4.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 10.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_002" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(-12.08, 4.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 10.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_003" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(-12.08, 8.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 10.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_004" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(-12.08, 8.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 10.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_005" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(-7.0, 4.0, -12.08)
+script = ExtResource("cover")
+Size = Vector3(10.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_006" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(-7.0, 4.0, 12.08)
+script = ExtResource("cover")
+Size = Vector3(10.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_007" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(0.0, 8.0, -12.08)
+script = ExtResource("cover")
+Size = Vector3(24.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_008" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(0.0, 8.0, -1.92)
+script = ExtResource("cover")
+Size = Vector3(24.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_009" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(0.0, 8.0, 1.92)
+script = ExtResource("cover")
+Size = Vector3(24.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_010" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(0.0, 8.0, 12.08)
+script = ExtResource("cover")
+Size = Vector3(24.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_011" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(0.0, 4.0, -19.92)
+script = ExtResource("cover")
+Size = Vector3(8.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_012" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(0.0, 4.0, 19.92)
+script = ExtResource("cover")
+Size = Vector3(8.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_013" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(0.0, 4.0, 28.08)
+script = ExtResource("cover")
+Size = Vector3(8.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_014" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(0.0, 8.0, -28.08)
+script = ExtResource("cover")
+Size = Vector3(8.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_015" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(-1.92, 4.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 24.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_016" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(1.92, 4.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 24.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_017" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(7.0, 4.0, -12.08)
+script = ExtResource("cover")
+Size = Vector3(10.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_018" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(7.0, 4.0, 12.08)
+script = ExtResource("cover")
+Size = Vector3(10.0, 1.1, 0.16)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_019" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(12.08, 4.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 10.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_020" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(12.08, 4.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 10.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_021" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(12.08, 8.0, -7.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 10.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Rambarde_022" type="StaticBody3D" parent="GardeCorps"]
+position = Vector3(12.08, 8.0, 7.0)
+script = ExtResource("cover")
+Size = Vector3(0.16, 1.1, 10.0)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Caisse_01" type="StaticBody3D" parent="Structure"]
+position = Vector3(-20.0, 0.0, -17.0)
+script = ExtResource("cover")
+Size = Vector3(1.8, 1.25, 1.8)
+UnitModel = ExtResource("crate")
+
+[node name="Caisse_02" type="StaticBody3D" parent="Structure"]
+position = Vector3(20.0, 0.0, 17.0)
+script = ExtResource("cover")
+Size = Vector3(1.8, 1.25, 1.8)
+UnitModel = ExtResource("crate")
+
+[node name="Caisse_03" type="StaticBody3D" parent="Structure"]
+position = Vector3(-17.0, 0.0, 8.0)
+script = ExtResource("cover")
+Size = Vector3(1.8, 1.25, 1.8)
+UnitModel = ExtResource("crate")
+
+[node name="Caisse_04" type="StaticBody3D" parent="Structure"]
+position = Vector3(17.0, 0.0, -8.0)
+script = ExtResource("cover")
+Size = Vector3(1.8, 1.25, 1.8)
+UnitModel = ExtResource("crate")
+
+[node name="Caisse_05" type="StaticBody3D" parent="Structure"]
+position = Vector3(-30.0, 0.0, -38.0)
+script = ExtResource("cover")
+Size = Vector3(1.8, 1.25, 1.8)
+UnitModel = ExtResource("crate")
+
+[node name="Caisse_06" type="StaticBody3D" parent="Structure"]
+position = Vector3(30.0, 0.0, 38.0)
+script = ExtResource("cover")
+Size = Vector3(1.8, 1.25, 1.8)
+UnitModel = ExtResource("crate")
+
+[node name="Caisse_07" type="StaticBody3D" parent="Structure"]
+position = Vector3(-38.0, 0.0, -30.0)
+script = ExtResource("cover")
+Size = Vector3(1.8, 1.25, 1.8)
+UnitModel = ExtResource("crate")
+
+[node name="Caisse_08" type="StaticBody3D" parent="Structure"]
+position = Vector3(38.0, 0.0, 30.0)
+script = ExtResource("cover")
+Size = Vector3(1.8, 1.25, 1.8)
+UnitModel = ExtResource("crate")
+
+[node name="Decor" type="Node3D" parent="."]
+
+[node name="Bande_001" type="StaticBody3D" parent="Decor"]
+position = Vector3(-12.08, 5.1, -7.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 9.94)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_002" type="StaticBody3D" parent="Decor"]
+position = Vector3(-12.08, 5.1, 7.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 9.94)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_003" type="StaticBody3D" parent="Decor"]
+position = Vector3(-12.08, 9.1, -7.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 9.94)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Bande_004" type="StaticBody3D" parent="Decor"]
+position = Vector3(-12.08, 9.1, 7.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 9.94)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Bande_005" type="StaticBody3D" parent="Decor"]
+position = Vector3(-7.0, 5.1, -12.08)
+script = ExtResource("cover")
+Size = Vector3(9.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_006" type="StaticBody3D" parent="Decor"]
+position = Vector3(-7.0, 5.1, 12.08)
+script = ExtResource("cover")
+Size = Vector3(9.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_007" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 9.1, -12.08)
+script = ExtResource("cover")
+Size = Vector3(23.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Bande_008" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 9.1, -1.92)
+script = ExtResource("cover")
+Size = Vector3(23.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Bande_009" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 9.1, 1.92)
+script = ExtResource("cover")
+Size = Vector3(23.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Bande_010" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 9.1, 12.08)
+script = ExtResource("cover")
+Size = Vector3(23.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Bande_011" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 5.1, -19.92)
+script = ExtResource("cover")
+Size = Vector3(7.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_012" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 5.1, 19.92)
+script = ExtResource("cover")
+Size = Vector3(7.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_013" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 5.1, 28.08)
+script = ExtResource("cover")
+Size = Vector3(7.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_014" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 9.1, -28.08)
+script = ExtResource("cover")
+Size = Vector3(7.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Bande_015" type="StaticBody3D" parent="Decor"]
+position = Vector3(-1.92, 5.1, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 23.94)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_016" type="StaticBody3D" parent="Decor"]
+position = Vector3(1.92, 5.1, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 23.94)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_017" type="StaticBody3D" parent="Decor"]
+position = Vector3(7.0, 5.1, -12.08)
+script = ExtResource("cover")
+Size = Vector3(9.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_018" type="StaticBody3D" parent="Decor"]
+position = Vector3(7.0, 5.1, 12.08)
+script = ExtResource("cover")
+Size = Vector3(9.94, 0.035, 0.1)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_019" type="StaticBody3D" parent="Decor"]
+position = Vector3(12.08, 5.1, -7.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 9.94)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_020" type="StaticBody3D" parent="Decor"]
+position = Vector3(12.08, 5.1, 7.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 9.94)
+BoxMaterial = ExtResource("m_cyan")
+Solid = false
+
+[node name="Bande_021" type="StaticBody3D" parent="Decor"]
+position = Vector3(12.08, 9.1, -7.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 9.94)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Bande_022" type="StaticBody3D" parent="Decor"]
+position = Vector3(12.08, 9.1, 7.0)
+script = ExtResource("cover")
+Size = Vector3(0.1, 0.035, 9.94)
+BoxMaterial = ExtResource("m_purple")
+Solid = false
+
+[node name="Coeur_Socle" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(3.2, 0.5, 3.2)
+BoxMaterial = ExtResource("m_rail")
+
+[node name="Coeur" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 0.5, 0.0)
+script = ExtResource("cover")
+Size = Vector3(1.4, 3.1, 1.4)
+BoxMaterial = ExtResource("m_core")
+Solid = false
+
+[node name="Coeur_Haut" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 4.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(1.4, 3.6, 1.4)
+BoxMaterial = ExtResource("m_core")
+Solid = false
+
+[node name="Coeur_Ciel" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 8.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(1.4, 4.0, 1.4)
+BoxMaterial = ExtResource("m_core")
+Solid = false
+
+[node name="Verriere" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 11.94, 0.0)
+script = ExtResource("cover")
+Size = Vector3(23.0, 0.05, 23.0)
+BoxMaterial = ExtResource("m_sky")
+Solid = false
+
+[node name="Seuil_-4_-28.2" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 0.0, -28.0)
+script = ExtResource("cover")
+Size = Vector3(8, 0.02, 0.4)
+BoxMaterial = ExtResource("m_orange")
+Solid = false
+
+[node name="Seuil_-4_27.8" type="StaticBody3D" parent="Decor"]
+position = Vector3(0.0, 0.0, 28.0)
+script = ExtResource("cover")
+Size = Vector3(8, 0.02, 0.4)
+BoxMaterial = ExtResource("m_orange")
+Solid = false
+
+[node name="Seuil_-28.2_-4" type="StaticBody3D" parent="Decor"]
+position = Vector3(-28.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.4, 0.02, 8)
+BoxMaterial = ExtResource("m_orange")
+Solid = false
+
+[node name="Seuil_27.8_-4" type="StaticBody3D" parent="Decor"]
+position = Vector3(28.0, 0.0, 0.0)
+script = ExtResource("cover")
+Size = Vector3(0.4, 0.02, 8)
+BoxMaterial = ExtResource("m_orange")
+Solid = false
+
+[node name="Lumieres" type="Node3D" parent="."]
+
+[node name="Lampe_001" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-15.0, 3.35, -41.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_001" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-15.0, 3.47, -41.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_002" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(13.0, 3.35, -41.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_002" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(13.0, 3.47, -41.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_003" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.35, -39.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_003" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.47, -39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_004" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.35, -39.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_004" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.47, -39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_005" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-5.0, 3.35, -39.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_005" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-5.0, 3.47, -39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_006" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(23.0, 3.35, -39.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_006" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(23.0, 3.47, -39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_007" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(33.0, 3.35, -39.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_007" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(33.0, 3.47, -39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_008" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(3.0, 3.35, -33.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_008" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(3.0, 3.47, -33.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_009" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-23.0, 3.35, -31.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_009" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-23.0, 3.47, -31.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_010" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(39.0, 3.35, -31.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_010" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(39.0, 3.47, -31.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_011" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.35, -29.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_011" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.47, -29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_012" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-13.0, 3.35, -29.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_012" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-13.0, 3.47, -29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_013" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(13.0, 3.35, -29.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_013" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(13.0, 3.47, -29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_014" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(23.0, 3.35, -29.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_014" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(23.0, 3.47, -29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_015" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-3.0, 3.6, -25.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_015" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-3.0, 3.72, -25.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_016" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-31.0, 3.35, -23.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_016" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-31.0, 3.47, -23.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_017" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(31.0, 3.35, -23.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_017" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(31.0, 3.47, -23.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_018" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-19.0, 3.35, -19.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_018" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-19.0, 3.47, -19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_019" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(5.0, 3.35, -19.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_019" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(5.0, 3.47, -19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_020" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(15.0, 3.35, -19.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_020" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(15.0, 3.47, -19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_021" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.35, -17.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_021" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.47, -17.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_022" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 3.35, -17.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_022" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 3.47, -17.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_023" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(39.0, 3.35, -17.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_023" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(39.0, 3.47, -17.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_024" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.35, -13.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_024" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.47, -13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_025" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(27.0, 3.35, -13.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_025" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(27.0, 3.47, -13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_026" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-1.0, 3.35, -11.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_026" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-1.0, 3.47, -11.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_027" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-19.0, 3.35, -9.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_027" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-19.0, 3.47, -9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_028" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(9.0, 3.6, -9.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_028" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(9.0, 3.72, -9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_029" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.35, -7.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_029" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.47, -7.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_030" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(19.0, 3.35, -7.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_030" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(19.0, 3.47, -7.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_031" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(37.0, 3.35, -7.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_031" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(37.0, 3.47, -7.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_032" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 3.6, -5.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_032" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 3.72, -5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_033" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.35, -3.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_033" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.47, -3.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_034" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(1.0, 3.35, -1.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_034" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(1.0, 3.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_035" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(27.0, 3.35, -1.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_035" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(27.0, 3.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_036" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-19.0, 3.35, 1.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_036" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-19.0, 3.47, 1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_037" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(11.0, 3.6, 1.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_037" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(11.0, 3.72, 1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_038" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.35, 3.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_038" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.47, 3.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_039" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(37.0, 3.35, 3.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_039" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(37.0, 3.47, 3.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_040" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 3.6, 5.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_040" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 3.72, 5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_041" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.35, 7.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_041" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.47, 7.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_042" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(19.0, 3.35, 7.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_042" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(19.0, 3.47, 7.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_043" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(1.0, 3.35, 9.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_043" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(1.0, 3.47, 9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_044" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(29.0, 3.35, 9.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_044" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(29.0, 3.47, 9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_045" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-19.0, 3.35, 11.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_045" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-19.0, 3.47, 11.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_046" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-41.0, 3.35, 13.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_046" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-41.0, 3.47, 13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_047" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(11.0, 3.35, 13.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_047" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(11.0, 3.47, 13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_048" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(39.0, 3.35, 13.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_048" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(39.0, 3.47, 13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_049" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 3.35, 15.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_049" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 3.47, 15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_050" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.35, 17.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_050" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-29.0, 3.47, 17.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_051" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(1.0, 3.35, 19.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_051" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(1.0, 3.47, 19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_052" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(19.0, 3.35, 19.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_052" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(19.0, 3.47, 19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_053" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(29.0, 3.35, 19.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_053" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(29.0, 3.47, 19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_054" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.35, 23.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_054" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.47, 23.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_055" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(39.0, 3.35, 23.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_055" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(39.0, 3.47, 23.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_056" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-23.0, 3.35, 25.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_056" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-23.0, 3.47, 25.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_057" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-13.0, 3.35, 27.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_057" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-13.0, 3.47, 27.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_058" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(7.0, 3.35, 27.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_058" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(7.0, 3.47, 27.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_059" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-3.0, 3.35, 29.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_059" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-3.0, 3.47, 29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_060" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(17.0, 3.35, 29.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_060" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(17.0, 3.47, 29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_061" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(27.0, 3.35, 29.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_061" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(27.0, 3.47, 29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_062" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-33.0, 3.35, 31.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_062" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-33.0, 3.47, 31.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_063" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(37.0, 3.35, 33.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_063" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(37.0, 3.47, 33.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_064" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-25.0, 3.35, 37.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_064" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-25.0, 3.47, 37.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_065" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-15.0, 3.35, 37.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_065" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-15.0, 3.47, 37.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_066" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(3.0, 3.35, 37.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_066" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(3.0, 3.47, 37.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_067" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.35, 39.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_067" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 3.47, 39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_068" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(13.0, 3.35, 39.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_068" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(13.0, 3.47, 39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_069" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(23.0, 3.35, 39.0)
+light_color = Color(1.0, 0.86, 0.7, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_069" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(23.0, 3.47, 39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_070" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-19.0, 7.35, -19.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_070" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-19.0, 7.47, -19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_071" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 7.35, -19.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_071" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 7.47, -19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_072" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(1.0, 7.35, -19.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_072" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(1.0, 7.47, -19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_073" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(11.0, 7.35, -19.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_073" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(11.0, 7.47, -19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_074" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(19.0, 7.35, -13.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_074" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(19.0, 7.47, -13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_075" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 7.35, -9.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_075" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 7.47, -9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_076" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-29.0, 7.35, -9.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_076" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-29.0, 7.47, -9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_077" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-19.0, 7.35, -9.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_077" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-19.0, 7.47, -9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_078" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-1.0, 7.6, -9.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_078" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-1.0, 7.72, -9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_079" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(29.0, 7.35, -9.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_079" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(29.0, 7.47, -9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_080" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(39.0, 7.35, -9.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_080" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(39.0, 7.47, -9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_081" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(13.0, 7.35, -5.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_081" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(13.0, 7.47, -5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_082" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-13.0, 7.35, -1.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_082" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-13.0, 7.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_083" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(23.0, 7.35, -1.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_083" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(23.0, 7.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_084" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-39.0, 7.35, 1.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_084" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-39.0, 7.47, 1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_085" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-29.0, 7.35, 1.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_085" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-29.0, 7.47, 1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_086" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-1.0, 7.35, 1.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_086" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-1.0, 7.47, 1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_087" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(33.0, 7.35, 1.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_087" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(33.0, 7.47, 1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_088" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(13.0, 7.35, 5.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_088" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(13.0, 7.47, 5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_089" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-19.0, 7.35, 7.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_089" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-19.0, 7.47, 7.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_090" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(25.0, 7.35, 9.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_090" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(25.0, 7.47, 9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_091" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(39.0, 7.35, 9.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_091" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(39.0, 7.47, 9.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_092" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-35.0, 7.35, 11.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_092" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-35.0, 7.47, 11.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_093" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-1.0, 7.6, 11.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_093" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-1.0, 7.72, 11.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_094" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-11.0, 7.35, 13.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_094" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-11.0, 7.47, 13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_095" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(9.0, 7.35, 15.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_095" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(9.0, 7.47, 15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_096" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(19.0, 7.35, 17.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_096" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(19.0, 7.47, 17.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_097" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-19.0, 7.35, 19.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_097" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-19.0, 7.47, 19.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_098" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 7.35, 23.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_098" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 7.47, 23.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_099" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-1.0, 7.6, 29.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_099" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-1.0, 7.72, 29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_100" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(9.0, 7.35, 29.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_100" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(9.0, 7.47, 29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_101" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-11.0, 7.35, 33.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_101" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-11.0, 7.47, 33.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_102" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-3.0, 7.35, 39.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_102" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-3.0, 7.47, 39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_103" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(7.0, 7.35, 39.0)
+light_color = Color(0.78, 0.88, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_103" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(7.0, 7.47, 39.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_104" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_104" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_105" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-35.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_105" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-35.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_106" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-25.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_106" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-25.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_107" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-15.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_107" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-15.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_108" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-5.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_108" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-5.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_109" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(5.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_109" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(5.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_110" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(15.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_110" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(15.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_111" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(25.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_111" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(25.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_112" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(35.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_112" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(35.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_113" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(45.0, 11.35, -45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_113" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(45.0, 11.47, -45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_114" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, -35.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_114" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, -35.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_115" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 11.35, -35.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_115" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 11.47, -35.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_116" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(1.0, 11.35, -35.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_116" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(1.0, 11.47, -35.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_117" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, -35.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_117" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, -35.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_118" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(9.0, 11.35, -29.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_118" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(9.0, 11.47, -29.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_119" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, -25.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_119" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, -25.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_120" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, -25.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_120" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, -25.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_121" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, -15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_121" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, -15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_122" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-15.0, 11.35, -15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_122" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-15.0, 11.47, -15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_123" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-5.0, 11.35, -15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_123" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-5.0, 11.47, -15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_124" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(5.0, 11.35, -15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_124" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(5.0, 11.47, -15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_125" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(15.0, 11.35, -15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_125" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(15.0, 11.47, -15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_126" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, -15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_126" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, -15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_127" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, -5.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_127" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, -5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_128" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-15.0, 11.35, -5.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_128" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-15.0, 11.47, -5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_129" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(13.0, 11.35, -5.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_129" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(13.0, 11.47, -5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_130" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, -5.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_130" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, -5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_131" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-35.0, 11.35, -1.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_131" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-35.0, 11.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_132" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-25.0, 11.35, -1.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_132" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-25.0, 11.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_133" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-5.0, 11.35, -1.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_133" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-5.0, 11.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_134" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(23.0, 11.35, -1.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_134" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(23.0, 11.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_135" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(33.0, 11.35, -1.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_135" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(33.0, 11.47, -1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_136" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(5.0, 11.35, 1.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_136" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(5.0, 11.47, 1.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_137" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, 5.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_137" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, 5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_138" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-15.0, 11.35, 5.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_138" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-15.0, 11.47, 5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_139" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(15.0, 11.35, 5.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_139" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(15.0, 11.47, 5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_140" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, 5.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_140" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, 5.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_141" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 11.35, 13.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_141" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 11.47, 13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_142" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(1.0, 11.35, 13.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_142" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(1.0, 11.47, 13.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_143" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, 15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_143" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, 15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_144" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(11.0, 11.35, 15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_144" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(11.0, 11.47, 15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_145" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, 15.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_145" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, 15.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_146" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 11.35, 23.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_146" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 11.47, 23.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_147" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, 25.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_147" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, 25.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_148" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(7.0, 11.35, 25.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_148" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(7.0, 11.47, 25.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_149" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, 25.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_149" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, 25.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_150" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-9.0, 11.35, 33.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_150" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-9.0, 11.47, 33.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_151" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.35, 35.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_151" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-45.0, 11.47, 35.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_152" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(7.0, 11.35, 35.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_152" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(7.0, 11.47, 35.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_153" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, 35.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_153" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, 35.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_154" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-37.0, 11.35, 41.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_154" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-37.0, 11.47, 41.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_155" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-27.0, 11.35, 43.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_155" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-27.0, 11.47, 43.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_156" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-17.0, 11.35, 43.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_156" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-17.0, 11.47, 43.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_157" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(-7.0, 11.35, 43.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_157" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(-7.0, 11.47, 43.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_158" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(13.0, 11.35, 43.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_158" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(13.0, 11.47, 43.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_159" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(23.0, 11.35, 43.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_159" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(23.0, 11.47, 43.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_160" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(33.0, 11.35, 43.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_160" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(33.0, 11.47, 43.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_161" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(3.0, 11.35, 45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_161" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(3.0, 11.47, 45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lampe_162" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(43.0, 11.35, 45.0)
+light_color = Color(0.9, 0.8, 1.0, 1)
+light_energy = 3.2
+light_specular = 0.6
+omni_range = 11.0
+omni_attenuation = 0.9
+
+[node name="Plafonnier_162" type="StaticBody3D" parent="Lumieres"]
+position = Vector3(43.0, 11.47, 45.0)
+script = ExtResource("cover")
+Size = Vector3(1.2, 0.08, 0.36)
+BoxMaterial = ExtResource("m_lamp")
+Solid = false
+
+[node name="Lumiere_Coeur" type="OmniLight3D" parent="Lumieres"]
+position = Vector3(0, 6, 0)
+light_color = Color(0.45, 0.8, 1, 1)
+light_energy = 6.0
+shadow_enabled = true
+omni_range = 24.0
+
+[node name="Lumiere_Verriere" type="SpotLight3D" parent="Lumieres"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 11.7, 0)
+light_color = Color(1, 0.9, 0.78, 1)
+light_energy = 8.0
+shadow_enabled = true
+spot_range = 16.0
+spot_angle = 55.0
+
+[node name="Points" type="Node3D" parent="."]
+
+[node name="Apparition_01" type="Marker3D" parent="Points"]
+position = Vector3(-28.0, 0, -26.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_02" type="Marker3D" parent="Points"]
+position = Vector3(28.0, 0, -26.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_03" type="Marker3D" parent="Points"]
+position = Vector3(-38.0, 0, -17.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_04" type="Marker3D" parent="Points"]
+position = Vector3(38.0, 0, 17.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_05" type="Marker3D" parent="Points"]
+position = Vector3(-22.0, 0, 38.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_06" type="Marker3D" parent="Points"]
+position = Vector3(22.0, 0, 38.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_07" type="Marker3D" parent="Points"]
+position = Vector3(-36.0, 4, -6.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_08" type="Marker3D" parent="Points"]
+position = Vector3(36.0, 4, 6.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_09" type="Marker3D" parent="Points"]
+position = Vector3(-8.0, 4, -18.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_10" type="Marker3D" parent="Points"]
+position = Vector3(8.0, 4, 18.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_11" type="Marker3D" parent="Points"]
+position = Vector3(-24.0, 8, -45.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_12" type="Marker3D" parent="Points"]
+position = Vector3(24.0, 8, 45.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_13" type="Marker3D" parent="Points"]
+position = Vector3(-45.0, 8, 22.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_14" type="Marker3D" parent="Points"]
+position = Vector3(45.0, 8, -22.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_15" type="Marker3D" parent="Points"]
+position = Vector3(-39.0, 8, 39.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Apparition_16" type="Marker3D" parent="Points"]
+position = Vector3(39.0, 8, 39.0)
+script = ExtResource("marker")
+Kind = 1
+Team = 255
+
+[node name="Tremplins" type="Node3D" parent="."]
+
+[node name="Tremplin_1" type="Node3D" parent="Tremplins"]
+position = Vector3(-7.0, 0.0, -7.0)
+script = ExtResource("pad")
+Radius = 1.2
+FlightTime = 0.94
+
+[node name="Cible" type="Marker3D" parent="Tremplins/Tremplin_1"]
+position = Vector3(-8.0, 4.0, -8.0)
+
+[node name="Tremplin_2" type="Node3D" parent="Tremplins"]
+position = Vector3(7.0, 0.0, 7.0)
+script = ExtResource("pad")
+Radius = 1.2
+FlightTime = 0.94
+
+[node name="Cible" type="Marker3D" parent="Tremplins/Tremplin_2"]
+position = Vector3(8.0, 4.0, 8.0)
+
+[node name="Tremplin_3" type="Node3D" parent="Tremplins"]
+position = Vector3(7.0, 0.0, -7.0)
+script = ExtResource("pad")
+Radius = 1.2
+FlightTime = 1.16
+
+[node name="Cible" type="Marker3D" parent="Tremplins/Tremplin_3"]
+position = Vector3(7.0, 8.0, -7.0)
+
+[node name="Tremplin_4" type="Node3D" parent="Tremplins"]
+position = Vector3(-7.0, 0.0, 7.0)
+script = ExtResource("pad")
+Radius = 1.2
+FlightTime = 1.16
+
+[node name="Cible" type="Marker3D" parent="Tremplins/Tremplin_4"]
+position = Vector3(-7.0, 8.0, 7.0)
+
+[node name="Tremplin_5" type="Node3D" parent="Tremplins"]
+position = Vector3(0.0, 0.0, -21.0)
+script = ExtResource("pad")
+Radius = 1.3
+FlightTime = 1.21
+
+[node name="Cible" type="Marker3D" parent="Tremplins/Tremplin_5"]
+position = Vector3(0.0, 8.0, -13.0)
+
+[node name="Tremplin_6" type="Node3D" parent="Tremplins"]
+position = Vector3(0.0, 0.0, 25.0)
+script = ExtResource("pad")
+Radius = 1.3
+FlightTime = 1.46
+
+[node name="Cible" type="Marker3D" parent="Tremplins/Tremplin_6"]
+position = Vector3(0.0, 4.0, 10.0)
+
+[node name="Teleporteurs" type="Node3D" parent="."]
+
+[node name="A_Sol" type="Node3D" parent="Teleporteurs"]
+position = Vector3(-28.0, 0.0, 31.0)
+script = ExtResource("tele")
+Tint = Color(0.75, 0.35, 1.0, 1)
+
+[node name="Sortie" type="Marker3D" parent="Teleporteurs/A_Sol"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 66.5251, 8.0, -69.5251)
+
+[node name="A_Haut" type="Node3D" parent="Teleporteurs"]
+position = Vector3(41.0, 8.0, -41.0)
+script = ExtResource("tele")
+Tint = Color(0.75, 0.35, 1.0, 1)
+
+[node name="Sortie" type="Marker3D" parent="Teleporteurs/A_Haut"]
+transform = Transform3D(1.000000, 0, -0.000000, 0, 1, 0, 0.000000, 0, 1.000000, -69.0, -8.0, 68.5)
+
+[node name="B_Sol" type="Node3D" parent="Teleporteurs"]
+position = Vector3(28.0, 0.0, 31.0)
+script = ExtResource("tele")
+Tint = Color(0.3, 0.75, 1.0, 1)
+
+[node name="Sortie" type="Marker3D" parent="Teleporteurs/B_Sol"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -66.5251, 8.0, -69.5251)
+
+[node name="B_Haut" type="Node3D" parent="Teleporteurs"]
+position = Vector3(-41.0, 8.0, -41.0)
+script = ExtResource("tele")
+Tint = Color(0.3, 0.75, 1.0, 1)
+
+[node name="Sortie" type="Marker3D" parent="Teleporteurs/B_Haut"]
+transform = Transform3D(1.000000, 0, -0.000000, 0, 1, 0, 0.000000, 0, 1.000000, 69.0, -8.0, 68.5)
+
+[node name="Butin" type="Node3D" parent="."]
+
+[node name="sniper_01" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 8.0, -37.0)
+Activation = 1
+Quality = 8
+Item = "sniper"
+
+[node name="ammo_sniper_02" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(1.2, 8.0, -37.0)
+Activation = 1
+Item = "ammo_sniper"
+Count = 20
+
+[node name="lmg63_03" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 4.0, 38.0)
+Activation = 1
+Quality = 8
+Item = "lmg63"
+
+[node name="ammo_rifle_04" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(1.2, 4.0, 38.0)
+Activation = 1
+Item = "ammo_rifle"
+Count = 60
+
+[node name="ak_05" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 8.0, 0.0)
+Activation = 1
+Quality = 7
+Item = "ak"
+
+[node name="ammo_rifle_06" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(1.4, 8.0, 0.0)
+Activation = 1
+Item = "ammo_rifle"
+
+[node name="ak_07" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-30.0, 8.0, 0.0)
+Activation = 1
+Quality = 7
+Item = "ak"
+
+[node name="ammo_rifle_08" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-31.2, 8.0, 0.0)
+Activation = 1
+Item = "ammo_rifle"
+
+[node name="ak_09" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(30.0, 8.0, 0.0)
+Activation = 1
+Quality = 7
+Item = "ak"
+
+[node name="ammo_rifle_10" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(31.2, 8.0, 0.0)
+Activation = 1
+Item = "ammo_rifle"
+
+[node name="smg45_11" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-17.0, 0.0, 13.0)
+Activation = 1
+Quality = 7
+Item = "smg45"
+
+[node name="ammo_9mm_12" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-18.2, 0.0, 12.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="smg45_13" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(17.0, 0.0, -13.0)
+Activation = 1
+Quality = 7
+Item = "smg45"
+
+[node name="ammo_9mm_14" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(18.2, 0.0, -12.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="sawnoff_15" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 4.0, 0.0)
+Activation = 1
+Quality = 7
+Item = "sawnoff"
+
+[node name="ammo_shell_16" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 4.0, 1.4)
+Activation = 1
+Item = "ammo_shell"
+
+[node name="sawnoff_17" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 0.0, -38.0)
+Activation = 1
+Quality = 7
+Item = "sawnoff"
+
+[node name="ammo_shell_18" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(1.2, 0.0, -38.0)
+Activation = 1
+Item = "ammo_shell"
+
+[node name="c19_19" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-28.0, 0.0, 2.0)
+Activation = 1
+Quality = 7
+Item = "c19"
+
+[node name="ammo_9mm_20" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-29.2, 0.0, 2.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="c19_21" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(28.0, 0.0, -2.0)
+Activation = 1
+Quality = 7
+Item = "c19"
+
+[node name="ammo_9mm_22" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(29.2, 0.0, -2.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="smg45_23" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-12.0, 8.0, 44.0)
+Activation = 1
+Quality = 7
+Item = "smg45"
+
+[node name="ammo_9mm_24" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-13.2, 8.0, 44.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="smg45_25" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(12.0, 8.0, -44.0)
+Activation = 1
+Quality = 7
+Item = "smg45"
+
+[node name="ammo_9mm_26" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(13.2, 8.0, -44.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="ak_27" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 4.0, 17.0)
+Activation = 1
+Quality = 7
+Item = "ak"
+
+[node name="ammo_rifle_28" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(1.2, 4.0, 17.0)
+Activation = 1
+Item = "ammo_rifle"
+
+[node name="lmg63_29" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 4.0, -17.0)
+Activation = 1
+Quality = 7
+Item = "lmg63"
+
+[node name="ammo_rifle_30" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(1.2, 4.0, -17.0)
+Activation = 1
+Item = "ammo_rifle"
+
+[node name="sawnoff_31" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(0.0, 0.0, 38.0)
+Activation = 1
+Quality = 7
+Item = "sawnoff"
+
+[node name="ammo_shell_32" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(1.2, 0.0, 38.0)
+Activation = 1
+Item = "ammo_shell"
+
+[node name="ammo_9mm_33" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-38.0, 0.0, -10.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="ammo_9mm_34" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(38.0, 0.0, 10.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="ammo_9mm_35" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-10.0, 0.0, 38.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="ammo_9mm_36" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(10.0, 0.0, -38.0)
+Activation = 1
+Item = "ammo_9mm"
+
+[node name="ammo_shell_37" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-38.0, 0.0, 30.0)
+Activation = 1
+Item = "ammo_shell"
+
+[node name="ammo_rifle_38" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(38.0, 0.0, -30.0)
+Activation = 1
+Item = "ammo_rifle"
+
+[node name="heal_big_39" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-28.0, 0.0, -28.0)
+Activation = 1
+Item = "heal_big"
+
+[node name="heal_big_40" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(28.0, 0.0, -28.0)
+Activation = 1
+Item = "heal_big"
+
+[node name="heal_small_41" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-25.0, 0.0, 25.0)
+Activation = 1
+Item = "heal_small"
+
+[node name="heal_small_42" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(25.0, 0.0, 25.0)
+Activation = 1
+Item = "heal_small"
+
+[node name="heal_small_43" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-10.0, 0.0, 6.0)
+Activation = 1
+Item = "heal_small"
+
+[node name="heal_small_44" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(10.0, 0.0, -6.0)
+Activation = 1
+Item = "heal_small"
+
+[node name="heal_small_45" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-42.0, 8.0, 42.0)
+Activation = 1
+Item = "heal_small"
+
+[node name="heal_small_46" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(42.0, 8.0, 42.0)
+Activation = 1
+Item = "heal_small"
+
+[node name="shield_big_47" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-36.0, 4.0, -8.0)
+Activation = 1
+Item = "shield_big"
+
+[node name="shield_big_48" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(36.0, 4.0, 8.0)
+Activation = 1
+Item = "shield_big"
+
+[node name="shield_small_49" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-45.0, 8.0, -32.0)
+Activation = 1
+Item = "shield_small"
+
+[node name="shield_small_50" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(45.0, 8.0, -32.0)
+Activation = 1
+Item = "shield_small"
+
+[node name="shield_small_51" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(-16.0, 4.0, 0.0)
+Activation = 1
+Item = "shield_small"
+
+[node name="shield_small_52" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(16.0, 4.0, 0.0)
+Activation = 1
+Item = "shield_small"
+
+[node name="shield_small_53" parent="Butin" instance=ExtResource("loot")]
+position = Vector3(8.0, 4.0, 40.0)
+Activation = 1
+Item = "shield_small"
+

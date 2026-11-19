@@ -508,5 +508,9 @@
     "Classement": "Ranking",
     "Battle royale en duo (équipes de 2)": "Battle royale duo (teams of 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale trio (teams of 3)",
-    "Pas encore de classement.": "No ranking yet."
+    "Pas encore de classement.": "No ranking yet.",
+    "MORT": "DEAD",
+    "À TERRE": "DOWN",
+    "Marcher dessus : {0}": "Walk over it: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: walk over weapons and heals to pick them up"
 }

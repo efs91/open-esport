@@ -153,7 +153,7 @@ namespace Openesport.Online
 			if (e is not InputEventKey k || !k.Pressed || k.Echo) return;
 			if (_last.Mode == GameMode.BattleRoyale || _phase == MatchPhase.Over) return;
 			if (k.Keycode == Key.B && _last.Mode == GameMode.Sabotage && _last.CanBuy) { ToggleMenu("buy"); GetViewport().SetInputAsHandled(); }
-			else if (k.Keycode == Key.C && _last.Mode != GameMode.Sabotage) { ToggleMenu("class"); GetViewport().SetInputAsHandled(); }
+			else if (k.Keycode == Key.C && _last.Mode != GameMode.Sabotage && _last.Mode != GameMode.Deathmatch) { ToggleMenu("class"); GetViewport().SetInputAsHandled(); }
 			else if (k.Keycode == Key.Escape && MenuOpen) { CloseMenu(); GetViewport().SetInputAsHandled(); }
 		}
 
@@ -329,7 +329,10 @@ namespace Openesport.Online
 			if (_line2.Text != l2) _line2.Text = l2;
 
 			string role = m.Mode == GameMode.Sabotage ? (m.MySide == 1 ? I18n.T("Attaquant") : I18n.T("Défenseur")) + $"   ·   {m.Money} $" + (m.HasKit ? "   ·   " + I18n.T("kit de désamorçage") : "") : "";
-			string hint = m.Mode == GameMode.Sabotage ? (m.CanBuy ? I18n.T("B : boutique") : "") : I18n.T("C : classe ({0})", I18n.T(Loadouts.Get(m.ClassId).Name));
+			// Deathmatch : pas de classe, on part au pistolet et les armes sont dans l'arène
+			string hint = m.Mode == GameMode.Sabotage ? (m.CanBuy ? I18n.T("B : boutique") : "")
+				: m.Mode == GameMode.Deathmatch ? I18n.T("Arène : passe sur les armes et les soins pour les prendre")
+				: I18n.T("C : classe ({0})", I18n.T(Loadouts.Get(m.ClassId).Name));
 			if (m.Invulnerable) hint += "   " + I18n.T("(protégé)");
 			_footer.Text = (role.Length > 0 ? role + "\n" : "") + hint;
 			_footer.Visible = phase != MatchPhase.Over;

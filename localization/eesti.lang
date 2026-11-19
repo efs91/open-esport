@@ -508,5 +508,9 @@
     "Classement": "Edetabel",
     "Battle royale en duo (équipes de 2)": "Battle royale duona (2-liikmelised meeskonnad)",
     "Battle royale en trio (équipes de 3)": "Battle royale triona (3-liikmelised meeskonnad)",
-    "Pas encore de classement.": "Edetabelit veel pole."
+    "Pas encore de classement.": "Edetabelit veel pole.",
+    "MORT": "SURNUD",
+    "À TERRE": "MAAS",
+    "Marcher dessus : {0}": "Kõnni üle: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Areen: kõnni relvade ja ravi pealt, et need korjata"
 }

@@ -28,6 +28,14 @@ public static class FpsArms
 		return System.Text.RegularExpressions.Regex.Replace(name, @"_\d+$", "");
 	}
 
+	/// <summary>Nom de l'os de l'arme qui correspond à un os des bras (même nom, ou même nom sans suffixe numérique), sinon null.</summary>
+	private static string Resolve(Skeleton3D skeleton, System.Collections.Generic.Dictionary<string, string> targetBones, string name)
+	{
+		if (string.IsNullOrEmpty(name)) return null;
+		if (skeleton.FindBone(name) >= 0) return name;
+		return targetBones.TryGetValue(BoneKey(name), out var mapped) ? mapped : null;
+	}
+
 	/// <summary>Installe les bras du personnage sur une scène d'arme FPS. Retourne false si le modèle est introuvable.</summary>
 	public static bool Apply(Node3D weapon, string armsPath = DefaultPath)
 	{
@@ -58,12 +66,13 @@ public static class FpsArms
 				string name = sourceMesh.Skin.GetBindName(i);
 				if (string.IsNullOrEmpty(name))
 					name = sourceSkeleton.GetBoneName(sourceMesh.Skin.GetBindBone(i));
-				if (skeleton.FindBone(name) < 0)
-				{
-					if (!targetBones.TryGetValue(BoneKey(name), out name))
-						continue;
-				}
-				skin.AddNamedBind(name, sourceMesh.Skin.GetBindPose(i));
+				// Os absent de l'arme (paume, bout de doigt…) : on le rattache à son plus proche parent présent.
+				// Surtout ne pas l'omettre : les poids des sommets désignent les liaisons par leur rang, une liaison sautée décalerait toutes les suivantes.
+				string target = Resolve(skeleton, targetBones, name);
+				for (int b = sourceSkeleton.FindBone(name); target == null && b >= 0; b = sourceSkeleton.GetBoneParent(b))
+					target = Resolve(skeleton, targetBones, sourceSkeleton.GetBoneName(b));
+				target ??= skeleton.GetBoneName(0);
+				skin.AddNamedBind(target, sourceMesh.Skin.GetBindPose(i));
 			}
 
 			var arms = new MeshInstance3D

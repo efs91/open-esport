@@ -508,5 +508,9 @@
     "Classement": "Klassifika",
     "Battle royale en duo (équipes de 2)": "Battle royale f'koppji (timijiet ta' 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale fi trijiet (timijiet ta' 3)",
-    "Pas encore de classement.": "Għad m'hemmx klassifika."
+    "Pas encore de classement.": "Għad m'hemmx klassifika.",
+    "MORT": "MEJJET",
+    "À TERRE": "MITQUL",
+    "Marcher dessus : {0}": "Imxi fuqu: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: għaddi minn fuq l-armi u l-kura biex tiġborhom"
 }

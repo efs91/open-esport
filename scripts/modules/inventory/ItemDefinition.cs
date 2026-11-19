@@ -132,6 +132,8 @@ namespace Openesport.Inventory
 			// Armes du kit fps-hands
 			Add(new ItemDefinition { Id = "knife", DisplayName = "Couteau", Type = ItemType.Weapon, ScenePath = Hands + "fps-knife/fps-knife.tscn" });
 			Add(new ItemDefinition { Id = "c19", DisplayName = "C19", Type = ItemType.Weapon, ScenePath = Hands + "fps-c19/fps-c19.tscn", AcceptsOptic = true });
+			// Pistolet léger P2020 (assets/armes/animated_pistol.glb, ressources : tools/build_p2020_viewmodel.gd) ; le viseur se pose sur la culasse
+			Add(new ItemDefinition { Id = "p2020", DisplayName = "P2020", Type = ItemType.Weapon, ScenePath = Hands + "fps-p2020/fps-p2020.tscn", AcceptsOptic = true, OpticAlong = 0.45f });
 			Add(new ItemDefinition { Id = "smg45", DisplayName = "SMG-45", Type = ItemType.Weapon, ScenePath = Hands + "fps-smg45/fps-smg45.tscn", AcceptsOptic = true, OpticAlong = 0.68f, OpticOffset = new Vector3(0, -0.045f, 0) });
 			Add(new ItemDefinition { Id = "ak", DisplayName = "AK-74", Type = ItemType.Weapon, ScenePath = Hands + "fps-ak/fps-ak.tscn", AcceptsOptic = true, OpticOffset = new Vector3(0, -0.05f, 0) });
 			Add(new ItemDefinition { Id = "lmg63", DisplayName = "LMG-63", Type = ItemType.Weapon, ScenePath = Hands + "fps-lmg63/fps-lmg63.tscn", AcceptsOptic = true, OpticAlong = 0.40f, OpticOffset = new Vector3(0, -0.065f, 0) });
@@ -147,8 +149,9 @@ namespace Openesport.Inventory
 
 			Add(new ItemDefinition { Id = "optic_reddot", DisplayName = "Viseur point rouge 1x", Type = ItemType.Optic, ScenePath = "res://assets/accessoires/reddot/fps_red_dot_sight_game_model.glb", Zoom = 1.15f, EyeRelief = 0.11f, ModelYawDegrees = 180.0f, ModelSize = 0.12f, RedDot = true, GroundSize = 0.09f });
 
-			// Viseur holographique ouvert x2 (modèle généré par ChatGPT, remis à l'endroit par viseur_x2.tscn)
-			Add(new ItemDefinition { Id = "optic_2x", DisplayName = "Viseur holographique x2", Type = ItemType.Optic, ScenePath = "res://assets/accessoires/x2/viseur_x2.tscn", Zoom = 2.0f, EyeRelief = 0.12f, ModelYawDegrees = 0.0f, ModelSize = 0.11f, GroundSize = 0.11f, CenterOffset = new Vector3(-0.0065f, 0.0078f, 0f) });
+			// Viseur holographique ouvert x2 (modèle généré par ChatGPT, remis à l'endroit par viseur_x2.tscn). ModelSize réglé à 0,08 (0,11 avant : trop gros à l'écran) ;
+			// le décalage du centre de la lentille suit la même proportion pour que le point reste aligné.
+			Add(new ItemDefinition { Id = "optic_2x", DisplayName = "Viseur holographique x2", Type = ItemType.Optic, ScenePath = "res://assets/accessoires/x2/viseur_x2.tscn", Zoom = 2.0f, EyeRelief = 0.12f, ModelYawDegrees = 0.0f, ModelSize = 0.08f, GroundSize = 0.11f, CenterOffset = new Vector3(-0.0065f, 0.0078f, 0f) * (0.08f / 0.11f) });
 
 			// Munitions (modèles générés avec Meshy)
 			Add(new ItemDefinition { Id = "ammo_9mm", DisplayName = "Munitions 9mm", Type = ItemType.Ammo, ScenePath = Ammo + "ammo_9mm.glb", AmmoType = "9mm", StackSize = 60, PickupAmount = 20, GroundSize = 0.2f });

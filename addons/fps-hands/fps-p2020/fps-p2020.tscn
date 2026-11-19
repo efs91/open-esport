@@ -1,0 +1,189 @@
+[gd_scene load_steps=25 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/armes/animated_pistol.glb" id="1_glb"]
+[ext_resource type="Material" path="res://addons/fps-hands/fps-p2020/resources/p2020.tres" id="2_gun"]
+[ext_resource type="Material" path="res://addons/fps-hands/fps-p2020/resources/arms.tres" id="3_arms"]
+[ext_resource type="AnimationLibrary" path="res://addons/fps-hands/fps-p2020/resources/animations.res" id="4_lib"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i2r40"]
+animation = &"fire"
+use_custom_timeline = true
+timeline_length = 0.14
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0xgqa"]
+animation = &"hide"
+use_custom_timeline = true
+timeline_length = 0.3
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_c014o"]
+animation = &"idle"
+use_custom_timeline = true
+timeline_length = 0.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0uw4j"]
+animation = &"melee"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_45xup"]
+animation = &"reload"
+use_custom_timeline = true
+timeline_length = 1.4
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nhb0g"]
+animation = &"reload_full"
+use_custom_timeline = true
+timeline_length = 1.6
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_akvjt"]
+animation = &"take"
+use_custom_timeline = true
+timeline_length = 0.45
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rda6y"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o84at"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wp3db"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f22pm"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dhtqt"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rk7gk"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bxc6t"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dbqs8"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i60ht"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rwmqm"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_prgat"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cr1ri"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_gexxc"]
+states/fire/node = SubResource("AnimationNodeAnimation_i2r40")
+states/fire/position = Vector2(362, 20)
+states/hide/node = SubResource("AnimationNodeAnimation_0xgqa")
+states/hide/position = Vector2(517, 100)
+states/idle/node = SubResource("AnimationNodeAnimation_c014o")
+states/idle/position = Vector2(414, 100)
+states/melee/node = SubResource("AnimationNodeAnimation_0uw4j")
+states/melee/position = Vector2(483, 20)
+states/reload/node = SubResource("AnimationNodeAnimation_45xup")
+states/reload/position = Vector2(362, 179)
+states/reload_full/node = SubResource("AnimationNodeAnimation_nhb0g")
+states/reload_full/position = Vector2(483, 179)
+states/take/node = SubResource("AnimationNodeAnimation_akvjt")
+states/take/position = Vector2(312, 100)
+transitions = ["Start", "take", SubResource("AnimationNodeStateMachineTransition_rda6y"), "take", "idle", SubResource("AnimationNodeStateMachineTransition_o84at"), "hide", "End", SubResource("AnimationNodeStateMachineTransition_wp3db"), "idle", "fire", SubResource("AnimationNodeStateMachineTransition_f22pm"), "idle", "melee", SubResource("AnimationNodeStateMachineTransition_dhtqt"), "idle", "hide", SubResource("AnimationNodeStateMachineTransition_rk7gk"), "idle", "reload", SubResource("AnimationNodeStateMachineTransition_bxc6t"), "idle", "reload_full", SubResource("AnimationNodeStateMachineTransition_dbqs8"), "fire", "idle", SubResource("AnimationNodeStateMachineTransition_i60ht"), "melee", "idle", SubResource("AnimationNodeStateMachineTransition_rwmqm"), "reload_full", "idle", SubResource("AnimationNodeStateMachineTransition_prgat"), "reload", "idle", SubResource("AnimationNodeStateMachineTransition_cr1ri")]
+
+
+[node name="fps-p2020" instance=ExtResource("1_glb")]
+transform = Transform3D(1.9, 0, 0, 0, 1.9, 0, 0, 0, 1.9, -0.1, -0.397, 0.229)
+metadata/ads_pos = Vector3(0, -0.247, 0.129)
+metadata/max_magazine = 10
+metadata/auto = false
+metadata/delta = 2.0
+metadata/damage = 18.0
+metadata/range = 200.0
+metadata/recoil_x = 0.05
+metadata/recoil_y = 0.015
+metadata/ammo_type = "9mm"
+
+[node name="base_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/base" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="stopper_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/stopper" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="shell_1_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/shell_1" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="bullet_2_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/shell_1/bullet_2" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="mag_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/mag" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="shell_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/mag/shell" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="bullet_2_2_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/mag/shell/bullet_2_2" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="shell_1_2_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/mag/shell_1_2" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="bullet_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/mag/shell_1_2/bullet" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="hammer_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/hammer" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="trigger_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/trigger" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="slide_beretta_0" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/slide" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("2_gun")
+
+[node name="Object_83" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/Skeleton3D" index="0"]
+cast_shadow = 0
+surface_material_override/0 = ExtResource("3_arms")
+
+[node name="AnimationPlayer" parent="." index="1"]
+libraries/ = ExtResource("4_lib")
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="2"]
+tree_root = SubResource("AnimationNodeStateMachine_gexxc")
+anim_player = NodePath("../AnimationPlayer")
+
+[node name="MuzzlePoint" type="Node3D" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/slide"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15.8)
+
+[node name="Marker3D" type="Marker3D" parent="Sketchfab_model/105d2810571c4501ba07ac55c5582245_fbx/Object_2/RootNode/Root/Object_5/pistol/base"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.4, 19.8)

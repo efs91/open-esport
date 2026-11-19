@@ -171,20 +171,8 @@ namespace Openesport.Modules
 				modeScreen.OnContinue = () =>
 				{
 					var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel" };
-					// hors battle royale et Sabotage : après le personnage, on choisit sa classe d'équipement
-					panel.OnPlay = () =>
-					{
-						var mode = Openesport.Online.MatchSettings.Mode;      // battle royale : on ramasse son équipement ; Sabotage : on l'achète dans la boutique
-						if (mode == OpenEsport.Core.GameMode.BattleRoyale || mode == OpenEsport.Core.GameMode.Sabotage) { FindOnlineGame(); return; }
-						var loadout = new Openesport.Menus.LoadoutScreen { Name = "LoadoutScreen", OnContinue = FindOnlineGame };
-						loadout.OnBack = () =>
-						{
-							var again = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel", OnPlay = panel.OnPlay };
-							again.Closed += () => ExecuteAction("start_online_game");
-							((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, again);
-						};
-						((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, loadout);
-					};
+					// après le personnage, directement la partie : plus d'écran de classe (en partie, la touche C change de classe dans les modes qui en ont)
+					panel.OnPlay = FindOnlineGame;
 					panel.Closed += () => ExecuteAction("start_online_game");       // retour : la page du mode
 					((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, panel);
 				};

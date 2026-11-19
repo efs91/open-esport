@@ -508,5 +508,9 @@
     "Classement": "Rangliste",
     "Battle royale en duo (équipes de 2)": "Battle royale i duo (hold på 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale i trio (hold på 3)",
-    "Pas encore de classement.": "Ingen rangliste endnu."
+    "Pas encore de classement.": "Ingen rangliste endnu.",
+    "MORT": "DØD",
+    "À TERRE": "NEDE",
+    "Marcher dessus : {0}": "Gå hen over: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: gå hen over våben og helbredelse for at samle dem op"
 }

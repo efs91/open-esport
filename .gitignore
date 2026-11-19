@@ -38,3 +38,6 @@ __pycache__/
 
 # exports du jeu (lourds, générés)
 builds/
+
+# copie temporaire du plugin Terrain3D créée par l'éditeur quand il tourne (ne jamais versionner)
+addons/terrain_3d/bin/~*

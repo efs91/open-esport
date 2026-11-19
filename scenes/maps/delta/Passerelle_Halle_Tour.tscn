@@ -1,8 +1,10 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Window_Wide.gltf" id="e1"]
+[ext_resource type="PackedScene" path="res://scenes/maps/windows/WindowBay.tscn" id="WindowBay"]
+[ext_resource type="PackedScene" path="res://scenes/maps/windows/SolidBay.tscn" id="SolidBay"]
+
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Metal.gltf" id="e1"]
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Simple2.gltf" id="e2"]
-[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Straight.gltf" id="e3"]
 
 [sub_resource type="BoxShape3D" id="s1"]
 size = Vector3(4, 1.35, 0.4)
@@ -27,10 +29,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3, 0)
 
 [node name="Parois" type="Node3D" parent="."]
 
-[node name="WallWindow_Straight_3" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_3" parent="Parois" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2, 0, 0)
 
-[node name="WallWindow_Straight_4" parent="Parois" instance=ExtResource("e3")]
+[node name="WallWindow_Straight_4" parent="Parois" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2, 0, 0)
 
 [node name="Colliders" type="StaticBody3D" parent="."]

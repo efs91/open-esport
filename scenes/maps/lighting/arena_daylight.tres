@@ -1,0 +1,16 @@
+[gd_resource type="Environment" format=3]
+
+[ext_resource type="Sky" path="res://scenes/maps/lighting/late_afternoon_sky.tres" id="sky"]
+
+[resource]
+background_mode = 2
+sky = ExtResource("sky")
+ambient_light_source = 3
+ambient_light_energy = 0.76
+tonemap_mode = 4
+tonemap_exposure = 1.35
+fog_enabled = true
+fog_sky_affect = 0.08
+fog_light_color = Color(0.89, 0.78, 0.70, 1)
+fog_density = 0.00085
+fog_sun_scatter = 0.14

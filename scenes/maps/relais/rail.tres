@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/arena/MetalPlates004/MetalPlates004_Color.jpg" id="a"]
+[ext_resource type="Texture2D" path="res://assets/textures/arena/MetalPlates004/MetalPlates004_NormalGL.jpg" id="n"]
+
+[resource]
+albedo_color = Color(0.62, 0.65, 0.72, 1)
+albedo_texture = ExtResource("a")
+metallic = 0.75
+roughness = 0.38
+normal_enabled = true
+normal_texture = ExtResource("n")
+uv1_scale = Vector3(0.6, 0.6, 0.6)
+uv1_triplanar = true
+uv1_world_triplanar = true
+texture_filter = 5

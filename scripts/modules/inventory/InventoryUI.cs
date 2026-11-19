@@ -280,10 +280,15 @@ namespace Openesport.Inventory
 		// Rafraîchissement
 		// ------------------------------------------------------------------
 
+		/// <summary>Règles d'arène : soins, boucliers et munitions se prennent en marchant dessus (l'invite le dit).</summary>
+		public static bool WalkPickup;
+
 		private void Refresh()
 		{
 			var target = Inventory.Target;
-			_prompt.Text = target != null && !IsOpen ? $"[E] Ramasser : {target.GetPromptName()}" : "";
+			// arène (Deathmatch) : tout se prend en marchant dessus
+			bool walk = WalkPickup && target != null;
+			_prompt.Text = target != null && !IsOpen ? (walk ? I18n.T("Marcher dessus : {0}", target.GetPromptName()) : $"[E] Ramasser : {target.GetPromptName()}") : "";
 			// l'invite prend la couleur du niveau de l'objet visé (blanc, bleu, violet, rouge)
 			_prompt.AddThemeColorOverride("font_color", target != null ? ItemTierStyle.ColorOf(target.Tier) : Colors.White);
 

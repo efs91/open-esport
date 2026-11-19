@@ -14,7 +14,7 @@ Description lisible de la carte (zones, centres, passes, routes, butin) : **[MAP
 
 ## Réglages visuels
 
-`WorldEnvironment > Environment` contient le tonemapping ACES, l'occlusion ambiante (SSAO), l'éclairage indirect d'écran (SSIL), le glow discret et les brouillards atmosphérique et volumétrique. `Sun` contrôle la lumière chaude et les ombres. Ces réglages s'appliquent à toute la carte. Les sapins proches projettent des ombres ; les représentations lointaines restent sans ombres. Le projet utilise MSAA 2×.
+`WorldEnvironment > Environment` contient le tonemapping ACES, le panorama alpin et les reflets d’écran (SSR), l'occlusion ambiante (SSAO), l'éclairage indirect d'écran (SSIL), le glow discret et les brouillards atmosphérique et volumétrique. `Sun` contrôle la lumière chaude et les ombres. Ces réglages s'appliquent à toute la carte. Les sapins proches projettent des ombres ; les représentations lointaines restent sans ombres. Le projet utilise MSAA 2×.
 
 Ces effets coûtent du temps GPU côté client. Ils n'ajoutent aucun message réseau, mais une baisse des FPS peut augmenter la latence ressentie. Pour réduire le coût, désactiver d'abord SSIL et le brouillard volumétrique dans Environment. Aucun objectif de FPS n'a été mesuré.
 
@@ -79,3 +79,20 @@ Les commandes ci-dessous décrivent la construction initiale. Ne pas relancer ce
 Captures : `Godot --path . --script res://tools/map/shot.gd -- --out=<dossier> --view=nom:x,y,z:cible_x,y,z[:ground[:pitch]] [--cap=x,y,z]` (`--cap` pose un joueur de 1,8 m pour juger l'échelle).
 
 Notes : la grille Terrain3D est de 1536 m (6×6 régions de 256 m, origine −768) ; la zone jouable fait ±600 m, le reste est un rebord montagneux.
+
+## Carte « Relais » (Deathmatch) — arène intérieure sur trois niveaux
+
+Scène `res://scenes/maps/Relais.tscn` (96 × 96 m, sol 0, milieu +4 m, haut +8 m, plafond 12 m), inspirée du plan « Relay Core » : atrium central ouvert sur les trois niveaux
+avec un cœur lumineux, passerelle nord-sud à +4 m et est-ouest à +8 m ; anneau du milieu et balcon ; anneau haut sur tout le pourtour avec quatre salles d'angle ;
+au sol, grande salle à piliers, quatre axes, couloir périphérique et quatre salles d'angle (soins au nord, téléporteurs au sud).
+Salle du Rail (nord, +8 m, sniper légendaire) et salle Roquette (sud, +4 m, LMG légendaire) : par un tremplin dans un puits ou un passage détourné. Salles d'armure (est et ouest, +4 m) : gros bouclier.
+
+- **Premier jet** : `python tools/map/gen_relais_map.py` (refuse d'écraser la scène : elle s'édite ensuite dans Godot ; `--force` la refait et efface les retouches).
+  `--check` vérifie que chaque tremplin passe sans toucher un mur, depuis le centre comme depuis le bord du disque ; `--minimap` redessine `assets/maps/relais.png`.
+- **Nœuds** : `Structure` (CoverBox : murs, dalles, piliers, caisses), `Escaliers` (marches de 0,25 m), `GardeCorps` (1,1 m : on tire par-dessus, on peut sauter par-dessus),
+  `Plafond`, `Decor` (sans collision), `Lumieres`, `Points` (16 apparitions sur les trois niveaux), `Tremplins` (`ArenaJumpPad` : déplacer l'enfant **Cible**, régler **FlightTime** ;
+  la trajectoire s'affiche dans l'éditeur), `Teleporteurs` (`ArenaTeleporter` : déplacer et **tourner** l'enfant **Sortie**), `Butin` (points `ObjetButin`, **Activation** = Activé,
+  **Item** imposé, **Quality** = QueÉpique / QueLégendaire).
+- **Matières** : `scenes/maps/relais/` — `surfaces.tres` (un seul shader pour murs, sols et plafond : plaques par niveau, plinthes, liserés lumineux orange / bleu / violet selon le niveau),
+  textures CC0 d'ambientCG dans `assets/textures/arena/`. Ambiance : `relais_env.tres` (occlusion, éclairage indirect d'écran, halo, brouillard volumétrique léger).
+- **Après toute modification** : `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Relais.tscn --out=res://assets/maps/relais.world`, puis copier `relais.world` sur le serveur.

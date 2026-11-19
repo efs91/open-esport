@@ -508,5 +508,9 @@
     "Classement": "Clasament",
     "Battle royale en duo (équipes de 2)": "Battle royale în duo (echipe de 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale în trio (echipe de 3)",
-    "Pas encore de classement.": "Încă nu există clasament."
+    "Pas encore de classement.": "Încă nu există clasament.",
+    "MORT": "MORT",
+    "À TERRE": "LA PĂMÂNT",
+    "Marcher dessus : {0}": "Treci peste: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arenă: treci peste arme și vindecări ca să le iei"
 }

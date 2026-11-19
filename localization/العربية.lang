@@ -508,5 +508,9 @@
     "Classement": "الترتيب",
     "Battle royale en duo (équipes de 2)": "باتل رويال ثنائي (فرق من 2)",
     "Battle royale en trio (équipes de 3)": "باتل رويال ثلاثي (فرق من 3)",
-    "Pas encore de classement.": "لا يوجد ترتيب بعد."
+    "Pas encore de classement.": "لا يوجد ترتيب بعد.",
+    "MORT": "ميت",
+    "À TERRE": "مُسقط",
+    "Marcher dessus : {0}": "امشِ فوقه: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "الساحة: امشِ فوق الأسلحة والعلاجات لالتقاطها"
 }

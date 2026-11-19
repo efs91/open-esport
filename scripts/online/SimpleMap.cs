@@ -15,6 +15,8 @@ namespace Openesport.Online
 		private MeshInstance3D _mesh;
 		private CollisionShape3D _shape;
 
+		private Material _material;
+		[Export] public Material GroundMaterial { get => _material; set { _material = value; Rebuild(); } }
 		[Export] public Vector2 Size { get => _size; set { _size = value; Rebuild(); } }
 		[Export] public Color GroundColor { get => _groundColor; set { _groundColor = value; Rebuild(); } }
 		private Surface _groundSurface = Surface.Unie;
@@ -36,7 +38,7 @@ namespace Openesport.Online
 			if (_mesh == null || !IsInstanceValid(_mesh)) return;
 			_mesh.Mesh = new BoxMesh { Size = new Vector3(_size.X, 1f, _size.Y) };
 			_mesh.Position = new Vector3(0, -0.5f, 0);
-			_mesh.MaterialOverride = _groundSurface == Surface.Unie ? new StandardMaterial3D { AlbedoColor = _groundColor, Roughness = 1f } : Surfaces.Material(_groundSurface, _groundColor, 6f);
+			_mesh.MaterialOverride = _material ?? (_groundSurface == Surface.Unie ? new StandardMaterial3D { AlbedoColor = _groundColor, Roughness = 1f } : Surfaces.Material(_groundSurface, _groundColor, 6f));
 			_shape.Shape = new BoxShape3D { Size = new Vector3(_size.X, 1f, _size.Y) };
 			_shape.Position = new Vector3(0, -0.5f, 0);
 		}

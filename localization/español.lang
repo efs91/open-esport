@@ -508,5 +508,9 @@
     "Classement": "Clasificación",
     "Battle royale en duo (équipes de 2)": "Battle royale en dúo (equipos de 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale en trío (equipos de 3)",
-    "Pas encore de classement.": "Aún no hay clasificación."
+    "Pas encore de classement.": "Aún no hay clasificación.",
+    "MORT": "MUERTO",
+    "À TERRE": "DERRIBADO",
+    "Marcher dessus : {0}": "Pásale por encima: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: pasa por encima de armas y curas para cogerlas"
 }

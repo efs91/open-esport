@@ -508,5 +508,9 @@
     "Classement": "Ranking",
     "Battle royale en duo (équipes de 2)": "Battle royale w duecie (drużyny po 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale w trójkach (drużyny po 3)",
-    "Pas encore de classement.": "Brak jeszcze rankingu."
+    "Pas encore de classement.": "Brak jeszcze rankingu.",
+    "MORT": "MARTWY",
+    "À TERRE": "POWALONY",
+    "Marcher dessus : {0}": "Przejdź po tym: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: przejdź po broni i apteczkach, aby je podnieść"
 }

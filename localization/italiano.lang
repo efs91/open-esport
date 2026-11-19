@@ -508,5 +508,9 @@
     "Classement": "Classifica",
     "Battle royale en duo (équipes de 2)": "Battle royale in duo (squadre da 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale in trio (squadre da 3)",
-    "Pas encore de classement.": "Ancora nessuna classifica."
+    "Pas encore de classement.": "Ancora nessuna classifica.",
+    "MORT": "MORTO",
+    "À TERRE": "A TERRA",
+    "Marcher dessus : {0}": "Passaci sopra: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: passa sopra armi e cure per raccoglierle"
 }

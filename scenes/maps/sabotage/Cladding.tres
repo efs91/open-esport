@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://shaders/terminal_cladding.gdshader" id="shader"]
+[ext_resource type="Texture2D" path="res://maps/frontiere01/textures/concrete_alb_ht.png" id="albedo"]
+[ext_resource type="Texture2D" path="res://maps/frontiere01/textures/concrete_nrm_rgh.png" id="normal"]
+
+[resource]
+shader = ExtResource("shader")
+shader_parameter/aggregate = ExtResource("albedo")
+shader_parameter/normal_rough = ExtResource("normal")

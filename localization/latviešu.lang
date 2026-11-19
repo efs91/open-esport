@@ -508,5 +508,9 @@
     "Classement": "Rangs",
     "Battle royale en duo (équipes de 2)": "Battle royale pāros (komandas pa 2)",
     "Battle royale en trio (équipes de 3)": "Battle royale trijniekos (komandas pa 3)",
-    "Pas encore de classement.": "Rangs vēl nav pieejams."
+    "Pas encore de classement.": "Rangs vēl nav pieejams.",
+    "MORT": "MIRIS",
+    "À TERRE": "NOGĀZTS",
+    "Marcher dessus : {0}": "Uzej virsū: {0}",
+    "Arène : passe sur les armes et les soins pour les prendre": "Arēna: uzej uz ieročiem un dziedināšanas, lai tos paceltu"
 }

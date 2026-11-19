@@ -1,10 +1,11 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://scenes/maps/windows/WindowBay.tscn" id="WindowBay"]
+[ext_resource type="PackedScene" path="res://scenes/maps/windows/SolidBay.tscn" id="SolidBay"]
+
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_DarkPlates.gltf" id="e1"]
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Simple2.gltf" id="e2"]
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight.gltf" id="e3"]
-[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight_Window.gltf" id="e4"]
-[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Straight.gltf" id="e5"]
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Stairs_4WideTall.gltf" id="e6"]
 [ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Simple1_Straight.gltf" id="e7"]
 
@@ -290,7 +291,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
 [node name="WallAstra_Straight_64" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2, 0, 2)
 
-[node name="WallAstra_Straight_Window_65" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_65" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 6)
 
 [node name="WallAstra_Straight_66" parent="Murs" instance=ExtResource("e3")]
@@ -299,10 +300,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 10)
 [node name="WallAstra_Straight_67" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2, 0, 10)
 
-[node name="WallAstra_Straight_Window_68" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_68" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 6, 0, 2)
 
-[node name="WallAstra_Straight_Window_69" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_69" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 0, 10)
 
 [node name="WallAstra_Straight_70" parent="Murs" instance=ExtResource("e3")]
@@ -311,34 +312,34 @@ transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10, 0, 2)
 [node name="WallAstra_Straight_71" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 0, 2)
 
-[node name="WallAstra_Straight_Window_72" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_72" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 14, 0, 2)
 
 [node name="WallAstra_Straight_73" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 0, 10)
 
-[node name="WallAstra_Straight_Window_74" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_74" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 14, 0, 10)
 
-[node name="WallWindow_Straight_75" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_75" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3, 2)
 
-[node name="WallWindow_Straight_76" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_76" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2, 3, 2)
 
-[node name="WallAstra_Straight_Window_77" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_77" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3, 6)
 
 [node name="WallAstra_Straight_78" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3, 10)
 
-[node name="WallWindow_Straight_79" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_79" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2, 3, 10)
 
-[node name="WallAstra_Straight_Window_80" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_80" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 6, 3, 2)
 
-[node name="WallAstra_Straight_Window_81" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_81" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 3, 10)
 
 [node name="WallAstra_Straight_82" parent="Murs" instance=ExtResource("e3")]
@@ -347,37 +348,37 @@ transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10, 3, 2)
 [node name="WallAstra_Straight_83" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 10, 3, 10)
 
-[node name="WallWindow_Straight_84" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_84" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 3, 2)
 
-[node name="WallAstra_Straight_Window_85" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_85" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 14, 3, 2)
 
-[node name="WallAstra_Straight_Window_86" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_86" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 3, 6)
 
 [node name="WallAstra_Straight_87" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 3, 10)
 
-[node name="WallAstra_Straight_Window_88" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_88" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 14, 3, 10)
 
-[node name="WallWindow_Straight_89" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_89" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 6, 2)
 
-[node name="WallWindow_Straight_90" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_90" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2, 6, 2)
 
 [node name="WallAstra_Straight_91" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 6, 10)
 
-[node name="WallWindow_Straight_92" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_92" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2, 6, 10)
 
-[node name="WallAstra_Straight_Window_93" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_93" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 6, 6, 2)
 
-[node name="WallAstra_Straight_Window_94" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_94" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 6, 10)
 
 [node name="WallAstra_Straight_95" parent="Murs" instance=ExtResource("e3")]
@@ -386,103 +387,103 @@ transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10, 6, 2)
 [node name="WallAstra_Straight_96" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 10, 6, 10)
 
-[node name="WallWindow_Straight_97" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_97" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 6, 2)
 
-[node name="WallAstra_Straight_Window_98" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_98" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 14, 6, 2)
 
-[node name="WallAstra_Straight_Window_99" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_99" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 6, 6)
 
 [node name="WallAstra_Straight_100" parent="Murs" instance=ExtResource("e3")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 6, 10)
 
-[node name="WallAstra_Straight_Window_101" parent="Murs" instance=ExtResource("e4")]
+[node name="WallAstra_Straight_Window_101" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 14, 6, 10)
 
-[node name="WallWindow_Straight_102" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_102" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 9, 2)
 
-[node name="WallWindow_Straight_103" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_103" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2, 9, 2)
 
-[node name="WallWindow_Straight_104" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_104" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 9, 6)
 
-[node name="WallWindow_Straight_105" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_105" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 9, 10)
 
-[node name="WallWindow_Straight_106" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_106" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2, 9, 10)
 
-[node name="WallWindow_Straight_107" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_107" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 6, 9, 2)
 
-[node name="WallWindow_Straight_108" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_108" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 9, 10)
 
-[node name="WallWindow_Straight_109" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_109" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10, 9, 2)
 
-[node name="WallWindow_Straight_110" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_110" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 10, 9, 10)
 
-[node name="WallWindow_Straight_111" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_111" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 9, 2)
 
-[node name="WallWindow_Straight_112" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_112" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 14, 9, 2)
 
-[node name="WallWindow_Straight_113" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_113" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 9, 6)
 
-[node name="WallWindow_Straight_114" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_114" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 9, 10)
 
-[node name="WallWindow_Straight_115" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_115" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 14, 9, 10)
 
-[node name="WallWindow_Straight_116" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_116" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 2)
 
-[node name="WallWindow_Straight_117" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_117" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2, 12, 2)
 
-[node name="WallWindow_Straight_118" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_118" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 6)
 
-[node name="WallWindow_Straight_119" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_119" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 10)
 
-[node name="WallWindow_Straight_120" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_120" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2, 12, 10)
 
-[node name="WallWindow_Straight_121" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_121" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 6, 12, 2)
 
-[node name="WallWindow_Straight_122" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_122" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 12, 10)
 
-[node name="WallWindow_Straight_123" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_123" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10, 12, 2)
 
-[node name="WallWindow_Straight_124" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_124" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 10, 12, 10)
 
-[node name="WallWindow_Straight_125" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_125" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 12, 2)
 
-[node name="WallWindow_Straight_126" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_126" parent="Murs" instance=ExtResource("WindowBay")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 14, 12, 2)
 
-[node name="WallWindow_Straight_127" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_127" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 12, 6)
 
-[node name="WallWindow_Straight_128" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_128" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 12, 10)
 
-[node name="WallWindow_Straight_129" parent="Murs" instance=ExtResource("e5")]
+[node name="WallWindow_Straight_129" parent="Murs" instance=ExtResource("SolidBay")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 14, 12, 10)
 
 [node name="Escaliers" type="Node3D" parent="."]

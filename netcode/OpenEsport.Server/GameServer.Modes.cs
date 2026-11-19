@@ -124,6 +124,7 @@ namespace OpenEsport.Server
 		private void StartModalMatch()
 		{
 			Phase = MatchPhase.Playing;
+			_departed.Clear();
 			_countdown = -1f;
 			if (_opt.FillBots)
 			{

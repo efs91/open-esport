@@ -85,6 +85,7 @@ namespace OpenEsport.Server
 			_orders.Clear();
 			if (Modal) { StartModalMatch(); return; }
 			Phase = MatchPhase.Playing;
+			_departed.Clear();
 			_countdown = -1f;
 			if (_opt.FillBots)
 			{

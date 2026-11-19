@@ -460,11 +460,13 @@ namespace OpenEsport.Server
 		{
 			if (_slots[p.Id] != p) return;
 			if (Royale && Phase == MatchPhase.Playing && p.Alive) Eliminate(p, null, 0, announce: false);     // il quitte : éliminé
+			RecordDeparture(p);        // son résultat compte même s'il part avant la fin (défaite comprise)
 			if (Modal) _mode.OnPlayerLeft(p);
 			if (p.Alive && !Modal) DropAllLoot(p);
 			_slots[p.Id] = null;
 			_players.Remove(p);
 			_humans.Remove(p);
+			if (_humans.Count == 0) ReportAbandoned();
 			LeaveTeam(p.Team);
 			p.Peer.Tag = null;
 			BroadcastRoster();

@@ -9217,109 +9217,109 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 36.96, 26.676, 54.27)
 Activation = 1
 
 [node name="Orion_Rond6_01" parent="Loot/Coffres" instance=ExtResource("orion_22")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -346, 78.15, -330)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -346, 78.110, -330)
 
 [node name="Orion_Ligne5_01" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -337.8, 81.15, -330)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -337.8, 81.110, -330)
 
 [node name="Orion_Ligne5_02" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -346, 84.15, -338.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -346, 84.110, -338.5)
 
 [node name="Orion_Ligne5_03" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -346, 87.15, -321.5)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -346, 87.110, -321.5)
 
 [node name="Orion_Carre4_01" parent="Loot/Coffres" instance=ExtResource("orion_24")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -346, 90.15, -330)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -346, 90.110, -330)
 
 [node name="Orion_Ligne5_04" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -398, 78.15, -338.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -398, 78.110, -338.5)
 
 [node name="Orion_Ligne5_05" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -414, 81.15, -329.5)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -414, 81.110, -329.5)
 
 [node name="Orion_Ligne5_06" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -418, 84.15, -338.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -418, 84.110, -338.5)
 
 [node name="Orion_Face4_01" parent="Loot/Coffres" instance=ExtResource("orion_25")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 78.15, -312)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 78.110, -312)
 
 [node name="Orion_Ligne5_07" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 81.15, -318.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 81.110, -318.5)
 
 [node name="Orion_U6_01" parent="Loot/Coffres" instance=ExtResource("orion_26")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 84.15, -312)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 84.110, -312)
 
 [node name="Orion_Ligne5_08" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -318.5, 78.15, -334.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -318.5, 78.110, -334.5)
 
 [node name="Orion_Ligne5_09" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -320, 81.15, -334.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -320, 81.110, -334.5)
 
 [node name="Orion_Face4_02" parent="Loot/Coffres" instance=ExtResource("orion_25")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -318, 84.15, -332)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -318, 84.110, -332)
 
 [node name="Orion_U6_02" parent="Loot/Coffres" instance=ExtResource("orion_26")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -342, 78.15, -258)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -342, 78.110, -258)
 
 [node name="Orion_Ligne5_10" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -342, 81.15, -266.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -342, 81.110, -266.5)
 
 [node name="Orion_Ligne5_11" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -342, 81.15, -249.5)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -342, 81.110, -249.5)
 
 [node name="Orion_Face4_03" parent="Loot/Coffres" instance=ExtResource("orion_25")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -342, 84.15, -258)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -342, 84.110, -258)
 
 [node name="Orion_Carre4_02" parent="Loot/Coffres" instance=ExtResource("orion_24")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -307, 78.15, -263)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -307, 78.110, -263)
 
 [node name="Orion_Ligne5_12" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -306.5, 81.15, -270.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -306.5, 81.110, -270.5)
 
 [node name="Orion_Face4_04" parent="Loot/Coffres" instance=ExtResource("orion_25")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -308, 84.15, -264)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -308, 84.110, -264)
 
 [node name="Orion_Carre4_03" parent="Loot/Coffres" instance=ExtResource("orion_24")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -398, 87.15, -256)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -398, 87.110, -256)
 
 [node name="Orion_Face4_05" parent="Loot/Coffres" instance=ExtResource("orion_25")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 78.15, -258)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 78.110, -258)
 
 [node name="Orion_Ligne5_13" parent="Loot/Coffres" instance=ExtResource("orion_23")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -426, 81.15, -262.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -426, 81.110, -262.5)
 
 [node name="Orion_Carre4_04" parent="Loot/Coffres" instance=ExtResource("orion_24")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -426, 84.15, -259.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -426, 84.110, -259.5)
 
 [node name="Orion_Rond6_02" parent="Loot/Coffres" instance=ExtResource("orion_22")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -372, 78.25, -288)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -372, 78.205, -288)
 
 [node name="Orion_Carre4_05" parent="Loot/Coffres" instance=ExtResource("orion_24")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -396, 78.15, -312)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -396, 77.991, -312)
 
 [node name="Orion_U6_03" parent="Loot/Coffres" instance=ExtResource("orion_26")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -346, 78.15, -310)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -346, 77.734, -310)
 
 [node name="Orion_Arc5_01" parent="Loot/Coffres" instance=ExtResource("orion_27")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -290, 78.15, -257)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -290, 78.018, -257)
 
 [node name="Orion_Face4_06" parent="Loot/Coffres" instance=ExtResource("orion_25")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -394, 78.15, -236)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -394, 77.742, -236)
 
 [node name="Orion_U6_04" parent="Loot/Coffres" instance=ExtResource("orion_26")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -340, 78.15, -226)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -340, 78.032, -226)
 
 [node name="Orion_Carre4_06" parent="Loot/Coffres" instance=ExtResource("orion_24")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -432, 78.15, -224)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -432, 78.015, -224)
 
 [node name="Orion_Arc5_02" parent="Loot/Coffres" instance=ExtResource("orion_27")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -416, 78.15, -360)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -416, 78.032, -360)
 
 [node name="Orion_Face4_07" parent="Loot/Coffres" instance=ExtResource("orion_25")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -320, 78.15, -360)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -320, 77.967, -360)
 
 [node name="Orion_Face4_08" parent="Loot/Coffres" instance=ExtResource("orion_25")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -448, 78.15, -310)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -448, 78.015, -310)
 
 [node name="Objets" type="Node3D" parent="Loot" unique_id=1528629094]
 
@@ -10197,7 +10197,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -403.0697, 78.25, -335.4624)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -400.1245, 78.25, -332.5885)
 
 [node name="Orion_Objet_018" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -396.7944, 78.25, -344.7671)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -396.794, 78.166, -344.767)
 
 [node name="Orion_Objet_019" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -419.9302, 81.25, -328.8284)
@@ -10245,13 +10245,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -423.2141, 84.25, -318.9897)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -425.9233, 84.25, -307.0398)
 
 [node name="Orion_Objet_034" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -320.591, 78.25, -340.3425)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -320.591, 77.776, -340.342)
 
 [node name="Orion_Objet_035" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -313.5573, 78.25, -329.7213)
 
 [node name="Orion_Objet_036" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -324.8184, 78.25, -337.0413)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -324.818, 78.1, -337.041)
 
 [node name="Orion_Objet_037" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -314.9334, 81.25, -330.1673)
@@ -10344,7 +10344,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -402.8532, 87.25, -255.3873)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -395.8831, 87.25, -261.1445)
 
 [node name="Orion_Objet_067" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -414.453, 78.25, -258.7354)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -414.453, 78.142, -258.735)
 
 [node name="Orion_Objet_068" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -417.6525, 78.25, -253.6731)
@@ -10371,94 +10371,94 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -429.7907, 84.25, -255.9936)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -428.8731, 84.25, -263.3288)
 
 [node name="Orion_Objet_076" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -367.3071, 78.25, -290.999)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -367.307, 78.35, -290.999)
 
 [node name="Orion_Objet_077" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -378.5137, 78.25, -288.7791)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -378.514, 78.35, -288.779)
 
 [node name="Orion_Objet_078" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -374.449, 78.25, -293.5194)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -374.449, 78.35, -293.519)
 
 [node name="Orion_Objet_079" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -399.7962, 78.25, -314.2552)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -399.796, 78.136, -314.255)
 
 [node name="Orion_Objet_080" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -395.1973, 78.25, -316.3496)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -395.197, 78.14, -316.35)
 
 [node name="Orion_Objet_081" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -400.7343, 78.25, -311.8456)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -400.734, 78.13, -311.846)
 
 [node name="Orion_Objet_082" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -345.8611, 78.25, -316.715)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -345.861, 78.1, -316.715)
 
 [node name="Orion_Objet_083" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -349.2274, 78.25, -303.6661)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -349.227, 77.816, -303.666)
 
 [node name="Orion_Objet_084" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -349.7671, 78.25, -303.3189)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -349.767, 77.813, -303.319)
 
 [node name="Orion_Objet_085" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -291.1451, 78.25, -263.9059)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -291.145, 78.157, -263.906)
 
 [node name="Orion_Objet_086" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -294.9601, 78.25, -253.5404)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -294.96, 78.1, -253.54)
 
 [node name="Orion_Objet_087" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -287.8812, 78.25, -262.729)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -287.881, 78.161, -262.729)
 
 [node name="Orion_Objet_088" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -395.7487, 78.25, -240.3496)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -395.749, 77.917, -240.35)
 
 [node name="Orion_Objet_089" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -392.8948, 78.25, -240.6439)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -392.895, 77.841, -240.644)
 
 [node name="Orion_Objet_090" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -392.4457, 78.25, -240.4719)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -392.446, 77.836, -240.472)
 
 [node name="Orion_Objet_091" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -335.794, 78.25, -219.8627)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -335.794, 78.172, -219.863)
 
 [node name="Orion_Objet_092" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -343.6345, 78.25, -231.4835)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -343.635, 78.173, -231.483)
 
 [node name="Orion_Objet_093" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -340.8368, 78.25, -218.4765)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -340.837, 78.175, -218.476)
 
 [node name="Orion_Objet_094" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -434.3333, 78.25, -219.0442)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -434.333, 78.145, -219.044)
 
 [node name="Orion_Objet_095" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -436.232, 78.25, -222.4598)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -436.232, 78.138, -222.46)
 
 [node name="Orion_Objet_096" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -435.2337, 78.25, -227.3109)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -435.234, 78.151, -227.311)
 
 [node name="Orion_Objet_097" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -409.514, 78.25, -361.1425)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -409.514, 78.171, -361.142)
 
 [node name="Orion_Objet_098" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -411.5599, 78.25, -355.6572)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -411.56, 78.163, -355.657)
 
 [node name="Orion_Objet_099" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -422.1422, 78.25, -358.3431)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -422.142, 78.172, -358.343)
 
 [node name="Orion_Objet_100" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -314.8453, 78.25, -359.2921)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -314.845, 78.051, -359.292)
 
 [node name="Orion_Objet_101" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -322.1439, 78.25, -364.1506)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -322.144, 78.115, -364.151)
 
 [node name="Orion_Objet_102" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -322.3641, 78.25, -364.9572)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -322.364, 78.116, -364.957)
 
 [node name="Orion_Objet_103" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -443.4788, 78.25, -312.9277)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -443.479, 78.158, -312.928)
 
 [node name="Orion_Objet_104" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -443.0902, 78.25, -311.5028)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -443.09, 78.159, -311.503)
 
 [node name="Orion_Objet_105" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -452.3042, 78.25, -311.292)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -452.304, 78.162, -311.292)
 
 [node name="Orion_Objet_106" parent="Loot/Objets" instance=ExtResource("loot_item_prefab")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -354.3391, 78.25, -337.1542)

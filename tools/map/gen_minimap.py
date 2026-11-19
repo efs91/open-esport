@@ -14,18 +14,18 @@ b = json.load(open(os.path.join(DATA, "buildings_final.json")))
 
 
 def scene_boxes():
-    """Boîtes de collision des bâtiments éditables (scènes instanciées sous Zones/A_Orion), en repère monde.
-    Les rotations des instances sont ignorées (aucune dans Orion) ; les rues et parvis (Rues_*) ne sont pas dessinés comme des bâtiments."""
+    """Boîtes de collision des bâtiments éditables (scènes instanciées sous Zones/A_Orion, B_Delta, C_Nama), en repère monde.
+    Les rotations des instances sont ignorées (aucune) ; les rues et parvis (Rues_*, Voies_*, socles, esplanade) ne sont pas dessinés comme des bâtiments."""
     import re
     main = open(os.path.join(ROOT, "scenes", "maps", "Frontiere01.tscn"), encoding="utf-8").read()
-    ext = {m.group(2): m.group(1) for m in re.finditer(r'^\[ext_resource [^\n]*?path="(res://scenes/maps/orion/[^"]+)" id="([^"]+)"\]', main, re.M)}
+    ext = {m.group(2): m.group(1) for m in re.finditer(r'^\[ext_resource [^\n]*?path="(res://scenes/maps/(?:orion|delta|nama)/[^"]+)" id="([^"]+)"\]', main, re.M)}
     out = []
-    pat_node = re.compile(r'^\[node name="[^"]+" parent="Zones/A_Orion" instance=ExtResource\("([^"]+)"\)\]\ntransform = Transform3D\(([^)]*)\)', re.M)
+    pat_node = re.compile(r'^\[node name="[^"]+" parent="Zones/(?:A_Orion|B_Delta|C_Nama)" instance=ExtResource\("([^"]+)"\)\]\ntransform = Transform3D\(([^)]*)\)', re.M)
     pat_box = re.compile(r'\[node name="Box_\d+" type="CollisionShape3D"[^\]]*\]\ntransform = Transform3D\(([^)]*)\)\nshape = SubResource\("([^"]+)"\)')
     pat_size = re.compile(r'\[sub_resource type="BoxShape3D" id="([^"]+)"\]\nsize = Vector3\(([^)]*)\)')
     for m in pat_node.finditer(main):
         path = ext.get(m.group(1))
-        if not path or os.path.basename(path).startswith("Rues_"):
+        if not path or os.path.basename(path).startswith(("Rues_", "Voies_", "Esplanade_", "Socle", "Piliers", "Decor_", "Camp_")):
             continue
         v = [float(x) for x in m.group(2).split(",")]
         ox, oy, oz = v[9], v[10], v[11]

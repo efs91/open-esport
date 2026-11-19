@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+
+[sub_resource type="StandardMaterial3D" id="s1"]
+albedo_color = Color(0.7, 0.62, 0.5, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="s2"]
+material = SubResource("s1")
+size = Vector3(56, 2.5122, 56)
+
+[sub_resource type="BoxShape3D" id="s3"]
+size = Vector3(56, 2.5122, 56)
+
+[node name="Esplanade_Nama" type="Node3D"]
+
+[node name="Esplanade" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 51.0439, 4)
+mesh = SubResource("s2")
+
+[node name="Colliders" type="StaticBody3D" parent="."]
+
+[node name="Box_0" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 51.0439, 4)
+shape = SubResource("s3")
+

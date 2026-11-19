@@ -1,0 +1,110 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Hollow.gltf" id="e1"]
+
+[sub_resource type="BoxShape3D" id="s1"]
+size = Vector3(1.2, 9.187, 1.2)
+
+[sub_resource type="BoxShape3D" id="s2"]
+size = Vector3(1.2, 9.0505, 1.2)
+
+[sub_resource type="BoxShape3D" id="s3"]
+size = Vector3(1.2, 7.2698, 1.2)
+
+[sub_resource type="BoxShape3D" id="s4"]
+size = Vector3(1.2, 7.2534, 1.2)
+
+[sub_resource type="BoxShape3D" id="s5"]
+size = Vector3(1.2, 4.5266, 1.2)
+
+[sub_resource type="BoxShape3D" id="s6"]
+size = Vector3(1.2, 4.7374, 1.2)
+
+[sub_resource type="BoxShape3D" id="s7"]
+size = Vector3(1.2, 2.1437, 1.2)
+
+[sub_resource type="BoxShape3D" id="s8"]
+size = Vector3(1.2, 2.5592, 1.2)
+
+[sub_resource type="BoxShape3D" id="s9"]
+size = Vector3(1.2, 1.1147, 1.2)
+
+[sub_resource type="BoxShape3D" id="s10"]
+size = Vector3(1.2, 1.4696, 1.2)
+
+[node name="Piliers_Poste_Ouest" type="Node3D"]
+
+[node name="Piliers" type="Node3D" parent="."]
+
+[node name="Column_Hollow_1" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1.8374, 0, 0, 0, 1, -82, 43.083, -6.4)
+
+[node name="Column_Hollow_2" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1.8101, 0, 0, 0, 1, -82, 43.2195, -1.6)
+
+[node name="Column_Hollow_3" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1.454, 0, 0, 0, 1, -70, 45.0002, -6.4)
+
+[node name="Column_Hollow_4" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1.4507, 0, 0, 0, 1, -70, 45.0166, -1.6)
+
+[node name="Column_Hollow_5" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 0.9053, 0, 0, 0, 1, -58, 47.7434, -6.4)
+
+[node name="Column_Hollow_6" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 0.9475, 0, 0, 0, 1, -58, 47.5326, -1.6)
+
+[node name="Column_Hollow_7" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 0.4287, 0, 0, 0, 1, -46, 50.1263, -6.4)
+
+[node name="Column_Hollow_8" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 0.5118, 0, 0, 0, 1, -46, 49.7108, -1.6)
+
+[node name="Column_Hollow_9" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 0.2229, 0, 0, 0, 1, -34, 51.1553, -6.4)
+
+[node name="Column_Hollow_10" parent="Piliers" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 0.2939, 0, 0, 0, 1, -34, 50.8004, -1.6)
+
+[node name="Colliders" type="StaticBody3D" parent="."]
+
+[node name="Box_0" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82, 47.6765, -6.4)
+shape = SubResource("s1")
+
+[node name="Box_1" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82, 47.7448, -1.6)
+shape = SubResource("s2")
+
+[node name="Box_2" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 48.6351, -6.4)
+shape = SubResource("s3")
+
+[node name="Box_3" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 48.6433, -1.6)
+shape = SubResource("s4")
+
+[node name="Box_4" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58, 50.0067, -6.4)
+shape = SubResource("s5")
+
+[node name="Box_5" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58, 49.9013, -1.6)
+shape = SubResource("s6")
+
+[node name="Box_6" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 51.1982, -6.4)
+shape = SubResource("s7")
+
+[node name="Box_7" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 50.9904, -1.6)
+shape = SubResource("s8")
+
+[node name="Box_8" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, 51.7126, -6.4)
+shape = SubResource("s9")
+
+[node name="Box_9" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, 51.5352, -1.6)
+shape = SubResource("s10")
+

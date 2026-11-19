@@ -1,0 +1,312 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Metal.gltf" id="e1"]
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Walls/ShortWall_Simple1_Straight.gltf" id="e2"]
+
+[sub_resource type="BoxShape3D" id="s1"]
+size = Vector3(4, 1, 0.3)
+
+[sub_resource type="BoxShape3D" id="s2"]
+size = Vector3(68, 0.3, 4)
+
+[node name="Passerelle_Poste_Est" type="Node3D"]
+
+[node name="Sol" type="Node3D" parent="."]
+
+[node name="Platform_Metal_1" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="Garde-corps" type="Node3D" parent="."]
+
+[node name="ShortWall_Simple1_Straight_2" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_3" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 2, 0, 0)
+
+[node name="Platform_Metal_4" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_5" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 6, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_6" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 0, 0)
+
+[node name="Platform_Metal_7" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_8" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_9" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 10, 0, 0)
+
+[node name="Platform_Metal_10" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_11" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 14, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_12" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 14, 0, 0)
+
+[node name="Platform_Metal_13" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_14" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 18, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_15" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 18, 0, 0)
+
+[node name="Platform_Metal_16" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_17" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 22, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_18" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 22, 0, 0)
+
+[node name="Platform_Metal_19" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_20" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 26, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_21" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 26, 0, 0)
+
+[node name="Platform_Metal_22" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_23" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 30, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_24" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 30, 0, 0)
+
+[node name="Platform_Metal_25" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_26" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 34, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_27" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 34, 0, 0)
+
+[node name="Platform_Metal_28" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_29" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 38, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_30" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 38, 0, 0)
+
+[node name="Platform_Metal_31" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_32" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 42, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_33" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 42, 0, 0)
+
+[node name="Platform_Metal_34" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_35" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 46, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_36" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 46, 0, 0)
+
+[node name="Platform_Metal_37" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_38" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 50, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_39" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 50, 0, 0)
+
+[node name="Platform_Metal_40" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_41" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 54, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_42" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 54, 0, 0)
+
+[node name="Platform_Metal_43" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_44" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 58, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_45" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 58, 0, 0)
+
+[node name="Platform_Metal_46" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_47" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 62, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_48" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 62, 0, 0)
+
+[node name="Platform_Metal_49" parent="Sol" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_50" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 66, 0, 0)
+
+[node name="ShortWall_Simple1_Straight_51" parent="Garde-corps" instance=ExtResource("e2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 66, 0, 0)
+
+[node name="Colliders" type="StaticBody3D" parent="."]
+
+[node name="Box_0" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_1" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_2" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_3" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_4" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_5" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_6" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_7" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_8" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_9" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_10" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_11" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_12" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_13" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_14" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_15" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_16" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_17" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_18" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_19" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_20" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_21" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_22" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_23" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_24" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_25" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_26" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_27" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_28" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_29" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_30" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_31" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_32" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66, 0.5, -2)
+shape = SubResource("s1")
+
+[node name="Box_33" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66, 0.5, 2)
+shape = SubResource("s1")
+
+[node name="Box_34" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, -0.15, 0)
+shape = SubResource("s2")
+

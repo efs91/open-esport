@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Hollow.gltf" id="e1"]
+
+[sub_resource type="BoxShape3D" id="s1"]
+size = Vector3(1.92, 8, 1.92)
+
+[node name="Depot_Carburant" type="Node3D"]
+
+[node name="Silos" type="Node3D" parent="."]
+
+[node name="Column_Hollow_1" parent="Silos" instance=ExtResource("e1")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -84, 84.1, 44)
+
+[node name="Column_Hollow_2" parent="Silos" instance=ExtResource("e1")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -78, 84.1, 44)
+
+[node name="Column_Hollow_3" parent="Silos" instance=ExtResource("e1")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -72, 84.1, 44)
+
+[node name="Column_Hollow_4" parent="Silos" instance=ExtResource("e1")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -84, 84.1, 52)
+
+[node name="Column_Hollow_5" parent="Silos" instance=ExtResource("e1")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -78, 84.1, 52)
+
+[node name="Column_Hollow_6" parent="Silos" instance=ExtResource("e1")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -72, 84.1, 52)
+
+[node name="Colliders" type="StaticBody3D" parent="."]
+
+[node name="Box_0" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -84, 88.1, 44)
+shape = SubResource("s1")
+
+[node name="Box_1" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 88.1, 44)
+shape = SubResource("s1")
+
+[node name="Box_2" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72, 88.1, 44)
+shape = SubResource("s1")
+
+[node name="Box_3" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -84, 88.1, 52)
+shape = SubResource("s1")
+
+[node name="Box_4" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 88.1, 52)
+shape = SubResource("s1")
+
+[node name="Box_5" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72, 88.1, 52)
+shape = SubResource("s1")
+

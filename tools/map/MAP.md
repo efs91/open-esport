@@ -15,8 +15,8 @@
 | Lettre | Nom | Nœud de la scène | Centre (x, z) | Rayon du plateau | Altitude du plateau | Bâtiments et accessoires |
 |---|---|---|---|---|---|---|
 | A | Complexe Orion | `Zones/A_Orion` | (-372, -288) | 135 m | 78 m | 21 |
-| B | Terminal Delta | `Zones/B_Delta` | (336, -288) | 135 m | 84 m | 274 |
-| C | Bassin Nama | `Zones/C_Nama` | (0, 340) | 165 m | 52 m | 177 |
+| B | Terminal Delta | `Zones/B_Delta` | (336, -288) | 135 m | 84 m | 28 |
+| C | Bassin Nama | `Zones/C_Nama` | (0, 340) | 165 m | 52 m | 32 |
 | — | Massif central | (relief du terrain) | (18, -170) | 215 m | 215 m | — |
 
 Les trois zones sont de grands **plateaux plats** reliés par des routes ; le massif central les sépare (il sert de couverture et de point de vue).
@@ -33,21 +33,21 @@ Les trois zones sont de grands **plateaux plats** reliés par des routes ; le ma
 
 ## Zone B — Terminal Delta
 
-- **Nœud** : `Zones/B_Delta` dans `scenes/maps/Frontiere01.tscn` (chercher `parent="Zones/B_Delta"` pour lister ses 274 instances).
+- **Nœud** : `Zones/B_Delta` dans `scenes/maps/Frontiere01.tscn` (chercher `parent="Zones/B_Delta"` pour lister ses 28 instances).
 - **Centre** : (336, -288), rayon 135 m, plateau à 84 m d'altitude.
-- **Emprise des bâtiments** : x de 258 à 382, z de -318 à -198, altitude 84 à 93 m.
-- **Contenu le plus fréquent** : `Platform_Simple2` ×54, `Platform_Metal` ×36, `Platform_Metal2` ×32, `Prop_Crate3` ×29, `WallAstra_Straight` ×21, `Column_Round` ×20, `WallBand_Straight` ×17, `WallWindow_Straight` ×17.
-- **Butin** dans l'emprise de la zone : 21 coffre(s) (`Loot/Coffres`), 62 objet(s) au sol (`Loot/Objets`).
+- **Emprise des bâtiments** : x de 248 à 432, z de -340 à -236, altitude 0 à 90 m.
+- **Contenu le plus fréquent** : `Conteneur_EO` ×8, `Conteneur_Pile` ×6, `Conteneur_NS` ×4, `Halle_Terminal` ×1, `Tour_Controle` ×1, `Hangar_Fret_A` ×1, `Hangar_Fret_B` ×1, `Quai_Fret` ×1.
+- **Butin** dans l'emprise de la zone : 33 coffre(s) (`Loot/Coffres`), 200 objet(s) au sol (`Loot/Objets`).
 - **Passes proches** : Col Nord, Col Est.
 - **Routes qui y arrivent** : A-B (Col Nord), B-C (Col Est).
 
 ## Zone C — Bassin Nama
 
-- **Nœud** : `Zones/C_Nama` dans `scenes/maps/Frontiere01.tscn` (chercher `parent="Zones/C_Nama"` pour lister ses 177 instances).
+- **Nœud** : `Zones/C_Nama` dans `scenes/maps/Frontiere01.tscn` (chercher `parent="Zones/C_Nama"` pour lister ses 32 instances).
 - **Centre** : (0, 340), rayon 165 m, plateau à 52 m d'altitude.
-- **Emprise des bâtiments** : x de -107 à 101, z de 224 à 443, altitude 43 à 56 m.
-- **Contenu le plus fréquent** : `Platform_Simple2` ×49, `Platform_Metal` ×25, `WallAstra_Straight` ×18, `Column_Round` ×18, `Platform_Metal2` ×15, `ShortWall_Simple1_Straight` ×12, `WallBand_Straight` ×9, `WallWindow_Straight` ×8.
-- **Butin** dans l'emprise de la zone : 36 coffre(s) (`Loot/Coffres`), 57 objet(s) au sol (`Loot/Objets`).
+- **Emprise des bâtiments** : x de -104 à 96, z de 248 à 436, altitude 0 à 53 m.
+- **Contenu le plus fréquent** : `Station_Extraction` ×1, `Derrick` ×1, `Poste_Nord` ×1, `Poste_Est` ×1, `Poste_Sud` ×1, `Poste_Ouest` ×1, `Abri_1` ×1, `Abri_2` ×1.
+- **Butin** dans l'emprise de la zone : 42 coffre(s) (`Loot/Coffres`), 161 objet(s) au sol (`Loot/Objets`).
 - **Passes proches** : Col Est, Ravin Sud.
 - **Routes qui y arrivent** : A-C (Tunnel Ouest), B-C (Col Est).
 
@@ -80,8 +80,8 @@ Les trois zones sont de grands **plateaux plats** reliés par des routes ; le ma
 | `Terrain3D` | le relief et sa peinture (aucun enfant) |
 | `Sun`, `WorldEnvironment` | lumière, ciel, brouillard, occlusion ambiante |
 | `Montagnes` | décor de montagnes lointaines autour de la carte (`scripts/modules/MountainBackdrop.cs`) |
-| `BuildingColliders` | 493 boîtes de collision des bâtiments (séparées des modèles) |
-| `Loot/Coffres`, `Loot/Objets` | 176 coffres, 517 objets au sol (points de butin éditables) |
+| `BuildingColliders` | 0 boîtes de collision des bâtiments (séparées des modèles) |
+| `Loot/Coffres`, `Loot/Objets` | 194 coffres, 759 objets au sol (points de butin éditables) |
 | `Ziplines` | 645 éléments de tyroliennes (piliers, câbles, tremplins) |
 
 ## Fichiers liés

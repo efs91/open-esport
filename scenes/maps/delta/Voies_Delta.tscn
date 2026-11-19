@@ -1,0 +1,327 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environement/Modular SciFi MegaKit[Standard]/glTF/Platforms/Platform_Round1.gltf" id="e1"]
+
+[sub_resource type="StandardMaterial3D" id="s1"]
+albedo_color = Color(0.13, 0.14, 0.17, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="s2"]
+material = SubResource("s1")
+size = Vector3(192, 1, 16)
+
+[sub_resource type="BoxMesh" id="s3"]
+material = SubResource("s1")
+size = Vector3(12, 1, 184)
+
+[sub_resource type="StandardMaterial3D" id="s4"]
+albedo_color = Color(0.62, 0.64, 0.67, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="s5"]
+material = SubResource("s4")
+size = Vector3(28, 1, 28)
+
+[sub_resource type="BoxMesh" id="s6"]
+material = SubResource("s4")
+size = Vector3(52, 1, 22)
+
+[sub_resource type="BoxMesh" id="s7"]
+material = SubResource("s4")
+size = Vector3(80, 1, 28)
+
+[sub_resource type="BoxMesh" id="s8"]
+material = SubResource("s4")
+size = Vector3(40, 1, 104)
+
+[sub_resource type="BoxMesh" id="s9"]
+material = SubResource("s4")
+size = Vector3(68, 1, 22)
+
+[sub_resource type="BoxMesh" id="s10"]
+material = SubResource("s4")
+size = Vector3(20, 1, 18)
+
+[sub_resource type="BoxMesh" id="s11"]
+material = SubResource("s4")
+size = Vector3(30, 1, 24)
+
+[sub_resource type="StandardMaterial3D" id="s12"]
+albedo_color = Color(0.85, 0.88, 0.92, 1)
+roughness = 0.6
+
+[sub_resource type="BoxMesh" id="s13"]
+material = SubResource("s12")
+size = Vector3(0.3, 0.07, 6)
+
+[sub_resource type="BoxMesh" id="s14"]
+material = SubResource("s12")
+size = Vector3(6, 0.07, 0.3)
+
+[sub_resource type="BoxShape3D" id="s15"]
+size = Vector3(192, 1, 16)
+
+[sub_resource type="BoxShape3D" id="s16"]
+size = Vector3(12, 1, 184)
+
+[sub_resource type="BoxShape3D" id="s17"]
+size = Vector3(28, 1, 28)
+
+[sub_resource type="BoxShape3D" id="s18"]
+size = Vector3(52, 1, 22)
+
+[sub_resource type="BoxShape3D" id="s19"]
+size = Vector3(80, 1, 28)
+
+[sub_resource type="BoxShape3D" id="s20"]
+size = Vector3(40, 1, 104)
+
+[sub_resource type="BoxShape3D" id="s21"]
+size = Vector3(68, 1, 22)
+
+[sub_resource type="BoxShape3D" id="s22"]
+size = Vector3(20, 1, 18)
+
+[sub_resource type="BoxShape3D" id="s23"]
+size = Vector3(30, 1, 24)
+
+[sub_resource type="BoxShape3D" id="s24"]
+size = Vector3(3, 0.35, 3)
+
+[node name="Voies_Delta" type="Node3D"]
+
+[node name="Piste" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.6, 0)
+mesh = SubResource("s2")
+
+[node name="Voie_Ouest" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 83.6, 0)
+mesh = SubResource("s3")
+
+[node name="Voie_Est" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 83.6, 0)
+mesh = SubResource("s3")
+
+[node name="Place_centrale" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.7, 0)
+mesh = SubResource("s5")
+
+[node name="Parvis_Halle" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.45, -23)
+mesh = SubResource("s6")
+
+[node name="Aire_Hangars" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.45, 26)
+mesh = SubResource("s7")
+
+[node name="Cour_Conteneurs" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 83.45, 0)
+mesh = SubResource("s8")
+
+[node name="Aire_Quai" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.45, 59)
+mesh = SubResource("s9")
+
+[node name="Parvis_Tour" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 83.45, -45)
+mesh = SubResource("s10")
+
+[node name="Cour_Bureaux" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77, 83.45, -34)
+mesh = SubResource("s11")
+
+[node name="Ligne_-50_-88" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, -85)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_-88" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, -85)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_-76" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, -73)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_-76" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, -73)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_-64" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, -61)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_-64" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, -61)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_-52" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, -49)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_-52" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, -49)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_-40" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, -37)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_-40" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, -37)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_-28" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, -25)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_-28" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, -25)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_20" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, 23)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_20" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, 23)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_32" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, 35)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_32" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, 35)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_44" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, 47)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_44" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, 47)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_56" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, 59)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_56" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, 59)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_68" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, 71)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_68" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, 71)
+mesh = SubResource("s13")
+
+[node name="Ligne_-50_80" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 84.135, 83)
+mesh = SubResource("s13")
+
+[node name="Ligne_50_80" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 84.135, 83)
+mesh = SubResource("s13")
+
+[node name="Ligne_P_-90" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -87, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_-78" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_-66" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -63, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_-42" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_-30" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_-18" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_18" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_30" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_42" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_66" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_78" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 81, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Ligne_P_90" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 93, 84.135, 0)
+mesh = SubResource("s14")
+
+[node name="Monument" type="Node3D" parent="."]
+
+[node name="Platform_Round1_1" parent="Monument" instance=ExtResource("e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 84.24, 0)
+
+[node name="Colliders" type="StaticBody3D" parent="."]
+
+[node name="Box_0" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.6, 0)
+shape = SubResource("s15")
+
+[node name="Box_1" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 83.6, 0)
+shape = SubResource("s16")
+
+[node name="Box_2" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 83.6, 0)
+shape = SubResource("s16")
+
+[node name="Box_3" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.7, 0)
+shape = SubResource("s17")
+
+[node name="Box_4" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.45, -23)
+shape = SubResource("s18")
+
+[node name="Box_5" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.45, 26)
+shape = SubResource("s19")
+
+[node name="Box_6" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 83.45, 0)
+shape = SubResource("s20")
+
+[node name="Box_7" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 83.45, 59)
+shape = SubResource("s21")
+
+[node name="Box_8" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 83.45, -45)
+shape = SubResource("s22")
+
+[node name="Box_9" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77, 83.45, -34)
+shape = SubResource("s23")
+
+[node name="Box_10" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 84.275, 0)
+shape = SubResource("s24")
+

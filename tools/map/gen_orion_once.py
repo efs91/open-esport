@@ -178,7 +178,7 @@ def merge_tiles(tiles):
 # ============================================================================================ bâtiment
 class Bld:
     def __init__(self, name, wx, wz, nx, nz, L, facade=None, doors=(), voids=None, stairs=(), partitions=(), roof_gaps=(), door_lv=(),
-                 glass_roof=(), floor_key=None, wall_gaps=()):
+                 glass_roof=(), floor_key=None, wall_gaps=(), no_floor=False, base=None):
         """(wx, wz) = coin nord-ouest en coordonnées locales à la zone ; stairs = [(niveau, i, j, dir)] ; voids = {niveau: {(i,j)}}"""
         self.name, self.nx, self.nz, self.L = name, nx, nz, L
         self.wx, self.wz = wx, wz
@@ -193,6 +193,8 @@ class Bld:
         self.wall_gaps = set(wall_gaps)            # (niveau, côté, indice) : arête sans mur (passerelle)
         self.glass_roof = set(glass_roof)
         self.floor_key = floor_key
+        self.no_floor = no_floor                    # pas de dalle au niveau 0 (conteneur posé sur un autre)
+        self.base = base                            # altitude (monde) du sol du niveau 0 ; None = Y0
         self.holes = {}
         self.blocked = {}
         for (lv, i, j, d) in self.stairs:
@@ -229,6 +231,8 @@ class Bld:
         for lv in range(L + 1):
             y = self.y(lv)
             tiles = [(i, j) for i in range(self.nx) for j in range(self.nz) if self.has_floor(lv, i, j)]
+            if self.no_floor and lv == 0:
+                tiles = []
             for (i, j) in tiles:
                 cx, cz = self.tc(i, j)
                 if lv == L and (i, j) in self.glass_roof:
@@ -250,7 +254,10 @@ class Bld:
                             continue
                         if (lv == 0 and (side, idx) in self.doors) or (lv, side, idx) in self.door_lv or (lv, side, idx) in self.wall_gaps:
                             continue
-                        key = FACE[self.facade(lv, side, idx)]
+                        style = self.facade(lv, side, idx)
+                        if style == "N":
+                            continue                # pas de mur sur cette arête (structure ouverte)
+                        key = FACE[style]
                         cx, cz = self.tc(i, j)
                         r = SIDE_ROT[side]
                         s.piece("Murs", key, cx, y, cz, r)

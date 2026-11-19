@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+
+[sub_resource type="StandardMaterial3D" id="s1"]
+albedo_color = Color(0.7, 0.62, 0.5, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="s2"]
+material = SubResource("s1")
+size = Vector3(16, 1.8359, 12)
+
+[sub_resource type="BoxShape3D" id="s3"]
+size = Vector3(16, 1.8359, 12)
+
+[node name="Socle_Abri_3" type="Node3D"]
+
+[node name="Socle" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 42.4221, 36)
+mesh = SubResource("s2")
+
+[node name="Colliders" type="StaticBody3D" parent="."]
+
+[node name="Box_0" type="CollisionShape3D" parent="Colliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 42.4221, 36)
+shape = SubResource("s3")
+

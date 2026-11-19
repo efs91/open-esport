@@ -512,5 +512,16 @@
     "MORT": "DØD",
     "À TERRE": "NEDE",
     "Marcher dessus : {0}": "Gå hen over: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: gå hen over våben og helbredelse for at samle dem op"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: gå hen over våben og helbredelse for at samle dem op",
+    "Mise à jour": "Opdatering",
+    "Ouvrir la page de téléchargement": "Åbn downloadsiden",
+    "Passer": "Spring over",
+    "Continuer": "Fortsæt",
+    "Recherche d'une nouvelle version…": "Søger efter en ny version…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Version {0} er tilgængelig, men kan ikke installere sig selv her: hent den på GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Ny version {0}: downloader…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Downloader version {0}: {1} / {2} MB",
+    "fichier incomplet": "ufuldstændig fil",
+    "Échec du téléchargement : {0}": "Download mislykkedes: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Installerer version {0}… spillet genstarter."
 }

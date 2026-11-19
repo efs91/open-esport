@@ -512,5 +512,16 @@
     "MORT": "МЪРТЪВ",
     "À TERRE": "ПОВАЛЕН",
     "Marcher dessus : {0}": "Мини отгоре: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Арена: мини през оръжията и лековете, за да ги вземеш"
+    "Arène : passe sur les armes et les soins pour les prendre": "Арена: мини през оръжията и лековете, за да ги вземеш",
+    "Mise à jour": "Обновяване",
+    "Ouvrir la page de téléchargement": "Отвори страницата за изтегляне",
+    "Passer": "Пропусни",
+    "Continuer": "Продължи",
+    "Recherche d'une nouvelle version…": "Търсене на нова версия…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Версия {0} е налична, но не може да се инсталира сама тук: изтегли я от GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Нова версия {0}: изтегляне…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Изтегляне на версия {0}: {1} / {2} MB",
+    "fichier incomplet": "непълен файл",
+    "Échec du téléchargement : {0}": "Изтеглянето не успя: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Инсталиране на версия {0}… играта ще се рестартира."
 }

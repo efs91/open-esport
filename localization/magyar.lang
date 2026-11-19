@@ -512,5 +512,16 @@
     "MORT": "HALOTT",
     "À TERRE": "LEVERVE",
     "Marcher dessus : {0}": "Sétálj rá: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Aréna: sétálj át a fegyvereken és gyógyítókon a felvételhez"
+    "Arène : passe sur les armes et les soins pour les prendre": "Aréna: sétálj át a fegyvereken és gyógyítókon a felvételhez",
+    "Mise à jour": "Frissítés",
+    "Ouvrir la page de téléchargement": "Letöltési oldal megnyitása",
+    "Passer": "Kihagyás",
+    "Continuer": "Tovább",
+    "Recherche d'une nouvelle version…": "Új verzió keresése…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "A(z) {0} verzió elérhető, de itt nem tud magától települni: töltsd le a GitHubról.",
+    "Nouvelle version {0} : téléchargement…": "Új verzió ({0}): letöltés…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "A(z) {0} verzió letöltése: {1} / {2} MB",
+    "fichier incomplet": "hiányos fájl",
+    "Échec du téléchargement : {0}": "A letöltés sikertelen: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "A(z) {0} verzió telepítése… a játék újraindul."
 }

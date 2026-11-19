@@ -512,5 +512,16 @@
     "MORT": "MARBH",
     "À TERRE": "AR LÁR",
     "Marcher dessus : {0}": "Siúil air: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Réimse: siúil thar airm agus leigheasanna chun iad a phiocadh suas"
+    "Arène : passe sur les armes et les soins pour les prendre": "Réimse: siúil thar airm agus leigheasanna chun iad a phiocadh suas",
+    "Mise à jour": "Nuashonrú",
+    "Ouvrir la page de téléchargement": "Oscail an leathanach íoslódála",
+    "Passer": "Scipeáil",
+    "Continuer": "Lean ar aghaidh",
+    "Recherche d'une nouvelle version…": "Ag cuardach leagan nua…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Tá leagan {0} ar fáil, ach ní féidir leis é féin a shuiteáil anseo: íoslódáil ó GitHub é.",
+    "Nouvelle version {0} : téléchargement…": "Leagan nua {0}: á íoslódáil…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Leagan {0} á íoslódáil: {1} / {2} MB",
+    "fichier incomplet": "comhad neamhiomlán",
+    "Échec du téléchargement : {0}": "Theip ar an íoslódáil: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Leagan {0} á shuiteáil… atosóidh an cluiche."
 }

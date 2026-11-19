@@ -512,5 +512,16 @@
     "MORT": "MORTO",
     "À TERRE": "A TERRA",
     "Marcher dessus : {0}": "Passaci sopra: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: passa sopra armi e cure per raccoglierle"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: passa sopra armi e cure per raccoglierle",
+    "Mise à jour": "Aggiornamento",
+    "Ouvrir la page de téléchargement": "Apri la pagina di download",
+    "Passer": "Salta",
+    "Continuer": "Continua",
+    "Recherche d'une nouvelle version…": "Ricerca di una nuova versione…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "La versione {0} è disponibile, ma qui non può installarsi da sola: scaricala da GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Nuova versione {0}: download in corso…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Download della versione {0}: {1} / {2} MB",
+    "fichier incomplet": "file incompleto",
+    "Échec du téléchargement : {0}": "Download non riuscito: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Installazione della versione {0}… il gioco si riavvierà."
 }

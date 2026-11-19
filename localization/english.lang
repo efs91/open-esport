@@ -512,5 +512,16 @@
     "MORT": "DEAD",
     "À TERRE": "DOWN",
     "Marcher dessus : {0}": "Walk over it: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: walk over weapons and heals to pick them up"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: walk over weapons and heals to pick them up",
+    "Mise à jour": "Update",
+    "Ouvrir la page de téléchargement": "Open the download page",
+    "Passer": "Skip",
+    "Continuer": "Continue",
+    "Recherche d'une nouvelle version…": "Looking for a new version…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Version {0} is available, but it cannot install itself here: download it from GitHub.",
+    "Nouvelle version {0} : téléchargement…": "New version {0}: downloading…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Downloading version {0}: {1} / {2} MB",
+    "fichier incomplet": "incomplete file",
+    "Échec du téléchargement : {0}": "Download failed: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Installing version {0}… the game will restart."
 }

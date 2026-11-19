@@ -512,5 +512,16 @@
     "MORT": "MEJJET",
     "À TERRE": "MITQUL",
     "Marcher dessus : {0}": "Imxi fuqu: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: għaddi minn fuq l-armi u l-kura biex tiġborhom"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: għaddi minn fuq l-armi u l-kura biex tiġborhom",
+    "Mise à jour": "Aġġornament",
+    "Ouvrir la page de téléchargement": "Iftaħ il-paġna tat-tniżżil",
+    "Passer": "Aqbeż",
+    "Continuer": "Kompli",
+    "Recherche d'une nouvelle version…": "Qed infittxu verżjoni ġdida…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Il-verżjoni {0} hija disponibbli, imma ma tistax tinstalla ruħha hawn: niżżilha minn GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Verżjoni ġdida {0}: qed tinżel…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Qed tinżel il-verżjoni {0}: {1} / {2} MB",
+    "fichier incomplet": "fajl mhux komplut",
+    "Échec du téléchargement : {0}": "It-tniżżil falla: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Qed tiġi installata l-verżjoni {0}… il-logħba se terġa' tibda."
 }

@@ -512,5 +512,16 @@
     "MORT": "SURNUD",
     "À TERRE": "MAAS",
     "Marcher dessus : {0}": "Kõnni üle: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Areen: kõnni relvade ja ravi pealt, et need korjata"
+    "Arène : passe sur les armes et les soins pour les prendre": "Areen: kõnni relvade ja ravi pealt, et need korjata",
+    "Mise à jour": "Uuendus",
+    "Ouvrir la page de téléchargement": "Ava allalaadimise leht",
+    "Passer": "Jäta vahele",
+    "Continuer": "Jätka",
+    "Recherche d'une nouvelle version…": "Uue versiooni otsimine…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Versioon {0} on saadaval, kuid siin ei saa see end ise paigaldada: laadi see GitHubist alla.",
+    "Nouvelle version {0} : téléchargement…": "Uus versioon {0}: allalaadimine…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Versiooni {0} allalaadimine: {1} / {2} MB",
+    "fichier incomplet": "puudulik fail",
+    "Échec du téléchargement : {0}": "Allalaadimine ebaõnnestus: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Versiooni {0} paigaldamine… mäng käivitub uuesti."
 }

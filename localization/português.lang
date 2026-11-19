@@ -512,5 +512,16 @@
     "MORT": "MORTO",
     "À TERRE": "CAÍDO",
     "Marcher dessus : {0}": "Passa por cima: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: passa por cima de armas e curas para as apanhar"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: passa por cima de armas e curas para as apanhar",
+    "Mise à jour": "Atualização",
+    "Ouvrir la page de téléchargement": "Abrir a página de transferência",
+    "Passer": "Saltar",
+    "Continuer": "Continuar",
+    "Recherche d'une nouvelle version…": "A procurar uma nova versão…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "A versão {0} está disponível, mas não se pode instalar sozinha aqui: transfere-a do GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Nova versão {0}: a transferir…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "A transferir a versão {0}: {1} / {2} MB",
+    "fichier incomplet": "ficheiro incompleto",
+    "Échec du téléchargement : {0}": "Falha na transferência: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "A instalar a versão {0}… o jogo vai reiniciar."
 }

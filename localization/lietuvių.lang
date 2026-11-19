@@ -512,5 +512,16 @@
     "MORT": "ŽUVĘS",
     "À TERRE": "PARVERSTAS",
     "Marcher dessus : {0}": "Užlipk ant: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: užlipk ant ginklų ir gydymo, kad juos paimtum"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: užlipk ant ginklų ir gydymo, kad juos paimtum",
+    "Mise à jour": "Atnaujinimas",
+    "Ouvrir la page de téléchargement": "Atidaryti atsisiuntimo puslapį",
+    "Passer": "Praleisti",
+    "Continuer": "Tęsti",
+    "Recherche d'une nouvelle version…": "Ieškoma naujos versijos…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Versija {0} jau yra, bet čia ji negali įsidiegti pati: atsisiųsk ją iš GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Nauja versija {0}: atsisiunčiama…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Atsisiunčiama versija {0}: {1} / {2} MB",
+    "fichier incomplet": "nepilnas failas",
+    "Échec du téléchargement : {0}": "Atsisiųsti nepavyko: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Diegiama versija {0}… žaidimas bus paleistas iš naujo."
 }

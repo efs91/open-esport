@@ -512,5 +512,16 @@
     "MORT": "KUOLLUT",
     "À TERRE": "MAASSA",
     "Marcher dessus : {0}": "Kävele päälle: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Areena: kävele aseiden ja parannusten yli poimiaksesi ne"
+    "Arène : passe sur les armes et les soins pour les prendre": "Areena: kävele aseiden ja parannusten yli poimiaksesi ne",
+    "Mise à jour": "Päivitys",
+    "Ouvrir la page de téléchargement": "Avaa lataussivu",
+    "Passer": "Ohita",
+    "Continuer": "Jatka",
+    "Recherche d'une nouvelle version…": "Etsitään uutta versiota…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Versio {0} on saatavilla, mutta se ei voi asentua itse tähän: lataa se GitHubista.",
+    "Nouvelle version {0} : téléchargement…": "Uusi versio {0}: ladataan…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Ladataan versiota {0}: {1} / {2} Mt",
+    "fichier incomplet": "keskeneräinen tiedosto",
+    "Échec du téléchargement : {0}": "Lataus epäonnistui: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Asennetaan versiota {0}… peli käynnistyy uudelleen."
 }

@@ -512,5 +512,16 @@
     "MORT": "DOOD",
     "À TERRE": "NEERGEHAALD",
     "Marcher dessus : {0}": "Loop eroverheen: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: loop over wapens en genezing om ze op te pakken"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: loop over wapens en genezing om ze op te pakken",
+    "Mise à jour": "Update",
+    "Ouvrir la page de téléchargement": "Downloadpagina openen",
+    "Passer": "Overslaan",
+    "Continuer": "Doorgaan",
+    "Recherche d'une nouvelle version…": "Zoeken naar een nieuwe versie…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Versie {0} is beschikbaar, maar kan zich hier niet zelf installeren: download hem van GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Nieuwe versie {0}: downloaden…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Versie {0} downloaden: {1} / {2} MB",
+    "fichier incomplet": "onvolledig bestand",
+    "Échec du téléchargement : {0}": "Downloaden mislukt: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Versie {0} wordt geïnstalleerd… het spel start opnieuw."
 }

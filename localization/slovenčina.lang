@@ -512,5 +512,16 @@
     "MORT": "MŔTVY",
     "À TERRE": "NA ZEMI",
     "Marcher dessus : {0}": "Prejdi cez: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Aréna: prejdi cez zbrane a liečenie, aby si ich zdvihol"
+    "Arène : passe sur les armes et les soins pour les prendre": "Aréna: prejdi cez zbrane a liečenie, aby si ich zdvihol",
+    "Mise à jour": "Aktualizácia",
+    "Ouvrir la page de téléchargement": "Otvoriť stránku na stiahnutie",
+    "Passer": "Preskočiť",
+    "Continuer": "Pokračovať",
+    "Recherche d'une nouvelle version…": "Hľadá sa nová verzia…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Verzia {0} je dostupná, ale tu sa nemôže nainštalovať sama: stiahni ju z GitHubu.",
+    "Nouvelle version {0} : téléchargement…": "Nová verzia {0}: sťahovanie…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Sťahovanie verzie {0}: {1} / {2} MB",
+    "fichier incomplet": "neúplný súbor",
+    "Échec du téléchargement : {0}": "Sťahovanie zlyhalo: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Inštaluje sa verzia {0}… hra sa reštartuje."
 }

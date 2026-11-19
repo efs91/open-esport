@@ -89,10 +89,14 @@ git clone https://github.com/efs91/open-esport.git
 3. Ensure that all addons are correctly installed
 
 ## Release
-Latest release (v0.4) for Windows 64-bit and Linux x86_64:
-- [Download](https://github.com/efs91/open-esport/releases/latest) — Windows: unzip and run `open-esport.exe` ; Linux: `tar xzf open-esport-linux-v0.4.tar.gz` then `./open-esport.x86_64`
+Latest release (v0.5) for Windows 64-bit and Linux x86_64:
+- [Download](https://github.com/efs91/open-esport/releases/latest) — Windows: unzip and run `open-esport.exe` ; Linux: `tar xzf open-esport-linux-v0.5.tar.gz` then `./open-esport.x86_64`
 
 The client connects to the public server set in `data/network.cfg` (`host` / `port`).
+
+**Automatic updates** (from v0.5): at startup the exported game asks GitHub for the latest release of `efs91/open-esport`. If its tag is newer than `GameVersion.Current` (`scripts/menus/UpdateScreen.cs`), it downloads the archive for its platform (Windows: the asset whose name contains `win` and ends with `.zip`; Linux: `linux` + `.tar.gz`) into `_update/` next to the executable, quits, and a small script (`update.cmd` / `update.sh`) extracts it over the installation and restarts the game. If the folder is not writable or the download fails, the player gets a link to the release page and can keep playing. Start with `--no-update` to skip the check.
+
+To publish a release: bump `GameVersion.Current` (and the protocol in `Messages.cs` if the netcode changed), export both presets, package `open-esport-win64-vX.Y.zip` and `open-esport-linux-vX.Y.tar.gz` with the files at the root of the archive, and create the GitHub release with tag `X.Y`.
 
 ## Hosting your own server
 The server, matchmaker and accounts service run with Docker Compose from the `netcode/` folder. See [netcode/README.md](netcode/README.md).

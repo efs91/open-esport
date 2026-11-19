@@ -512,5 +512,16 @@
     "MORT": "ΝΕΚΡΟΣ",
     "À TERRE": "ΚΑΤΩ",
     "Marcher dessus : {0}": "Πέρασε από πάνω: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Αρένα: πέρασε πάνω από όπλα και θεραπείες για να τα πάρεις"
+    "Arène : passe sur les armes et les soins pour les prendre": "Αρένα: πέρασε πάνω από όπλα και θεραπείες για να τα πάρεις",
+    "Mise à jour": "Ενημέρωση",
+    "Ouvrir la page de téléchargement": "Άνοιγμα σελίδας λήψης",
+    "Passer": "Παράλειψη",
+    "Continuer": "Συνέχεια",
+    "Recherche d'une nouvelle version…": "Αναζήτηση νέας έκδοσης…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Η έκδοση {0} είναι διαθέσιμη, αλλά δεν μπορεί να εγκατασταθεί μόνη της εδώ: κατέβασέ την από το GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Νέα έκδοση {0}: λήψη…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Λήψη της έκδοσης {0}: {1} / {2} MB",
+    "fichier incomplet": "ελλιπές αρχείο",
+    "Échec du téléchargement : {0}": "Η λήψη απέτυχε: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Εγκατάσταση της έκδοσης {0}… το παιχνίδι θα επανεκκινήσει."
 }

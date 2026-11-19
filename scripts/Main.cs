@@ -41,7 +41,15 @@ public partial class Main : Node
 	private void StartGame()
 	{
 		_logManager.Info("[Main] Démarrage du jeu");
-		// Première scène : la connexion. Le menu principal ne s'affiche qu'une fois le joueur connecté.
+		// Jeu exporté : d'abord la vérification de version (téléchargement et installation de la nouvelle release s'il y en a une).
+		// Puis la connexion ; le menu principal ne s'affiche qu'une fois le joueur connecté.
+		if (Openesport.Menus.UpdateScreen.Enabled)
+		{
+			var update = new Openesport.Menus.UpdateScreen { Name = "UpdateScreen" };
+			update.OnSuccess = ShowLogin;
+			GetTree().Root.CallDeferred(Node.MethodName.AddChild, update);
+			return;
+		}
 		ShowLogin();
 	}
 

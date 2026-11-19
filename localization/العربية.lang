@@ -512,5 +512,16 @@
     "MORT": "ميت",
     "À TERRE": "مُسقط",
     "Marcher dessus : {0}": "امشِ فوقه: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "الساحة: امشِ فوق الأسلحة والعلاجات لالتقاطها"
+    "Arène : passe sur les armes et les soins pour les prendre": "الساحة: امشِ فوق الأسلحة والعلاجات لالتقاطها",
+    "Mise à jour": "تحديث",
+    "Ouvrir la page de téléchargement": "افتح صفحة التنزيل",
+    "Passer": "تخطٍّ",
+    "Continuer": "متابعة",
+    "Recherche d'une nouvelle version…": "البحث عن إصدار جديد…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "الإصدار {0} متاح، لكنه لا يستطيع تثبيت نفسه هنا: نزّله من GitHub.",
+    "Nouvelle version {0} : téléchargement…": "إصدار جديد {0}: جارٍ التنزيل…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "تنزيل الإصدار {0}: {1} / {2} ميغابايت",
+    "fichier incomplet": "ملف غير مكتمل",
+    "Échec du téléchargement : {0}": "فشل التنزيل: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "تثبيت الإصدار {0}… ستُعاد تشغيل اللعبة."
 }

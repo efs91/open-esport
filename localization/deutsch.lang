@@ -512,5 +512,16 @@
     "MORT": "TOT",
     "À TERRE": "AM BODEN",
     "Marcher dessus : {0}": "Darüberlaufen: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: über Waffen und Heilung laufen, um sie aufzuheben"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: über Waffen und Heilung laufen, um sie aufzuheben",
+    "Mise à jour": "Aktualisierung",
+    "Ouvrir la page de téléchargement": "Download-Seite öffnen",
+    "Passer": "Überspringen",
+    "Continuer": "Weiter",
+    "Recherche d'une nouvelle version…": "Suche nach einer neuen Version…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Version {0} ist verfügbar, kann sich hier aber nicht selbst installieren: Lade sie von GitHub herunter.",
+    "Nouvelle version {0} : téléchargement…": "Neue Version {0}: wird heruntergeladen…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Version {0} wird heruntergeladen: {1} / {2} MB",
+    "fichier incomplet": "unvollständige Datei",
+    "Échec du téléchargement : {0}": "Download fehlgeschlagen: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Version {0} wird installiert… das Spiel startet neu."
 }

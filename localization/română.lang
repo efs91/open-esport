@@ -512,5 +512,16 @@
     "MORT": "MORT",
     "À TERRE": "LA PĂMÂNT",
     "Marcher dessus : {0}": "Treci peste: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arenă: treci peste arme și vindecări ca să le iei"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arenă: treci peste arme și vindecări ca să le iei",
+    "Mise à jour": "Actualizare",
+    "Ouvrir la page de téléchargement": "Deschide pagina de descărcare",
+    "Passer": "Sari peste",
+    "Continuer": "Continuă",
+    "Recherche d'une nouvelle version…": "Se caută o versiune nouă…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Versiunea {0} este disponibilă, dar nu se poate instala singură aici: descarc-o de pe GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Versiune nouă {0}: se descarcă…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Se descarcă versiunea {0}: {1} / {2} MB",
+    "fichier incomplet": "fișier incomplet",
+    "Échec du téléchargement : {0}": "Descărcarea a eșuat: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Se instalează versiunea {0}… jocul va reporni."
 }

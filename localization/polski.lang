@@ -512,5 +512,16 @@
     "MORT": "MARTWY",
     "À TERRE": "POWALONY",
     "Marcher dessus : {0}": "Przejdź po tym: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: przejdź po broni i apteczkach, aby je podnieść"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: przejdź po broni i apteczkach, aby je podnieść",
+    "Mise à jour": "Aktualizacja",
+    "Ouvrir la page de téléchargement": "Otwórz stronę pobierania",
+    "Passer": "Pomiń",
+    "Continuer": "Kontynuuj",
+    "Recherche d'une nouvelle version…": "Szukanie nowej wersji…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Wersja {0} jest dostępna, ale nie może się tu sama zainstalować: pobierz ją z GitHuba.",
+    "Nouvelle version {0} : téléchargement…": "Nowa wersja {0}: pobieranie…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Pobieranie wersji {0}: {1} / {2} MB",
+    "fichier incomplet": "niepełny plik",
+    "Échec du téléchargement : {0}": "Pobieranie nie powiodło się: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Instalowanie wersji {0}… gra uruchomi się ponownie."
 }

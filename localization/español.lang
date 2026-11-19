@@ -512,5 +512,16 @@
     "MORT": "MUERTO",
     "À TERRE": "DERRIBADO",
     "Marcher dessus : {0}": "Pásale por encima: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: pasa por encima de armas y curas para cogerlas"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: pasa por encima de armas y curas para cogerlas",
+    "Mise à jour": "Actualización",
+    "Ouvrir la page de téléchargement": "Abrir la página de descarga",
+    "Passer": "Saltar",
+    "Continuer": "Continuar",
+    "Recherche d'une nouvelle version…": "Buscando una nueva versión…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "La versión {0} está disponible, pero no puede instalarse sola aquí: descárgala de GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Nueva versión {0}: descargando…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Descargando la versión {0}: {1} / {2} MB",
+    "fichier incomplet": "archivo incompleto",
+    "Échec du téléchargement : {0}": "Error de descarga: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Instalando la versión {0}… el juego se reiniciará."
 }

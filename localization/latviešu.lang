@@ -512,5 +512,16 @@
     "MORT": "MIRIS",
     "À TERRE": "NOGĀZTS",
     "Marcher dessus : {0}": "Uzej virsū: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arēna: uzej uz ieročiem un dziedināšanas, lai tos paceltu"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arēna: uzej uz ieročiem un dziedināšanas, lai tos paceltu",
+    "Mise à jour": "Atjauninājums",
+    "Ouvrir la page de téléchargement": "Atvērt lejupielādes lapu",
+    "Passer": "Izlaist",
+    "Continuer": "Turpināt",
+    "Recherche d'une nouvelle version…": "Meklē jaunu versiju…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Ir pieejama versija {0}, bet šeit tā nevar pati uzinstalēties: lejupielādē to no GitHub.",
+    "Nouvelle version {0} : téléchargement…": "Jauna versija {0}: lejupielāde…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Lejupielādē versiju {0}: {1} / {2} MB",
+    "fichier incomplet": "nepilnīgs fails",
+    "Échec du téléchargement : {0}": "Lejupielāde neizdevās: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Instalē versiju {0}… spēle tiks restartēta."
 }

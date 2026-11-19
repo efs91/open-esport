@@ -512,5 +512,16 @@
     "MORT": "DOUT",
     "À TERRE": "AM BUEDEM",
     "Marcher dessus : {0}": "Dropper goen: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: gëff iwwer Waffen a Fleeg fir se opzehiewen"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: gëff iwwer Waffen a Fleeg fir se opzehiewen",
+    "Mise à jour": "Aktualiséierung",
+    "Ouvrir la page de téléchargement": "Download-Säit opmaachen",
+    "Passer": "Iwwersprangen",
+    "Continuer": "Weider",
+    "Recherche d'une nouvelle version…": "Sich no enger neier Versioun…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "D'Versioun {0} ass disponibel, mee kann sech hei net eleng installéieren: lued se vu GitHub erof.",
+    "Nouvelle version {0} : téléchargement…": "Nei Versioun {0}: gëtt erofgelueden…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Versioun {0} gëtt erofgelueden: {1} / {2} MB",
+    "fichier incomplet": "onvollstänneg Datei",
+    "Échec du téléchargement : {0}": "Erofluede feelgeschloen: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Versioun {0} gëtt installéiert… d'Spill start nei."
 }

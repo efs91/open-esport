@@ -512,5 +512,16 @@
     "MORT": "MRTAV",
     "À TERRE": "NA TLU",
     "Marcher dessus : {0}": "Prijeđi preko: {0}",
-    "Arène : passe sur les armes et les soins pour les prendre": "Arena: prijeđi preko oružja i ljekova da ih pokupiš"
+    "Arène : passe sur les armes et les soins pour les prendre": "Arena: prijeđi preko oružja i ljekova da ih pokupiš",
+    "Mise à jour": "Ažuriranje",
+    "Ouvrir la page de téléchargement": "Otvori stranicu za preuzimanje",
+    "Passer": "Preskoči",
+    "Continuer": "Nastavi",
+    "Recherche d'une nouvelle version…": "Traženje nove verzije…",
+    "La version {0} est disponible, mais elle ne peut pas s'installer toute seule ici : télécharge-la sur GitHub.": "Verzija {0} je dostupna, ali se ovdje ne može sama instalirati: preuzmi je s GitHuba.",
+    "Nouvelle version {0} : téléchargement…": "Nova verzija {0}: preuzimanje…",
+    "Téléchargement de la version {0} : {1} / {2} Mo": "Preuzimanje verzije {0}: {1} / {2} MB",
+    "fichier incomplet": "nepotpuna datoteka",
+    "Échec du téléchargement : {0}": "Preuzimanje nije uspjelo: {0}",
+    "Installation de la version {0}… le jeu va redémarrer.": "Instaliranje verzije {0}… igra će se ponovno pokrenuti."
 }

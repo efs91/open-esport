@@ -9,7 +9,7 @@ namespace OpenEsport.Core
 	public static class ItemIds
 	{
 		public const byte None = 0;
-		public const byte Knife = 1, C19 = 2, Smg45 = 3, Ak = 4, Lmg63 = 5, Sawnoff = 6, Sniper = 7;
+		public const byte Knife = 1, C19 = 2, Smg45 = 3, Ak = 4, Lmg63 = 5, Sawnoff = 6, Sniper = 7, P2020 = 8;
 		public const byte OpticHolo = 10, Optic4x = 11, Optic6x = 12, OpticRedDot = 13, Optic2x = 14;
 		public const byte Backpack2 = 20, Backpack3 = 21;
 		public const byte Ammo9mm = 30, AmmoRifle = 31, AmmoShell = 32, AmmoSniper = 33;
@@ -49,6 +49,7 @@ namespace OpenEsport.Core
 		{
 			Add(new ItemDef { Id = ItemIds.Knife, Name = "knife", Kind = ItemKind.Weapon });
 			Add(new ItemDef { Id = ItemIds.C19, Name = "c19", Kind = ItemKind.Weapon, AcceptsOptic = true });
+			Add(new ItemDef { Id = ItemIds.P2020, Name = "p2020", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.Smg45, Name = "smg45", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.Ak, Name = "ak", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.Lmg63, Name = "lmg63", Kind = ItemKind.Weapon, AcceptsOptic = true });
@@ -145,6 +146,8 @@ namespace OpenEsport.Core
 			}
 			if (n < cap && rng.NextDouble() < ChestAccessoryChance)
 				into[n++] = rng.Next(4) == 0 ? (rng.Next(2) == 0 ? ItemIds.Backpack3 : ItemIds.Backpack2) : (byte)(ItemIds.OpticHolo + rng.Next(5));
+			// une grenade dans un coffre sur trois environ (loot.chestGrenadeChance) : elles étaient trop rares
+			if (n < cap && rng.NextDouble() < GameBalance.ChestGrenadeChance) into[n++] = RollGrenade(rng);
 			// fournitures : un bouclier ou un soin, plus ou moins rares (loot.weight.*)
 			if (n < cap && rng.NextDouble() < GameBalance.ChestSupplyChance)
 				into[n++] = RollSupply(rng);
@@ -199,13 +202,14 @@ namespace OpenEsport.Core
 
 		public static byte Roll(Random rng)
 		{
-			int r = rng.Next(100);
+			double r = rng.NextDouble() * 100.0;
+			double g = Math.Clamp(GameBalance.GroundGrenadeShare, 0f, 0.4f) * 100.0;      // part des grenades (loot.groundGrenadeShare)
 			if (r < 14) return RollWeapon(rng);                          // armes
 			if (r < 40) return RollAmmo(rng);                           // munitions (beaucoup : on en trouve même sans arme)
 			if (r < 48) return (byte)(ItemIds.OpticHolo + rng.Next(5)); // viseurs
 			if (r < 51) return rng.Next(3) == 0 ? ItemIds.Backpack3 : ItemIds.Backpack2;
-			if (r < 57) return RollGrenade(rng);                         // grenades
-			if (r < 85) return RollSupply(rng);                         // boucliers (niveau tiré à la création) et soins
+			if (r < 51 + g) return RollGrenade(rng);                     // grenades
+			if (r < 79 + g) return RollSupply(rng);                      // boucliers (niveau tiré à la création) et soins
 			return RollAmmo(rng);
 		}
 	}

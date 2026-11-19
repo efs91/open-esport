@@ -72,7 +72,7 @@ namespace OpenEsport.Server
 		private int _botNameCounter;
 
 		/// <summary>Grille de navigation des bots (construite à la demande : un serveur sans bots n'en a pas besoin).</summary>
-		private NavGrid _nav;
+		private INav _nav;
 		/// <summary>Recherches de chemin permises pendant ce tick : elles sont étalées dans le temps pour ne pas gonfler un tick.</summary>
 		private int _pathBudget;
 
@@ -86,7 +86,7 @@ namespace OpenEsport.Server
 			b.SteerTimer -= dt;
 			if (b.SteerTimer > 0f) return b.SteerPoint;
 			b.SteerTimer = 0.12f;
-			_nav ??= new NavGrid(_data);
+			_nav ??= Navigation.For(_data);
 			if (b.PathFailed) { b.PathFailed = false; }
 			Vec3 pos = p.State.Pos;
 			b.RepathTimer -= 0.12f;
@@ -109,7 +109,8 @@ namespace OpenEsport.Server
 			{
 				var w = b.Path[b.PathIdx];
 				float dx = w.X - pos.X, dz = w.Z - pos.Z;
-				if (dx * dx + dz * dz < 2.2f * 2.2f) b.PathIdx++; else break;
+				float reach = _nav.IsPortal(w) ? 0.7f : 2.2f;      // tremplin, téléporteur : il faut marcher dessus
+				if (dx * dx + dz * dz < reach * reach) b.PathIdx++; else break;
 			}
 			b.SteerPoint = b.Path[Math.Min(b.PathIdx, b.Path.Count - 1)];
 			return b.SteerPoint;

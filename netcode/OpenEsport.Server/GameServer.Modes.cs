@@ -91,14 +91,14 @@ namespace OpenEsport.Server
 			}
 			AddAmmoFor(k.Primary); AddAmmoFor(k.Secondary);
 			if (k.Secondary != ItemIds.None) { var w2 = LootItem.Of(k.Secondary); inv.TryPickup(ref w2, none); }
-			if (k.Primary != ItemIds.None) { var w1 = LootItem.Of(k.Primary); w1.Optic = k.PrimaryOptic; inv.TryPickup(ref w1, none); }
+			if (k.Primary != ItemIds.None) { var w1 = LootItem.Of(k.Primary); w1.Optic = k.PrimaryOptic; w1.Tier = k.WeaponTier; inv.TryPickup(ref w1, none); }
 			for (int i = 0; i < inv.Weapons.Length; i++) if (inv.Weapons[i] != null && inv.Weapons[i].WeaponId == k.Primary) inv.ActiveSlot = i;
 			if (k.HealSmall > 0) { var h = LootItem.Of(ItemIds.HealSmall); h.Count = (ushort)k.HealSmall; inv.TryPickup(ref h, none); }
 			if (k.ShieldSmall > 0) { var h = LootItem.Of(ItemIds.ShieldSmall); h.Count = (ushort)k.ShieldSmall; inv.TryPickup(ref h, none); }
 			if (k.Grenades != null) foreach (var gid in k.Grenades) { var gi = LootItem.Of(gid); inv.TryPickup(ref gi, none); }
 			inv.ShieldTier = k.ShieldTier;
 			p.Inventory = inv;
-			p.Shield = k.ShieldTier >= 0 ? Consumables.ShieldMaxOf(k.ShieldTier) : 0f;
+			p.Shield = k.ShieldTier >= 0 && !k.ShieldEmpty ? Consumables.ShieldMaxOf(k.ShieldTier) : 0f;
 			p.UseId = 0; p.Reloading = false;
 			SendInventory(p);
 		}
@@ -107,7 +107,7 @@ namespace OpenEsport.Server
 		{
 			p.ClassId = (byte)Math.Clamp(id, 0, Loadouts.Kits.Length - 1);
 			// en salle d'attente, le changement est immédiat ; en partie il prend effet à la prochaine réapparition (le mode peut en décider autrement)
-			if (Phase == MatchPhase.Lobby) ApplyKit(p, Loadouts.Get(p.ClassId));
+			if (Phase == MatchPhase.Lobby) ApplyKit(p, _mode.KitFor(p));
 		}
 
 		private Vec3 ModalSpawn(ServerPlayer p) => _mode.Spawn(p);
@@ -286,9 +286,11 @@ namespace OpenEsport.Server
 					float score = near + (float)S._rng.NextDouble() * 25f;
 					if (score > bestScore) { bestScore = score; best = pt; }
 				}
-				var jitter = new Vec3((float)(S._rng.NextDouble() * 2 - 1) * 2f, 0, (float)(S._rng.NextDouble() * 2 - 1) * 2f);
+				// un peu de hasard autour du point, sans sortir de son étage (cartes à plusieurs niveaux : le point peut être sur une dalle)
+				float spread = best.Pos.Y > S._world.HeightAt(best.Pos.X, best.Pos.Z) + 0.5f ? 0.8f : 2f;
+				var jitter = new Vec3((float)(S._rng.NextDouble() * 2 - 1) * spread, 0, (float)(S._rng.NextDouble() * 2 - 1) * spread);
 				var pos = best.Pos + jitter;
-				return new Vec3(pos.X, S._world.HeightAt(pos.X, pos.Z), pos.Z);
+				return new Vec3(pos.X, S._world.GroundAt(pos.X, pos.Z, best.Pos.Y + 0.3f, Sim.StepHeight), pos.Z);
 			}
 
 			public static float Flat(Vec3 a, Vec3 b) { float dx = a.X - b.X, dz = a.Z - b.Z; return MathF.Sqrt(dx * dx + dz * dz); }
@@ -307,11 +309,23 @@ namespace OpenEsport.Server
 			{
 				Score[0] = Score[1] = 0;
 				TimeLeft = GameBalance.F(_ffa ? "mode.dmTime" : "mode.tdmTime");
-				foreach (var p in Players) { p.State = PlayerMovement.Spawn(Spawn(p), S._world); S.ApplyKit(p, Loadouts.Get(p.ClassId)); p.ProtectUntil = S._tick + (uint)(GameBalance.F("mode.respawnProtection") * S._m.TickRate); }
+				foreach (var p in Players) { p.State = PlayerMovement.Spawn(Spawn(p), S._world); S.ApplyKit(p, KitFor(p)); p.ProtectUntil = S._tick + (uint)(GameBalance.F("mode.respawnProtection") * S._m.TickRate); }
+			}
+
+			/// <summary>Deathmatch : tout le monde part au pistolet avec un bouclier épique vide (règles d'arène).</summary>
+			public override ClassKit KitFor(ServerPlayer p) => _ffa ? ArenaRules.StartKit : base.KitFor(p);
+
+			public override bool BotGoal(ServerPlayer p, BotBrain b, out Vec3 goal, out float arrive, out Buttons hold)
+			{
+				hold = Buttons.None; arrive = 0.8f;
+				if (_ffa && S.ArenaBotGoal(p, out goal)) return true;
+				goal = default;
+				return false;
 			}
 
 			public override void Tick(float dt)
 			{
+				if (_ffa) S.TickArena();
 				TimeLeft -= dt;
 				if (TimeLeft > 0f) return;
 				TimeLeft = 0f;
@@ -328,7 +342,12 @@ namespace OpenEsport.Server
 			{
 				if (killer == null || killer == victim || killer.Team == victim.Team) return;
 				killer.Kills++;
-				if (_ffa) { if (killer.Kills >= Target) S.EndModal(killer.Team); return; }
+				if (_ffa)
+				{
+					if (killer.Alive) killer.Health = MathF.Min(100f, killer.Health + ArenaRules.KillHeal);     // une élimination rend 50 PV
+					if (killer.Kills >= Target) S.EndModal(killer.Team);
+					return;
+				}
 				Score[killer.Team]++;
 				if (Score[killer.Team] >= Target) S.EndModal(killer.Team);
 			}

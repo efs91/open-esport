@@ -209,7 +209,7 @@ namespace OpenEsport.Server
 				if (!def.Melee) { SpawnProjectile(p, weapon.WeaponId, def.Damage * Tiers.Damage(weapon.Tier), def, origin, dir, viewTick); continue; }
 
 				float maxDist = def.Range;
-				if (_world.Raycast(origin, dir, def.Range, out float wallDist)) maxDist = wallDist;
+				if (_world.Raycast(origin, dir, def.Range, out float wallDist, out int pane)) maxDist = wallDist;
 
 				ServerPlayer best = null;
 				float bestT = maxDist;
@@ -230,6 +230,7 @@ namespace OpenEsport.Server
 				}
 				if (best != null)
 					ApplyDamage(p, best, def.Damage * Tiers.Damage(weapon.Tier) * Hitboxes.Multiplier(bestZone), bestZone, weapon.WeaponId);
+				else if (pane >= 0) HitWindow(pane, def.Damage * Tiers.Damage(weapon.Tier));
 			}
 		}
 
@@ -246,10 +247,12 @@ namespace OpenEsport.Server
 			bool killed = victim.Health <= 0f;
 			attacker.DamageDealt += absorbed + MathF.Min(damage - absorbed, victim.Health + (damage - absorbed));
 			victim.LastAttacker = attacker;
+			victim.LastHurtTick = _tick; victim.RegenClock = 0f;
 			byte dmg = (byte)Math.Clamp((int)MathF.Round(damage), 0, 255);
 
 			SendEvent(attacker, new ServerEvent { Type = EventType.HitConfirm, A = victim.Id, C = dmg, D = (byte)((byte)zone | (killed ? 0x80 : 0)) });
 			SendEvent(victim, new ServerEvent { Type = EventType.Damaged, A = attacker.Id, C = dmg, D = (byte)(killed ? 1 : 0), Pos = attacker.State.Pos });
+			if (attacker.Team != victim.Team) NotifyTeam(attacker.Team, EventType.TeamHit, victim.Id);
 			if (killed) Kill(attacker, victim, weaponId);
 		}
 
@@ -346,6 +349,7 @@ namespace OpenEsport.Server
 
 		private void SpawnInitialLoot()
 		{
+			if (Arena) { SpawnArenaLoot(); return; }
 			var chestBoxes = new List<Aabb>();
 			for (int si = 0; si < _data.LootSpawns.Count; si++)
 			{
@@ -410,12 +414,13 @@ namespace OpenEsport.Server
 			return guns.Count == 0 ? ItemIds.None : guns[_rng.Next(guns.Count)];
 		}
 
-		private bool AddLoot(LootItem item, Vec3 pos, byte quality = 0, int spawnPlusOne = 0)
+		private bool AddLoot(LootItem item, Vec3 pos, byte quality = 0, int spawnPlusOne = 0) => AddLoot(item, pos, out _, quality, spawnPlusOne);
+
+		private bool AddLoot(LootItem item, Vec3 pos, out int idx, byte quality = 0, int spawnPlusOne = 0)
 		{
-			int idx;
 			if (_freeLoot.Count > 0) idx = _freeLoot.Pop();
 			else if (_lootHigh < LootCapacity) idx = _lootHigh++;
-			else return false;
+			else { idx = -1; return false; }
 			_loot[idx] = new LootEntity { Active = true, Item = item, Pos = pos, Quality = quality, SpawnPlusOne = spawnPlusOne };
 			_lootDirty = true;
 			return true;
@@ -465,6 +470,14 @@ namespace OpenEsport.Server
 			float cp = MathF.Cos(p.Pitch);
 			Vec3 fwd = new Vec3(-MathF.Sin(p.Yaw) * cp, MathF.Sin(p.Pitch), -MathF.Cos(p.Yaw) * cp);
 
+			if (target >= WindowState.TargetBase)
+			{
+				_world.Raycast(eye, fwd, WindowState.Reach, out _, out int pane, includeBroken: true);
+				if (pane >= 0 && target == _world.Windows[pane].ActionTarget(pane))
+					SetWindow(pane, _world.Windows[pane].RestoreOrReinforce());
+				return;
+			}
+
 			int best = -1;
 			float bestScore = float.MaxValue;
 			if (target != 0)
@@ -500,6 +513,7 @@ namespace OpenEsport.Server
 			}
 			if (best < 0) return;
 
+			if (Arena) { TryArenaInteract(p, best); return; }      // arène : seules les armes se prennent à la main
 			if (_loot[best].Item.ItemId == ItemIds.Chest) { OpenChest(best); return; }
 
 			var item = _loot[best].Item;
@@ -594,6 +608,8 @@ namespace OpenEsport.Server
 			if (type == CommandType.SelectClass || type == CommandType.Buy) { HandleModeCommand(p, type, arg); return; }
 			if (!p.Alive) return;
 
+			// arène : on ne jette rien et les viseurs restent sur leur arme
+			if (Arena && type is CommandType.DropWeapon or CommandType.DropItem or CommandType.DropShield or CommandType.EquipOptic or CommandType.EquipOpticOn or CommandType.DropOptic or CommandType.UnequipOptic) return;
 			bool changed = false;
 			switch (type)
 			{

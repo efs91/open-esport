@@ -26,11 +26,34 @@ namespace OpenEsport.Core
 		bool ZipPointAt(int line, float dist, out Vec3 pos, out Vec3 tangent, out float length);
 		/// <summary>Tremplin sous les pieds (position au sol) ?</summary>
 		bool PadAt(Vec3 feet, out LaunchPad pad);
+		/// <summary>Tremplin d'arène sous les pieds ?</summary>
+		bool JumpPadAt(Vec3 feet, out JumpPad pad);
+		/// <summary>Entrée de téléporteur à cet endroit ?</summary>
+		bool TeleportAt(Vec3 feet, out Teleporter tp);
 	}
 
 	public sealed class StaticWorld : IWorld
 	{
 		public readonly WorldData Data;
+		private readonly WindowState[] _windows;
+		public ReadOnlySpan<WindowState> Windows => _windows;
+
+		public void SetWindow(int index, WindowState state)
+		{
+			_windows[index] = state;
+			var box = Data.Panes[index];
+			if (state.Reinforced)
+			{
+				// Double the pane thickness, along the narrow axis of the wall.
+				Vec3 size = box.Max - box.Min;
+				Vec3 extra = size.X < size.Z ? new Vec3(size.X * 0.5f, 0, 0) : new Vec3(0, 0, size.Z * 0.5f);
+				box = new Aabb(box.Min - extra, box.Max + extra);
+			}
+			_boxes[_firstPane + index] = box;
+		}
+
+		private readonly int _firstPane;
+		private bool Solid(int box) => box < _firstPane || Windows[box - _firstPane].Health > 0;
 
 		// Grille d'accélération : les boîtes (par milliers sur une grande carte) sont rangées par cases de 16 m.
 		private const float GridCell = 16f;
@@ -50,6 +73,10 @@ namespace OpenEsport.Core
 		{
 			Data = data;
 			_boxes = new System.Collections.Generic.List<Aabb>(data.Boxes);
+			_firstPane = _boxes.Count;
+			_boxes.AddRange(data.Panes);
+			_windows = new WindowState[data.Panes.Count];
+			Array.Fill(_windows, WindowState.New);
 			_gridW = Math.Max(1, (int)Math.Ceiling((data.MaxX - data.MinX) / GridCell) + 1);
 			_gridD = Math.Max(1, (int)Math.Ceiling((data.MaxZ - data.MinZ) / GridCell) + 1);
 			var lists = new System.Collections.Generic.List<int>[_gridW * _gridD];
@@ -143,6 +170,40 @@ namespace OpenEsport.Core
 			return false;
 		}
 
+		public bool JumpPadAt(Vec3 feet, out JumpPad pad)
+		{
+			var jumps = Data.Jumps;
+			for (int i = 0; i < jumps.Count; i++)
+			{
+				float dx = feet.X - jumps[i].Pos.X, dz = feet.Z - jumps[i].Pos.Z, r = jumps[i].Radius;
+				if (dx * dx + dz * dz < r * r && MathF.Abs(feet.Y - jumps[i].Pos.Y) < 0.6f) { pad = jumps[i]; return true; }
+			}
+			pad = default;
+			return false;
+		}
+
+		public bool TeleportAt(Vec3 feet, out Teleporter tp)
+		{
+			var tps = Data.Teleports;
+			for (int i = 0; i < tps.Count; i++)
+			{
+				float dx = feet.X - tps[i].Pos.X, dz = feet.Z - tps[i].Pos.Z, r = tps[i].Radius;
+				float dy = feet.Y - tps[i].Pos.Y;
+				if (dx * dx + dz * dz < r * r && dy > -0.6f && dy < 2.2f) { tp = tps[i]; return true; }
+			}
+			tp = default;
+			return false;
+		}
+
+		/// <summary>Le point est-il la sortie d'un téléporteur (client : tourner la caméra vers <paramref name="yaw"/> après un saut de position) ?</summary>
+		public bool TeleportExit(Vec3 pos, out float yaw)
+		{
+			foreach (var t in Data.Teleports)
+				if (Vec3.Distance(new Vec3(pos.X, 0, pos.Z), new Vec3(t.Dest.X, 0, t.Dest.Z)) < 1.5f && MathF.Abs(pos.Y - t.Dest.Y) < 2.5f) { yaw = t.Yaw; return true; }
+			yaw = 0f;
+			return false;
+		}
+
 		/// <summary>Rayon de la gaine de verre autour du câble (les balles ne la traversent pas).</summary>
 		public const float TunnelRadius = 2.5f;
 
@@ -200,6 +261,7 @@ namespace OpenEsport.Core
 			var boxes = _boxes;
 			for (int k = 0; k < near.Length; k++)
 			{
+				if (!Solid(near[k])) continue;
 				var b = boxes[near[k]];
 				if (x < b.Min.X || x > b.Max.X || z < b.Min.Z || z > b.Max.Z) continue;
 				if (b.Max.Y > ground && b.Max.Y <= feetY + stepHeight) ground = b.Max.Y;
@@ -235,7 +297,7 @@ namespace OpenEsport.Core
 			var dn = NearDyn(pos.X, pos.Z);
 			for (int pass = 0; pass < 2; pass++)
 			{
-				for (int k = 0; k < near.Length; k++) PushOut(ref pos, boxes[near[k]], radius, height, stepHeight);
+				for (int k = 0; k < near.Length; k++) if (Solid(near[k])) PushOut(ref pos, boxes[near[k]], radius, height, stepHeight);
 				for (int k = 0; k < dn.Length; k++) PushOut(ref pos, _dyn[dn[k]], radius, height, stepHeight);
 			}
 			return pos;
@@ -272,7 +334,11 @@ namespace OpenEsport.Core
 		}
 
 		public bool Raycast(Vec3 origin, Vec3 dir, float maxDist, out float dist)
+			=> Raycast(origin, dir, maxDist, out dist, out _);
+
+		public bool Raycast(Vec3 origin, Vec3 dir, float maxDist, out float dist, out int pane, bool includeBroken = false)
 		{
+			pane = -1;
 			dist = maxDist;
 			bool hit = false;
 
@@ -291,9 +357,10 @@ namespace OpenEsport.Core
 				{
 					var cell = _grid[cz * _gridW + cx];
 					for (int k = 0; k < cell.Length; k++)
-						if (RayAabb(origin, dir, boxes[cell[k]], out float t) && t >= 0 && t < dist)
+						if ((includeBroken || Solid(cell[k])) && RayAabb(origin, dir, boxes[cell[k]], out float t) && t >= 0 && t < dist)
 						{
 							dist = t;
+							pane = cell[k] >= _firstPane ? cell[k] - _firstPane : -1;
 							hit = true;
 						}
 					if (_dynGrid != null)
@@ -303,6 +370,7 @@ namespace OpenEsport.Core
 							if (RayAabb(origin, dir, _dyn[dcell[k]], out float t) && t >= 0 && t < dist)
 							{
 								dist = t;
+								pane = -1;
 								hit = true;
 							}
 					}
@@ -314,7 +382,7 @@ namespace OpenEsport.Core
 			}
 
 			// gaines de verre des tyroliennes
-			if (Data.Ziplines.Count > 0 && RayTunnel(origin, dir, dist, out float tTunnel)) { dist = tTunnel; hit = true; }
+			if (Data.Ziplines.Count > 0 && RayTunnel(origin, dir, dist, out float tTunnel)) { dist = tTunnel; pane = -1; hit = true; }
 
 			// relief : marche le long du rayon, puis affinage par dichotomie
 			float step = MathF.Max(Data.CellSize * 0.5f, 0.5f);
@@ -333,7 +401,7 @@ namespace OpenEsport.Core
 						float mid = (lo + hi) * 0.5f;
 						if (origin.Y + dir.Y * mid >= Data.HeightAt(origin.X + dir.X * mid, origin.Z + dir.Z * mid)) lo = mid; else hi = mid;
 					}
-					if (hi < dist) { dist = hi; hit = true; }
+					if (hi < dist) { dist = hi; pane = -1; hit = true; }
 					break;
 				}
 				prevAbove = above;

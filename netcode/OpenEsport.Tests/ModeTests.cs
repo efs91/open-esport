@@ -446,5 +446,36 @@ namespace OpenEsport.Tests
 			}
 			finally { Reset("mode.controlCaptureSeconds"); }
 		}
+			[Fact]
+		public void Sabotage_An_Enemy_In_Front_Is_Spotted_For_The_Team_But_Not_One_Behind()
+		{
+			using var rig = Make(GameMode.Sabotage, 4, humans: 2);
+			var p = Join(rig, 2);
+			var a = p[0]; var b = p[1];
+			Assert.NotEqual(SP(rig, a).Team, SP(rig, b).Team);
+			float g = rig.World.HeightAt(0, 0);
+			// a regarde vers -Z (yaw 0) ; b est 20 m devant lui, et regarde dans la même direction : il tourne le dos à a
+			rig.Teleport(a, new Vec3(0, g, 0)); rig.Teleport(b, new Vec3(0, g, -20));
+			a.Yaw = 0f; b.Yaw = 0f;
+			a.Events.Clear(); b.Events.Clear();
+			rig.Run(1.5);
+			Assert.Contains(a.Events, e => e.Type == EventType.Spotted && e.A == b.C.PlayerId);       // a voit b
+			Assert.DoesNotContain(b.Events, e => e.Type == EventType.Spotted && e.A == a.C.PlayerId);  // b ne voit pas a (dans son dos)
+		}
+
+		[Fact]
+		public void Hitting_An_Enemy_Tells_The_Shooters_Team_So_It_Shows_His_Health_Bars()
+		{
+			using var rig = new Rig(o => o.Match.TeamSize = 1);
+			var a = rig.Connect("Tireur"); var b = rig.Connect("Cible");
+			Assert.True(rig.WaitPlaying(a)); Assert.True(rig.WaitPlaying(b));
+			rig.Teleport(a, new Vec3(0, 0, 0)); rig.Teleport(b, new Vec3(0, 0, -10));
+			rig.Give(a, ItemIds.Ak); rig.Give(a, ItemIds.AmmoRifle, 60);
+			rig.Run(0.4);
+			a.Pitch = MathF.Atan2(1.0f - 1.6f, 10f);
+			a.Buttons = Buttons.Fire; rig.Run(0.4); a.Buttons = Buttons.None; rig.Run(0.2);
+			Assert.Contains(a.Events, e => e.Type == EventType.TeamHit && e.A == b.C.PlayerId);
+			Assert.DoesNotContain(b.Events, e => e.Type == EventType.TeamHit);                         // la cible n'en sait rien
+		}
 	}
 }

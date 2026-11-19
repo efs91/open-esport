@@ -157,24 +157,37 @@ Plugin d'éditeur `addons/open_esport_config` (onglet « Open Esport » à côt�
 ## Modes de jeu
 
 Menu Multijoueur > page « Mode de jeu » : Battle Royale, Deathmatch, Team Deathmatch, Capture du drapeau, Sabotage, Contrôle. Chaque mode a sa taille d'équipe et sa carte
-(`assets/maps/arene.world`, `drapeau.world`, `sabotage.world`, `controle.world`, et `frontiere01.world` pour le battle royale). Le serveur se lance avec `--mode br|dm|tdm|ctf|sab|ctl`
+(`assets/maps/relais.world` pour le Deathmatch, `arene.world` pour le Team Deathmatch, `drapeau.world`, `sabotage.world`, `controle.world`, et `frontiere01.world` pour le battle royale ; à copier toutes dans `MAPS_DIR` sur le serveur). Le serveur se lance avec `--mode br|dm|tdm|ctf|sab|ctl`
 (le matchmaking le fait : demande `MM?|version|taille|mode`, conteneur `open-esport-<mode>-<taille>-<port>`). Un seul humain suffit pour démarrer, des bots complètent les équipes.
 
 | Mode | Équipes | Règles par défaut (réglables : panneau Godot, groupes « Modes de jeu » et « Sabotage ») |
 |---|---|---|
-| Deathmatch | chacun pour soi, 2 à 20 | 20 éliminations ou 10 min ; réapparition 3 s, 2 s de protection, classe au choix |
+| Deathmatch | chacun pour soi, 2 à 20 | 20 éliminations ou 10 min ; réapparition 3 s, 2 s de protection ; règles d'arène (ci-dessous) |
 | Team Deathmatch | 2 équipes de 2 à 5 | 50 éliminations d'équipe ou 12 min |
 | Capture du drapeau | 2 équipes de 4 ou 5 | 3 prises ou 12 min ; drapeau lâché : retour à la base après 20 s ; porteur ralenti de 10 % |
 | Sabotage | 2 équipes de 4 ou 5 | premier à 7 manches, mi-temps (camps échangés, argent remis à zéro) ; achat 15 s, manche 1 min 55, bombe 40 s, pose 3 s, désamorçage 5 s (3 s avec kit) ; économie à la Counter-Strike (touche B : boutique) |
 | Contrôle | 2 équipes de 5 à 10 | 5 points (base bleue, A, B, C, base rouge) à capturer en restant dessus (5 s, plus vite à plusieurs, bloqué si les deux équipes y sont) ; chaque seconde l'équipe qui tient le plus de points marque l'écart ; 100 points |
 
-Hors battle royale, pas de butin : on choisit sa classe (touche C : Assaut, Appui, Éclaireur, Fusil à pompe, Tireur) appliquée à chaque réapparition. Les bots jouent l'objectif : points, drapeau, bombe.
+Hors battle royale et Deathmatch, pas de butin : on choisit sa classe (touche C : Assaut, Appui, Éclaireur, Fusil à pompe, Tireur) appliquée à chaque réapparition. Les bots jouent l'objectif : points, drapeau, bombe.
+
+**Deathmatch : règles d'arène** (`ArenaRules`, `GameServer.Arena.cs`), sur la carte « Relais » (3 niveaux, tremplins, téléporteurs) :
+- départ au pistolet léger P2020 (18 dégâts, 420 coups/min, 10 balles) avec un viseur point rouge et un bouclier épique vide ; pas de classe, pas de grenade ;
+- chaque point de butin de la carte est un emplacement fixe. Les armes (épiques, légendaires pour le sniper et la LMG, les plus dures d'accès) ont leur viseur monté d'office (non démontable) et se prennent en passant dessus (sauf une arme qu'on a déjà) : dans un emplacement libre, sinon à la place de l'arme en main, qui disparaît. Une arme revient à sa place 2 s après la mort de son porteur (ou dès qu'il l'a remplacée) ;
+- soins, boucliers et munitions se prennent en marchant dessus (seulement s'ils servent), agissent tout de suite et reviennent après 20 s (soins), 30 s (boucliers), 15 s (munitions) ;
+- on ne jette rien, rien ne tombe à la mort, les viseurs ne se déplacent pas ;
+- la vie (pas le bouclier) remonte seule 5 s après la dernière blessure, 1 PV toutes les 0,3 s ; une élimination rend 50 PV (sans dépasser 100) ;
+- tremplins (`JumpPad` : vol en cloche vers un point, sans correction en l'air) et téléporteurs (`Teleporter` : sortie et direction) sont dans le fichier de carte (format 9) et simulés par `PlayerMovement`, donc prédits par le client ;
+- les bots utilisent une navigation à plusieurs niveaux (`LayeredNav` : sols superposés, escaliers, sauts de rebord, tremplins et téléporteurs) et vont chercher armes, soins et boucliers.
 
 ### Cartes des modes
 
 Cartes simples (un sol, des abris, les points d'attention), scènes dans `scenes/maps/` générées par `python tools/map/gen_mode_maps.py` puis éditables dans Godot :
 `CoverBox` (abris), `MapMarker` (apparitions, points de contrôle, bases de drapeau, sites de bombe). Onglet « Carte (export) » du panneau Open Esport : exporte la scène choisie en `.world`
 (ou : `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Arene.tscn --out=res://assets/maps/arene.world`).
+
+Carte « Relais » du Deathmatch : `python tools/map/gen_relais_map.py` (premier jet, refuse d'écraser la scène ; `--check` vérifie les trajectoires des tremplins), puis édition dans Godot
+(`ArenaJumpPad` et son enfant « Cible », `ArenaTeleporter` et son enfant « Sortie », points de butin `ObjetButin`) et export :
+`Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Relais.tscn --out=res://assets/maps/relais.world`.
 
 ## Groupes, amis et tournois (service de comptes)
 

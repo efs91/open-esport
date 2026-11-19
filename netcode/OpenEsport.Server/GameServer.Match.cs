@@ -58,7 +58,7 @@ namespace OpenEsport.Server
 					else _idleTimer = 0f;
 					break;
 				case MatchPhase.Playing:
-					if (Modal) { TickModal(dt); break; }
+					if (Modal) { TickModal(dt); TickSpotting(); break; }
 					TickDowned(dt);
 					TickZone(dt);
 					break;
@@ -314,6 +314,7 @@ namespace OpenEsport.Server
 			foreach (var b in _players.ToArray()) if (b.IsBot) RemoveBot(b);
 			_zone = null;
 			ClearProjectiles();
+			for (int i = 0; i < _world.Windows.Length; i++) _world.SetWindow(i, WindowState.New);
 			ClearGrenades();
 			ClearLoot();
 			SpawnInitialLoot();
@@ -326,6 +327,58 @@ namespace OpenEsport.Server
 		{
 			for (int i = 0; i < _lootHigh; i++) _loot[i].Active = false;
 			_lootHigh = 0; _freeLoot.Clear(); _lootDirty = true;
+		}
+
+		// ------------------------------------------------------------------ repérage (barres de vie des adversaires touchés, mini-carte du Sabotage)
+
+		/// <summary>Envoie un événement aux joueurs humains d'une équipe (A = sujet).</summary>
+		private void NotifyTeam(byte team, EventType type, ushort subject)
+		{
+			foreach (var h in _humans)
+				if (h.Team == team) SendEvent(h, new ServerEvent { Type = type, A = subject });
+		}
+
+		/// <summary>Distance et demi-angle de vue (degrés) dans lesquels un joueur repère un adversaire, et période des contrôles (ticks).</summary>
+		private const float SpotRange = 150f, SpotHalfAngle = 55f;
+		private const int SpotEveryTicks = 15;
+		/// <summary>Dernier envoi « repéré » par (équipe, adversaire), pour ne le renvoyer qu'une fois par seconde tant qu'il reste en vue.</summary>
+		private readonly Dictionary<(byte team, ushort enemy), uint> _spotSent = new Dictionary<(byte, ushort), uint>();
+
+		/// <summary>
+		/// Sabotage : un adversaire n'apparaît sur la carte que s'il est vu par un joueur de l'équipe (dans son champ de vision, sans mur entre eux)
+		/// ou touché par elle (voir <see cref="EventType.TeamHit"/>). Le contrôle se fait 4 fois par seconde ; l'information est renvoyée chaque seconde.
+		/// </summary>
+		private void TickSpotting()
+		{
+			if (_opt.Mode != GameMode.Sabotage || _tick % SpotEveryTicks != 0) return;
+			float cosLimit = MathF.Cos(SpotHalfAngle * MathF.PI / 180f);
+			uint resend = (uint)_m.TickRate;
+			foreach (var enemy in _players)
+			{
+				if (!enemy.Alive) continue;
+				Vec3 chest = enemy.State.Pos + new Vec3(0, 1.0f, 0);
+				for (byte team = 0; team < 2; team++)
+				{
+					if (team == enemy.Team) continue;
+					if (_spotSent.TryGetValue((team, enemy.Id), out uint last) && _tick - last < resend) continue;
+					foreach (var p in _players)
+					{
+						if (p.Team != team || !p.Alive) continue;
+						Vec3 eye = p.State.Pos + new Vec3(0, Sim.EyeFor(p.State.Stance), 0);
+						Vec3 to = chest - eye;
+						float dist = to.Length();
+						if (dist < 0.01f || dist > SpotRange) continue;
+						// champ de vision horizontal : le regard (yaw) contre la direction de l'adversaire
+						float fx = -MathF.Sin(p.Yaw), fz = -MathF.Cos(p.Yaw);
+						float hl = MathF.Sqrt(to.X * to.X + to.Z * to.Z);
+						if (hl > 0.5f && (fx * to.X + fz * to.Z) / hl < cosLimit) continue;
+						if (_world.Raycast(eye, to / dist, dist, out float wall) && wall < dist - 0.5f) continue;
+						_spotSent[(team, enemy.Id)] = _tick;
+						NotifyTeam(team, EventType.Spotted, enemy.Id);
+						break;
+					}
+				}
+			}
 		}
 
 		// ------------------------------------------------------------------ chute en équipe : chef de saut

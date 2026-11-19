@@ -8,8 +8,10 @@ namespace OpenEsport.Core
 	/// franchissable et si aucun obstacle (mur, rocher, tronc, pilier…) ne bloque le corps d'un joueur à cet endroit. Sert à chercher
 	/// des chemins (A*) qui contournent les obstacles et passent par les portes. Elle ne dépend d'aucun moteur : le serveur dédié l'utilise.
 	/// </summary>
-	public sealed class NavGrid
+	public sealed class NavGrid : INav
 	{
+		public bool IsPortal(Vec3 waypoint) => false;
+
 		public const float Cell = 1f;
 		/// <summary>Marge (m) autour des obstacles : le rayon d'un joueur (0,4 m) : une porte de 2 m reste franchissable.</summary>
 		private const float Margin = 0.4f;

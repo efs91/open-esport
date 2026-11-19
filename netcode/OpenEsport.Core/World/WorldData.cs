@@ -52,6 +52,22 @@ namespace OpenEsport.Core
 		public float Dist;
 	}
 
+	/// <summary>Tremplin d'arène : celui qui marche dessus (disque de rayon <see cref="Radius"/> autour de <see cref="Pos"/>) est projeté en cloche
+	/// jusqu'au point <see cref="Target"/>, qu'il atteint en <see cref="Time"/> secondes ; pas de correction en l'air pendant le vol.</summary>
+	public struct JumpPad
+	{
+		public Vec3 Pos, Target;
+		public float Radius, Time;
+	}
+
+	/// <summary>Téléporteur : celui qui entre dans le disque de rayon <see cref="Radius"/> autour de <see cref="Pos"/> réapparaît en <see cref="Dest"/>,
+	/// tourné vers <see cref="Yaw"/> (radians, comme les joueurs), avec sa vitesse horizontale dans cette direction.</summary>
+	public struct Teleporter
+	{
+		public Vec3 Pos, Dest;
+		public float Radius, Yaw;
+	}
+
 	/// <summary>
 	/// Un point de butin posé dans l'éditeur (nœud LootPoint de la carte) : un objet au sol ou un coffre.
 	/// Les points désactivés à la main ne sont pas écrits dans le fichier. Les autres sont soit toujours présents, soit tirés au sort
@@ -133,11 +149,12 @@ namespace OpenEsport.Core
 	public sealed class WorldData
 	{
 		private const uint Magic = 0x3157454F; // "OEW1"
-		private const ushort FormatVersion = 7;
+		private const ushort FormatVersion = 9;
 
 		public float OriginX, OriginZ, CellSize = 1f;
 		public int Width, Depth;
 		public float[] Heights = new float[0];
+		public readonly List<Aabb> Panes = new List<Aabb>();
 		public List<Aabb> Boxes = new List<Aabb>();
 		/// <summary>Anciennes cartes (format 2) : un emplacement de butin sur douze était un coffre.</summary>
 		private const int LegacyChestEvery = 12;
@@ -163,6 +180,9 @@ namespace OpenEsport.Core
 		public List<LootSpawn> LootSpawns = new List<LootSpawn>();
 		public List<ZipLine> Ziplines = new List<ZipLine>();
 		public List<LaunchPad> Pads = new List<LaunchPad>();
+		/// <summary>Tremplins d'arène (vers un point) et téléporteurs (format 9).</summary>
+		public List<JumpPad> Jumps = new List<JumpPad>();
+		public List<Teleporter> Teleports = new List<Teleporter>();
 		/// <summary>Points d'attention des modes de jeu (voir <see cref="MapPoint"/>).</summary>
 		public List<MapPoint> Points = new List<MapPoint>();
 
@@ -201,8 +221,18 @@ namespace OpenEsport.Core
 			Mix((uint)BitConverter.SingleToInt32Bits(OriginX)); Mix((uint)BitConverter.SingleToInt32Bits(OriginZ));
 			for (int i = 0; i < Heights.Length; i += 7) Mix((uint)BitConverter.SingleToInt32Bits(Heights[i]));
 			Mix((uint)Boxes.Count);
+			void MixPoint(Vec3 point)
+			{
+				Mix((uint)BitConverter.SingleToInt32Bits(point.X));
+				Mix((uint)BitConverter.SingleToInt32Bits(point.Y));
+				Mix((uint)BitConverter.SingleToInt32Bits(point.Z));
+			}
+			foreach (var pane in Panes) { MixPoint(pane.Min); MixPoint(pane.Max); }
 			Mix((uint)Ziplines.Count); Mix((uint)Pads.Count);
 			foreach (var z in Ziplines) Mix((uint)BitConverter.SingleToInt32Bits(z.Length));
+			Mix((uint)Jumps.Count); Mix((uint)Teleports.Count);
+			foreach (var j in Jumps) { MixPoint(j.Pos); MixPoint(j.Target); }
+			foreach (var t in Teleports) { MixPoint(t.Pos); MixPoint(t.Dest); }
 			return h;
 		}
 
@@ -260,6 +290,12 @@ namespace OpenEsport.Core
 				foreach (var p in Pads) { WriteVec(w, p.Pos); w.Write(p.Line); w.Write(p.Dist); }
 				w.Write(Points.Count);
 				foreach (var p in Points) { w.Write((byte)p.Kind); w.Write(p.Team); w.Write(p.Index); WriteVec(w, p.Pos); w.Write(p.Radius); w.Write(p.Yaw); }
+				w.Write(Panes.Count);
+				foreach (var pane in Panes) { WriteVec(w, pane.Min); WriteVec(w, pane.Max); }
+				w.Write(Jumps.Count);
+				foreach (var j in Jumps) { WriteVec(w, j.Pos); WriteVec(w, j.Target); w.Write(j.Radius); w.Write(j.Time); }
+				w.Write(Teleports.Count);
+				foreach (var t in Teleports) { WriteVec(w, t.Pos); WriteVec(w, t.Dest); w.Write(t.Radius); w.Write(t.Yaw); }
 			}
 		}
 
@@ -320,6 +356,21 @@ namespace OpenEsport.Core
 				{
 					int np = r.ReadInt32();
 					for (int i = 0; i < np; i++) d.Points.Add(new MapPoint { Kind = (MapPointKind)r.ReadByte(), Team = r.ReadByte(), Index = r.ReadByte(), Pos = ReadVec(r), Radius = r.ReadSingle(), Yaw = r.ReadSingle() });
+				}
+				if (version >= 8)
+				{
+					int count = r.ReadInt32();
+					if (count < 0 || count > WindowState.MaxPanes) throw new InvalidDataException("Nombre de vitres invalide");
+					for (int i = 0; i < count; i++) d.Panes.Add(new Aabb(ReadVec(r), ReadVec(r)));
+				}
+				if (version >= 9)
+				{
+					int nj = r.ReadInt32();
+					if (nj < 0 || nj > 4096) throw new InvalidDataException("Nombre de tremplins invalide");
+					for (int i = 0; i < nj; i++) d.Jumps.Add(new JumpPad { Pos = ReadVec(r), Target = ReadVec(r), Radius = r.ReadSingle(), Time = r.ReadSingle() });
+					int nt = r.ReadInt32();
+					if (nt < 0 || nt > 4096) throw new InvalidDataException("Nombre de téléporteurs invalide");
+					for (int i = 0; i < nt; i++) d.Teleports.Add(new Teleporter { Pos = ReadVec(r), Dest = ReadVec(r), Radius = r.ReadSingle(), Yaw = r.ReadSingle() });
 				}
 			}
 			d.RecomputeBounds();

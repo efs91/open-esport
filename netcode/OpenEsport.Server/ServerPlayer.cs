@@ -74,6 +74,9 @@ namespace OpenEsport.Server
 		/// <summary>Classement de l'équipe quand elle est éliminée (0 = en jeu).</summary>
 		public byte Placement;
 		public ServerPlayer LastAttacker;
+		/// <summary>Tick de la dernière blessure (Deathmatch : la vie remonte seule quelques secondes après) et temps accumulé de régénération.</summary>
+		public uint LastHurtTick;
+		public float RegenClock;
 		/// <summary>Coéquipier à terre qu'on est en train de relever, et temps restant.</summary>
 		public ServerPlayer ReviveTarget;
 		public float ReviveLeft;

@@ -81,7 +81,7 @@ namespace OpenEsport.Server
 				Vec3 dir = step / len;
 
 				float reach = len;
-				bool wall = _world.Raycast(b.Pos, dir, len, out float wallDist);
+				bool wall = _world.Raycast(b.Pos, dir, len, out float wallDist, out int pane);
 				if (wall) reach = wallDist;
 
 				// là où le tireur voyait les autres au moment de tirer, décalé du temps de vol
@@ -110,7 +110,12 @@ namespace OpenEsport.Server
 					b.Active = false;
 					continue;
 				}
-				if (wall) { b.Active = false; continue; }
+				if (wall)
+				{
+					if (pane >= 0) HitWindow(pane, b.Damage);
+					b.Active = false;
+					continue;
+				}
 
 				b.Pos = b.Pos + step;
 				b.Travelled += len;

@@ -75,7 +75,11 @@ namespace OpenEsport.Core
 				return true;
 			}
 			float t = (renderTick - _ticks[a]) / (float)(_ticks[b] - _ticks[a]);
-			Fill(ref result, sa, _states[b], Math.Clamp(t, 0f, 1f), q);
+			t = Math.Clamp(t, 0f, 1f);
+			// téléporteur, réapparition : plus de 4 m par tick à l'horizontale, ce n'est pas un déplacement : on saute d'une position à l'autre
+			float jx = q.DX(_states[b].X) - q.DX(sa.X), jz = q.DZ(_states[b].Z) - q.DZ(sa.Z);
+			if (jx * jx + jz * jz > 16f * (float)(_ticks[b] - _ticks[a]) * (_ticks[b] - _ticks[a])) t = t < 0.5f ? 0f : 1f;
+			Fill(ref result, sa, _states[b], t, q);
 			return true;
 		}
 

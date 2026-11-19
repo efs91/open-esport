@@ -7,7 +7,7 @@ using Xunit;
 
 namespace OpenEsport.Tests
 {
-	/// <summary>Carte du Sabotage « Poste Frontière » (assets/maps/sabotage.world, produite par tools/map/gen_sabotage_map.py) : deux sites, des apparitions de chaque côté, et des routes praticables.</summary>
+	/// <summary>Carte du Sabotage « Terminal des Cimes » (assets/maps/sabotage.world, produite par tools/map/gen_sabotage_map.py) : deux sites, des apparitions de chaque côté, et des routes praticables.</summary>
 	[Collection("Network")]
 	public class SabotageMapTests
 	{
@@ -47,8 +47,30 @@ namespace OpenEsport.Tests
 					// les attaquants (loin) mettent une vingtaine de secondes, les défenseurs moins
 					System.Console.WriteLine($"DBG spawn {spawn.Pos} team {spawn.Team} -> site {site.Index} {site.Pos}: {len:F0} m, {path.Count} points");
 					if (spawn.Team == 1) Assert.InRange(len, 90f, 190f);
-					else Assert.InRange(len, 25f, 140f);
+					else Assert.InRange(len, 85f, 140f);
 				}
+		}
+
+		[Theory]
+		[InlineData(true)]
+		[InlineData(false)]
+		public void AttackersCanReachBothSitesUsingEitherTheOuterRoutesOrDispatch(bool closeDispatch)
+		{
+			var map = Load();
+			// Exclude the defenders' rear loop so a path cannot enter a site through the other one.
+			map.Boxes.Add(new Aabb(new Vec3(-96, 0, -90), new Vec3(96, 5, -35)));
+			if (closeDispatch)
+				map.Boxes.Add(new Aabb(new Vec3(-43, 0, -30), new Vec3(43, 5, 20)));
+			else
+			{
+				map.Boxes.Add(new Aabb(new Vec3(-90, 0, 18), new Vec3(-44, 5, 23)));
+				map.Boxes.Add(new Aabb(new Vec3(44, 0, 18), new Vec3(90, 5, 23)));
+			}
+			var nav = new NavGrid(map);
+			var path = new List<Vec3>();
+			foreach (var spawn in map.PointsOf(MapPointKind.SpawnTeam).Where(s => s.Team == 1))
+				foreach (var site in map.PointsOf(MapPointKind.BombSite))
+					Assert.True(nav.FindPath(spawn.Pos, site.Pos, path, 60000));
 		}
 
 		[Fact]

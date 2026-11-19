@@ -45,7 +45,7 @@ namespace OpenEsport.Core
 			new ModeInfo { Mode = GameMode.BattleRoyale, Key = "br", Label = "Battle Royale", Description = "Largage en avion, butin, zone qui se referme : le dernier en vie gagne.",
 				TeamSizes = new[] { 1, 2, 3, 4, 5 }, TwoTeams = false, MapFile = "frontiere01.world", MapScene = "res://scenes/maps/Frontiere01.tscn", PlayersFor = s => 30, RespawnSeconds = 0f },
 			new ModeInfo { Mode = GameMode.Deathmatch, Key = "dm", Label = "Deathmatch", Description = "Chacun pour soi, réapparition : le premier à 20 éliminations gagne.",
-				TeamSizes = new[] { 1 }, TwoTeams = false, MapFile = "arene.world", MapScene = "res://scenes/maps/Arene.tscn", PlayersFor = s => 10, RespawnSeconds = 3f },
+				TeamSizes = new[] { 1 }, TwoTeams = false, MapFile = "relais.world", MapScene = "res://scenes/maps/Relais.tscn", PlayersFor = s => 10, RespawnSeconds = 3f },
 			new ModeInfo { Mode = GameMode.TeamDeathmatch, Key = "tdm", Label = "Team Deathmatch", Description = "Deux équipes, réapparition : la première à 50 éliminations gagne.",
 				TeamSizes = new[] { 2, 3, 4, 5 }, TwoTeams = true, MapFile = "arene.world", MapScene = "res://scenes/maps/Arene.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 3f },
 			new ModeInfo { Mode = GameMode.CaptureTheFlag, Key = "ctf", Label = "Capture du drapeau", Description = "Prends le drapeau adverse, rapporte-le au tien : 3 prises pour gagner.",

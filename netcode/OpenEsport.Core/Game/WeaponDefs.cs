@@ -37,6 +37,8 @@ namespace OpenEsport.Core
 		{
 			Add(new WeaponDef { Id = ItemIds.Knife, Damage = 40, RoundsPerMinute = 90, Melee = true, Range = 2.2f, Automatic = false });
 			Add(new WeaponDef { Id = ItemIds.C19, Damage = 45, RoundsPerMinute = 150, MagazineSize = 6, Range = 300, SpreadDegrees = 0.25f, ReloadSeconds = 2.3f, AmmoType = 1, BulletSpeed = 500 });
+			// pistolet léger (façon P2020) : peu de dégâts, tir semi-automatique rapide ; c'est l'arme de départ du Deathmatch
+			Add(new WeaponDef { Id = ItemIds.P2020, Damage = 18, RoundsPerMinute = 420, MagazineSize = 10, Range = 200, SpreadDegrees = 0.35f, ReloadSeconds = 1.3f, AmmoType = 1, BulletSpeed = 480 });
 			Add(new WeaponDef { Id = ItemIds.Smg45, Damage = 12, RoundsPerMinute = 1080, MagazineSize = 20, Automatic = true, Range = 200, SpreadDegrees = 0.7f, ReloadSeconds = 1.9f, AmmoType = 1, BulletSpeed = 500 });
 			Add(new WeaponDef { Id = ItemIds.Ak, Damage = 14, RoundsPerMinute = 810, MagazineSize = 18, Automatic = true, Range = 400, SpreadDegrees = 0.3f, ReloadSeconds = 2.2f, AmmoType = 2, BulletSpeed = 560 });
 			Add(new WeaponDef { Id = ItemIds.Lmg63, Damage = 19, RoundsPerMinute = 540, MagazineSize = 35, Automatic = true, Range = 400, SpreadDegrees = 0.35f, ReloadSeconds = 3.6f, AmmoType = 2, BulletSpeed = 540 });

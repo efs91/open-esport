@@ -152,7 +152,7 @@ namespace OpenEsport.Server
 			_quant = new Quantizer(_data.MinX, _data.MinHeight - 32f, _data.MinZ);
 			_slots = new ServerPlayer[_m.MaxPlayers];
 			SetupAccounts(options);
-			if (_opt.FillBots) _nav = new NavGrid(_data);      // la grille de navigation des bots se construit une fois, au démarrage
+			if (_opt.FillBots) _nav = Navigation.For(_data);      // la grille de navigation des bots se construit une fois, au démarrage
 			_packed = new EntityState[_m.MaxPlayers];
 			_teams = new TeamRoster(_m.TeamSize);
 			_mode = options.Mode != GameMode.BattleRoyale ? CreateMode(this, options.Mode) : null;
@@ -419,8 +419,10 @@ namespace OpenEsport.Server
 			accept.Write(_tmp);
 			peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.ReliableOrdered);
 			GiveStartingLoadout(p);
-			if (Modal) ApplyKit(p, Loadouts.Get(p.ClassId));
+			if (Modal) ApplyKit(p, _mode.KitFor(p));
 			SendInventory(p);
+			for (int i = 0; i < _world.Windows.Length; i++)
+				if (!_world.Windows[i].IsNew) SendEvent(p, WindowEvent(i));
 			BroadcastRoster();
 			Log($"+ {p.Name} (joueur {p.Id}, équipe {p.Team}) — {_players.Count}/{_m.MaxPlayers}");
 		}

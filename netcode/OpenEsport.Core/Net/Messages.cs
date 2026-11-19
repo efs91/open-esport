@@ -95,6 +95,14 @@ namespace OpenEsport.Core
 		Flashed = 8,
 		/// <summary>Aux équipiers (et à l'auteur) : un ping. A = auteur, C = type (0 ici, 1 danger, 2 ennemi), Pos = lieu désigné.</summary>
 		Ping = 9,
+		WindowChanged = 10, // A = pane index, B = health, C = reinforced
+		/// <summary>Au tireur et à ses équipiers : un adversaire vient d'être touché (A = adversaire). Le client affiche sa barre de vie et de bouclier 3 s.</summary>
+		TeamHit = 11,
+		/// <summary>Sabotage, à une équipe : un adversaire est vu par un de ses joueurs (A = adversaire). Il apparaît 3 s sur la mini-carte et la grande carte.</summary>
+		Spotted = 12,
+		/// <summary>Deathmatch, au joueur : il vient de prendre un objet d'arène (A = joueur, C = objet, Pos = emplacement) ; son de ramassage.</summary>
+		ArenaPickup = 13,
+
 	}
 
 	public enum CommandType : byte
@@ -129,7 +137,7 @@ namespace OpenEsport.Core
 
 	public static class Protocol
 	{
-		public const ushort Version = 28;
+		public const ushort Version = 30;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";

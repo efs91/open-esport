@@ -36,6 +36,8 @@ namespace OpenEsport.Core
 				else if (TryGrab(ref s, world, s.AssistLine - 1, sy, cy)) return;
 			}
 			if (s.OnGround && world.PadAt(s.Pos, out var pad)) Launch(ref s, pad, world);
+			if (world.TeleportAt(s.Pos, out var tp)) Teleport(ref s, tp, world);
+			if (s.OnGround && world.JumpPadAt(s.Pos, out var jp)) Jump(ref s, jp);
 
 			float f = inp.Forward / 127f, r = inp.Strafe / 127f;
 			// escalade : en l'air, saut maintenu et face à un rebord à portée de main
@@ -386,6 +388,34 @@ namespace OpenEsport.Core
 			s.OnGround = false;
 			s.AssistLine = (ushort)(pad.Line + 1);
 			s.Stance = Stance.Standing;
+		}
+
+		/// <summary>Valeur de <see cref="PlayerState.AssistLine"/> pendant le vol d'un tremplin d'arène : aucun câble visé, mais pas de correction en l'air.</summary>
+		public const ushort JumpFlight = 4095;
+
+		/// <summary>Tremplin d'arène : vol en cloche jusqu'au point visé, sans correction en l'air (comme un tremplin de tyrolienne).</summary>
+		private static void Jump(ref PlayerState s, JumpPad pad)
+		{
+			float T = MathF.Max(0.3f, pad.Time);
+			float dx = pad.Target.X - s.Pos.X, dz = pad.Target.Z - s.Pos.Z, dy = pad.Target.Y - s.Pos.Y;
+			s.Vel = new Vec3(dx / T, (dy + 0.5f * Sim.Gravity * T * T) / T, dz / T);
+			s.OnGround = false;
+			s.AssistLine = JumpFlight;
+			s.Stance = Stance.Standing;
+			s.SlideSpeed = 0f;
+		}
+
+		/// <summary>Téléporteur : on ressort à la sortie, tourné vers sa direction, avec sa vitesse horizontale (au moins un pas pour quitter la sortie).</summary>
+		private static void Teleport(ref PlayerState s, Teleporter tp, IWorld world)
+		{
+			float speed = MathF.Max(Sim.BaseSpeed, new Vec3(s.Vel.X, 0, s.Vel.Z).Length());
+			float sy = MathF.Sin(tp.Yaw), cy = MathF.Cos(tp.Yaw);
+			float ground = world.GroundAt(tp.Dest.X, tp.Dest.Z, tp.Dest.Y + 0.4f, Sim.StepHeight);
+			s.Pos = new Vec3(tp.Dest.X, MathF.Abs(ground - tp.Dest.Y) < 1.5f ? ground : tp.Dest.Y, tp.Dest.Z);
+			s.Vel = new Vec3(-sy * speed, 0f, -cy * speed);
+			s.OnGround = true;
+			s.AssistLine = 0;
+			if (s.Stance == Stance.Sliding) { s.SlideDirX = -sy; s.SlideDirZ = -cy; }
 		}
 
 		private static void EndSlide(ref PlayerState s, bool crouchHeld)

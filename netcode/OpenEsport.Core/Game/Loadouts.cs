@@ -18,6 +18,45 @@ namespace OpenEsport.Core
 		public int HealSmall, ShieldSmall;
 		/// <summary>Grenades emportées (une entrée par grenade : ItemIds.GrenadeFrag…).</summary>
 		public byte[] Grenades;
+		/// <summary>Le bouclier est porté vide (Deathmatch : il se remplit avec les boucliers ramassés).</summary>
+		public bool ShieldEmpty;
+		/// <summary>Niveau (blanc 0 à rouge 3) des armes de départ.</summary>
+		public byte WeaponTier;
+	}
+
+	/// <summary>
+	/// Règles du Deathmatch (arène à la Quake) : on démarre au pistolet avec un bouclier épique vide ; les armes (épiques ou légendaires, viseur fixé)
+	/// sont toujours au même endroit et y réapparaissent quand leur porteur meurt ; tout (armes, soins, boucliers, munitions) se prend en marchant dessus ; soins, boucliers et munitions
+	/// agissent tout de suite et réapparaissent après un délai. On ne jette rien et rien ne tombe à la mort.
+	/// </summary>
+	public static class ArenaRules
+	{
+		public static readonly ClassKit StartKit = new ClassKit { Id = 0, Name = "Arène", Description = "Pistolet P2020 avec viseur point rouge, bouclier épique vide.", Primary = ItemIds.P2020, PrimaryOptic = ItemIds.OpticRedDot, ReserveMagazines = 3, ShieldTier = (int)ItemTier.Epic, ShieldEmpty = true };
+
+		/// <summary>Viseur monté d'office sur chaque arme d'arène (non démontable).</summary>
+		public static byte OpticFor(byte weaponId) => weaponId switch
+		{
+			ItemIds.P2020 => ItemIds.OpticRedDot,
+			ItemIds.C19 => ItemIds.OpticRedDot,
+			ItemIds.Smg45 => ItemIds.OpticRedDot,
+			ItemIds.Ak => ItemIds.Optic2x,
+			ItemIds.Lmg63 => ItemIds.OpticHolo,
+			ItemIds.Sniper => ItemIds.Optic4x,
+			_ => ItemIds.None,
+		};
+
+		/// <summary>Chargeurs de réserve donnés avec une arme ramassée.</summary>
+		public const int MagazinesWithWeapon = 2;
+		/// <summary>Délais de réapparition (s) des objets à effet immédiat.</summary>
+		public const float HealRespawn = 20f, ShieldRespawn = 30f, AmmoRespawn = 15f;
+		/// <summary>Délai avant qu'une arme revienne à sa place une fois son porteur mort (s).</summary>
+		public const float WeaponRespawn = 2f;
+		/// <summary>Régénération de la vie (pas du bouclier) : elle commence <see cref="RegenDelay"/> s après la dernière blessure, 1 PV toutes les <see cref="RegenInterval"/> s.</summary>
+		public const float RegenDelay = 5f, RegenInterval = 0.3f;
+		/// <summary>Vie rendue à celui qui élimine un adversaire (sans dépasser 100).</summary>
+		public const float KillHeal = 50f;
+		/// <summary>Portée (m) à laquelle on ramasse un objet en marchant dessus.</summary>
+		public const float WalkPickupRange = 1.3f;
 	}
 
 	public static class Loadouts

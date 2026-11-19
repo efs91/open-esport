@@ -220,7 +220,17 @@ namespace OpenEsport.Core
 					case MsgType.JoinAccept: HandleJoinAccept(); break;
 					case MsgType.JoinReject: Fail(_reader.ReadString()); break;
 					case MsgType.Snapshot: HandleSnapshot(); break;
-					case MsgType.Event: { var e = ServerEvent.Read(_reader); if (!_reader.Overflow) EventReceived?.Invoke(e); break; }
+					case MsgType.Event:
+					{
+						var e = ServerEvent.Read(_reader);
+						if (!_reader.Overflow)
+						{
+							if (e.Type == EventType.WindowChanged && _world is StaticWorld world && e.A < world.Windows.Length)
+								world.SetWindow(e.A, new WindowState(e.B, e.C != 0));
+							EventReceived?.Invoke(e);
+						}
+						break;
+					}
 					case MsgType.Roster: { var r = Messages.ReadRoster(_reader); if (!_reader.Overflow) { Roster = r; RosterChanged?.Invoke(); } break; }
 					case MsgType.Grenades: { var gl = Messages.ReadGrenades(_reader); if (!_reader.Overflow) { Grenades = gl; GrenadesChanged?.Invoke(); } break; }
 					case MsgType.Inventory: { var inv = InventoryState.Read(_reader); if (!_reader.Overflow) { Inventory = inv; InventoryChanged?.Invoke(); } break; }
@@ -242,6 +252,10 @@ namespace OpenEsport.Core
 				Fail("La carte du serveur ne correspond pas à celle du client");
 				return;
 			}
+			// The initial state is intact. The server follows JoinAccept with changes for this match.
+			if (_world is StaticWorld world)
+				for (int i = 0; i < world.Windows.Length; i++)
+					if (!world.Windows[i].IsNew) world.SetWindow(i, WindowState.New);
 			PlayerId = m.PlayerId;
 			TeamId = m.Team;
 			TickRate = m.TickRate;
@@ -409,6 +423,8 @@ namespace OpenEsport.Core
 		/// </summary>
 		/// <summary>Objet sous le viseur au moment d'interagir (voir <see cref="PlayerInput.Target"/>) : le client choisit ce qu'il montre, le serveur vérifie.</summary>
 		public ushort InteractTarget;
+		/// <summary>Le joueur vient de passer un téléporteur : direction (lacet) de la sortie, vers laquelle tourner la caméra.</summary>
+		public event Action<float> Teleported;
 
 		public void Tick(float forward, float strafe, Buttons buttons, int slot, float yaw, float pitch)
 		{
@@ -418,7 +434,17 @@ namespace OpenEsport.Core
 			if (Alive)
 			{
 				if (Passenger) ExtrapolatePassenger(ref Predicted);
-				else PlayerMovement.Step(ref Predicted, input, _world, Dt, MoveScale);
+				else
+				{
+					var before = Predicted.Pos;
+					PlayerMovement.Step(ref Predicted, input, _world, Dt, MoveScale);
+					// téléporteur : la caméra se tourne vers la sortie (la vitesse, elle, a déjà été orientée par la simulation)
+					if (Vec3.Distance(before, Predicted.Pos) > 4f && _world is StaticWorld sw && sw.TeleportExit(Predicted.Pos, out float exitYaw))
+					{
+						VisualOffset = Vec3.Zero;
+						Teleported?.Invoke(exitYaw);
+					}
+				}
 			}
 			_pending.Add(input);
 			if (_pending.Count > 120) _pending.RemoveRange(0, _pending.Count - 120);

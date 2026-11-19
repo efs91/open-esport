@@ -36,7 +36,7 @@ namespace OpenEsport.Core
 		public static float BaseSpeed, SprintMultiplier, CrouchMultiplier, Acceleration, Deceleration, Gravity, JumpSpeed;
 		public static float SlideStartMultiplier, SlideMaxMultiplier, SlideCooldown, SlideFlatDeceleration, SlideDownAcceleration, SlideUpDeceleration;
 		public static float BulletSpeed, BulletGravity, HeadMultiplier, TorsoMultiplier, LimbMultiplier;
-		public static float ChestSecondWeaponChance, ChestAccessoryChance, ChestSupplyChance, ItemPointChance, ChestPointChance, QualityMajority, ExtraSupplyChance, ZoneRampPerTick, ZoneRampMax, ExtraAmmoChance, AmmoAmountMultiplier;
+		public static float ChestSecondWeaponChance, ChestAccessoryChance, ChestSupplyChance, ChestGrenadeChance, GroundGrenadeShare, ItemPointChance, ChestPointChance, QualityMajority, ExtraSupplyChance, ZoneRampPerTick, ZoneRampMax, ExtraAmmoChance, AmmoAmountMultiplier;
 		/// <summary>Poids de tirage des fournitures : bouclier, puis les 6 soins (HealSmall à BothBig).</summary>
 		public static readonly float[] SupplyWeights = new float[7];
 		/// <summary>Points de bouclier par niveau (blanc, bleu, violet, rouge).</summary>
@@ -134,6 +134,8 @@ namespace OpenEsport.Core
 			Define("loot.qualityMajority", 0.70, "0-1", "Points de butin réglés « en majorité » d'un niveau (rare, épique…) : probabilité que l'arme ou le bouclier soit de ce niveau (sinon tirage normal).");
 			Define("loot.chestSecondWeaponChance", 0.20, "0-1", "Probabilité qu'un coffre contienne deux armes (sinon une seule).");
 			Define("loot.chestSupplyChance", 0.67, "0-1", "Probabilité qu'un coffre contienne un bouclier ou un soin (en plus des armes, de l'accessoire et des munitions).");
+			Define("loot.chestGrenadeChance", 0.35, "0-1", "Probabilité qu'un coffre contienne une grenade (en plus des armes, de l'accessoire, des soins et des munitions).");
+			Define("loot.groundGrenadeShare", 0.12, "0-1", "Part des objets au sol tirés au hasard qui sont des grenades.");
 			double[] supply = { 22, 30, 8, 24, 6, 12, 3 };
 			string[] supplyNames = { "shield", "healSmall", "healBig", "shieldSmall", "shieldBig", "bothSmall", "bothBig" };
 			for (int i = 0; i < 7; i++)
@@ -202,7 +204,7 @@ namespace OpenEsport.Core
 			SlideFlatDeceleration = F("slide.flatDeceleration"); SlideDownAcceleration = F("slide.downAcceleration"); SlideUpDeceleration = F("slide.upDeceleration");
 			BulletSpeed = F("bullet.speed"); BulletGravity = F("bullet.gravity");
 			HeadMultiplier = F("hit.headMultiplier"); TorsoMultiplier = F("hit.torsoMultiplier"); LimbMultiplier = F("hit.limbMultiplier");
-			ChestSecondWeaponChance = F("loot.chestSecondWeaponChance"); ChestAccessoryChance = F("loot.chestAccessoryChance"); ChestSupplyChance = F("loot.chestSupplyChance");
+			ChestSecondWeaponChance = F("loot.chestSecondWeaponChance"); ChestAccessoryChance = F("loot.chestAccessoryChance"); ChestSupplyChance = F("loot.chestSupplyChance"); ChestGrenadeChance = F("loot.chestGrenadeChance"); GroundGrenadeShare = F("loot.groundGrenadeShare");
 			ItemPointChance = F("loot.pointChance"); ChestPointChance = F("loot.chestPointChance"); QualityMajority = F("loot.qualityMajority");
 			ZoneRampPerTick = F("zone.rampPerTick"); ZoneRampMax = F("zone.rampMax"); ExtraAmmoChance = F("loot.extraAmmoChance"); ExtraSupplyChance = F("loot.extraSupplyChance"); AmmoAmountMultiplier = F("loot.ammoAmountMultiplier");
 			string[] sn = { "shield", "healSmall", "healBig", "shieldSmall", "shieldBig", "bothSmall", "bothBig" };

@@ -16,10 +16,10 @@ namespace OpenEsport.Tests
 	[Collection("Network")]
 	public class RelaisArenaTests
 	{
-		private static WorldData Load([CallerFilePath] string here = "")
+		private static WorldData Load(GameMode mode = GameMode.Deathmatch, [CallerFilePath] string here = "")
 		{
 			string root = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(here), "..", ".."));
-			return WorldData.LoadFile(Path.Combine(root, "assets", "maps", "relais.world"));
+			return WorldData.LoadFile(Path.Combine(root, "assets", "maps", Modes.Get(mode).MapFile));
 		}
 
 		private static PlayerInput Idle(ushort seq, float yaw = 0f) => PlayerInput.Create(seq, 0f, 0f, Buttons.None, 0, yaw, 0f, 0);
@@ -119,11 +119,11 @@ namespace OpenEsport.Tests
 
 		// ------------------------------------------------------------------ règles d'arène sur le serveur
 
-		private static Rig Arena(int humans = 1) => new Rig(o =>
+		private static Rig Arena(int humans = 1, GameMode mode = GameMode.Deathmatch) => new Rig(o =>
 		{
-			o.Mode = GameMode.Deathmatch; o.Match.TeamSize = 1; o.MinPlayers = humans; o.LobbyCountdown = 0.3f; o.FillBots = false; o.EndLinger = 100f;
-			o.Match.MaxPlayers = 10;
-		}, Load());
+			o.Mode = mode; o.Match.TeamSize = mode == GameMode.TeamDeathmatch ? 2 : 1; o.MinPlayers = humans; o.LobbyCountdown = 0.3f; o.FillBots = false; o.EndLinger = 100f;
+			o.Match.MaxPlayers = Modes.Get(mode).PlayersFor(o.Match.TeamSize);
+		}, Load(mode));
 
 		private static Rig.Bot[] Start(Rig rig, int n)
 		{
@@ -215,11 +215,15 @@ namespace OpenEsport.Tests
 			Assert.True(kills > 0, "les bots doivent se battre");
 		}
 
-		[Fact]
-		public void Walking_Over_A_Weapon_Takes_It_But_Not_One_Already_Held()
+		[Theory]
+		[InlineData(GameMode.Deathmatch)]
+		[InlineData(GameMode.TeamDeathmatch)]
+		public void Walking_Over_A_Weapon_Takes_It_But_Not_One_Already_Held(GameMode mode)
 		{
-			using var rig = Arena();
+			using var rig = Arena(mode: mode);
 			var a = Start(rig, 1)[0];
+			Assert.Contains(rig.World.PointsOf(MapPointKind.SpawnFfa), marker =>
+				Vec3.Distance(marker.Pos, rig.Server.GetPlayer(a.C.PlayerId).State.Pos) < 3f);
 			var smg = OnServer(rig, () => rig.Server.ArenaSpots().First(s => s.Item == ItemIds.Smg45));
 			rig.Teleport(a, smg.Pos);
 			rig.Run(0.3);

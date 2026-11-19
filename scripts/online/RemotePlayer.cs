@@ -6,7 +6,6 @@ namespace Openesport.Online
 {
 	/// <summary>
 	/// Un autre joueur, vu en entier : personnage animé ; nom et points de vie au-dessus de la tête pour les équipiers seulement.
-	/// Un adversaire n'a rien au-dessus de lui, sauf pendant 3 s après que notre équipe l'a touché : une barre de vie et une barre de bouclier.
 	/// </summary>
 	public partial class RemotePlayer : Node3D
 	{
@@ -19,15 +18,11 @@ namespace Openesport.Online
 		private bool _wasOnGround = true;
 
 		public ushort Id;
-		/// <summary>Jusqu'à quand (secondes d'horloge) montrer les barres de vie et de bouclier de cet adversaire (il vient d'être touché par notre équipe).</summary>
-		public double BarsUntil;
 		private Sprite3D _bars;
 		private Image _barsImage;
 		private ImageTexture _barsTexture;
-		private int _barsKey = -1;
+		private (int health, int shield, float shieldMax) _lastVitals = (-1, -1, 0);
 		private const int BarsW = 64, BarsH = 11;
-		public void HideLabel() { if (_label != null) _label.Visible = false; _hideLabel = true; }
-		private bool _hideLabel;
 
 		/// <summary>Jusqu'à quand cet adversaire fait un bruit perceptible (secondes d'horloge), et jusqu'à quelle distance on l'entend.</summary>
 		public double NoiseUntil;
@@ -75,21 +70,20 @@ namespace Openesport.Online
 				Name = "Nameplate",
 				Billboard = BaseMaterial3D.BillboardModeEnum.Enabled,
 				NoDepthTest = true,
-				FontSize = 44,
-				PixelSize = 0.004f,
-				OutlineSize = 10,
-				Position = new Vector3(0, 2.2f, 0),
-				FixedSize = false
+				FontSize = 30, PixelSize = 0.0015f, OutlineSize = 7,
+				Modulate = new Color(0.55f, 0.93f, 1f), OutlineModulate = Colors.Black,
+				VerticalAlignment = VerticalAlignment.Bottom, Offset = new Vector2(0, 10),
+				Position = new Vector3(0, 2.1f, 0), FixedSize = true, Visible = false
 			};
 			AddChild(_label);
 
-			// barres d'un adversaire touché : petite image (bouclier en haut, vie en bas), redessinée seulement quand les valeurs changent
+			// Bouclier en haut, vie en bas. Le pseudo et les jauges partagent le même ancrage.
 			_barsImage = Image.CreateEmpty(BarsW, BarsH, false, Image.Format.Rgba8);
 			_barsTexture = ImageTexture.CreateFromImage(_barsImage);
 			_bars = new Sprite3D
 			{
-				Name = "EnemyBars", Texture = _barsTexture, Billboard = BaseMaterial3D.BillboardModeEnum.Enabled, NoDepthTest = true,
-				PixelSize = 0.012f, Position = new Vector3(0, 2.15f, 0), Visible = false, TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
+				Name = "AllyBars", Texture = _barsTexture, Billboard = BaseMaterial3D.BillboardModeEnum.Enabled, NoDepthTest = true,
+				FixedSize = true, PixelSize = 0.002f, Position = _label.Position, Visible = false, TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
 				Shaded = false, DoubleSided = true
 			};
 			AddChild(_bars);
@@ -97,9 +91,8 @@ namespace Openesport.Online
 
 		private void DrawBars(int health, int shield, float shieldMax)
 		{
-			int key = health * 1000 + shield * 3 + (shieldMax > 0.5f ? 1 : 0);
-			if (key == _barsKey) return;
-			_barsKey = key;
+			if (_lastVitals == (health, shield, shieldMax)) return;
+			_lastVitals = (health, shield, shieldMax);
 			_barsImage.Fill(new Color(0, 0, 0, 0));
 			void Row(int y, int h, float frac, Color fill)
 			{
@@ -108,7 +101,7 @@ namespace Openesport.Online
 				if (w > 0) _barsImage.FillRect(new Rect2I(1, y + 1, w, h - 2), fill);
 			}
 			if (shieldMax > 0.5f) Row(0, 5, Mathf.Clamp(shield / shieldMax, 0f, 1f), new Color(0.5f, 0.8f, 1f));
-			Row(5, 6, Mathf.Clamp(health / 100f, 0f, 1f), new Color(0.95f, 0.25f, 0.2f));
+			Row(5, 6, Mathf.Clamp(health / 100f, 0f, 1f), new Color(0.24f, 0.91f, 0.53f));
 			_barsTexture.Update(_barsImage);
 		}
 
@@ -166,15 +159,12 @@ namespace Openesport.Online
 			float crouch = e.Has(EntityFlags.Crouching) ? 0.72f : 1f;
 			_animator.Scale = new Vector3(1f, Mathf.Lerp(_animator.Scale.Y, crouch, 0.3f), 1f);
 
-			string soin = e.Has(EntityFlags.Using) ? "  ✚" : "";
-			// nom et vie au-dessus de la tête : équipiers seulement ; un adversaire touché montre ses barres 3 s
-			_label.Visible = friendly && !_hideLabel;
-			bool bars = !friendly && BarsUntil > Time.GetTicksMsec() / 1000.0;
-			_bars.Visible = bars;
-			if (bars) DrawBars(e.Health, e.Shield, e.ShieldTier > 0 ? Consumables.ShieldMaxOf(e.ShieldTier - 1) : 0f);
-			_label.Text = e.ShieldTier > 0 || e.Shield > 0 ? $"{name}  {e.Health} + {e.Shield}{soin}" : $"{name}  {e.Health}{soin}";
-			_label.Modulate = friendly ? new Color(0.45f, 0.85f, 1f) : new Color(1f, 0.45f, 0.4f);
-			_label.OutlineModulate = Colors.Black;
+			_label.Visible = _bars.Visible = friendly;
+			if (friendly)
+			{
+				_label.Text = e.Has(EntityFlags.Using) ? name + "  ✚" : name;
+				DrawBars(e.Health, e.Shield, e.ShieldTier > 0 ? Consumables.ShieldMaxOf(e.ShieldTier - 1) : 0f);
+			}
 		}
 	}
 }

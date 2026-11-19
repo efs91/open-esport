@@ -105,6 +105,7 @@ namespace OpenEsport.Server
 
 		private void ChooseClass(ServerPlayer p, int id)
 		{
+			if (Arena) return;
 			p.ClassId = (byte)Math.Clamp(id, 0, Loadouts.Kits.Length - 1);
 			// en salle d'attente, le changement est immédiat ; en partie il prend effet à la prochaine réapparition (le mode peut en décider autrement)
 			if (Phase == MatchPhase.Lobby) ApplyKit(p, _mode.KitFor(p));
@@ -276,7 +277,13 @@ namespace OpenEsport.Server
 			public Vec3 Spawn(ServerPlayer p)
 			{
 				var list = Info.Mode == GameMode.Deathmatch ? Points(MapPointKind.SpawnFfa).ToList() : Points(MapPointKind.SpawnTeam).Where(pt => pt.Team == SideOf(p)).ToList();
+				if (Info.Mode == GameMode.TeamDeathmatch && list.Count == 0) list = Points(MapPointKind.SpawnFfa).ToList();
 				if (list.Count == 0) return S.PickSpawn();
+				if (Info.Mode == GameMode.CaptureTheFlag || Info.Mode == GameMode.TeamDeathmatch)
+				{
+					var free = list.Where(pt => !Players.Any(q => q != p && q.Alive && q.Team == p.Team && Vec3.DistanceSquared(q.State.Pos, pt.Pos) < 9f)).ToList();
+					if (free.Count > 0) list = free;
+				}
 				// le point le plus loin des adversaires en vie (au hasard parmi les meilleurs)
 				MapPoint best = list[0]; float bestScore = -1f;
 				foreach (var pt in list)
@@ -313,19 +320,17 @@ namespace OpenEsport.Server
 			}
 
 			/// <summary>Deathmatch : tout le monde part au pistolet avec un bouclier épique vide (règles d'arène).</summary>
-			public override ClassKit KitFor(ServerPlayer p) => _ffa ? ArenaRules.StartKit : base.KitFor(p);
+			public override ClassKit KitFor(ServerPlayer p) => ArenaRules.StartKit;
 
 			public override bool BotGoal(ServerPlayer p, BotBrain b, out Vec3 goal, out float arrive, out Buttons hold)
 			{
 				hold = Buttons.None; arrive = 0.8f;
-				if (_ffa && S.ArenaBotGoal(p, out goal)) return true;
-				goal = default;
-				return false;
+				return S.ArenaBotGoal(p, out goal);
 			}
 
 			public override void Tick(float dt)
 			{
-				if (_ffa) S.TickArena();
+				S.TickArena();
 				TimeLeft -= dt;
 				if (TimeLeft > 0f) return;
 				TimeLeft = 0f;
@@ -342,9 +347,9 @@ namespace OpenEsport.Server
 			{
 				if (killer == null || killer == victim || killer.Team == victim.Team) return;
 				killer.Kills++;
+				if (killer.Alive) killer.Health = MathF.Min(100f, killer.Health + ArenaRules.KillHeal);
 				if (_ffa)
 				{
-					if (killer.Alive) killer.Health = MathF.Min(100f, killer.Health + ArenaRules.KillHeal);     // une élimination rend 50 PV
 					if (killer.Kills >= Target) S.EndModal(killer.Team);
 					return;
 				}
@@ -518,7 +523,7 @@ namespace OpenEsport.Server
 			private void DropFlag(int flag, Vec3 pos)
 			{
 				_state[flag] = 2; _carrier[flag] = null;
-				_pos[flag] = new Vec3(pos.X, S._world.HeightAt(pos.X, pos.Z), pos.Z);
+				_pos[flag] = new Vec3(pos.X, S._world.GroundAt(pos.X, pos.Z, pos.Y, 0f), pos.Z);
 				_dropTimer[flag] = GameBalance.F("mode.flagReturnSeconds");
 			}
 

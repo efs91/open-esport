@@ -157,20 +157,20 @@ Plugin d'éditeur `addons/open_esport_config` (onglet « Open Esport » à côt�
 ## Modes de jeu
 
 Menu Multijoueur > page « Mode de jeu » : Battle Royale, Deathmatch, Team Deathmatch, Capture du drapeau, Sabotage, Contrôle. Chaque mode a sa taille d'équipe et sa carte
-(`assets/maps/relais.world` pour le Deathmatch, `arene.world` pour le Team Deathmatch, `drapeau.world`, `sabotage.world`, `controle.world`, et `frontiere01.world` pour le battle royale ; à copier toutes dans `MAPS_DIR` sur le serveur). Le serveur se lance avec `--mode br|dm|tdm|ctf|sab|ctl`
+(`assets/maps/relais.world` pour les deux modes Deathmatch, `drapeau.world`, `sabotage.world`, `controle.world`, et `frontiere01.world` pour le battle royale ; à copier toutes dans `MAPS_DIR` sur le serveur). Le serveur se lance avec `--mode br|dm|tdm|ctf|sab|ctl`
 (le matchmaking le fait : demande `MM?|version|taille|mode`, conteneur `open-esport-<mode>-<taille>-<port>`). Un seul humain suffit pour démarrer, des bots complètent les équipes.
 
 | Mode | Équipes | Règles par défaut (réglables : panneau Godot, groupes « Modes de jeu » et « Sabotage ») |
 |---|---|---|
 | Deathmatch | chacun pour soi, 2 à 20 | 20 éliminations ou 10 min ; réapparition 3 s, 2 s de protection ; règles d'arène (ci-dessous) |
 | Team Deathmatch | 2 équipes de 2 à 5 | 50 éliminations d'équipe ou 12 min |
-| Capture du drapeau | 2 équipes de 4 ou 5 | 3 prises ou 12 min ; drapeau lâché : retour à la base après 20 s ; porteur ralenti de 10 % |
+| Capture du drapeau | 2 équipes de 4, 5 ou 10 | 3 prises ou 12 min ; drapeau lâché : retour à la base après 20 s ; porteur ralenti de 10 % |
 | Sabotage | 2 équipes de 4 ou 5 | premier à 7 manches, mi-temps (camps échangés, argent remis à zéro) ; achat 15 s, manche 1 min 55, bombe 40 s, pose 3 s, désamorçage 5 s (3 s avec kit) ; économie à la Counter-Strike (touche B : boutique) |
 | Contrôle | 2 équipes de 5 à 10 | 5 points (base bleue, A, B, C, base rouge) à capturer en restant dessus (5 s, plus vite à plusieurs, bloqué si les deux équipes y sont) ; chaque seconde l'équipe qui tient le plus de points marque l'écart ; 100 points |
 
-Hors battle royale et Deathmatch, pas de butin : on choisit sa classe (touche C : Assaut, Appui, Éclaireur, Fusil à pompe, Tireur) appliquée à chaque réapparition. Les bots jouent l'objectif : points, drapeau, bombe.
+En Capture du drapeau et en Contrôle, on choisit sa classe avec C. Le Sabotage utilise sa boutique. Les bots jouent les objectifs de chaque mode.
 
-**Deathmatch : règles d'arène** (`ArenaRules`, `GameServer.Arena.cs`), sur la carte « Relais » (3 niveaux, tremplins, téléporteurs) :
+**Règles d'arène du Deathmatch et du Team Deathmatch** (`ArenaRules`, `GameServer.Arena.cs`), sur la carte « Relais » (3 niveaux, tremplins, téléporteurs) :
 - départ au pistolet léger P2020 (18 dégâts, 420 coups/min, 10 balles) avec un viseur point rouge et un bouclier épique vide ; pas de classe, pas de grenade ;
 - chaque point de butin de la carte est un emplacement fixe. Les armes (épiques, légendaires pour le sniper et la LMG, les plus dures d'accès) ont leur viseur monté d'office (non démontable) et se prennent en passant dessus (sauf une arme qu'on a déjà) : dans un emplacement libre, sinon à la place de l'arme en main, qui disparaît. Une arme revient à sa place 2 s après la mort de son porteur (ou dès qu'il l'a remplacée) ;
 - soins, boucliers et munitions se prennent en marchant dessus (seulement s'ils servent), agissent tout de suite et reviennent après 20 s (soins), 30 s (boucliers), 15 s (munitions) ;

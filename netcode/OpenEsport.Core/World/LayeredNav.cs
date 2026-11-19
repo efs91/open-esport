@@ -15,7 +15,11 @@ namespace OpenEsport.Core
 	public static class Navigation
 	{
 		/// <summary>La navigation adaptée à la carte : sur plusieurs niveaux pour une arène (tremplins, téléporteurs), sinon la grille au sol.</summary>
-		public static INav For(WorldData data) => data.Jumps.Count > 0 || data.Teleports.Count > 0 ? new LayeredNav(data) : new NavGrid(data);
+		public static INav For(WorldData data)
+		{
+			bool elevatedObjective = data.Points.Exists(p => p.Kind == MapPointKind.FlagBase && p.Pos.Y > data.HeightAt(p.Pos.X, p.Pos.Z) + 0.55f);
+			return data.Jumps.Count > 0 || data.Teleports.Count > 0 || elevatedObjective ? new LayeredNav(data) : new NavGrid(data);
+		}
 	}
 
 	/// <summary>
@@ -103,7 +107,7 @@ namespace OpenEsport.Core
 				var b = data.Boxes[bi];
 				bool inside = x >= b.Min.X && x <= b.Max.X && z >= b.Min.Z && z <= b.Max.Z;
 				// enterré dans une boîte (sol sous un mur)
-				if (inside && b.Min.Y < y - 0.05f && b.Max.Y > y + 0.05f) return false;
+				if (inside && b.Min.Y <= y + 0.001f && b.Max.Y > y + 0.05f) return false;
 				// le corps (au-dessus d'un pas) heurte une boîte, marge comprise
 				if (x < b.Min.X - Margin || x > b.Max.X + Margin || z < b.Min.Z - Margin || z > b.Max.Z + Margin) continue;
 				if (b.Max.Y > y + StepUp && b.Min.Y < y + BodyHeight) return false;

@@ -80,7 +80,7 @@ Captures : `Godot --path . --script res://tools/map/shot.gd -- --out=<dossier> -
 
 Notes : la grille Terrain3D est de 1536 m (6×6 régions de 256 m, origine −768) ; la zone jouable fait ±600 m, le reste est un rebord montagneux.
 
-## Carte « Relais » (Deathmatch) — arène intérieure sur trois niveaux
+## Carte « Relais » (Deathmatch et Team Deathmatch) — arène intérieure sur trois niveaux
 
 Scène `res://scenes/maps/Relais.tscn` (96 × 96 m, sol 0, milieu +4 m, haut +8 m, plafond 12 m), inspirée du plan « Relay Core » : atrium central ouvert sur les trois niveaux
 avec un cœur lumineux, passerelle nord-sud à +4 m et est-ouest à +8 m ; anneau du milieu et balcon ; anneau haut sur tout le pourtour avec quatre salles d'angle ;
@@ -96,3 +96,12 @@ Salle du Rail (nord, +8 m, sniper légendaire) et salle Roquette (sud, +4 m, LMG
 - **Matières** : `scenes/maps/relais/` — `surfaces.tres` (un seul shader pour murs, sols et plafond : plaques par niveau, plinthes, liserés lumineux orange / bleu / violet selon le niveau),
   textures CC0 d'ambientCG dans `assets/textures/arena/`. Ambiance : `relais_env.tres` (occlusion, éclairage indirect d'écran, halo, brouillard volumétrique léger).
 - **Après toute modification** : `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Relais.tscn --out=res://assets/maps/relais.world`, puis copier `relais.world` sur le serveur.
+
+## Les Deux Écluses (Capture du drapeau)
+
+`scenes/maps/Drapeau.tscn` contient deux forteresses en miroir sur un terrain de 224 × 120 m. Chaque camp dispose de dix apparitions derrière le mur de rassemblement. Les drapeaux sont espacés de 188 m. La traversée centrale passe par le pont couvert, celle du nord par la passerelle de pierre. Au niveau du canal, le collecteur relie les deux rives et se divise sous chaque fort. Un escalier débouche dans la cour, l’autre à l’intérieur du donjon.
+
+- Modifier le demi-plan dans `tools/map/gen_drapeau_map.py`. Le générateur applique la même géométrie aux deux équipes. Les cours sont à +4 m et le collecteur à 0 m.
+- `python tools/map/gen_drapeau_map.py --force` remplace la scène, les lanternes et la minimap. `--minimap` seul redessine uniquement le plan.
+- Après une modification de géométrie, exécuter `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Drapeau.tscn --out=res://assets/maps/drapeau.world`. Livrer cet export avec la version du serveur correspondante.
+- `dotnet test netcode/OpenEsport.Tests --filter FullyQualifiedName~DrapeauMapTests` vérifie la symétrie de l’export, les traversées, le souterrain et le démarrage en 10 contre 10.

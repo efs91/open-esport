@@ -3,7 +3,8 @@
 
     python tools/map/gen_mode_maps.py
 
-Écrit scenes/maps/Arene.tscn (Deathmatch / Team Deathmatch), Drapeau.tscn (Capture du drapeau), Sabotage.tscn et Controle.tscn.
+Écrit scenes/maps/Arene.tscn (ancienne arène), Drapeau.tscn (Capture du drapeau), Sabotage.tscn et Controle.tscn.
+Les deux modes Deathmatch utilisent Relais.tscn, créée par gen_relais_map.py.
 Ensuite on peut les ouvrir dans Godot et déplacer / copier / régler les nœuds : CoverBox (abris), MapMarker (apparitions, points de contrôle, bases de drapeau,
 sites de bombe). Puis « Exporter la carte » (panneau Open Esport) fabrique le fichier .world que lisent le serveur et le jeu.
 Ne relance pas ce script sur une carte déjà retouchée : il la réécrirait.
@@ -29,6 +30,8 @@ class Map:
         self.ground_material = None
         self.surface_materials = {}
         self.box_models = {}
+        self.marker_height = 0.0
+        self.sun_yaw = None
         self.sun_angle = None
         self.ground_surface = 0         # matière du sol (voir CoverBox.cs : Surface) ; 0 = couleur unie
 
@@ -90,16 +93,17 @@ class Map:
         if not export:
             o.append('[node name="Sun" parent="." instance=ExtResource("sun")]')
             if self.sun_angle is not None: o.append(f'light_angular_distance = {self.sun_angle}')
+            if self.sun_yaw is not None: o.append(f'rotation = Vector3(-0.54, {self.sun_yaw}, 0)')
             o.append('')
             if self.scenery: o.append('[node name="Terminal" parent="." instance=ExtResource("scenery")]\n')
             o.append('[node name="WorldEnvironment" type="WorldEnvironment" parent="."]')
             o.append('environment = ExtResource("daylight")\n')
         o.append('[node name="SpawnPoint" type="Marker3D" parent="."]')
-        o.append(f'position = Vector3({sx}, 0.2, {sz})\n')
+        o.append(f'position = Vector3({sx}, {self.marker_height + 0.2:g}, {sz})\n')
         o.append('[node name="Points" type="Node3D" parent="."]\n')
         for i, (kind, x, z, team, index, radius) in enumerate(self.markers):
             o.append(f'[node name="Marker_{i + 1:02d}" type="Marker3D" parent="Points"]')
-            o.append(f'position = Vector3({x}, 0, {z})')
+            o.append(f'position = Vector3({x}, {self.marker_height:g}, {z})')
             o.append('script = ExtResource("3_marker")')
             o.append(f'Kind = {kind}')
             o.append(f'Team = {team}')
@@ -140,6 +144,9 @@ SURFACE_COLORS = {1: (196, 196, 202), 2: (126, 132, 146), 3: (156, 104, 74), 4: 
 def write_minimap(m, path, px=1024):
     """Dessin de la carte pour la minimap et la grande carte (nord en haut, image carrée : étirée sur toute la carte comme le fait le jeu).
     Murs sombres, sols colorés selon leur matière, abris bruns, sites de bombe cerclés de jaune."""
+    if m.name == 'Drapeau':
+        from gen_drapeau_map import minimap
+        return minimap(m, path, px)
     from PIL import Image, ImageDraw, ImageFont
     w, d = m.size
     sx, sz = px / w, px / d
@@ -194,22 +201,8 @@ def arene():
 
 
 def drapeau():
-    m = Map('Drapeau', (160, 80), (0.33, 0.36, 0.27))
-    m.walls()
-    m.box(0, 0, 8, 3, 8)
-    m.mirror4(25, 12, 6, 2.5, 3)
-    m.mirror_x(40, 0, 3, 3, 12)
-    m.mirror4(55, 15, 4, 2.5, 4)
-    m.mirror4(12, 26, 3, 2.5, 5)
-    # bases : un mur derrière chaque drapeau
-    m.mirror_x(77, 0, 2, 4, 16, WALL)
-    m.mirror_x(70, 10, 6, 2.5, 2, LOW); m.mirror_x(70, -10, 6, 2.5, 2, LOW)
-    m.marker(FLAG, -72, 0, 0, 0, 3.0)
-    m.marker(FLAG, 72, 0, 1, 0, 3.0)
-    for z in (-12, -4, 4, 12):
-        m.marker(TEAM, -64, z, 0)
-        m.marker(TEAM, 64, z, 1)
-    return m
+    from gen_drapeau_map import build
+    return build()
 
 
 def sabotage():

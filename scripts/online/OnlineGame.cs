@@ -170,7 +170,7 @@ namespace Openesport.Online
 
 		/// <summary>Durée pendant laquelle un adversaire touché (ou repéré, en Sabotage) reste montré.</summary>
 		private const double RevealSeconds = 3.0;
-		private readonly Dictionary<ushort, double> _barsUntil = new(), _spottedUntil = new();
+		private readonly Dictionary<ushort, double> _spottedUntil = new();
 		/// <summary>Dernier état connu de chaque équipier (il peut sortir du voisinage répliqué) : le HUD le montre en permanence.</summary>
 		private readonly Dictionary<ushort, MateView> _mateCache = new();
 
@@ -183,9 +183,8 @@ namespace Openesport.Online
 					if (e.A < _windowViews.Count) UpdateWindowView(e.A);
 					break;
 				case EventType.HitConfirm: _hud.HitMarker((e.D & 0x80) != 0); break;
-				// notre équipe a touché un adversaire : ses barres de vie et de bouclier 3 s (et il est repéré)
-				case EventType.TeamHit: { double t = Time.GetTicksMsec() / 1000.0 + RevealSeconds; _barsUntil[e.A] = t; _spottedUntil[e.A] = t; break; }
-				// Sabotage : un adversaire vu par notre équipe apparaît 3 s sur les cartes
+				// Sabotage : un adversaire touché ou vu par notre équipe apparaît 3 s sur les cartes.
+				case EventType.TeamHit:
 				case EventType.Spotted: _spottedUntil[e.A] = Time.GetTicksMsec() / 1000.0 + RevealSeconds; break;
 				case EventType.ArenaPickup: GameAudio.Pickup(_worldRoot, new Vector3(e.Pos.X, e.Pos.Y + 0.5f, e.Pos.Z)); break;
 				case EventType.Damaged: _hud.DamageFlash(Client.Shield > 0 && Client.Health >= 100); break;
@@ -258,7 +257,7 @@ namespace Openesport.Online
 			_slotRequest = 0;
 
 			// Sabotage, phase d'achat : on ne bouge pas (le serveur fait de même, la prédiction reste donc juste)
-			Openesport.Inventory.InventoryUI.WalkPickup = Client.ModeKnown && Client.Mode.Mode == GameMode.Deathmatch;
+			Openesport.Inventory.InventoryUI.WalkPickup = Client.ModeKnown && Modes.UsesArenaRules(Client.Mode.Mode);
 			bool frozen = Client.ModeKnown && Client.Mode.Mode == GameMode.Sabotage && Client.Mode.Stage == (byte)SabotageStage.Buy && Client.Match.Phase == MatchPhase.Playing;
 			if (frozen) { forward = 0f; strafe = 0f; buttons &= ~(Buttons.Jump | Buttons.Sprint | Buttons.Fire | Buttons.Crouch); }
 			InputManager.AirborneLock = Client.Predicted.Stance == Stance.Plane || Client.Predicted.Stance == Stance.Diving;
@@ -811,14 +810,13 @@ namespace Openesport.Online
 				{
 					_selfBody = new RemotePlayer { Id = 0xFFFE, Name = "SelfBody" };
 					_worldRoot.AddChild(_selfBody);
-					_selfBody.HideLabel();
 					_selfBody.SetLook(CharacterAppearance.Current.Pack());
 				}
 				// le corps suit la trajectoire (cap figé compris) : cap = direction de la vitesse, inclinaison = vitesse de chute
 				float hs = Mathf.Sqrt(st.Vel.X * st.Vel.X + st.Vel.Z * st.Vel.Z);
 				float bodyYaw = hs > 1f ? Mathf.Atan2(-st.Vel.X, -st.Vel.Z) : _player.GlobalRotation.Y;
 				var e = new InterpolatedEntity { Id = 0xFFFE, Kind = EntityKind.Player, Pos = view, Yaw = bodyYaw, Pitch = PlayerMovement.DivePitch(PlayerMovement.DiveFromFall(st.Vel.Y)), Vel = st.Vel, Zip = 4, Health = 100, Team = Client.TeamId };
-				_selfBody.Apply(e, "", true, delta);
+				_selfBody.Apply(e, "", false, delta);
 			}
 			else if (_selfBody != null)
 			{
@@ -955,7 +953,6 @@ namespace Openesport.Online
 						if (Time.GetTicksMsec() - t0 > 40) GD.Print($"[lag] création d'un joueur : {Time.GetTicksMsec() - t0} ms");
 					}
 					bool friendly = e.Team == Client.TeamId;
-					remote.BarsUntil = _barsUntil.TryGetValue(e.Id, out double bu) ? bu : 0;
 					remote.Apply(e, NameOf(e.Id), friendly, delta);
 					if (!e.Has(EntityFlags.Dead) && e.Zip != 3)
 					{

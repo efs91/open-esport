@@ -25,8 +25,8 @@ namespace OpenEsport.Server
 		}
 
 		private readonly List<ArenaSpot> _arena = new List<ArenaSpot>();
-		/// <summary>Le Deathmatch joue avec les règles d'arène.</summary>
-		private bool Arena => _opt.Mode == GameMode.Deathmatch;
+		/// <summary>Les deux modes Deathmatch jouent avec les règles d'arène.</summary>
+		private bool Arena => Modes.UsesArenaRules(_opt.Mode);
 		public int ArenaSpotCount => _arena.Count;
 
 		/// <summary>État d'un emplacement d'arène (tests, diagnostic).</summary>

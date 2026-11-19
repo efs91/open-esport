@@ -12,7 +12,7 @@ namespace OpenEsport.Core
 		Deathmatch = 1,
 		/// <summary>Deux équipes (2 à 5 joueurs chacune) : réapparition, la première équipe à 50 éliminations gagne.</summary>
 		TeamDeathmatch = 2,
-		/// <summary>Deux équipes de 4 ou 5 : on prend le drapeau adverse et on le rapporte au sien ; 3 prises pour gagner.</summary>
+		/// <summary>Deux équipes de 4, 5 ou 10 : on prend le drapeau adverse et on le rapporte au sien ; 3 prises pour gagner.</summary>
 		CaptureTheFlag = 3,
 		/// <summary>Deux équipes de 4 ou 5, à la Counter-Strike : manches, bombe à poser ou à désamorcer, économie et achats.</summary>
 		Sabotage = 4,
@@ -47,14 +47,16 @@ namespace OpenEsport.Core
 			new ModeInfo { Mode = GameMode.Deathmatch, Key = "dm", Label = "Deathmatch", Description = "Chacun pour soi, réapparition : le premier à 20 éliminations gagne.",
 				TeamSizes = new[] { 1 }, TwoTeams = false, MapFile = "relais.world", MapScene = "res://scenes/maps/Relais.tscn", PlayersFor = s => 10, RespawnSeconds = 3f },
 			new ModeInfo { Mode = GameMode.TeamDeathmatch, Key = "tdm", Label = "Team Deathmatch", Description = "Deux équipes, réapparition : la première à 50 éliminations gagne.",
-				TeamSizes = new[] { 2, 3, 4, 5 }, TwoTeams = true, MapFile = "arene.world", MapScene = "res://scenes/maps/Arene.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 3f },
+				TeamSizes = new[] { 2, 3, 4, 5 }, TwoTeams = true, MapFile = "relais.world", MapScene = "res://scenes/maps/Relais.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 3f },
 			new ModeInfo { Mode = GameMode.CaptureTheFlag, Key = "ctf", Label = "Capture du drapeau", Description = "Prends le drapeau adverse, rapporte-le au tien : 3 prises pour gagner.",
-				TeamSizes = new[] { 4, 5 }, TwoTeams = true, MapFile = "drapeau.world", MapScene = "res://scenes/maps/Drapeau.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 5f },
+				TeamSizes = new[] { 4, 5, 10 }, TwoTeams = true, MapFile = "drapeau.world", MapScene = "res://scenes/maps/Drapeau.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 5f },
 			new ModeInfo { Mode = GameMode.Sabotage, Key = "sab", Label = "Sabotage", Description = "Attaquants contre défenseurs : poser ou désamorcer la bombe, manches et économie.",
 				TeamSizes = new[] { 4, 5 }, TwoTeams = true, MapFile = "sabotage.world", MapScene = "res://scenes/maps/Sabotage.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 0f },
 			new ModeInfo { Mode = GameMode.Control, Key = "ctl", Label = "Contrôle", Description = "Tiens les points de contrôle : 100 points pour gagner.",
 				TeamSizes = new[] { 5, 6, 7, 8, 9, 10 }, TwoTeams = true, MapFile = "controle.world", MapScene = "res://scenes/maps/Controle.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 4f },
 		};
+
+		public static bool UsesArenaRules(GameMode mode) => mode == GameMode.Deathmatch || mode == GameMode.TeamDeathmatch;
 
 		public static ModeInfo Get(GameMode mode) => All.First(m => m.Mode == mode);
 

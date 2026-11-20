@@ -138,7 +138,7 @@ namespace OpenEsport.Core
 
 	public static class Protocol
 	{
-		public const ushort Version = 32;
+		public const ushort Version = 33;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";
@@ -229,13 +229,23 @@ namespace OpenEsport.Core
 			w.WriteByte((byte)MsgType.Join);
 			w.WriteUInt16(Protocol.Version);
 			w.WriteString(name, 24);
-			for (int i = 0; i < Protocol.AppearanceSize; i++) w.WriteByte(appearance != null && i < appearance.Length ? appearance[i] : (byte)0);
+			WriteAppearance(w,appearance);
 			w.WriteString(token ?? "", 64);      // jeton de session du compte (le serveur le fait vérifier par le service de comptes)
+		}
+
+		private const int MaxAppearanceSize = Protocol.AppearanceSize + 283;
+		private static void WriteAppearance(BitWriter w,byte[] appearance)
+		{
+			int count = Math.Clamp(appearance?.Length ?? 0, Protocol.AppearanceSize, MaxAppearanceSize);
+			w.WriteUInt16((ushort)count);
+			for (int i=0;i<count;i++) w.WriteByte(i < (appearance?.Length ?? 0) ? appearance[i] : (byte)(i >= 2 && i <= 5 ? 128 : 0));
 		}
 
 		public static byte[] ReadAppearance(BitReader r)
 		{
-			var a = new byte[Protocol.AppearanceSize];
+			int count = r.ReadUInt16();
+			if (count < Protocol.AppearanceSize || count > MaxAppearanceSize) { r.Invalidate(); return Array.Empty<byte>(); }
+			var a = new byte[count];
 			for (int i = 0; i < a.Length; i++) a[i] = r.ReadByte();
 			return a;
 		}
@@ -299,7 +309,7 @@ namespace OpenEsport.Core
 				w.WriteByte(entries[i].Team);
 				w.WriteBool(entries[i].IsBot);
 				w.WriteString(entries[i].Name, 24);
-				for (int k = 0; k < Protocol.AppearanceSize; k++) w.WriteByte(entries[i].Appearance != null && k < entries[i].Appearance.Length ? entries[i].Appearance[k] : (byte)0);
+				WriteAppearance(w,entries[i].Appearance);
 			}
 		}
 

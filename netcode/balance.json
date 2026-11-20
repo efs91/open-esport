@@ -10,6 +10,8 @@
   "movement.crouchMultiplier": 0.7,
   // Multiplicateur de vitesse quand on n'a aucune arme en main (à mains nues on court plus vite). [x] (défaut : 1.2)
   "movement.unarmedMultiplier": 1.2,
+  // Effets du gabarit et du mouvement sur la vitesse et les dégâts reçus (0 = cosmétique). [0–1]
+  "movement.bodyBalance": 1,
   // Rapidité pour atteindre la vitesse voulue (plus grand = plus nerveux). [1/s] (défaut : 8)
   "movement.acceleration": 8,
   // Rapidité pour s'arrêter ou changer de direction. [1/s] (défaut : 10)

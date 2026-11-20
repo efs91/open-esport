@@ -79,6 +79,7 @@ namespace OpenEsport.Core
 		private int _bitLen;
 
 		public bool Overflow { get; private set; }
+		public void Invalidate() => Overflow = true;
 		public int BitsRemaining => _bitLen - _bitPos;
 
 		public BitReader() { }

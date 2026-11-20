@@ -33,6 +33,7 @@ namespace OpenEsport.Core
 		// ---------------------------------------------------------------- valeurs mises en cache (lues à chaque tick de simulation)
 
 		public static float UnarmedMultiplier = 1.2f;
+		public static float BodyBalanceStrength { get; private set; }
 		public static float BaseSpeed, SprintMultiplier, CrouchMultiplier, Acceleration, Deceleration, Gravity, JumpSpeed;
 		public static float SlideStartMultiplier, SlideMaxMultiplier, SlideCooldown, SlideFlatDeceleration, SlideDownAcceleration, SlideUpDeceleration;
 		public static float BulletSpeed, BulletGravity, HeadMultiplier, TorsoMultiplier, LimbMultiplier;
@@ -54,6 +55,7 @@ namespace OpenEsport.Core
 			Define("movement.sprintMultiplier", 1.7, "x", "Multiplicateur de vitesse en sprint (4 x 1,7 = 6,8 m/s).");
 			Define("movement.crouchMultiplier", 0.7, "x", "Multiplicateur de vitesse accroupi.");
 			Define("movement.unarmedMultiplier", 1.2, "x", "Multiplicateur de vitesse quand on n'a aucune arme en main (à mains nues on court plus vite).");
+			Define("movement.bodyBalance", 1, "0–1", "Intensité des effets du gabarit et de la vitesse sur le déplacement et les dégâts des balles (0 = cosmétique).");
 			Define("movement.acceleration", 8.0, "1/s", "Rapidité pour atteindre la vitesse voulue (plus grand = plus nerveux).");
 			Define("movement.deceleration", 10.0, "1/s", "Rapidité pour s'arrêter ou changer de direction.");
 			Define("movement.gravity", 29.4, "m/s²", "Gravité des joueurs.");
@@ -198,6 +200,7 @@ namespace OpenEsport.Core
 		/// <summary>Relit les valeurs dans les champs mis en cache et les armes.</summary>
 		private static void Refresh()
 		{
+			BodyBalanceStrength = Math.Clamp(F("movement.bodyBalance"), 0, 1);
 			UnarmedMultiplier = F("movement.unarmedMultiplier"); BaseSpeed = F("movement.baseSpeed"); SprintMultiplier = F("movement.sprintMultiplier"); CrouchMultiplier = F("movement.crouchMultiplier");
 			Acceleration = F("movement.acceleration"); Deceleration = F("movement.deceleration"); Gravity = F("movement.gravity"); JumpSpeed = F("movement.jumpSpeed");
 			SlideStartMultiplier = F("slide.startMultiplier"); SlideMaxMultiplier = F("slide.maxMultiplier"); SlideCooldown = F("slide.cooldown");

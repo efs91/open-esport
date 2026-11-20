@@ -11,6 +11,19 @@ namespace OpenEsport.Tests
 	public class BalanceTests
 	{
 		[Fact]
+		public void The_Server_Can_Make_All_Body_Types_Cosmetic()
+		{
+			try
+			{
+				GameBalance.ApplyFileText("{ \"movement.bodyBalance\": 0 }", null);
+				var look = new byte[] { 0, 0, 0, 0, 255 };
+				Assert.Equal(1f, BodyBalance.Speed(look));
+				Assert.Equal(1f, BodyBalance.BulletDamage(look, new Vec3(30, 0, 0)));
+			}
+			finally { GameBalance.ResetToDefaults(); }
+		}
+
+		[Fact]
 		public void A_Settings_File_Changes_Speeds_And_Weapons_And_Reset_Restores_Defaults()
 		{
 			try

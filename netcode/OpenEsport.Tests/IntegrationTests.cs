@@ -153,6 +153,34 @@ namespace OpenEsport.Tests
 		}
 
 		[Fact]
+		public void Detailed_Appearances_Roundtrip_And_Extreme_Heights_Predict_The_Server()
+		{
+			using var rig = new Rig();
+			byte[] Look(byte height)
+			{
+				var bytes = Enumerable.Range(0, 293).Select(i => (byte)(i % 127)).ToArray();
+				bytes[4] = height;
+				return bytes;
+			}
+			var shortLook = Look(0); var tallLook = Look(255);
+			var small = rig.Connect("Petit", appearance: shortLook);
+			var tall = rig.Connect("Grand", appearance: tallLook);
+			Assert.True(rig.WaitPlaying(small) && rig.WaitPlaying(tall));
+			Assert.True(rig.WaitUntil(() => tall.C.Roster.Count >= 2, 3));
+			Assert.Equal(shortLook, tall.C.Roster.Single(r => r.Id == small.C.PlayerId).Appearance);
+			small.Forward = tall.Forward = 1;
+			rig.Run(1.5);
+			var smallSpeed = rig.Server.GetPlayer(small.C.PlayerId).State.Vel.Length();
+			var tallSpeed = rig.Server.GetPlayer(tall.C.PlayerId).State.Vel.Length();
+			Assert.InRange(tallSpeed / smallSpeed, 1.059f, 1.065f);
+			Assert.Equal(0, small.C.Corrections);
+			Assert.Equal(0, tall.C.Corrections);
+			Assert.Equal(1.015f, BodyBalance.BulletDamage(shortLook, Vec3.Zero), 4);
+			Assert.Equal(1f, BodyBalance.BulletDamage(tallLook, Vec3.Zero), 4);
+			Assert.Equal(1.04f, BodyBalance.BulletDamage(tallLook, new Vec3(100,0,0)), 4);
+		}
+
+		[Fact]
 		public void Other_Players_Are_Visible_And_Animated_With_Their_Velocity()
 		{
 			using var rig = new Rig();

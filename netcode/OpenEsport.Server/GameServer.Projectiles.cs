@@ -122,7 +122,7 @@ namespace OpenEsport.Server
 				}
 				if (best != null)
 				{
-					ApplyDamage(b.Owner, best, b.Damage * Hitboxes.Multiplier(bestZone), bestZone, b.WeaponId);
+					ApplyDamage(b.Owner, best, b.Damage * Hitboxes.Multiplier(bestZone) * BodyBalance.BulletDamage(best.Appearance, best.State.Vel), bestZone, b.WeaponId);
 					b.Active = false;
 					continue;
 				}

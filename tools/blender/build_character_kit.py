@@ -67,7 +67,7 @@ def build_state(macro, rigged):
                                          set_up_rigging=rigged, interpolate_weights=rigged, import_weights=rigged)
         objs[pre + "_" + slug(name)] = o
     strip_helpers(bm)
-    # les vêtements ne sont pas masqués sous la peau : on les décolle de 4 mm pour que le corps ne les perce pas
+    # Keep a small cloth clearance at hems in addition to the runtime skin masks.
     for k, o in objs.items():
         if k.startswith(("c_", "s_")):
             me = o.data

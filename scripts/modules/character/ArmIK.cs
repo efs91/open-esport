@@ -9,6 +9,8 @@ public partial class ArmIK : SkeletonModifier3D
 	public WeaponHandPose LeftPose;
 	public Node3D HeldRoot;
 	public Vector3 HeldPosition;
+	public Node3D Weapon;
+	public bool LongGun, Knife, Sliding;
 	public float GroundSpeed;
 	public bool Grounded = true;
 	private float _stride;
@@ -19,17 +21,55 @@ public partial class ArmIK : SkeletonModifier3D
 		var sk = GetSkeleton();
 		if (sk == null) return;
 		_stride += (float)delta * Mathf.Lerp(3f, 10f, Mathf.Clamp(GroundSpeed / 6f, 0, 1));
-		FitReach(sk);
+		bool aiming = GodotObject.IsInstanceValid(Weapon) && HeldRoot == Weapon && RightTarget?.GetParent() == Weapon;
+		if (aiming) PlaceWeapon(sk);
+		FitReach(sk, aiming);
 		Apply(sk, "Right", RightTarget, RightPose);
 		Apply(sk, "Left", LeftTarget, LeftPose);
 	}
 
+	// Les cibles sont attachées aux épaules animées, y compris lorsque le bassin
+	// descend et que le torse pivote pendant la glissade.
+	private void PlaceWeapon(Skeleton3D sk)
+	{
+		var actor = Weapon.GetParent<Node3D>();
+		var local = actor.GlobalTransform.AffineInverse() * sk.GlobalTransform;
+		Vector3 Joint(int i) => local * sk.GetBoneGlobalPose(i).Origin;
+		int right = sk.FindBone("RightUpperArm"), left = sk.FindBone("LeftUpperArm");
+		if (right < 0 || left < 0) return;
+		if (LongGun)
+		{
+			int chest = sk.FindBone("Chest"), neck = sk.FindBone("Neck");
+			if (chest >= 0 && neck >= 0)
+			{
+				// Avancer l'épaule de soutien pour atteindre le garde-main.
+				var neckBasis = sk.GetBoneGlobalPose(neck).Basis;
+				var up = (local.Basis.Inverse() * Vector3.Up).Normalized();
+				SetGlobalBasis(sk,chest,new Basis(up, Mathf.DegToRad(-38)) * sk.GetBoneGlobalPose(chest).Basis);
+				SetGlobalBasis(sk,neck,neckBasis);
+			}
+		}
+		var shoulder = Joint(right);
+		var center = (shoulder + Joint(left)) * .5f;
+		float width = shoulder.DistanceTo(Joint(left)) * .5f;
+		var palm = new Vector3(center.X + width * (LongGun ? 1.16f : .63f),
+			shoulder.Y - (LongGun ? .13f : .20f) - (Sliding ? .045f : 0),
+			Mathf.Min(center.Z,shoulder.Z) - (LongGun ? .22f : .33f));
+		float yaw = Knife ? 54f : 0f;
+		Weapon.Rotation = new Vector3(0,Mathf.DegToRad(yaw),Knife ? Mathf.DegToRad(-22) : 0);
+		Weapon.Position = palm - Weapon.Basis * RightTarget.Position;
+	}
+
 	// Déplacer l'arme entière si une prise dépasse la portée : les mains gardent leur contact,
 	// même sur les morphologies petites ou pendant l'oscillation du torse.
-	private void FitReach(Skeleton3D sk)
+	private void FitReach(Skeleton3D sk, bool aiming)
 	{
 		if (!GodotObject.IsInstanceValid(HeldRoot)) return;
-		HeldRoot.Position = HeldPosition;
+		if (!aiming)
+		{
+			HeldRoot.Position = HeldPosition;
+			if (HeldRoot == Weapon) HeldRoot.Rotation = Vector3.Zero;
+		}
 		for (int iteration = 0; iteration < 8; iteration++)
 		{
 			bool moved = false;
@@ -44,11 +84,23 @@ public partial class ArmIK : SkeletonModifier3D
 				var wrist = tgt.Origin - wanted * (h.Basis.Inverse() * (middle - h.Origin) * WeaponHandPose.PalmAlong);
 				var shoulder = sk.GetBoneGlobalPose(up).Origin;
 				var elbow = sk.GetBoneGlobalPose(lo).Origin;
-				float reach = (shoulder.DistanceTo(elbow) + elbow.DistanceTo(h.Origin)) * 0.97f;
+				float reach = (shoulder.DistanceTo(elbow) + elbow.DistanceTo(h.Origin)) * (aiming && LongGun ? .92f : .97f);
 				var direction = wrist - shoulder;
 				float excess = direction.Length() - reach;
 				if (excess <= 0.0001f) continue;
-				HeldRoot.GlobalPosition -= sk.GlobalBasis * (direction.Normalized() * excess);
+				var correction = direction.Normalized() * excess;
+				if (aiming && LongGun)
+				{
+					// Shorten reach in the vertical/forward plane first. Pulling a long
+					// gun sideways towards the support hand drives its stock into the ribs.
+					var local = HeldRoot.GetParent<Node3D>().GlobalBasis.Inverse() * sk.GlobalBasis;
+					var lateral = local.Transposed().X.Normalized();
+					float lateralDistance = direction.Dot(lateral);
+					var plane = direction - lateral * lateralDistance;
+					if (Mathf.Abs(lateralDistance) < reach && plane.LengthSquared() > .000001f)
+						correction = plane - plane.Normalized() * Mathf.Sqrt(reach * reach - lateralDistance * lateralDistance);
+				}
+				HeldRoot.GlobalPosition -= sk.GlobalBasis * correction;
 				moved = true;
 			}
 			if (!moved) break;
@@ -59,7 +111,7 @@ public partial class ArmIK : SkeletonModifier3D
 	{
 		if (pose != null && GodotObject.IsInstanceValid(target) && target.IsInsideTree())
 			Solve(sk, side, target, pose);
-		else if (Grounded)
+		else if (Grounded || Sliding)
 			Relax(sk, side);
 	}
 
@@ -113,7 +165,15 @@ public partial class ArmIK : SkeletonModifier3D
 		Vector3 u = toTarget / distance;
 		float x = (l1 * l1 - l2 * l2 + d * d) / (2f * d);
 		float h = Mathf.Sqrt(Mathf.Max(0, l1 * l1 - x * x));
-		var hint = new Vector3(side == "Right" ? -0.25f : 0.25f, -1f, -0.2f);
+		var chest = sk.FindBone("UpperChest");
+		var torso = chest >= 0 ? sk.GetBoneGlobalPose(chest).Basis * sk.GetBoneGlobalRest(chest).Basis.Inverse() : Basis.Identity;
+		var hint = torso * new Vector3(side == "Right" ? -.95f : .95f, -.70f, -.25f);
+		if (HeldRoot == Weapon && LongGun)
+		{
+			int opposite = sk.FindBone(side == "Right" ? "LeftUpperArm" : "RightUpperArm");
+			var outward = (a - sk.GetBoneGlobalPose(opposite).Origin).Normalized();
+			hint = outward * 1.5f + torso * new Vector3(0,-.55f,-.2f);
+		}
 		var perp = hint - u * hint.Dot(u);
 		if (perp.LengthSquared() < 1e-6f) perp = u.Cross(Mathf.Abs(u.Y) < 0.9f ? Vector3.Up : Vector3.Right);
 		var elbow = a + u * x + perp.Normalized() * h;

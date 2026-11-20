@@ -1507,6 +1507,21 @@
    {
     "id": "c_female_sportsuit01",
     "name": "Female sportsuit01"
+   },
+   {
+    "id": "c_sci_fi_battle_royale",
+    "name": "Sci-Fi Battle Royale",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_mandalorian",
+    "name": "Mandalorien",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_renegade_raider",
+    "name": "Renegade Raider",
+    "includes_shoes": true
    }
   ],
   "shoes": [
@@ -1569,6 +1584,20 @@
    {
     "id": "eyes_low_poly",
     "name": "Low-poly"
+   }
+  ],
+  "headwear": [
+   {
+    "id": "hat_fedora",
+    "name": "Fedora MakeHuman"
+   },
+   {
+    "id": "hat_mandalorian",
+    "name": "Casque du Mandalorien"
+   },
+   {
+    "id": "hat_raider",
+    "name": "Bandeau Renegade Raider"
    }
   ]
  }

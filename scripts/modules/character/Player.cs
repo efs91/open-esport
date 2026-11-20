@@ -31,6 +31,7 @@ public partial class Player : FPSController3D
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		GetNodeOrNull("TextureRect")?.AddToGroup("game_hud"); // le viseur : caché pendant le menu
 		Setup();
+		CharacterSpeedScale = OpenEsport.Core.BodyBalance.Speed(CharacterAppearance.Current.Pack());
 		Emerged += OnControllerEmerged;
 		Submerged += OnControllerSubemerged;
 

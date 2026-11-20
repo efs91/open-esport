@@ -153,6 +153,7 @@ public partial class CharacterController3D : CharacterBody3D
 	// Capacité de tir
 	// Stores normal speed
 	private int _normalSpeed;
+	protected float CharacterSpeedScale = 1f;
 	// True if in the last frame it was on the ground
 	private bool _lastIsOnFloor = false;
 	// Default controller height, affects collider
@@ -296,7 +297,7 @@ public partial class CharacterController3D : CharacterBody3D
 
 		foreach (var ability in _abilities)
 		{
-			velocity = ability.Apply(velocity, Speed, IsOnFloor(), direction, delta);
+			velocity = ability.Apply(velocity, Speed * CharacterSpeedScale, IsOnFloor(), direction, delta);
 		}
 
 		_horizontalVelocity = new Vector3(velocity.X, 0.0f, velocity.Z);

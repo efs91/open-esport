@@ -79,7 +79,7 @@ namespace OpenEsport.Core
 		public byte UsingItem { get; private set; }
 		public float UseProgress { get; private set; }
 		/// <summary>Multiplicateur de vitesse de déplacement : à mains nues on court plus vite (comme le calcule le serveur d'après l'arme en main).</summary>
-		private float MoveScale => Inventory.Active == null ? GameBalance.UnarmedMultiplier : 1f;
+		private float MoveScale => BodyBalance.Speed(_joinAppearance) * (Inventory.Active == null ? GameBalance.UnarmedMultiplier : 1f);
 		public bool Alive { get; private set; } = true;
 		/// <summary>Dernier état de partie reçu (phase, vivants, statistiques…).</summary>
 		public MatchStatus Match { get; private set; }
@@ -156,7 +156,7 @@ namespace OpenEsport.Core
 		{
 			_joinToken = token;
 			_joinName = name;
-			_joinAppearance = appearance;
+			_joinAppearance = appearance == null ? null : (byte[])appearance.Clone();
 			State = NetState.Connecting;
 			_net.Start();
 			_peer = _net.Connect(host, port, Protocol.ConnectionKey);

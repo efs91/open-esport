@@ -348,12 +348,12 @@ namespace OpenEsport.Server
 		private void HandleJoin(NetPeer peer)
 		{
 			ushort version = _reader.ReadUInt16();
+			if (version != Protocol.Version) { Reject(peer, "Version du protocole différente"); return; }
 			string name = _reader.ReadString();
 			var appearance = Messages.ReadAppearance(_reader);
 			string token = _reader.ReadString();
 			if (_reader.Overflow) return;
 			if (peer.Tag != null) return;                                   // déjà entré, ou vérification de son compte en cours
-			if (version != Protocol.Version) { Reject(peer, "Version du protocole différente"); return; }
 			if (Phased && Phase != MatchPhase.Lobby) { Reject(peer, "Partie déjà commencée"); return; }
 
 			if (_accounts != null)

@@ -94,7 +94,7 @@ namespace OpenEsport.Server
 					modeScale = _mode.SpeedScale(p);
 				}
 				var before = p.State.Stance;
-				PlayerMovement.Step(ref p.State, inp, _world, dt, (p.Inventory.Active == null ? GameBalance.UnarmedMultiplier : 1f) * modeScale);
+				PlayerMovement.Step(ref p.State, inp, _world, dt, (p.Inventory.Active == null ? GameBalance.UnarmedMultiplier : 1f) * modeScale * BodyBalance.Speed(p.Appearance));
 				ControlVehicle.Separate(_vehicles,ref p.State);
 				p.Yaw = inp.Yaw;
 				p.Pitch = p.State.Stance == Stance.Diving ? PlayerMovement.DivePitch(PlayerMovement.DiveAmount(inp.Pitch, inp.Forward > 12)) : inp.Pitch;

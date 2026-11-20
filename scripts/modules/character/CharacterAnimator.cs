@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 /// <summary>
@@ -59,6 +60,7 @@ public partial class CharacterAnimator : Node3D
 
 	private readonly System.Collections.Generic.Dictionary<string, Texture2D> _skinCache = new();
 	private StandardMaterial3D _skinMaterial;
+	private readonly System.Collections.Generic.Dictionary<MeshInstance3D,ArrayMesh> _kitMeshes = new();
 
 	/// <summary>Applique morphologie, peau et pièces au modèle.</summary>
 	public void SetAppearance(CharacterAppearance a)
@@ -77,6 +79,17 @@ public partial class CharacterAnimator : Node3D
 		foreach (var g in CharacterKit.Always)
 			foreach (var it in CharacterKit.Items(g)) visible.Add(it.Id);
 
+		if (visible.Contains("hat_mandalorian"))
+			foreach (var group in new[] { "hair", "eyebrows", "eyes", "eyelashes" })
+				foreach (var item in CharacterKit.Items(group)) visible.Remove(item.Id);
+
+		var outfit = CharacterKit.Items("clothes");
+		int selected = a.Piece("clothes");
+		if (selected >= 0 && selected < outfit.Count && outfit[selected].IncludesShoes)
+			foreach (var shoe in CharacterKit.Items("shoes")) visible.Remove(shoe.Id);
+		int coverage = ClothingCoverage.Equipped(visible);
+		var detailMoves = CharacterDetails.Displacements(a);
+		var detailJoints = detailMoves == null ? null : CharacterDetails.JointOffsets(detailMoves);
 		if (_offsets != null)
 		{
 			var total = new System.Collections.Generic.Dictionary<string, Vector3>();
@@ -88,7 +101,9 @@ public partial class CharacterAnimator : Node3D
 			Add("female", a.Gender); Add("heavy", Mathf.Max(a.Weight, 0)); Add("light", Mathf.Max(-a.Weight, 0));
 			Add("muscular", Mathf.Max(a.Muscle, 0)); Add("frail", Mathf.Max(-a.Muscle, 0));
 			Add("tall", Mathf.Max(a.Height, 0) * 0.5f); Add("short", Mathf.Max(-a.Height, 0) * 0.5f);
-			Add("elder", Mathf.Max(a.Age, 0)); Add("youth", Mathf.Max(-a.Age, 0));
+			Add("elder", Mathf.Max(a.Age, 0)); Add("youth", Mathf.Max(-a.Age, 0) * (7f / 4.8f));
+			if (detailJoints != null) foreach (var (bone, delta) in detailJoints)
+				total[bone] = total.GetValueOrDefault(bone) + delta;
 			_offsets.SetOffsets(total);
 			_shoulderLift = total.TryGetValue("RightUpperArm", out var sh) ? sh.Y : 0f;
 			if (_heldRoot != null && GodotObject.IsInstanceValid(_heldRoot))
@@ -103,7 +118,7 @@ public partial class CharacterAnimator : Node3D
 		{
 			{ "female", a.Gender }, { "heavy", Mathf.Max(w, 0) }, { "light", Mathf.Max(-w, 0) },
 			{ "muscular", Mathf.Max(m, 0) }, { "frail", Mathf.Max(-m, 0) }, { "tall", Mathf.Max(h, 0) * 0.5f }, { "short", Mathf.Max(-h, 0) * 0.5f },
-			{ "elder", Mathf.Max(age, 0) }, { "youth", Mathf.Max(-age, 0) },
+			{ "elder", Mathf.Max(age, 0) }, { "youth", Mathf.Max(-age, 0) * (7f / 4.8f) },
 		};
 
 		foreach (var node in _character.FindChildren("*", "MeshInstance3D", true, false))
@@ -111,8 +126,16 @@ public partial class CharacterAnimator : Node3D
 			var mi = (MeshInstance3D)node;
 			string n = mi.Name;
 			if (n != "Body") mi.Visible = visible.Contains(n);
-			if (mi.Mesh == null) continue;
-			foreach (var kv in shapes)
+			if (!_kitMeshes.TryGetValue(mi, out var original))
+			{
+				original = mi.Mesh as ArrayMesh;
+				if (original == null) continue;
+				_kitMeshes[mi] = original;
+			}
+			if (!mi.Visible) continue;
+			var covered = ClothingCoverage.Apply(original, n, coverage);
+			mi.Mesh = detailMoves == null || covered.GetSurfaceCount() == 0 ? covered : CharacterDetails.Fit(covered,mi,detailMoves,shapes,detailJoints);
+			if (detailMoves == null) foreach (var kv in shapes)
 			{
 				int idx = mi.FindBlendShapeByName(kv.Key);
 				if (idx >= 0) mi.SetBlendShapeValue(idx, kv.Value);
@@ -157,7 +180,7 @@ public partial class CharacterAnimator : Node3D
 	{
 		if (GodotObject.IsInstanceValid(_heldRoot)) { _heldRoot.Hide(); _heldRoot.QueueFree(); _heldRoot = null; }
 		_muzzle = null;
-		if (_ik != null) { _ik.RightTarget = null; _ik.LeftTarget = null; _ik.RightPose = null; _ik.LeftPose = null; _ik.HeldRoot = null; }
+		if (_ik != null) { _ik.RightTarget = null; _ik.LeftTarget = null; _ik.RightPose = null; _ik.LeftPose = null; _ik.Weapon = null; _ik.HeldRoot = null; }
 		_primaryPalm = Vector3.Zero;
 		if (def == null || Skeleton == null) return;
 
@@ -175,6 +198,9 @@ public partial class CharacterAnimator : Node3D
 		_primaryPalm = right?.Palm.Origin ?? Vector3.Zero;
 		_heldRoot.Position = HeldPositionNow();
 		_ik.HeldRoot = _heldRoot;
+		_ik.Weapon = _heldRoot;
+		_ik.LongGun = left != null && heldBounds.Size.Z >= .45f;
+		_ik.Knife = def.Id == "knife";
 		_ik.HeldPosition = _heldRoot.Position;
 		if (right != null)
 		{
@@ -485,6 +511,19 @@ public partial class CharacterAnimator : Node3D
 		_armsPlayer.AddAnimationLibrary("", armLibrary);
 	}
 
+	public void SetModelingPose(bool active)
+	{
+		if (_player == null || Skeleton == null) return;
+		_ik.Active = !active;
+		if (active)
+		{
+			_player.Stop();
+			_armsPlayer.Stop();
+			Skeleton.ResetBonePoses();
+		}
+		else Play(IdleClip);
+	}
+
 	public const float HoverSaddleHeight = 1.06f;
 	private bool _hoverSeated;
 
@@ -537,6 +576,7 @@ public partial class CharacterAnimator : Node3D
 
 		float groundSpeed = new Vector2(velocity.X, velocity.Z).Length();
 		_groundSpeed = groundSpeed;
+		if (_ik != null) _ik.Sliding = sliding;
 		UpdateDrinking(delta);
 		if (_zipping) { UpdateZipline(); return; }
 		if (_climbing) { if (_ik != null) _ik.Grounded = false; return; }

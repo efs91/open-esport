@@ -54,6 +54,18 @@ namespace Openesport.Online
 			float minX = -map.Size.X / 2f, minZ = -map.Size.Y / 2f;
 			int width = (int)(map.Size.X / cell) + 1, depth = (int)(map.Size.Y / cell) + 1;
 			var data = new WorldData { OriginX = minX, OriginZ = minZ, CellSize = cell, Width = width, Depth = depth, Heights = new float[width * depth] };
+			var terrain = map.GetNodeOrNull("Terrain3D");
+			if (terrain != null)
+			{
+				var source = terrain.Call("get_data").AsGodotObject();
+				for (int z = 0; z < depth; z++)
+					for (int x = 0; x < width; x++)
+					{
+						float h = Height(source, new Vector3(minX + x * cell, 0, minZ + z * cell));
+						if (!float.IsFinite(h)) throw new InvalidOperationException("Région Terrain3D manquante dans la zone jouable.");
+						data.Heights[z * width + x] = h;
+					}
+			}
 			data.Quantize();
 			int boxes = 0;
 			void Walk(Node n)
@@ -83,10 +95,45 @@ namespace Openesport.Online
 				}
 			}
 			Walk(sceneRoot);
+			ExportBuildingColliders(sceneRoot, data);
 			string path = ProjectSettings.GlobalizePath(output);
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 			using (var fs = File.Create(path)) data.Save(fs);
 			GD.Print($"[WorldExporter] carte simple écrite : {path} ({new FileInfo(path).Length / 1024} Ko), {boxes} obstacles, {data.Points.Count} points d'attention, {data.LootSpawns.Count} objets, {data.Jumps.Count} tremplins, {data.Teleports.Count} téléporteurs, empreinte {data.Checksum():X8}");
+		}
+
+		private static void ExportBuildingColliders(Node scene, WorldData data)
+		{
+			var zonesNode = scene.GetNodeOrNull<Node>("Zones");
+			if (zonesNode != null)
+			{
+				int sceneBoxes = 0;
+				void WalkBoxes(Node n)
+				{
+					foreach (var c in n.GetChildren())
+					{
+						if (c is CollisionShape3D cs && cs.Shape is BoxShape3D bs && !cs.Disabled)
+						{
+							var xf = cs.GlobalTransform;
+							var h = bs.Size / 2f;
+							var mn = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+							var mx = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+							for (int k = 0; k < 8; k++)
+							{
+								var p = xf * new Vector3((k & 1) == 0 ? -h.X : h.X, (k & 2) == 0 ? -h.Y : h.Y, (k & 4) == 0 ? -h.Z : h.Z);
+								mn = new Vector3(MathF.Min(mn.X, p.X), MathF.Min(mn.Y, p.Y), MathF.Min(mn.Z, p.Z));
+								mx = new Vector3(MathF.Max(mx.X, p.X), MathF.Max(mx.Y, p.Y), MathF.Max(mx.Z, p.Z));
+							}
+							var collection = cs.IsInGroup("window_panes") ? data.Panes : data.Boxes;
+							collection.Add(new OpenEsport.Core.Aabb(new Vec3(mn.X, mn.Y, mn.Z), new Vec3(mx.X, mx.Y, mx.Z)));
+							sceneBoxes++;
+						}
+						WalkBoxes(c);
+					}
+				}
+				WalkBoxes(zonesNode);
+				if (sceneBoxes > 0) GD.Print($"[WorldExporter] boîtes des scènes de bâtiments (Zones) : {sceneBoxes}");
+			}
 		}
 
 		private static SimpleMap FindSimple(Node n)
@@ -192,36 +239,7 @@ namespace Openesport.Online
 
 			// bâtiments éditables dans Godot (Zones/A_Orion…) : les boîtes de collision (CollisionShape3D + BoxShape3D) posées dans les scènes
 			// de bâtiments sont lues directement, avec leur transformation dans la carte. Sans ces nœuds, rien n'est ajouté.
-			var zonesNode = scene.GetNodeOrNull<Node>("Zones");
-			if (zonesNode != null)
-			{
-				int sceneBoxes = 0;
-				void WalkBoxes(Node n)
-				{
-					foreach (var c in n.GetChildren())
-					{
-						if (c is CollisionShape3D cs && cs.Shape is BoxShape3D bs && !cs.Disabled)
-						{
-							var xf = cs.GlobalTransform;
-							var h = bs.Size / 2f;
-							var mn = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-							var mx = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-							for (int k = 0; k < 8; k++)
-							{
-								var p = xf * new Vector3((k & 1) == 0 ? -h.X : h.X, (k & 2) == 0 ? -h.Y : h.Y, (k & 4) == 0 ? -h.Z : h.Z);
-								mn = new Vector3(MathF.Min(mn.X, p.X), MathF.Min(mn.Y, p.Y), MathF.Min(mn.Z, p.Z));
-								mx = new Vector3(MathF.Max(mx.X, p.X), MathF.Max(mx.Y, p.Y), MathF.Max(mx.Z, p.Z));
-							}
-							var collection = cs.IsInGroup("window_panes") ? data.Panes : data.Boxes;
-							collection.Add(new OpenEsport.Core.Aabb(new Vec3(mn.X, mn.Y, mn.Z), new Vec3(mx.X, mx.Y, mx.Z)));
-							sceneBoxes++;
-						}
-						WalkBoxes(c);
-					}
-				}
-				WalkBoxes(zonesNode);
-				if (sceneBoxes > 0) GD.Print($"[WorldExporter] boîtes des scènes de bâtiments (Zones) : {sceneBoxes}");
-			}
+			ExportBuildingColliders(scene, data);
 
 			// tyroliennes : câbles, tremplins et piliers (tools/map/gen_ziplines.py)
 			string zipPath = "res://maps/frontiere01/data/ziplines.json";

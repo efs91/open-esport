@@ -105,13 +105,17 @@ namespace Openesport.Online
 			_barsTexture.Update(_barsImage);
 		}
 
-		public void Apply(in InterpolatedEntity e, string name, bool friendly, float delta)
+		public void Apply(in InterpolatedEntity e, string name, bool friendly, float delta, bool insideCabin = false, Node3D hover = null)
 		{
 			var pos = new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z);
+			_animator.Visible = !insideCabin;
 			GlobalPosition = pos;
 			Rotation = new Vector3(0, e.Yaw, 0);
 
-			if (e.Weapon != _weaponId) SetWeapon(e.Weapon);
+			if (hover != null)
+				GlobalTransform = hover.GlobalTransform.TranslatedLocal(Vector3.Up * CharacterAnimator.HoverSaddleHeight);
+			if (hover == null && e.Weapon != _weaponId) SetWeapon(e.Weapon);
+			_animator.SetHoverSeated(hover != null);
 
 			bool dead = e.Has(EntityFlags.Dead);
 			Visible = !dead && e.Zip != 3;        // dans l'avion : pas sur la carte
@@ -128,7 +132,7 @@ namespace Openesport.Online
 
 			// sons positionnés : pas (plus rapprochés en courant), saut, atterrissage ; pas de bruit de pas en glissade ou accroupi
 			float hs = new Vector2(e.Vel.X, e.Vel.Z).Length();
-			if (onGround && !sliding && hs > 1.5f && !e.Has(EntityFlags.Crouching))
+			if (hover == null && onGround && !sliding && hs > 1.5f && !e.Has(EntityFlags.Crouching))
 			{
 				_stepClock += delta * hs;
 				if (_stepClock >= 2.1f) { _stepClock = 0f; GameAudio.Step(GetParent(), pos, hs > 5.5f); }

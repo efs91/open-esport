@@ -280,6 +280,8 @@ namespace Openesport.Online
 		/// <summary>Dégât reçu : flash rouge (la vie est touchée) ou bleu clair (le bouclier a tout absorbé).</summary>
 		public void DamageFlash(bool shieldOnly = false) { _flashTime = 0.35; _flashColor = shieldOnly ? new Color(0.2f, 0.55f, 1f) : new Color(0.8f, 0.05f, 0.05f); }
 
+		public void SetWalkerDisplay(bool mounted) => _vitals.Visible = !mounted;
+
 		public void SetVitals(float health, float shield, int tier, byte usingId, float progress)
 		{
 			_vitals.Set(health, shield, tier, usingId, progress);

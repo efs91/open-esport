@@ -485,10 +485,54 @@ public partial class CharacterAnimator : Node3D
 		_armsPlayer.AddAnimationLibrary("", armLibrary);
 	}
 
+	public const float HoverSaddleHeight = 1.06f;
+	private bool _hoverSeated;
+
+	public void SetHoverSeated(bool seated)
+	{
+		if (_hoverSeated == seated || Skeleton == null) return;
+		_hoverSeated = seated;
+		_player.Stop();
+		_armsPlayer.Stop();
+		_ik.Active = !seated;
+		if (GodotObject.IsInstanceValid(_heldRoot)) _heldRoot.Visible = !seated;
+		Skeleton.ResetBonePoses();
+		if (!seated)
+		{
+			Position = Vector3.Zero;
+			Play(IdleClip);
+			return;
+		}
+
+		// The skeleton faces +Z. Bend both knees and bring the hands to the controls.
+		foreach (var (side, sign) in new[] { ("Left", 1f), ("Right", -1f) })
+		{
+			PointLimb(side + "UpperLeg", side + "LowerLeg", new Vector3(.24f * sign, -.18f, 1));
+			PointLimb(side + "LowerLeg", side + "Foot", new Vector3(.06f * sign, -1, -.12f));
+			PointLimb(side + "Foot", side + "Toes", Vector3.Back);
+			PointLimb(side + "UpperArm", side + "LowerArm", new Vector3(.24f * sign, -.8f, .55f));
+			PointLimb(side + "LowerArm", side + "Hand", new Vector3(-.15f * sign, .18f, 1));
+		}
+		int hips = Skeleton.FindBone("Hips");
+		if (hips >= 0)
+			Position = Vector3.Down * ToLocal(Skeleton.ToGlobal(Skeleton.GetBoneGlobalPose(hips).Origin)).Y;
+	}
+
+	private void PointLimb(string joint, string end, Vector3 direction)
+	{
+		int bone = Skeleton.FindBone(joint), child = Skeleton.FindBone(end);
+		if (bone < 0 || child < 0) return;
+		var pose = Skeleton.GetBoneGlobalPose(bone);
+		var axis = Skeleton.GetBoneGlobalPose(child).Origin - pose.Origin;
+		var rotation = new Basis(new Quaternion(axis.Normalized(), direction.Normalized()));
+		var parent = Skeleton.GetBoneGlobalPose(Skeleton.GetBoneParent(bone)).Basis;
+		Skeleton.SetBonePoseRotation(bone, (parent.Inverse() * rotation * pose.Basis).Orthonormalized().GetRotationQuaternion());
+	}
+
 	/// <summary>Met à jour l'animation d'après l'état du joueur. À appeler à chaque image physique.</summary>
 	public void Tick(Vector3 velocity, bool onFloor, bool sliding, double delta)
 	{
-		if (_player == null)
+		if (_player == null || _hoverSeated)
 			return;
 
 		float groundSpeed = new Vector2(velocity.X, velocity.Z).Length();

@@ -1,287 +1,3762 @@
-[gd_scene format=4]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/online/SimpleMap.cs" id="1_map"]
-[ext_resource type="Script" path="res://scripts/online/CoverBox.cs" id="2_cover"]
-[ext_resource type="Script" path="res://scripts/online/MapMarker.cs" id="3_marker"]
-[ext_resource type="Environment" path="res://scenes/maps/lighting/arena_daylight.tres" id="daylight"]
-[ext_resource type="PackedScene" path="res://scenes/maps/lighting/afternoon_sun.tscn" id="sun"]
+[ext_resource type="Script" path="res://scripts/online/SimpleMap.cs" id="1_wwe82"]
+[ext_resource type="Script" path="res://scripts/online/CoverBox.cs" id="2_o2b08"]
+[ext_resource type="PackedScene" path="res://scenes/maps/orion/Hangar.tscn" id="3_a274t"]
+[ext_resource type="PackedScene" path="res://scenes/maps/orion/Poste_Securite.tscn" id="4_a6khk"]
+[ext_resource type="Script" path="res://scripts/online/MapMarker.cs" id="5_t27cy"]
+[ext_resource type="Terrain3DAssets" path="res://maps/controle/terrain_assets.tres" id="6_sbn2h"]
+[ext_resource type="PackedScene" path="res://scenes/maps/lighting/afternoon_sun.tscn" id="7_flmhu"]
+[ext_resource type="Environment" path="res://scenes/maps/lighting/frontiere_daylight.tres" id="8_21x0q"]
 
-[node name="Controle" type="Node3D"]
-script = ExtResource("1_map")
-Size = Vector2(160, 100)
-GroundColor = Color(0.28, 0.35, 0.3, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sftes"]
+albedo_color = Color(0.1, 0.31, 0.36, 1)
+metallic = 0.36
+roughness = 0.13
 
-[node name="Sun" parent="." instance=ExtResource("sun")]
+[sub_resource type="PlaneMesh" id="PlaneMesh_bqrp0"]
+material = SubResource("StandardMaterial3D_sftes")
+size = Vector2(35, 245)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = ExtResource("daylight")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_25fgk"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
 
-[node name="SpawnPoint" type="Marker3D" parent="."]
-position = Vector3(-66, 0.2, -15)
+[sub_resource type="BoxMesh" id="BoxMesh_cvl56"]
+material = SubResource("StandardMaterial3D_25fgk")
+size = Vector3(3.55, 0.1, 0.4)
 
-[node name="Points" type="Node3D" parent="."]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_07kem"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
 
-[node name="Marker_01" type="Marker3D" parent="Points"]
-position = Vector3(-72, 0, 0)
-script = ExtResource("3_marker")
+[sub_resource type="BoxMesh" id="BoxMesh_0tgac"]
+material = SubResource("StandardMaterial3D_07kem")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2kval"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_1728m"]
+material = SubResource("StandardMaterial3D_2kval")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xywv6"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_id1o5"]
+material = SubResource("StandardMaterial3D_xywv6")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4qion"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_80l61"]
+material = SubResource("StandardMaterial3D_4qion")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ouk7"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_r5nqm"]
+material = SubResource("StandardMaterial3D_3ouk7")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_geqd7"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_nomi0"]
+material = SubResource("StandardMaterial3D_geqd7")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v4tn5"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_v8r54"]
+material = SubResource("StandardMaterial3D_v4tn5")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b14so"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_arl14"]
+material = SubResource("StandardMaterial3D_b14so")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cwxcj"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_71117"]
+material = SubResource("StandardMaterial3D_cwxcj")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4td0p"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_thn71"]
+material = SubResource("StandardMaterial3D_4td0p")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kj117"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_dom3d"]
+material = SubResource("StandardMaterial3D_kj117")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m4poc"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_iu3dh"]
+material = SubResource("StandardMaterial3D_m4poc")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v0f7k"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_ugvdx"]
+material = SubResource("StandardMaterial3D_v0f7k")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kh45k"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_5tlbn"]
+material = SubResource("StandardMaterial3D_kh45k")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fwfh1"]
+emission_enabled = true
+emission = Color(0.55, 0.1, 0.94, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_tsmhj"]
+material = SubResource("StandardMaterial3D_fwfh1")
+size = Vector3(3.55, 0.1, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8htn4"]
+emission_enabled = true
+emission = Color(0.45, 0.08, 0.86, 1)
+emission_energy_multiplier = 2.4
+
+[sub_resource type="PrismMesh" id="PrismMesh_b5457"]
+material = SubResource("StandardMaterial3D_8htn4")
+size = Vector3(2, 4, 2)
+
+[sub_resource type="Gradient" id="Gradient_d13kk"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wjcwm"]
+noise_type = 2
+frequency = 0.03
+cellular_jitter = 3.0
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 50.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_m3q37"]
+noise = SubResource("FastNoiseLite_wjcwm")
+color_ramp = SubResource("Gradient_d13kk")
+seamless = true
+
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_f6xvh"]
+_shader_parameters = {
+&"blend_sharpness": null,
+&"height_blending": null,
+&"macro_variation1": null,
+&"macro_variation2": null,
+&"noise1_angle": null,
+&"noise1_offset": null,
+&"noise1_scale": null,
+&"noise2_scale": null,
+&"noise3_scale": null,
+&"noise_texture": SubResource("NoiseTexture2D_m3q37"),
+&"vertex_normals_distance": null
+}
+world_background = 0
+
+[node name="Controle" type="Node3D" unique_id=116658667]
+script = ExtResource("1_wwe82")
+Size = Vector2(320, 208)
+
+[node name="Tablier1" type="StaticBody3D" parent="." unique_id=675167264]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.35, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(70, 0.65, 15)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Pile2" type="StaticBody3D" parent="." unique_id=1370346670]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, -7, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 12.4, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile3" type="StaticBody3D" parent="." unique_id=983569014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, -7, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 12.4, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile4" type="StaticBody3D" parent="." unique_id=1557863655]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -7, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 12.4, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile5" type="StaticBody3D" parent="." unique_id=470385065]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -7, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 12.4, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Glissiere6" type="StaticBody3D" parent="." unique_id=347174501]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 6, -7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage7" type="StaticBody3D" parent="." unique_id=1144044298]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 7, -7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere8" type="StaticBody3D" parent="." unique_id=222243797]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 6, -7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage9" type="StaticBody3D" parent="." unique_id=278951098]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 7, -7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere10" type="StaticBody3D" parent="." unique_id=438424508]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 6, -7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage11" type="StaticBody3D" parent="." unique_id=27553592]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 7, -7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere12" type="StaticBody3D" parent="." unique_id=458702746]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 6, -7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage13" type="StaticBody3D" parent="." unique_id=885847959]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 7, -7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere14" type="StaticBody3D" parent="." unique_id=1104752616]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 6, 7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage15" type="StaticBody3D" parent="." unique_id=657200529]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 7, 7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere16" type="StaticBody3D" parent="." unique_id=2055267794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 6, 7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage17" type="StaticBody3D" parent="." unique_id=1960163340]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 7, 7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere18" type="StaticBody3D" parent="." unique_id=1673999625]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 6, 7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage19" type="StaticBody3D" parent="." unique_id=2144551876]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 7, 7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere20" type="StaticBody3D" parent="." unique_id=805907676]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 6, 7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage21" type="StaticBody3D" parent="." unique_id=833420584]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 7, 7.15)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Tablier22" type="StaticBody3D" parent="." unique_id=1767023218]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.35, -57)
+script = ExtResource("2_o2b08")
+Size = Vector3(70, 0.65, 12)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Pile23" type="StaticBody3D" parent="." unique_id=875669954]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, -7, -57)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 19.4, 10)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile24" type="StaticBody3D" parent="." unique_id=1322163309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, -7, -57)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 19.4, 10)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile25" type="StaticBody3D" parent="." unique_id=1423938342]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -7, -57)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 19.4, 10)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile26" type="StaticBody3D" parent="." unique_id=1166095789]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -7, -57)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 19.4, 10)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Glissiere27" type="StaticBody3D" parent="." unique_id=388514262]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 13, -62.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage28" type="StaticBody3D" parent="." unique_id=1743937963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 14, -62.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere29" type="StaticBody3D" parent="." unique_id=1515695618]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 13, -62.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage30" type="StaticBody3D" parent="." unique_id=1642810859]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 14, -62.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere31" type="StaticBody3D" parent="." unique_id=1523894820]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 13, -62.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage32" type="StaticBody3D" parent="." unique_id=1306057401]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 14, -62.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere33" type="StaticBody3D" parent="." unique_id=258740659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 13, -62.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage34" type="StaticBody3D" parent="." unique_id=1796432130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 14, -62.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere35" type="StaticBody3D" parent="." unique_id=493865326]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 13, -51.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage36" type="StaticBody3D" parent="." unique_id=53352050]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 14, -51.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere37" type="StaticBody3D" parent="." unique_id=505338146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 13, -51.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage38" type="StaticBody3D" parent="." unique_id=1527255975]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 14, -51.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere39" type="StaticBody3D" parent="." unique_id=1124036884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 13, -51.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage40" type="StaticBody3D" parent="." unique_id=1878059204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 14, -51.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere41" type="StaticBody3D" parent="." unique_id=1687030356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 13, -51.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage42" type="StaticBody3D" parent="." unique_id=1862539069]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 14, -51.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Tablier43" type="StaticBody3D" parent="." unique_id=417663758]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 57)
+script = ExtResource("2_o2b08")
+Size = Vector3(70, 0.65, 14)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Pile44" type="StaticBody3D" parent="." unique_id=486559598]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, -7, 57)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 7.4, 12)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile45" type="StaticBody3D" parent="." unique_id=1818927886]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, -7, 57)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 7.4, 12)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile46" type="StaticBody3D" parent="." unique_id=1197362114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -7, 57)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 7.4, 12)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Pile47" type="StaticBody3D" parent="." unique_id=1135628428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -7, 57)
+script = ExtResource("2_o2b08")
+Size = Vector3(2.8, 7.4, 12)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Glissiere48" type="StaticBody3D" parent="." unique_id=715224010]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 1, 50.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage49" type="StaticBody3D" parent="." unique_id=514903766]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 2, 50.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere50" type="StaticBody3D" parent="." unique_id=161819015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 1, 50.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage51" type="StaticBody3D" parent="." unique_id=1638832607]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 2, 50.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere52" type="StaticBody3D" parent="." unique_id=1893408553]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1, 50.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage53" type="StaticBody3D" parent="." unique_id=849424745]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2, 50.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere54" type="StaticBody3D" parent="." unique_id=2030084844]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 1, 50.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage55" type="StaticBody3D" parent="." unique_id=1001926068]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 2, 50.35)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere56" type="StaticBody3D" parent="." unique_id=1911019693]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 1, 63.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage57" type="StaticBody3D" parent="." unique_id=587780219]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 2, 63.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere58" type="StaticBody3D" parent="." unique_id=1099247746]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 1, 63.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage59" type="StaticBody3D" parent="." unique_id=1911060598]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 2, 63.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere60" type="StaticBody3D" parent="." unique_id=805076126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1, 63.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage61" type="StaticBody3D" parent="." unique_id=334253309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2, 63.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Glissiere62" type="StaticBody3D" parent="." unique_id=1146732870]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 1, 63.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 1, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Marquage63" type="StaticBody3D" parent="." unique_id=1682797672]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 2, 63.65)
+script = ExtResource("2_o2b08")
+Size = Vector3(11, 0.12, 0.68)
+Color = Color(0.98, 0.65, 0.14, 1)
+Surface = 6
+
+[node name="Zones" type="Node3D" parent="." unique_id=2104267593]
+
+[node name="Hangar" type="Node3D" parent="Zones" unique_id=1140512730 instance=ExtResource("3_a274t")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -111, 6, 51)
+
+[node name="Poste_Securite" type="Node3D" parent="Zones" unique_id=1995261804 instance=ExtResource("4_a6khk")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -53, 13, -71)
+
+[node name="Poste_Securite2" type="Node3D" parent="Zones" unique_id=398070351 instance=ExtResource("4_a6khk")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -53, 1, 83)
+
+[node name="Hangar2" type="Node3D" parent="Zones" unique_id=1897191445 instance=ExtResource("3_a274t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 111, 6, 31)
+
+[node name="Poste_Securite3" type="Node3D" parent="Zones" unique_id=946915450 instance=ExtResource("4_a6khk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 13, -83)
+
+[node name="Poste_Securite4" type="Node3D" parent="Zones" unique_id=1153064836 instance=ExtResource("4_a6khk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 1, 71)
+
+[node name="Rampe64" type="StaticBody3D" parent="." unique_id=1609622220]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4958334, -11.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support65" type="StaticBody3D" parent="." unique_id=854171293]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -11.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 11.545834, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe66" type="StaticBody3D" parent="." unique_id=1272383076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.7875, -13.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe67" type="StaticBody3D" parent="." unique_id=1229760518]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.079167, -15.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe68" type="StaticBody3D" parent="." unique_id=1391346262]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.3708334, -17.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe69" type="StaticBody3D" parent="." unique_id=1029398194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.6625, -18.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support70" type="StaticBody3D" parent="." unique_id=1165234203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -18.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 12.7125, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe71" type="StaticBody3D" parent="." unique_id=1211053614]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.954167, -20.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe72" type="StaticBody3D" parent="." unique_id=1287667758]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.2458334, -22.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe73" type="StaticBody3D" parent="." unique_id=387526882]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5375, -24.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe74" type="StaticBody3D" parent="." unique_id=121394417]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.829167, -25.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support75" type="StaticBody3D" parent="." unique_id=876032888]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -25.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 13.879167, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe76" type="StaticBody3D" parent="." unique_id=728857917]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.120833, -27.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe77" type="StaticBody3D" parent="." unique_id=822635051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.4125, -29.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe78" type="StaticBody3D" parent="." unique_id=1797630709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.704166, -31.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe79" type="StaticBody3D" parent="." unique_id=2136079990]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.995833, -32.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support80" type="StaticBody3D" parent="." unique_id=1619327007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -32.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 15.045834, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe81" type="StaticBody3D" parent="." unique_id=1894739641]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.2875, -34.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe82" type="StaticBody3D" parent="." unique_id=458975134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.579166, -36.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe83" type="StaticBody3D" parent="." unique_id=771284680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.870833, -38.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe84" type="StaticBody3D" parent="." unique_id=2083133033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.1625, -39.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support85" type="StaticBody3D" parent="." unique_id=1030902459]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -39.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 16.2125, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe86" type="StaticBody3D" parent="." unique_id=2020412001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.454166, -41.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe87" type="StaticBody3D" parent="." unique_id=1175005808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.745833, -43.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe88" type="StaticBody3D" parent="." unique_id=569643697]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.0375, -45.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe89" type="StaticBody3D" parent="." unique_id=2052776643]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.329166, -46.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support90" type="StaticBody3D" parent="." unique_id=1946896792]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -46.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 17.379168, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe91" type="StaticBody3D" parent="." unique_id=433883013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.620833, -48.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe92" type="StaticBody3D" parent="." unique_id=249422612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.9125, -50.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe93" type="StaticBody3D" parent="." unique_id=1004604908]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.204166, -52.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe94" type="StaticBody3D" parent="." unique_id=8811514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.2458334, 11.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support95" type="StaticBody3D" parent="." unique_id=1808641196]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 11.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 11.295834, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe96" type="StaticBody3D" parent="." unique_id=1023508088]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.0375, 13.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe97" type="StaticBody3D" parent="." unique_id=933512923]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.829167, 15.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe98" type="StaticBody3D" parent="." unique_id=715543889]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6208334, 17.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe99" type="StaticBody3D" parent="." unique_id=1614359739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.4125, 18.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support100" type="StaticBody3D" parent="." unique_id=1420387765]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 18.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 10.4625, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe101" type="StaticBody3D" parent="." unique_id=14020768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.204167, 20.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe102" type="StaticBody3D" parent="." unique_id=750628914]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9958334, 22.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe103" type="StaticBody3D" parent="." unique_id=1612165948]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7875, 24.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe104" type="StaticBody3D" parent="." unique_id=163190086]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5791667, 25.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support105" type="StaticBody3D" parent="." unique_id=725730746]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 25.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 9.629167, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe106" type="StaticBody3D" parent="." unique_id=1595307070]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3708334, 27.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe107" type="StaticBody3D" parent="." unique_id=1064848450]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1625, 29.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe108" type="StaticBody3D" parent="." unique_id=128529990]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9541667, 31.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe109" type="StaticBody3D" parent="." unique_id=1756854313]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7458334, 32.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support110" type="StaticBody3D" parent="." unique_id=676095794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 32.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 8.795834, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe111" type="StaticBody3D" parent="." unique_id=1996836056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5375, 34.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe112" type="StaticBody3D" parent="." unique_id=1835335773]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3291667, 36.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe113" type="StaticBody3D" parent="." unique_id=1033000900]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1208334, 38.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe114" type="StaticBody3D" parent="." unique_id=1748779893]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9125, 39.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support115" type="StaticBody3D" parent="." unique_id=2126266896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 39.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 7.9625, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe116" type="StaticBody3D" parent="." unique_id=818022161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7041667, 41.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe117" type="StaticBody3D" parent="." unique_id=2063106187]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4958333, 43.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe118" type="StaticBody3D" parent="." unique_id=2008926548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2875, 45.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe119" type="StaticBody3D" parent="." unique_id=1615047061]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0791667, 46.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Support120" type="StaticBody3D" parent="." unique_id=911250191]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 46.875)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 7.1291666, 1.2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe121" type="StaticBody3D" parent="." unique_id=335738815]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87083334, 48.625)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe122" type="StaticBody3D" parent="." unique_id=1603304928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6625, 50.375)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Rampe123" type="StaticBody3D" parent="." unique_id=1778931707]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45416668, 52.125)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.65, 1.77)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Riviere124" type="MeshInstance3D" parent="." unique_id=269294027]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.75, 0)
+mesh = SubResource("PlaneMesh_bqrp0")
+
+[node name="Anneau125" type="MeshInstance3D" parent="." unique_id=629569221]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.05, 9)
+mesh = SubResource("BoxMesh_cvl56")
+
+[node name="Anneau126" type="MeshInstance3D" parent="." unique_id=44843250]
+transform = Transform3D(0.9238795, 0, 0.38268346, 0, 1, 0, -0.38268346, 0, 0.9238795, 3.444151, 6.05, 8.314916)
+mesh = SubResource("BoxMesh_0tgac")
+
+[node name="Anneau127" type="MeshInstance3D" parent="." unique_id=1438610758]
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 6.363961, 6.05, 6.363961)
+mesh = SubResource("BoxMesh_1728m")
+
+[node name="Anneau128" type="MeshInstance3D" parent="." unique_id=1273310013]
+transform = Transform3D(0.38268343, 0, 0.9238795, 0, 1, 0, -0.9238795, 0, 0.38268343, 8.314916, 6.05, 3.444151)
+mesh = SubResource("BoxMesh_id1o5")
+
+[node name="Anneau129" type="MeshInstance3D" parent="." unique_id=2111651613]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9, 6.05, 5.5107286e-16)
+mesh = SubResource("BoxMesh_80l61")
+
+[node name="Anneau130" type="MeshInstance3D" parent="." unique_id=1044761491]
+transform = Transform3D(-0.3826834, 0, 0.92387956, 0, 1, 0, -0.92387956, 0, -0.3826834, 8.314916, 6.05, -3.444151)
+mesh = SubResource("BoxMesh_r5nqm")
+
+[node name="Anneau131" type="MeshInstance3D" parent="." unique_id=1424490003]
+transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, 6.363961, 6.05, -6.363961)
+mesh = SubResource("BoxMesh_nomi0")
+
+[node name="Anneau132" type="MeshInstance3D" parent="." unique_id=422256811]
+transform = Transform3D(-0.9238795, 0, 0.3826835, 0, 1, 0, -0.3826835, 0, -0.9238795, 3.444151, 6.05, -8.314916)
+mesh = SubResource("BoxMesh_v8r54")
+
+[node name="Anneau133" type="MeshInstance3D" parent="." unique_id=1267056430]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1.1021457e-15, 6.05, -9)
+mesh = SubResource("BoxMesh_arl14")
+
+[node name="Anneau134" type="MeshInstance3D" parent="." unique_id=1681103628]
+transform = Transform3D(-0.9238795, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, -0.9238795, -3.444151, 6.05, -8.314916)
+mesh = SubResource("BoxMesh_71117")
+
+[node name="Anneau135" type="MeshInstance3D" parent="." unique_id=106704910]
+transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -6.363961, 6.05, -6.363961)
+mesh = SubResource("BoxMesh_thn71")
+
+[node name="Anneau136" type="MeshInstance3D" parent="." unique_id=1089919240]
+transform = Transform3D(-0.38268358, 0, -0.9238795, 0, 1, 0, 0.9238795, 0, -0.38268358, -8.314916, 6.05, -3.444151)
+mesh = SubResource("BoxMesh_dom3d")
+
+[node name="Anneau137" type="MeshInstance3D" parent="." unique_id=1044405445]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -9, 6.05, -1.6532186e-15)
+mesh = SubResource("BoxMesh_iu3dh")
+
+[node name="Anneau138" type="MeshInstance3D" parent="." unique_id=701261103]
+transform = Transform3D(0.3826836, 0, -0.92387944, 0, 1, 0, 0.92387944, 0, 0.3826836, -8.314916, 6.05, 3.444151)
+mesh = SubResource("BoxMesh_ugvdx")
+
+[node name="Anneau139" type="MeshInstance3D" parent="." unique_id=513851348]
+transform = Transform3D(0.70710665, 0, -0.7071069, 0, 1, 0, 0.7071069, 0, 0.70710665, -6.363961, 6.05, 6.363961)
+mesh = SubResource("BoxMesh_5tlbn")
+
+[node name="Anneau140" type="MeshInstance3D" parent="." unique_id=1904213199]
+transform = Transform3D(0.92387956, 0, -0.38268343, 0, 1, 0, 0.38268343, 0, 0.92387956, -3.444151, 6.05, 8.314916)
+mesh = SubResource("BoxMesh_tsmhj")
+
+[node name="Cristal141" type="MeshInstance3D" parent="." unique_id=305359856]
+transform = Transform3D(0.971338, -0.23770262, 0, 0.23770262, 0.971338, 0, 0, 0, 1, 0, 14, 0)
+mesh = SubResource("PrismMesh_b5457")
+
+[node name="Noyau142" type="StaticBody3D" parent="." unique_id=1050294683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.35, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(24, 0.65, 24)
+Color = Color(0.46, 0.39, 0.59, 1)
+Surface = 6
+
+[node name="Couronne143" type="StaticBody3D" parent="." unique_id=1087324924]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -13)
+script = ExtResource("2_o2b08")
+Size = Vector3(18.654758, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne144" type="StaticBody3D" parent="." unique_id=836074264]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -11)
+script = ExtResource("2_o2b08")
+Size = Vector3(23.2379, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne145" type="StaticBody3D" parent="." unique_id=569276905]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -9)
+script = ExtResource("2_o2b08")
+Size = Vector3(26.457514, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne146" type="StaticBody3D" parent="." unique_id=1243079019]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -7)
+script = ExtResource("2_o2b08")
+Size = Vector3(28.77499, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne147" type="StaticBody3D" parent="." unique_id=1322019348]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -5)
+script = ExtResource("2_o2b08")
+Size = Vector3(30.397367, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne148" type="StaticBody3D" parent="." unique_id=435776604]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -3)
+script = ExtResource("2_o2b08")
+Size = Vector3(31.432467, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne149" type="StaticBody3D" parent="." unique_id=587073094]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -1)
+script = ExtResource("2_o2b08")
+Size = Vector3(31.937439, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne150" type="StaticBody3D" parent="." unique_id=1272965778]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 1)
+script = ExtResource("2_o2b08")
+Size = Vector3(31.937439, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne151" type="StaticBody3D" parent="." unique_id=1055740914]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 3)
+script = ExtResource("2_o2b08")
+Size = Vector3(31.432467, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne152" type="StaticBody3D" parent="." unique_id=1044441520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 5)
+script = ExtResource("2_o2b08")
+Size = Vector3(30.397367, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne153" type="StaticBody3D" parent="." unique_id=750265364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 7)
+script = ExtResource("2_o2b08")
+Size = Vector3(28.77499, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne154" type="StaticBody3D" parent="." unique_id=317909939]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 9)
+script = ExtResource("2_o2b08")
+Size = Vector3(26.457514, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne155" type="StaticBody3D" parent="." unique_id=1872486841]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 11)
+script = ExtResource("2_o2b08")
+Size = Vector3(23.2379, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Couronne156" type="StaticBody3D" parent="." unique_id=649196536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(18.654758, 0.4, 2)
+Color = Color(0.58, 0.55, 0.63, 1)
+Surface = 6
+
+[node name="Pilier157" type="StaticBody3D" parent="." unique_id=1022786568]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -7, -9)
+script = ExtResource("2_o2b08")
+Size = Vector3(2, 12.4, 2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="BaliseC158" type="StaticBody3D" parent="." unique_id=1180113541]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 6, -10)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 2.4, 1.2)
+Color = Color(0.68, 0.27, 0.95, 1)
+Surface = 6
+
+[node name="Pilier159" type="StaticBody3D" parent="." unique_id=718390633]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -7, 9)
+script = ExtResource("2_o2b08")
+Size = Vector3(2, 12.4, 2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="BaliseC160" type="StaticBody3D" parent="." unique_id=614682217]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 6, 10)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 2.4, 1.2)
+Color = Color(0.68, 0.27, 0.95, 1)
+Surface = 6
+
+[node name="Pilier161" type="StaticBody3D" parent="." unique_id=2024317657]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -7, -9)
+script = ExtResource("2_o2b08")
+Size = Vector3(2, 12.4, 2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="BaliseC162" type="StaticBody3D" parent="." unique_id=1344131462]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 6, -10)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 2.4, 1.2)
+Color = Color(0.68, 0.27, 0.95, 1)
+Surface = 6
+
+[node name="Pilier163" type="StaticBody3D" parent="." unique_id=836793385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -7, 9)
+script = ExtResource("2_o2b08")
+Size = Vector3(2, 12.4, 2)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="BaliseC164" type="StaticBody3D" parent="." unique_id=1703633561]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 6, 10)
+script = ExtResource("2_o2b08")
+Size = Vector3(1.2, 2.4, 1.2)
+Color = Color(0.68, 0.27, 0.95, 1)
+Surface = 6
+
+[node name="Bloc165" type="StaticBody3D" parent="." unique_id=1715787894]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 5.3, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche166" type="StaticBody3D" parent="." unique_id=1665471715]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 11.7, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande167" type="StaticBody3D" parent="." unique_id=1093248989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 10.4, 8.94)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="Abri168" type="StaticBody3D" parent="." unique_id=1422358195]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 5.4, -14)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent169" type="StaticBody3D" parent="." unique_id=380022167]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 8.9, -14)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bloc170" type="StaticBody3D" parent="." unique_id=1628336725]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116, 5.3, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche171" type="StaticBody3D" parent="." unique_id=2003663846]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116, 11.7, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande172" type="StaticBody3D" parent="." unique_id=1882862790]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116, 10.4, 8.94)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="Abri173" type="StaticBody3D" parent="." unique_id=758951249]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116, 5.4, -14)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent174" type="StaticBody3D" parent="." unique_id=2105448255]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116, 8.9, -14)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Hangar175" type="StaticBody3D" parent="." unique_id=2125395719]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 5.8, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(2, 9, 20)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Poutre176" type="StaticBody3D" parent="." unique_id=823276720]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -139, 14.6, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.65, 26)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="AireGarage177" type="StaticBody3D" parent="." unique_id=1815187160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -124, 5.65, -23)
+script = ExtResource("2_o2b08")
+Size = Vector3(17, 0.35, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balisage178" type="StaticBody3D" parent="." unique_id=2085533797]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -124, 6, -29)
+script = ExtResource("2_o2b08")
+Size = Vector3(16, 0.04, 0.32)
+Color = Color(0.99, 0.69, 0.14, 1)
+Surface = 6
+
+[node name="Poteau179" type="StaticBody3D" parent="." unique_id=1334455460]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131, 6, -28.8)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65, 9, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balisage180" type="StaticBody3D" parent="." unique_id=242413882]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -124, 6, -17)
+script = ExtResource("2_o2b08")
+Size = Vector3(16, 0.04, 0.32)
+Color = Color(0.99, 0.69, 0.14, 1)
+Surface = 6
+
+[node name="Poteau181" type="StaticBody3D" parent="." unique_id=1271816548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131, 6, -17.2)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65, 9, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="ToitGarage182" type="StaticBody3D" parent="." unique_id=1556997592]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129, 15, -23)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.35, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="AireGarage183" type="StaticBody3D" parent="." unique_id=1573306798]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -124, 5.65, 23)
+script = ExtResource("2_o2b08")
+Size = Vector3(17, 0.35, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balisage184" type="StaticBody3D" parent="." unique_id=1445984364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -124, 6, 17)
+script = ExtResource("2_o2b08")
+Size = Vector3(16, 0.04, 0.32)
+Color = Color(0.99, 0.69, 0.14, 1)
+Surface = 6
+
+[node name="Poteau185" type="StaticBody3D" parent="." unique_id=81368160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131, 6, 17.2)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65, 9, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balisage186" type="StaticBody3D" parent="." unique_id=1231789235]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -124, 6, 29)
+script = ExtResource("2_o2b08")
+Size = Vector3(16, 0.04, 0.32)
+Color = Color(0.99, 0.69, 0.14, 1)
+Surface = 6
+
+[node name="Poteau187" type="StaticBody3D" parent="." unique_id=786892488]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131, 6, 28.8)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65, 9, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="ToitGarage188" type="StaticBody3D" parent="." unique_id=321263461]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129, 15, 23)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.35, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bloc189" type="StaticBody3D" parent="." unique_id=170333114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 12.3, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche190" type="StaticBody3D" parent="." unique_id=1038867224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 18.7, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande191" type="StaticBody3D" parent="." unique_id=877751126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 17.4, -48.06)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="Abri192" type="StaticBody3D" parent="." unique_id=1164866411]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 12.4, -71)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent193" type="StaticBody3D" parent="." unique_id=1961117928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 15.9, -71)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bloc194" type="StaticBody3D" parent="." unique_id=1765014500]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 12.3, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche195" type="StaticBody3D" parent="." unique_id=824436742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 18.7, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande196" type="StaticBody3D" parent="." unique_id=702994715]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 17.4, -48.06)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="Abri197" type="StaticBody3D" parent="." unique_id=584013280]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 12.4, -71)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent198" type="StaticBody3D" parent="." unique_id=984956077]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 15.9, -71)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Antenne199" type="StaticBody3D" parent="." unique_id=906878111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 19, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.42, 7, 0.42)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balise200" type="StaticBody3D" parent="." unique_id=935611022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 25.8, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(1, 0.6, 1)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="Fret201" type="StaticBody3D" parent="." unique_id=54399451]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -89, 13, -48)
+script = ExtResource("2_o2b08")
+Size = Vector3(5, 2.2, 3)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 7
+
+[node name="Fret202" type="StaticBody3D" parent="." unique_id=828742963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41, 13, -48)
+script = ExtResource("2_o2b08")
+Size = Vector3(5, 2.2, 3)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 7
+
+[node name="Bloc203" type="StaticBody3D" parent="." unique_id=1540776064]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 0.3, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche204" type="StaticBody3D" parent="." unique_id=631224043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 6.7, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande205" type="StaticBody3D" parent="." unique_id=880310648]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 5.4, 65.94)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="Abri206" type="StaticBody3D" parent="." unique_id=901483573]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 0.4, 43)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent207" type="StaticBody3D" parent="." unique_id=597342721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 3.9, 43)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bloc208" type="StaticBody3D" parent="." unique_id=1360624652]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 0.3, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche209" type="StaticBody3D" parent="." unique_id=1435546203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 6.7, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande210" type="StaticBody3D" parent="." unique_id=1041733493]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 5.4, 65.94)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="Abri211" type="StaticBody3D" parent="." unique_id=1883499516]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 0.4, 43)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent212" type="StaticBody3D" parent="." unique_id=1763013020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 3.9, 43)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Antenne213" type="StaticBody3D" parent="." unique_id=989667918]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 7, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.42, 7, 0.42)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balise214" type="StaticBody3D" parent="." unique_id=387682747]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 13.8, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(1, 0.6, 1)
+Color = Color(0.12, 0.52, 1, 1)
+Surface = 6
+
+[node name="Fret215" type="StaticBody3D" parent="." unique_id=509885267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -89, 1, 66)
+script = ExtResource("2_o2b08")
+Size = Vector3(5, 2.2, 3)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 7
+
+[node name="Fret216" type="StaticBody3D" parent="." unique_id=2136831487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41, 1, 66)
+script = ExtResource("2_o2b08")
+Size = Vector3(5, 2.2, 3)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 7
+
+[node name="Depart217" type="Marker3D" parent="." unique_id=246797542]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -120, 6, -4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart218" type="Marker3D" parent="." unique_id=676990056]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -124, 6, -4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart219" type="Marker3D" parent="." unique_id=180064098]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -128, 6, -4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart220" type="Marker3D" parent="." unique_id=222721988]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -132, 6, -4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart221" type="Marker3D" parent="." unique_id=1136757267]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -136, 6, -4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart222" type="Marker3D" parent="." unique_id=463923188]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -120, 6, 4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart223" type="Marker3D" parent="." unique_id=1210046703]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -124, 6, 4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart224" type="Marker3D" parent="." unique_id=652234313]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -128, 6, 4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart225" type="Marker3D" parent="." unique_id=730819032]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -132, 6, 4)
+script = ExtResource("5_t27cy")
+
+[node name="Depart226" type="Marker3D" parent="." unique_id=744700168]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -136, 6, 4)
+script = ExtResource("5_t27cy")
+
+[node name="Hover227" type="Marker3D" parent="." unique_id=1680505807]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -124, 6, -23)
+script = ExtResource("5_t27cy")
+Kind = 6
+Radius = 5.0
+
+[node name="Marcheur228" type="Marker3D" parent="." unique_id=1602441063]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -124, 6, 23)
+script = ExtResource("5_t27cy")
+Kind = 6
+Index = 1
+Radius = 5.0
+
+[node name="Bloc229" type="StaticBody3D" parent="." unique_id=1391273735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116, 5.3, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche230" type="StaticBody3D" parent="." unique_id=48080579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116, 11.7, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande231" type="StaticBody3D" parent="." unique_id=1439938302]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116, 10.4, 8.94)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="Abri232" type="StaticBody3D" parent="." unique_id=891618355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116, 5.4, -14)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent233" type="StaticBody3D" parent="." unique_id=2089513283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116, 8.9, -14)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bloc234" type="StaticBody3D" parent="." unique_id=961309511]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 142, 5.3, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche235" type="StaticBody3D" parent="." unique_id=12009719]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 142, 11.7, 13)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande236" type="StaticBody3D" parent="." unique_id=778081056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 142, 10.4, 8.94)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="Abri237" type="StaticBody3D" parent="." unique_id=1077257009]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 142, 5.4, -14)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent238" type="StaticBody3D" parent="." unique_id=2059727256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 142, 8.9, -14)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Hangar239" type="StaticBody3D" parent="." unique_id=1050658135]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 142, 5.8, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(2, 9, 20)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Poutre240" type="StaticBody3D" parent="." unique_id=190917498]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 139, 14.6, 0)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.65, 26)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="AireGarage241" type="StaticBody3D" parent="." unique_id=1306963841]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 124, 5.65, -23)
+script = ExtResource("2_o2b08")
+Size = Vector3(17, 0.35, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balisage242" type="StaticBody3D" parent="." unique_id=1623587914]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 124, 6, -29)
+script = ExtResource("2_o2b08")
+Size = Vector3(16, 0.04, 0.32)
+Color = Color(0.99, 0.69, 0.14, 1)
+Surface = 6
+
+[node name="Poteau243" type="StaticBody3D" parent="." unique_id=974020145]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131, 6, -28.8)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65, 9, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balisage244" type="StaticBody3D" parent="." unique_id=503087484]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 124, 6, -17)
+script = ExtResource("2_o2b08")
+Size = Vector3(16, 0.04, 0.32)
+Color = Color(0.99, 0.69, 0.14, 1)
+Surface = 6
+
+[node name="Poteau245" type="StaticBody3D" parent="." unique_id=313787336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131, 6, -17.2)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65, 9, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="ToitGarage246" type="StaticBody3D" parent="." unique_id=1090598674]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 129, 15, -23)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.35, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="AireGarage247" type="StaticBody3D" parent="." unique_id=1886109066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 124, 5.65, 23)
+script = ExtResource("2_o2b08")
+Size = Vector3(17, 0.35, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balisage248" type="StaticBody3D" parent="." unique_id=962099464]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 124, 6, 17)
+script = ExtResource("2_o2b08")
+Size = Vector3(16, 0.04, 0.32)
+Color = Color(0.99, 0.69, 0.14, 1)
+Surface = 6
+
+[node name="Poteau249" type="StaticBody3D" parent="." unique_id=1348770867]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131, 6, 17.2)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65, 9, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balisage250" type="StaticBody3D" parent="." unique_id=2134960654]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 124, 6, 29)
+script = ExtResource("2_o2b08")
+Size = Vector3(16, 0.04, 0.32)
+Color = Color(0.99, 0.69, 0.14, 1)
+Surface = 6
+
+[node name="Poteau251" type="StaticBody3D" parent="." unique_id=698517484]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131, 6, 28.8)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65, 9, 0.65)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="ToitGarage252" type="StaticBody3D" parent="." unique_id=577150867]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 129, 15, 23)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 0.35, 13)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bloc253" type="StaticBody3D" parent="." unique_id=2143302644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 12.3, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche254" type="StaticBody3D" parent="." unique_id=997072067]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 18.7, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande255" type="StaticBody3D" parent="." unique_id=1364795520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 17.4, -48.06)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="Abri256" type="StaticBody3D" parent="." unique_id=1099134939]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 12.4, -71)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent257" type="StaticBody3D" parent="." unique_id=950922721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 15.9, -71)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bloc258" type="StaticBody3D" parent="." unique_id=318335642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 12.3, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche259" type="StaticBody3D" parent="." unique_id=477166831]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 18.7, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande260" type="StaticBody3D" parent="." unique_id=1897569202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 17.4, -48.06)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="Abri261" type="StaticBody3D" parent="." unique_id=1568382105]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 12.4, -71)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent262" type="StaticBody3D" parent="." unique_id=1139359506]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 15.9, -71)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Antenne263" type="StaticBody3D" parent="." unique_id=512566811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 19, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.42, 7, 0.42)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balise264" type="StaticBody3D" parent="." unique_id=609469012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 25.8, -44)
+script = ExtResource("2_o2b08")
+Size = Vector3(1, 0.6, 1)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="Fret265" type="StaticBody3D" parent="." unique_id=1703577579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 13, -48)
+script = ExtResource("2_o2b08")
+Size = Vector3(5, 2.2, 3)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 7
+
+[node name="Fret266" type="StaticBody3D" parent="." unique_id=882984613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 89, 13, -48)
+script = ExtResource("2_o2b08")
+Size = Vector3(5, 2.2, 3)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 7
+
+[node name="Bloc267" type="StaticBody3D" parent="." unique_id=1507677851]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 0.3, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche268" type="StaticBody3D" parent="." unique_id=1538685592]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 6.7, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande269" type="StaticBody3D" parent="." unique_id=1609424975]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 5.4, 65.94)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="Abri270" type="StaticBody3D" parent="." unique_id=706420921]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 0.4, 43)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent271" type="StaticBody3D" parent="." unique_id=147145221]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, 3.9, 43)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bloc272" type="StaticBody3D" parent="." unique_id=1412184638]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 0.3, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(7, 6.7, 8)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Corniche273" type="StaticBody3D" parent="." unique_id=1343467362]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 6.7, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 0.7, 9)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Bande274" type="StaticBody3D" parent="." unique_id=1550342209]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 5.4, 65.94)
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5, 0.65, 0.15)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="Abri275" type="StaticBody3D" parent="." unique_id=977232683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 0.4, 43)
+script = ExtResource("2_o2b08")
+Size = Vector3(8, 3.5, 4)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 1
+
+[node name="Auvent276" type="StaticBody3D" parent="." unique_id=1691186794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 3.9, 43)
+script = ExtResource("2_o2b08")
+Size = Vector3(9, 0.4, 5)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Antenne277" type="StaticBody3D" parent="." unique_id=1559390321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 7, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(0.42, 7, 0.42)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 6
+
+[node name="Balise278" type="StaticBody3D" parent="." unique_id=2074971974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 78, 13.8, 70)
+script = ExtResource("2_o2b08")
+Size = Vector3(1, 0.6, 1)
+Color = Color(0.96, 0.27, 0.12, 1)
+Surface = 6
+
+[node name="Fret279" type="StaticBody3D" parent="." unique_id=1049170310]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 1, 66)
+script = ExtResource("2_o2b08")
+Size = Vector3(5, 2.2, 3)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 7
+
+[node name="Fret280" type="StaticBody3D" parent="." unique_id=294140385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 89, 1, 66)
+script = ExtResource("2_o2b08")
+Size = Vector3(5, 2.2, 3)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 7
+
+[node name="Depart281" type="Marker3D" parent="." unique_id=1330218744]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 120, 6, -4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart282" type="Marker3D" parent="." unique_id=1168869223]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 124, 6, -4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart283" type="Marker3D" parent="." unique_id=1404683239]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 128, 6, -4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart284" type="Marker3D" parent="." unique_id=71959808]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 132, 6, -4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart285" type="Marker3D" parent="." unique_id=2060758121]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 136, 6, -4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart286" type="Marker3D" parent="." unique_id=1022547040]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 120, 6, 4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart287" type="Marker3D" parent="." unique_id=1555968160]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 124, 6, 4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart288" type="Marker3D" parent="." unique_id=146172313]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 128, 6, 4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart289" type="Marker3D" parent="." unique_id=25929173]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 132, 6, 4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Depart290" type="Marker3D" parent="." unique_id=1228084192]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 136, 6, 4)
+script = ExtResource("5_t27cy")
+Team = 1
+
+[node name="Hover291" type="Marker3D" parent="." unique_id=1335787219]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 124, 6, -23)
+script = ExtResource("5_t27cy")
+Kind = 6
+Team = 1
+Radius = 5.0
+
+[node name="Marcheur292" type="Marker3D" parent="." unique_id=96740186]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 124, 6, 23)
+script = ExtResource("5_t27cy")
+Kind = 6
+Team = 1
+Index = 1
+Radius = 5.0
+
+[node name="A293" type="Marker3D" parent="." unique_id=328979331]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -65, 13, -57)
+script = ExtResource("5_t27cy")
 Kind = 3
-Team = 0
-Index = 0
-Radius = 7.0
+Team = 255
+Radius = 8.0
 
-[node name="Marker_02" type="Marker3D" parent="Points"]
-position = Vector3(-36, 0, 0)
-script = ExtResource("3_marker")
+[node name="B294" type="Marker3D" parent="." unique_id=37129871]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 65, 13, -57)
+script = ExtResource("5_t27cy")
 Kind = 3
 Team = 255
 Index = 1
-Radius = 7.0
+Radius = 8.0
 
-[node name="Marker_03" type="Marker3D" parent="Points"]
-position = Vector3(0, 0, 0)
-script = ExtResource("3_marker")
+[node name="C295" type="Marker3D" parent="." unique_id=1205350950]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 6, 0)
+script = ExtResource("5_t27cy")
 Kind = 3
 Team = 255
 Index = 2
-Radius = 7.0
+Radius = 9.0
 
-[node name="Marker_04" type="Marker3D" parent="Points"]
-position = Vector3(36, 0, 0)
-script = ExtResource("3_marker")
+[node name="D296" type="Marker3D" parent="." unique_id=454602528]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -65, 1, 57)
+script = ExtResource("5_t27cy")
 Kind = 3
 Team = 255
 Index = 3
-Radius = 7.0
+Radius = 8.0
 
-[node name="Marker_05" type="Marker3D" parent="Points"]
-position = Vector3(72, 0, 0)
-script = ExtResource("3_marker")
+[node name="E297" type="Marker3D" parent="." unique_id=1684718870]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 65, 1, 57)
+script = ExtResource("5_t27cy")
 Kind = 3
-Team = 1
+Team = 255
 Index = 4
-Radius = 7.0
+Radius = 8.0
 
-[node name="Marker_06" type="Marker3D" parent="Points"]
-position = Vector3(-66, 0, -15)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 0
-Index = 0
-Radius = 2.0
+[node name="SpawnPoint" type="Marker3D" parent="." unique_id=509258118]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -120, 6.2, -4)
 
-[node name="Marker_07" type="Marker3D" parent="Points"]
-position = Vector3(66, 0, -15)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 1
-Index = 0
-Radius = 2.0
+[node name="Tronc298" type="StaticBody3D" parent="." unique_id=1650035606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 88.910736, 15.162625, -88.59068)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8248552, 7.2174835, 0.8248552)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_08" type="Marker3D" parent="Points"]
-position = Vector3(-66, 0, -9)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 0
-Index = 0
-Radius = 2.0
+[node name="Tronc299" type="StaticBody3D" parent="." unique_id=313898422]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.30101, -5.433404, 75.601364)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.85415107, 7.4738216, 0.85415107)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_09" type="Marker3D" parent="Points"]
-position = Vector3(66, 0, -9)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 1
-Index = 0
-Radius = 2.0
+[node name="Tronc300" type="StaticBody3D" parent="." unique_id=1520766104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150.88135, 6.9316096, 49.01265)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.1022059, 9.644301, 1.1022059)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_10" type="Marker3D" parent="Points"]
-position = Vector3(-66, 0, -3)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 0
-Index = 0
-Radius = 2.0
+[node name="Tronc301" type="StaticBody3D" parent="." unique_id=97858423]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.410675, -2.0096755, 46.573105)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0303471, 9.015537, 1.0303471)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_11" type="Marker3D" parent="Points"]
-position = Vector3(66, 0, -3)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 1
-Index = 0
-Radius = 2.0
+[node name="Tronc302" type="StaticBody3D" parent="." unique_id=1661869735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -153.6571, 8.34647, 49.536423)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.1030611, 9.651785, 1.1030611)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_12" type="Marker3D" parent="Points"]
-position = Vector3(-66, 0, 3)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 0
-Index = 0
-Radius = 2.0
+[node name="Tronc303" type="StaticBody3D" parent="." unique_id=156605604]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 144.67404, 6.176831, -84.79816)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8430942, 7.3770747, 0.8430942)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_13" type="Marker3D" parent="Points"]
-position = Vector3(66, 0, 3)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 1
-Index = 0
-Radius = 2.0
+[node name="Tronc304" type="StaticBody3D" parent="." unique_id=1756425723]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.24681, -1.872753, 41.023468)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0547453, 9.229021, 1.0547453)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_14" type="Marker3D" parent="Points"]
-position = Vector3(-66, 0, 9)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 0
-Index = 0
-Radius = 2.0
+[node name="Tronc305" type="StaticBody3D" parent="." unique_id=1765873973]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115.82147, 5.974492, 83.44768)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0384095, 9.086082, 1.0384095)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_15" type="Marker3D" parent="Points"]
-position = Vector3(66, 0, 9)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 1
-Index = 0
-Radius = 2.0
+[node name="Tronc306" type="StaticBody3D" parent="." unique_id=520885254]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62.610947, 2.9757073, 93.782486)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7982491, 6.98468, 0.7982491)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_16" type="Marker3D" parent="Points"]
-position = Vector3(-66, 0, 15)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 0
-Index = 0
-Radius = 2.0
+[node name="Tronc307" type="StaticBody3D" parent="." unique_id=920584738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.0484, -1.3050574, 95.51668)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.561171, 4.9102464, 0.561171)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Marker_17" type="Marker3D" parent="Points"]
-position = Vector3(66, 0, 15)
-script = ExtResource("3_marker")
-Kind = 2
-Team = 1
-Index = 0
-Radius = 2.0
+[node name="Tronc308" type="StaticBody3D" parent="." unique_id=443126847]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -62.852814, 13.262243, -85.199875)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.95253783, 8.334706, 0.95253783)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Cover" type="Node3D" parent="."]
+[node name="Tronc309" type="StaticBody3D" parent="." unique_id=942101062]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.499336, 12.7451515, -81.83941)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.93621445, 8.191876, 0.93621445)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_01" type="StaticBody3D" parent="Cover"]
-position = Vector3(0, 0, -49.5)
-script = ExtResource("2_cover")
-Size = Vector3(160, 4, 1.0)
-Color = Color(0.22, 0.24, 0.28, 1)
+[node name="Tronc310" type="StaticBody3D" parent="." unique_id=867202765]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.000084, 18.257917, -99.89114)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7667029, 6.70865, 0.7667029)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_02" type="StaticBody3D" parent="Cover"]
-position = Vector3(0, 0, 49.5)
-script = ExtResource("2_cover")
-Size = Vector3(160, 4, 1.0)
-Color = Color(0.22, 0.24, 0.28, 1)
+[node name="Tronc311" type="StaticBody3D" parent="." unique_id=200084516]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52.501938, 2.6578403, 89.74689)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.67263097, 5.885521, 0.67263097)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_03" type="StaticBody3D" parent="Cover"]
-position = Vector3(-79.5, 0, 0)
-script = ExtResource("2_cover")
-Size = Vector3(1.0, 4, 100)
-Color = Color(0.22, 0.24, 0.28, 1)
+[node name="Tronc312" type="StaticBody3D" parent="." unique_id=2009093529]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.088104, 16.635498, -93.3351)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.84091645, 7.358019, 0.84091645)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_04" type="StaticBody3D" parent="Cover"]
-position = Vector3(79.5, 0, 0)
-script = ExtResource("2_cover")
-Size = Vector3(1.0, 4, 100)
-Color = Color(0.22, 0.24, 0.28, 1)
+[node name="Tronc313" type="StaticBody3D" parent="." unique_id=1239085477]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.520584, 4.4539037, -71.525696)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8617657, 7.5404496, 0.8617657)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_05" type="StaticBody3D" parent="Cover"]
-position = Vector3(0, 0, 0)
-script = ExtResource("2_cover")
-Size = Vector3(3, 1.2, 3)
-Color = Color(0.5, 0.45, 0.35, 1)
+[node name="Tronc314" type="StaticBody3D" parent="." unique_id=295426397]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 71.570984, 16.24469, -96.17874)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.69709647, 6.099594, 0.69709647)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_06" type="StaticBody3D" parent="Cover"]
-position = Vector3(-36, 0, 14)
-script = ExtResource("2_cover")
-Size = Vector3(6, 2.5, 3)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc315" type="StaticBody3D" parent="." unique_id=1577470111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -62.439957, 14.9195595, -89.033676)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0604203, 9.278677, 1.0604203)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_07" type="StaticBody3D" parent="Cover"]
-position = Vector3(36, 0, 14)
-script = ExtResource("2_cover")
-Size = Vector3(6, 2.5, 3)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc316" type="StaticBody3D" parent="." unique_id=1374147496]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -148.20865, 6.1429715, -37.79863)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8988391, 7.864842, 0.8988391)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_08" type="StaticBody3D" parent="Cover"]
-position = Vector3(-36, 0, -14)
-script = ExtResource("2_cover")
-Size = Vector3(6, 2.5, 3)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc317" type="StaticBody3D" parent="." unique_id=1573062294]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.210236, 12.6264925, -81.09083)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8442545, 7.387227, 0.8442545)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_09" type="StaticBody3D" parent="Cover"]
-position = Vector3(36, 0, -14)
-script = ExtResource("2_cover")
-Size = Vector3(6, 2.5, 3)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc318" type="StaticBody3D" parent="." unique_id=890948013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 156.14359, 9.402507, -61.599503)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.77865285, 6.8132124, 0.77865285)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_10" type="StaticBody3D" parent="Cover"]
-position = Vector3(18, 0, 22)
-script = ExtResource("2_cover")
-Size = Vector3(3, 2.5, 8)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc319" type="StaticBody3D" parent="." unique_id=1225037264]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.45468, 1.8921089, 40.309067)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7596178, 6.646656, 0.7596178)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_11" type="StaticBody3D" parent="Cover"]
-position = Vector3(-18, 0, 22)
-script = ExtResource("2_cover")
-Size = Vector3(3, 2.5, 8)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc320" type="StaticBody3D" parent="." unique_id=1556077519]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.343307, 1.3896486, 75.90617)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.61169064, 5.352293, 0.61169064)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_12" type="StaticBody3D" parent="Cover"]
-position = Vector3(18, 0, -22)
-script = ExtResource("2_cover")
-Size = Vector3(3, 2.5, 8)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc321" type="StaticBody3D" parent="." unique_id=1589198679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.646072, 8.717574, 96.354706)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8243769, 7.213298, 0.8243769)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_13" type="StaticBody3D" parent="Cover"]
-position = Vector3(-18, 0, -22)
-script = ExtResource("2_cover")
-Size = Vector3(3, 2.5, 8)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc322" type="StaticBody3D" parent="." unique_id=65279549]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.405518, 14.410924, -79.251724)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8255798, 7.2238235, 0.8255798)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_14" type="StaticBody3D" parent="Cover"]
-position = Vector3(0, 0, 18)
-script = ExtResource("2_cover")
-Size = Vector3(8, 3, 3)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc323" type="StaticBody3D" parent="." unique_id=750261246]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142.87411, 7.3302875, -91.58038)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.5774182, 5.0524096, 0.5774182)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_15" type="StaticBody3D" parent="Cover"]
-position = Vector3(0, 0, -18)
-script = ExtResource("2_cover")
-Size = Vector3(8, 3, 3)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc324" type="StaticBody3D" parent="." unique_id=994959597]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.548111, 5.534142, -22.493195)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.050701, 9.193634, 1.050701)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_16" type="StaticBody3D" parent="Cover"]
-position = Vector3(-55, 0, 26)
-script = ExtResource("2_cover")
-Size = Vector3(3, 3, 14)
-Color = Color(0.22, 0.24, 0.28, 1)
+[node name="Tronc325" type="StaticBody3D" parent="." unique_id=1451938495]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.322266, 13, -48.847942)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8534381, 7.467583, 0.8534381)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_17" type="StaticBody3D" parent="Cover"]
-position = Vector3(55, 0, 26)
-script = ExtResource("2_cover")
-Size = Vector3(3, 3, 14)
-Color = Color(0.22, 0.24, 0.28, 1)
+[node name="Tronc326" type="StaticBody3D" parent="." unique_id=1201080856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.02629, 3.4063442, 27.540283)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.6640744, 5.8106513, 0.6640744)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_18" type="StaticBody3D" parent="Cover"]
-position = Vector3(-55, 0, -26)
-script = ExtResource("2_cover")
-Size = Vector3(3, 3, 14)
-Color = Color(0.22, 0.24, 0.28, 1)
+[node name="Tronc327" type="StaticBody3D" parent="." unique_id=2054464680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 137.87738, 6.7713842, -86.89093)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8365103, 7.3194647, 0.8365103)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_19" type="StaticBody3D" parent="Cover"]
-position = Vector3(55, 0, -26)
-script = ExtResource("2_cover")
-Size = Vector3(3, 3, 14)
-Color = Color(0.22, 0.24, 0.28, 1)
+[node name="Tronc328" type="StaticBody3D" parent="." unique_id=1338473197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.09645, 3.9241612, 86.13388)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.83119524, 7.2729588, 0.83119524)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_20" type="StaticBody3D" parent="Cover"]
-position = Vector3(-60, 0, 0)
-script = ExtResource("2_cover")
-Size = Vector3(3, 2.5, 8)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc329" type="StaticBody3D" parent="." unique_id=682882225]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.986572, -0.37764442, -34.055557)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.88109684, 7.7095976, 0.88109684)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
-[node name="Box_21" type="StaticBody3D" parent="Cover"]
-position = Vector3(60, 0, 0)
-script = ExtResource("2_cover")
-Size = Vector3(3, 2.5, 8)
-Color = Color(0.42, 0.47, 0.55, 1)
+[node name="Tronc330" type="StaticBody3D" parent="." unique_id=1025446288]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 153.21286, 7.707331, 54.682373)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0186374, 8.913078, 1.0186374)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
 
+[node name="Tronc331" type="StaticBody3D" parent="." unique_id=1633272545]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.11679, 12.708671, -74.23277)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0213118, 8.936478, 1.0213118)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc332" type="StaticBody3D" parent="." unique_id=1144612618]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -151.31822, 7.5320916, -61.290825)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.6515017, 5.7006397, 0.6515017)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc333" type="StaticBody3D" parent="." unique_id=1076368197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.516098, 13.649415, -85.69731)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8479039, 7.4191594, 0.8479039)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc334" type="StaticBody3D" parent="." unique_id=328229732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 146.64267, 6.0166025, -75.371506)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0461912, 9.154173, 1.0461912)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc335" type="StaticBody3D" parent="." unique_id=1788691810]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.22435, -2.7642488, 22.51664)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.1141999, 9.749249, 1.1141999)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc336" type="StaticBody3D" parent="." unique_id=823365828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -113.735214, 6.5577016, 86.862564)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7591565, 6.6426196, 0.7591565)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc337" type="StaticBody3D" parent="." unique_id=1267615408]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -148.88036, 6.252094, 38.56874)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0266669, 8.983335, 1.0266669)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc338" type="StaticBody3D" parent="." unique_id=1940630040]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -155.18977, 11.769669, 98.50583)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.100139, 9.626217, 1.100139)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc339" type="StaticBody3D" parent="." unique_id=723755683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.047554, 13.847355, -84.92316)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.9256838, 8.099733, 0.9256838)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc340" type="StaticBody3D" parent="." unique_id=884681303]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.876007, -3.2191133, 50.244675)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.69590724, 6.089188, 0.69590724)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc341" type="StaticBody3D" parent="." unique_id=569793863]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -127.5249, 14.175912, -99.53124)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.73485625, 6.4299917, 0.73485625)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc342" type="StaticBody3D" parent="." unique_id=2052079655]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 88.777084, 14.08582, -86.348076)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7898253, 6.910971, 0.7898253)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc343" type="StaticBody3D" parent="." unique_id=1165870527]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 84.388596, 4.8426757, 92.29147)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0109246, 8.84559, 1.0109246)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc344" type="StaticBody3D" parent="." unique_id=398607041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56.481018, 19.60751, -101.58078)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.66549414, 5.823074, 0.66549414)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc345" type="StaticBody3D" parent="." unique_id=1864458312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.825027, 8.181863, 95.74904)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.107526, 9.690852, 1.107526)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc346" type="StaticBody3D" parent="." unique_id=1117021434]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.113464, 1.333047, 72.56998)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.76826423, 6.722312, 0.76826423)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc347" type="StaticBody3D" parent="." unique_id=2095640403]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 119.06723, 7.8649497, -93.69196)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.97996235, 8.574671, 0.97996235)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc348" type="StaticBody3D" parent="." unique_id=643672833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -146.33392, 6.0062976, -51.127964)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0726604, 9.385778, 1.0726604)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc349" type="StaticBody3D" parent="." unique_id=1543536232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.73442, 1.9344801, 23.01152)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.94696885, 8.285977, 0.94696885)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc350" type="StaticBody3D" parent="." unique_id=1346094848]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64.24764, 3.6645346, 90.10858)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.88949144, 7.7830505, 0.88949144)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc351" type="StaticBody3D" parent="." unique_id=935973705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.723175, -1.5250639, 75.08264)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.569201, 4.980509, 0.569201)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc352" type="StaticBody3D" parent="." unique_id=1892582606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.863747, 2.56457, 38.845474)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.61919004, 5.4179125, 0.61919004)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc353" type="StaticBody3D" parent="." unique_id=382717402]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.56746, 8.143734, -46.629955)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7339775, 6.422303, 0.7339775)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc354" type="StaticBody3D" parent="." unique_id=1372593547]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100.90428, 13.366937, -87.96663)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.80331516, 7.029008, 0.80331516)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc355" type="StaticBody3D" parent="." unique_id=1891262338]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.344223, 13.51979, -87.29488)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8897959, 7.785714, 0.8897959)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc356" type="StaticBody3D" parent="." unique_id=1949525745]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -120.208015, 11.582309, -93.85585)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8813189, 7.7115407, 0.8813189)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc357" type="StaticBody3D" parent="." unique_id=1515527279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.081223, 0.863473, 88.54375)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.68633616, 6.0054417, 0.68633616)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc358" type="StaticBody3D" parent="." unique_id=1510753073]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.71846, 10.984876, -92.6004)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.71999896, 6.299991, 0.71999896)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc359" type="StaticBody3D" parent="." unique_id=418510909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -155.83868, 9.269876, -40.445034)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0984482, 9.611422, 1.0984482)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc360" type="StaticBody3D" parent="." unique_id=1548956394]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 149.91257, 12.241821, 95.18782)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7377609, 6.4554076, 0.7377609)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc361" type="StaticBody3D" parent="." unique_id=813532259]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -151.8597, 7.1149416, 39.696854)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.82165706, 7.1894994, 0.82165706)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc362" type="StaticBody3D" parent="." unique_id=1075883118]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.023071, -3.3602827, 86.580185)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.710192, 6.21418, 0.710192)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc363" type="StaticBody3D" parent="." unique_id=315495859]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -73.5659, 8.933951, 98.28485)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.69641924, 6.0936685, 0.69641924)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc364" type="StaticBody3D" parent="." unique_id=303656696]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -107.81998, 16.954245, -100.81264)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8507906, 7.444418, 0.8507906)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc365" type="StaticBody3D" parent="." unique_id=1527413129]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.900131, 5.0831394, -83.02588)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0367527, 9.071587, 1.0367527)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc366" type="StaticBody3D" parent="." unique_id=591707087]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -141.94876, 10.486587, -100.386314)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.6936775, 6.069678, 0.6936775)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc367" type="StaticBody3D" parent="." unique_id=1860957497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.20163, 1.8038578, 87.79666)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0280676, 8.995591, 1.0280676)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc368" type="StaticBody3D" parent="." unique_id=850610732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -121.9588, 8.61322, 90.170425)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0090444, 8.829139, 1.0090444)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc369" type="StaticBody3D" parent="." unique_id=159239149]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82.15316, 5.314646, 96.7254)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0853761, 9.497042, 1.0853761)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc370" type="StaticBody3D" parent="." unique_id=1216316107]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -148.74728, 6.276183, 42.77112)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0787847, 9.439366, 1.0787847)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc371" type="StaticBody3D" parent="." unique_id=635356628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.036804, 13.631368, -88.2986)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.82297117, 7.2009974, 0.82297117)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc372" type="StaticBody3D" parent="." unique_id=1916812418]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 140.94598, 6.191899, 84.88641)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.67797154, 5.932251, 0.67797154)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc373" type="StaticBody3D" parent="." unique_id=849322952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -154.70032, 8.466272, 37.424545)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.5784997, 5.061872, 0.5784997)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc374" type="StaticBody3D" parent="." unique_id=668388993]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.220749, 10.640899, -31.985008)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.57177186, 5.0030036, 0.57177186)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc375" type="StaticBody3D" parent="." unique_id=1046417526]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.316849, 2.875146, -49.595875)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.97571594, 8.537515, 0.97571594)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc376" type="StaticBody3D" parent="." unique_id=484385375]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.10591, 13.839716, -82.01787)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.62700754, 5.4863157, 0.62700754)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc377" type="StaticBody3D" parent="." unique_id=1657129736]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.69613, 15.263977, -90.68886)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.9530827, 8.339474, 0.9530827)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc378" type="StaticBody3D" parent="." unique_id=6592280]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.244507, 6.979662, -94.77373)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8863777, 7.755805, 0.8863777)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc379" type="StaticBody3D" parent="." unique_id=1719327550]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 148.12225, 6.2899575, 34.29445)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.65032095, 5.6903086, 0.65032095)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc380" type="StaticBody3D" parent="." unique_id=1322270381]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.756668, -0.31857, 79.81947)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0918818, 9.553966, 1.0918818)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc381" type="StaticBody3D" parent="." unique_id=1486929136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -81.1199, 13.699372, -87.496346)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0495955, 9.18396, 1.0495955)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc382" type="StaticBody3D" parent="." unique_id=1095861141]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -89.33389, 5.6201653, 99.39189)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.9576696, 8.379609, 0.9576696)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc383" type="StaticBody3D" parent="." unique_id=1411506286]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.074524, 5.481035, 99.13747)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(1.0454315, 9.147526, 1.0454315)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc384" type="StaticBody3D" parent="." unique_id=284344298]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.219307, 3.9193552, 34.891464)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.9292649, 8.131068, 0.9292649)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc385" type="StaticBody3D" parent="." unique_id=660093056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -156.26329, 9.696144, 48.455734)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7793948, 6.8197045, 0.7793948)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc386" type="StaticBody3D" parent="." unique_id=1939065829]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.55229, 15.692589, -94.614624)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8720808, 7.630707, 0.8720808)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc387" type="StaticBody3D" parent="." unique_id=1947319119]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.551727, 4.1573057, 91.17302)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.95493925, 8.355719, 0.95493925)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc388" type="StaticBody3D" parent="." unique_id=1140859197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.43434, 10.66697, -94.769226)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8668639, 7.585059, 0.8668639)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc389" type="StaticBody3D" parent="." unique_id=1520069854]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.977516, 5.8948007, 27.815475)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.8541805, 7.4740796, 0.8541805)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc390" type="StaticBody3D" parent="." unique_id=1974390736]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -145.10228, 8.126491, -94.62983)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.63426745, 5.54984, 0.63426745)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc391" type="StaticBody3D" parent="." unique_id=2089675335]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 99.00897, 13.991315, -84.617096)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.62339544, 5.45471, 0.62339544)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Tronc392" type="StaticBody3D" parent="." unique_id=49408539]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114.329834, 13.011341, -95.426796)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(0.7071343, 6.187425, 0.7071343)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 9
+
+[node name="Rocher393" type="StaticBody3D" parent="." unique_id=912356968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 135.4137, 5.743056, -60.53852)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.0664825, 3.8387485, 9.492161)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher394" type="StaticBody3D" parent="." unique_id=1978081990]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.801474, 3.0983965, -71.53265)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(12.471058, 5.322109, 8.667358)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher395" type="StaticBody3D" parent="." unique_id=340040204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58.541965, 5.8427434, -14.148447)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.058037, 2.3494124, 6.18517)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher396" type="StaticBody3D" parent="." unique_id=982332338]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63.58902, 5.822011, -10.736804)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.1847267, 2.6591558, 7.058098)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher397" type="StaticBody3D" parent="." unique_id=262351937]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 146.4584, 5.751759, -73.11083)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.260117, 3.8192363, 10.071014)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher398" type="StaticBody3D" parent="." unique_id=1216721056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.61635, 16.19036, -96.819824)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.995552, 3.7082329, 9.877266)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher399" type="StaticBody3D" parent="." unique_id=1997296982]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 82.671814, 22.166084, -101.47754)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.198853, 3.3998299, 5.9079742)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher400" type="StaticBody3D" parent="." unique_id=2065847820]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 98.28882, 5.121592, 26.524843)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(10.049507, 3.6771817, 9.320236)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher401" type="StaticBody3D" parent="." unique_id=351547614]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 132.15485, 14.03425, -101.190254)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.0909576, 3.782507, 8.818939)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher402" type="StaticBody3D" parent="." unique_id=281010259]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -113.503876, 5.487751, 61.086025)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.959236, 3.6814594, 8.658028)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher403" type="StaticBody3D" parent="." unique_id=906333627]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -127.694824, 5.9142575, -84.93771)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(10.71756, 3.9215293, 9.923805)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher404" type="StaticBody3D" parent="." unique_id=1414825842]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70.769905, 13.469386, -86.414536)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.5848694, 2.0456514, 5.260231)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher405" type="StaticBody3D" parent="." unique_id=1368703180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 128.04529, 5.779089, -42.41363)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.281876, 3.3004103, 9.019035)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher406" type="StaticBody3D" parent="." unique_id=1579496052]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -89.50358, 6.9658737, -22.832962)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.30455, 3.5334635, 9.586733)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher407" type="StaticBody3D" parent="." unique_id=1195820497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 83.85446, 3.78226, 91.20103)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.590759, 3.6273355, 6.0504913)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher408" type="StaticBody3D" parent="." unique_id=2061748907]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.227541, -3.231591, 26.959728)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(11.326547, 4.854627, 7.8297024)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher409" type="StaticBody3D" parent="." unique_id=138571587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 125.26605, 7.1018534, -90.07311)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.0643997, 2.9345236, 7.0553436)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher410" type="StaticBody3D" parent="." unique_id=1278670539]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 72.59956, 14.834869, -92.44836)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.188965, 3.0236607, 7.144806)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher411" type="StaticBody3D" parent="." unique_id=1722751446]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.929493, 12.795333, -68.2976)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.476883, 3.2182512, 6.9385986)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher412" type="StaticBody3D" parent="." unique_id=201801323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.11615, 5.9381294, 12.03865)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.28656, 2.6789417, 6.4610405)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher413" type="StaticBody3D" parent="." unique_id=398213999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -95.780624, 2.5341482, 77.15732)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.2276535, 1.9127936, 4.8211746)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher414" type="StaticBody3D" parent="." unique_id=696835025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.485985, 6.67058, 27.280018)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(4.837721, 2.6369324, 6.5109196)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher415" type="StaticBody3D" parent="." unique_id=1042794401]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -138.8048, 6.7482915, 89.18864)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.4897156, 2.6004052, 7.1042023)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher416" type="StaticBody3D" parent="." unique_id=875027063]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -141.1247, 5.776433, 73.696785)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.942505, 3.340088, 8.13826)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher417" type="StaticBody3D" parent="." unique_id=1416626076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59.70478, 4.140098, 28.894104)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.912033, 2.6669126, 5.5050316)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher418" type="StaticBody3D" parent="." unique_id=998524352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -89.688866, 5.971947, 14.18682)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.684738, 2.4603562, 6.456087)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher419" type="StaticBody3D" parent="." unique_id=1977642105]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.618126, 4.252124, 29.634977)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.8721657, 3.2727346, 8.537586)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher420" type="StaticBody3D" parent="." unique_id=1893532326]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.832314, 5.636812, 22.896286)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.9039803, 3.959858, 9.563295)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher421" type="StaticBody3D" parent="." unique_id=1533034791]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.588745, 8.038118, 101.36154)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.59864, 3.6744595, 9.928055)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher422" type="StaticBody3D" parent="." unique_id=1587915988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56.210403, 1.1906136, 86.548035)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.372047, 3.5198078, 7.833626)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher423" type="StaticBody3D" parent="." unique_id=316848969]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.619568, 13.912305, -85.64731)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.286671, 3.2702627, 6.379982)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher424" type="StaticBody3D" parent="." unique_id=2069984453]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 141.97998, 5.786251, -61.8997)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.5550995, 3.19341, 7.2472916)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher425" type="StaticBody3D" parent="." unique_id=1491919092]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.493525, -5.2386436, 77.19635)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(12.1679535, 6.2989917, 15.89621)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher426" type="StaticBody3D" parent="." unique_id=2033588019]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -148.04745, 9.096566, -97.38782)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(10.716263, 3.9291859, 10.168579)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher427" type="StaticBody3D" parent="." unique_id=1373981787]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.78192, 16.5121, -97.832695)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.8083572, 2.818613, 7.3004456)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher428" type="StaticBody3D" parent="." unique_id=972574860]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.05625, 5.3468533, 23.4571)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(4.342327, 2.3549933, 5.827383)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher429" type="StaticBody3D" parent="." unique_id=542859529]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.33898, 5.739468, 17.011173)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.9832497, 3.8923488, 9.518438)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher430" type="StaticBody3D" parent="." unique_id=407180147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 93.324585, 12.78151, -69.0948)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(4.8953476, 2.7203627, 6.6611557)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher431" type="StaticBody3D" parent="." unique_id=1100799981]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -71.90489, 18.475971, -94.53622)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(4.7745285, 2.5104008, 6.2942047)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher432" type="StaticBody3D" parent="." unique_id=852009483]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.109072, 13.443885, -91.35251)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.497715, 2.780654, 7.4031982)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher433" type="StaticBody3D" parent="." unique_id=120877329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.5581, 1.6152725, 89.41826)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.463505, 3.5128613, 8.1286545)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher434" type="StaticBody3D" parent="." unique_id=1172464781]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115.794685, 6.966742, -90.607315)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.470291, 3.1402364, 5.290825)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher435" type="StaticBody3D" parent="." unique_id=719360134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 147.71036, 6.2412047, -85.9697)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.29393, 3.451366, 9.381088)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher436" type="StaticBody3D" parent="." unique_id=1615914898]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.512138, 5.349128, -7.26908)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.7684, 3.5449228, 8.902557)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher437" type="StaticBody3D" parent="." unique_id=427241905]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142.7731, 5.7570467, 72.79355)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.865112, 3.6297235, 9.51609)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher438" type="StaticBody3D" parent="." unique_id=2040912680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.93399, 12.891162, -70.134964)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.322567, 2.3796835, 5.2613373)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher439" type="StaticBody3D" parent="." unique_id=438560966]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131.47354, 10.678012, 95.60108)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(10.468491, 3.8307495, 9.6176605)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher440" type="StaticBody3D" parent="." unique_id=629472525]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.72236, 12.54096, -64.76895)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(11.479349, 3.4103565, 11.244286)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher441" type="StaticBody3D" parent="." unique_id=949063198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.934498, 2.2380304, -46.709663)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.254698, 2.972825, 9.841389)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher442" type="StaticBody3D" parent="." unique_id=280747642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -101.55415, 9.676449, -37.958813)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.496147, 3.0908775, 10.169525)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher443" type="StaticBody3D" parent="." unique_id=645296534]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -145.90633, 5.846588, -41.405983)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5315857, 1.9421935, 6.4484596)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher444" type="StaticBody3D" parent="." unique_id=1917213407]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -101.01167, 5.2137127, 29.000093)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.260071, 1.8858347, 5.907604)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher445" type="StaticBody3D" parent="." unique_id=1187878983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.05003, 1.0045722, 84.691605)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.9574814, 1.7956691, 6.0399017)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher446" type="StaticBody3D" parent="." unique_id=378008312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.71611, 6.820151, -20.003294)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(4.8825493, 1.458015, 4.674488)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher447" type="StaticBody3D" parent="." unique_id=1261860153]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -148.23111, 5.962649, 46.60331)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.6673737, 3.2534347, 9.117558)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher448" type="StaticBody3D" parent="." unique_id=1717457852]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.040596, 8.431423, -29.706781)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.539684, 2.7355604, 7.6437416)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher449" type="StaticBody3D" parent="." unique_id=282750079]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -66.53153, 1.9276443, 87.66289)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.570721, 3.2285218, 7.005211)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher450" type="StaticBody3D" parent="." unique_id=1069251266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 144.81573, 5.7734046, -49.374794)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.362228, 2.8686986, 8.671616)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher451" type="StaticBody3D" parent="." unique_id=1251512242]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -156.9169, 9.947487, -58.308662)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.6436157, 1.8114166, 5.998741)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher452" type="StaticBody3D" parent="." unique_id=1185463825]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 111.52243, 6.712106, -53.56512)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.3397827, 1.8878007, 6.113739)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher453" type="StaticBody3D" parent="." unique_id=733931113]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.023716, 15.150777, -89.66077)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.3050385, 1.7687998, 5.749031)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher454" type="StaticBody3D" parent="." unique_id=1408734417]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95.415436, 14.452936, -81.4843)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(10.872826, 3.2366161, 10.780716)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher455" type="StaticBody3D" parent="." unique_id=1809158549]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 140.25468, 7.964431, 89.5737)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(10.957275, 3.4558172, 11.527824)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher456" type="StaticBody3D" parent="." unique_id=1793813327]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -88.642975, 14.388676, -90.431694)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.444191, 1.7110481, 5.7150726)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher457" type="StaticBody3D" parent="." unique_id=1949719537]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 109.63569, 6.030068, 89.82007)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.278763, 2.555797, 6.1741257)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher458" type="StaticBody3D" parent="." unique_id=1678156740]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 98.38445, 2.3501992, 72.10622)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.351624, 3.087007, 6.8939285)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher459" type="StaticBody3D" parent="." unique_id=2001478699]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.127962, 11.9991, -49.95751)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.787174, 1.7196712, 5.688259)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher460" type="StaticBody3D" parent="." unique_id=116599130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 119.3745, 8.352164, 95.896286)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.200005, 2.4661055, 8.289925)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher461" type="StaticBody3D" parent="." unique_id=2001613738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 74.61882, 3.0233734, 92.04689)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.0750046, 1.8940575, 5.5442276)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher462" type="StaticBody3D" parent="." unique_id=170893641]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 91.86606, 3.272144, 36.835228)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.4263687, 1.6438696, 5.533043)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher463" type="StaticBody3D" parent="." unique_id=183728685]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -76.31009, 2.2007968, 88.7787)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.542458, 2.5880244, 8.005272)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher464" type="StaticBody3D" parent="." unique_id=199320541]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.540745, 5.9861183, -13.821711)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(10.019203, 3.3769026, 8.693719)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher465" type="StaticBody3D" parent="." unique_id=1278453565]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 89.374374, 11.934908, -39.42814)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.230949, 2.4480362, 8.134312)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher466" type="StaticBody3D" parent="." unique_id=1977684935]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.906925, -2.8876832, -23.793)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(13.227565, 4.317043, 14.185221)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher467" type="StaticBody3D" parent="." unique_id=577388397]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.239517, 5.845892, 6.188958)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.468624, 1.9510093, 4.599276)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher468" type="StaticBody3D" parent="." unique_id=1194554070]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -101.45503, 10.685462, -72.26402)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.673744, 1.8285618, 6.044327)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher469" type="StaticBody3D" parent="." unique_id=14749369]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90.87758, 2.3707256, 91.17422)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(11.611397, 3.4695177, 11.102249)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher470" type="StaticBody3D" parent="." unique_id=1278218052]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -79.63231, 5.872176, 13.8643875)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.44384, 1.6182504, 5.2870874)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher471" type="StaticBody3D" parent="." unique_id=1549550236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.23126, 4.0524096, 29.028713)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.5069275, 2.9235864, 7.891958)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher472" type="StaticBody3D" parent="." unique_id=275149778]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.775162, 5.7263193, -16.278755)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(9.782738, 2.9659767, 9.983444)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher473" type="StaticBody3D" parent="." unique_id=300444453]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 145.13394, 5.815491, -37.95353)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.2548523, 2.3358798, 6.471943)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher474" type="StaticBody3D" parent="." unique_id=1297471717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100.627815, 2.456965, 70.300415)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.99971, 2.8791528, 6.6967087)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher475" type="StaticBody3D" parent="." unique_id=2040141533]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.112988, -5.367387, 66.008545)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.968797, 2.6646025, 8.793865)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher476" type="StaticBody3D" parent="." unique_id=1234095520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 101.497734, 3.8362253, 39.107414)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.1324005, 1.8234856, 6.054184)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher477" type="StaticBody3D" parent="." unique_id=732732157]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -97.8483, 1.5520856, 66.25064)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.121605, 1.7976243, 4.345299)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher478" type="StaticBody3D" parent="." unique_id=979570560]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.76649, 24.870241, -100.69237)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.942217, 2.4123402, 7.421562)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher479" type="StaticBody3D" parent="." unique_id=974661151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.73323, 4.0728817, 29.277264)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.2544975, 1.861103, 6.045992)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher480" type="StaticBody3D" parent="." unique_id=1682918611]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.475533, 5.852244, -14.62772)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.884865, 1.8705902, 5.295166)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher481" type="StaticBody3D" parent="." unique_id=320428455]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 83.33981, 5.824161, -12.749294)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(6.10466, 2.2261205, 5.075076)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher482" type="StaticBody3D" parent="." unique_id=209458668]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.975624, -0.26013422, 65.14066)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.909967, 3.239908, 10.017086)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher483" type="StaticBody3D" parent="." unique_id=1566573182]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96.810394, 10.220326, 96.03076)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.5913467, 1.66786, 5.3662796)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher484" type="StaticBody3D" parent="." unique_id=733760480]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 101.19107, 12.030876, -82.37253)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.147499, 2.1971378, 6.6006775)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher485" type="StaticBody3D" parent="." unique_id=335817938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142.4367, 5.828654, -54.61612)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.9760895, 2.1692438, 6.714035)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher486" type="StaticBody3D" parent="." unique_id=306045428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -86.4133, 1.373493, 87.8095)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(8.432091, 3.4758813, 9.926086)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher487" type="StaticBody3D" parent="." unique_id=309542597]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -147.95578, 7.065674, -90.72533)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(7.327759, 2.1785183, 7.1120834)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Rocher488" type="StaticBody3D" parent="." unique_id=1986220907]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 71.30877, 5.517993, 99.4956)
+visible = false
+script = ExtResource("2_o2b08")
+Size = Vector3(5.8216553, 1.9045267, 5.1413574)
+Color = Color(0.55, 0.64, 0.69, 1)
+Surface = 3
+
+[node name="Terrain3D" type="Terrain3D" parent="." unique_id=1926428649]
+data_directory = "res://maps/controle/terrain"
+material = SubResource("Terrain3DMaterial_f6xvh")
+assets = ExtResource("6_sbn2h")
+top_level = true
+metadata/_edit_lock_ = true
+
+[node name="Soleil489" type="DirectionalLight3D" parent="." unique_id=1246584870 instance=ExtResource("7_flmhu")]
+transform = Transform3D(0.819648, 0.2945318, -0.4913534, 0, 0.8577087, 0.514136, 0.57286745, -0.42141056, 0.70301926, 0, 0, 0)
+light_color = Color(1, 0.87, 0.72, 1)
+light_energy = 1.5
+light_angular_distance = 0.55
+shadow_enabled = true
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 180.0
+
+[node name="Ciel490" type="WorldEnvironment" parent="." unique_id=771560835]
+environment = ExtResource("8_21x0q")

@@ -19,6 +19,7 @@ namespace Openesport.Online
 			PointDeControle = 3,
 			BaseDeDrapeau = 4,
 			SiteDeBombe = 5,
+			Garage = 6,
 		}
 
 		private KindEnum _kind = KindEnum.ApparitionEquipe;
@@ -28,7 +29,7 @@ namespace Openesport.Online
 		[Export] public KindEnum Kind { get => _kind; set { _kind = value; Refresh(); } }
 		/// <summary>0 = bleus, 1 = rouges, 255 = personne. En Sabotage : 0 = défenseurs, 1 = attaquants. Point de contrôle : propriétaire au départ.</summary>
 		[Export(PropertyHint.Range, "0,255,1")] public int Team { get => _team; set { _team = value; Refresh(); } }
-		/// <summary>Point de contrôle : 0 = base bleue, 1 = A, 2 = B, 3 = C, 4 = base rouge. Site de bombe : 0 = A, 1 = B.</summary>
+		/// <summary>Relais A à E (0 à 4), site de bombe A ou B (0 ou 1), garage hover ou marcheur (0 ou 1).</summary>
 		[Export(PropertyHint.Range, "0,9,1")] public int Index { get => _index; set { _index = value; Refresh(); } }
 		/// <summary>Rayon de la zone (points de contrôle, sites de bombe, bases de drapeau).</summary>
 		[Export(PropertyHint.Range, "0.5,30,0.5")] public float Radius { get => _radius; set { _radius = value; Refresh(); } }
@@ -55,7 +56,8 @@ namespace Openesport.Online
 			{
 				KindEnum.ApparitionChacunPourSoi => "Apparition (chacun pour soi)",
 				KindEnum.ApparitionEquipe => $"Apparition — {team}",
-				KindEnum.PointDeControle => $"Point de contrôle {(_index == 0 ? "base bleue" : _index == 4 ? "base rouge" : ((char)('A' + _index - 1)).ToString())} — départ : {team}",
+				KindEnum.PointDeControle => $"Point de contrôle {(char)('A' + _index)} — départ : {team}",
+				KindEnum.Garage => _index == 0 ? "Hangar hover" : "Hangar AT-ST",
 				KindEnum.BaseDeDrapeau => $"Base du drapeau — {team}",
 				_ => $"Site de bombe {(char)('A' + _index)}",
 			};

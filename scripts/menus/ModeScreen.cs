@@ -82,6 +82,7 @@ namespace Openesport.Menus
 
 		private void SelectMode(GameMode mode)
 		{
+			if (_mode != mode && mode == GameMode.Control) _teamSize = 10;
 			_mode = mode;
 			var info = Modes.Get(mode);
 			_teamSize = Modes.ValidTeamSize(mode, _teamSize);

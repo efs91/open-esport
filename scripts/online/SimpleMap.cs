@@ -25,6 +25,7 @@ namespace Openesport.Online
 
 		public override void _EnterTree()
 		{
+			if (HasNode("Terrain3D")) return;
 			var body = new StaticBody3D { Name = "_Ground" };
 			_mesh = new MeshInstance3D { Name = "_Mesh" };
 			_shape = new CollisionShape3D { Name = "_Shape" };

@@ -3,7 +3,7 @@
 
     python tools/map/gen_mode_maps.py
 
-Écrit scenes/maps/Arene.tscn (ancienne arène), Drapeau.tscn (Capture du drapeau), Sabotage.tscn et Controle.tscn.
+Écrit scenes/maps/Arene.tscn (ancienne arène), Drapeau.tscn (Capture du drapeau), Sabotage.tscn. Pour Controle.tscn, utiliser build_control.gd.
 Les deux modes Deathmatch utilisent Relais.tscn, créée par gen_relais_map.py.
 Ensuite on peut les ouvrir dans Godot et déplacer / copier / régler les nœuds : CoverBox (abris), MapMarker (apparitions, points de contrôle, bases de drapeau,
 sites de bombe). Puis « Exporter la carte » (panneau Open Esport) fabrique le fichier .world que lisent le serveur et le jeu.
@@ -210,34 +210,13 @@ def sabotage():
     return build()
 
 
-def controle():
-    m = Map('Controle', (160, 100), (0.28, 0.35, 0.3))
-    m.walls()
-    m.box(0, 0, 3, 1.2, 3, LOW)
-    m.mirror_x(36, 14, 6, 2.5, 3); m.mirror_x(36, -14, 6, 2.5, 3)
-    m.mirror_x(18, 22, 3, 2.5, 8); m.mirror_x(18, -22, 3, 2.5, 8)
-    m.box(0, 18, 8, 3, 3); m.box(0, -18, 8, 3, 3)
-    m.mirror_x(55, 26, 3, 3, 14, WALL); m.mirror_x(55, -26, 3, 3, 14, WALL)
-    m.mirror_x(60, 0, 3, 2.5, 8)
-    # cinq points : base bleue, A, B, C, base rouge
-    m.marker(CONTROL, -72, 0, 0, 0, 7.0)
-    m.marker(CONTROL, -36, 0, 255, 1, 7.0)
-    m.marker(CONTROL, 0, 0, 255, 2, 7.0)
-    m.marker(CONTROL, 36, 0, 255, 3, 7.0)
-    m.marker(CONTROL, 72, 0, 1, 4, 7.0)
-    for z in (-12, -6, 0, 6, 12, 18):
-        m.marker(TEAM, -66, z - 3, 0)
-        m.marker(TEAM, 66, z - 3, 1)
-    return m
-
-
 if __name__ == '__main__':
     if '--minimaps' in sys.argv:
-        for build in (arene, drapeau, sabotage, controle):
+        for build in (arene, drapeau, sabotage):
             mp = build()
             out = os.path.join(ROOT, 'assets', 'maps', mp.name.lower() + '.png')
             write_minimap(mp, out)
             print('dessin écrit', out)
         sys.exit(0)
-    for build in (arene, drapeau, sabotage, controle):
+    for build in (arene, drapeau, sabotage):
         build().write()

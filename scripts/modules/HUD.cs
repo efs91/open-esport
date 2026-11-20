@@ -40,6 +40,8 @@ namespace Openesport
 			}
 		}
 
+		public void SetWalkerDisplay(bool mounted) => _ammoLabel.Visible = !mounted;
+
 		private void SetupHUD()
 		{
 			GD.Print("HUD: Setting up HUD");

@@ -208,7 +208,8 @@ namespace Openesport.Online
 			var origin = new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z);
 			var dir = new Vector3(e.Dir.X, e.Dir.Y, e.Dir.Z);
 			Vector3 muzzle;
-			if (e.A == Client.PlayerId)
+			if (e.D != 0 || Client.Mode.Ride(e.A,out _) != null) muzzle = origin;
+			else if (e.A == Client.PlayerId)
 			{
 				var cam = _head.GetNodeOrNull<Camera3D>("Camera");
 				if (cam == null) return;
@@ -220,7 +221,7 @@ namespace Openesport.Online
 			Vector3 aim = origin + dir * 60f;
 			Vector3 d = (aim - muzzle).Normalized();
 			if (d.Dot(dir) < 0.9f) d = dir;
-			ShotTracer.Spawn(_worldRoot, muzzle, d, ShotTracer.ColorFor(WeaponDefs.Get(e.C)?.AmmoType ?? 0), WeaponDefs.Get(e.C)?.Speed ?? 0f);
+			ShotTracer.Spawn(_worldRoot, muzzle, d, ShotTracer.ColorFor(WeaponDefs.Get(e.C)?.AmmoType ?? 0), WeaponDefs.Get(e.C)?.Speed ?? 0f, (ShotAppearance)e.D);
 			if (e.C != 0) GameAudio.Shot(_worldRoot, muzzle, (WeaponDefs.Get(e.C)?.AmmoType ?? 0) == 1, e.A == Client.PlayerId);
 		}
 
@@ -240,6 +241,7 @@ namespace Openesport.Online
 			int slot = 0;
 			if (active)
 			{
+				VehicleKeys();
 				forward = (Input.IsActionPressed(InputManager.Actions.MOVE_FORWARD) ? 1f : 0f) - (Input.IsActionPressed(InputManager.Actions.MOVE_BACK) ? 1f : 0f);
 				strafe = (Input.IsActionPressed(InputManager.Actions.MOVE_RIGHT) ? 1f : 0f) - (Input.IsActionPressed(InputManager.Actions.MOVE_LEFT) ? 1f : 0f);
 				if (Input.IsActionPressed(InputManager.Actions.JUMP)) buttons |= Buttons.Jump;
@@ -280,9 +282,9 @@ namespace Openesport.Online
 
 			_weapons.SetServerMagazine(Client.Magazine);
 			_hud.SetVitals(Client.Health, Client.Shield, Client.ShieldTier, Client.UsingItem, Client.UseProgress);
-			_hud.SetHint(Client.Match.CanRevive ? (Client.Match.Revive > 0 ? I18n.T("Réanimation…") : I18n.T("Maintenir E : réanimer ton coéquipier")) : Client.Predicted.Stance == Stance.Climbing ? I18n.T("Escalade…") : Client.Predicted.Stance == Stance.Zipping ? I18n.T("Saut : se décrocher   —   tu peux tirer") : Client.ZiplineInReach ? I18n.T("E : prendre la tyrolienne") : _windowHint ?? BombHint());
+			_hud.SetHint(VehicleHint() ?? (Client.Match.CanRevive ? (Client.Match.Revive > 0 ? I18n.T("Réanimation…") : I18n.T("Maintenir E : réanimer ton coéquipier")) : Client.Predicted.Stance == Stance.Climbing ? I18n.T("Escalade…") : Client.Predicted.Stance == Stance.Zipping ? I18n.T("Saut : se décrocher   —   tu peux tirer") : Client.ZiplineInReach ? I18n.T("E : prendre la tyrolienne") : _windowHint ?? BombHint()));
 			_weapons.SetUsingSupply(Client.UsingItem == 0 ? null : ItemDefs.Get(Client.UsingItem)?.Name);
-			if (active) HandleSupplyKeys(); else if (_radial.IsOpen) _radial.Close();
+			if (active && Client.Mode.Ride(Client.PlayerId,out _) == null) HandleSupplyKeys(); else if (_radial.IsOpen) _radial.Close();
 			UpdatePings();
 			UpdateGrenadeHud();
 			if (_wasAlive != Client.Alive)
@@ -475,14 +477,15 @@ namespace Openesport.Online
 
 		private void UpdateGrenadeHud()
 		{
-			byte id = CurrentGrenade();
+			bool onFoot = Client.Mode.Ride(Client.PlayerId,out _) == null;
+			byte id = onFoot ? CurrentGrenade() : (byte)0;
 			string name = id == 0 ? "" : I18n.T(GrenadeNames[System.Array.IndexOf(GrenadeOrder, id)]);
 			_hud.SetGrenade(id == 0 ? "" : _inventory.GrenadeInHand != 0
 				? I18n.T("Grenade {0} x{1} en main   —   clic gauche : lancer   [G] ranger   [V] changer", name, Client.Inventory.CountOf(id))
 				: I18n.T("Grenade {0} x{1}   —   [G] la sortir   (maintenir G : menu)", name, Client.Inventory.CountOf(id)));
 			// la trajectoire s'affiche tant qu'une grenade est en main
 			var cam = _head?.GetNodeOrNull<Camera3D>("Camera");
-			_preview.Refresh(cam, new Vector3(Client.Predicted.Vel.X, 0f, Client.Predicted.Vel.Z), _inventory.GrenadeInHand, _worldCollision, Client.Alive && !_radial.IsOpen);
+			_preview.Refresh(cam, new Vector3(Client.Predicted.Vel.X, 0f, Client.Predicted.Vel.Z), _inventory.GrenadeInHand, _worldCollision, onFoot && Client.Alive && !_radial.IsOpen);
 		}
 
 		private void UseSupply(byte small, byte big, bool heals, bool shields)
@@ -597,6 +600,7 @@ namespace Openesport.Online
 			UpdateDropPhase(v, (float)delta);
 			UpdateZone(v);
 			UpdateMode(v);
+			UpdateVehicles((float)delta);
 			TraceStates();
 		}
 
@@ -953,7 +957,12 @@ namespace Openesport.Online
 						if (Time.GetTicksMsec() - t0 > 40) GD.Print($"[lag] création d'un joueur : {Time.GetTicksMsec() - t0} ms");
 					}
 					bool friendly = e.Team == Client.TeamId;
-					remote.Apply(e, NameOf(e.Id), friendly, delta);
+					var carrier = Client.Mode.Ride(e.Id, out _);
+					bool insideCabin = carrier != null && !carrier.Hover;
+					bool sameCabin = insideCabin && Array.IndexOf(carrier.Seats, Client.PlayerId) >= 0;
+					int hoverIndex = carrier?.Hover == true ? Array.IndexOf(Client.Mode.Vehicles, carrier) : -1;
+					remote.Apply(e, NameOf(e.Id), friendly && !sameCabin, delta, insideCabin,
+						hoverIndex >= 0 && hoverIndex < _vehicleModels.Count ? _vehicleModels[hoverIndex] : null);
 					if (!e.Has(EntityFlags.Dead) && e.Zip != 3)
 					{
 						var wp = new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z);

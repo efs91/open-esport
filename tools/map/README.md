@@ -105,3 +105,9 @@ Salle du Rail (nord, +8 m, sniper légendaire) et salle Roquette (sud, +4 m, LMG
 - `python tools/map/gen_drapeau_map.py --force` remplace la scène, les lanternes et la minimap. `--minimap` seul redessine uniquement le plan.
 - Après une modification de géométrie, exécuter `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Drapeau.tscn --out=res://assets/maps/drapeau.world`. Livrer cet export avec la version du serveur correspondante.
 - `dotnet test netcode/OpenEsport.Tests --filter FullyQualifiedName~DrapeauMapTests` vérifie la symétrie de l’export, les traversées, le souterrain et le démarrage en 10 contre 10.
+
+## Contrôle — le canyon
+
+La scène `scenes/maps/Controle.tscn` couvre 320 × 208 m. A et B surplombent la rive nord, C occupe la plateforme centrale et D et E se trouvent sur la rive basse. Les joueurs disposent de trois ponts, de deux rampes depuis C et des chemins de rive. Les herbes, fougères, sapins et rochers sont instanciés dans les régions Terrain3D de `maps/controle/terrain`. Les garages sont des MapMarker de type Garage, avec l’index 0 pour le hover et 1 pour l’AT-ST.
+
+Le générateur `Godot --headless --path . --script res://tools/map/build_control.gd -- --force` remplace la scène, les régions, les matériaux de terrain et la minimap. Après une modification du relief, d’un garage ou d’un bâtiment, exporter les hauteurs et obstacles utilisés en réseau avec `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Controle.tscn --out=res://assets/maps/controle.world`.

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using OpenEsport.Core;
 
 namespace Openesport.Online
 {
@@ -26,6 +27,8 @@ namespace Openesport.Online
 		private readonly List<Point> _points = new();
 		private Vector3 _pos, _vel;
 		private float _flight;
+		private float _size = 1;
+		private MeshInstance3D _bolt;
 		private bool _stopped;
 		private Color _color;
 		private ImmediateMesh _mesh;
@@ -67,10 +70,16 @@ void fragment() {
 		};
 
 		/// <param name="speed">Vitesse de la balle (m/s) ; 0 = vitesse commune. Chaque arme peut avoir la sienne (sniper).</param>
-		public static void Spawn(Node parent, Vector3 from, Vector3 direction, Color color, float speed = 0f)
+		public static void Spawn(Node parent, Vector3 from, Vector3 direction, Color color, float speed = 0f, ShotAppearance appearance = ShotAppearance.Standard)
 		{
 			if (!GodotObject.IsInstanceValid(parent)) return;
 			var t = new ShotTracer { _pos = from, _vel = direction.Normalized() * (speed > 0f ? speed : Speed), _color = color };
+			if (appearance == ShotAppearance.WalkerMachineGun || appearance == ShotAppearance.WalkerCannon)
+			{
+				bool cannon = appearance == ShotAppearance.WalkerCannon;
+				t._size = cannon ? 5f : 2.4f;
+				t._color = cannon ? new Color("#ff9148") : new Color("#ffe598");
+			}
 			parent.AddChild(t);
 		}
 
@@ -78,6 +87,16 @@ void fragment() {
 		{
 			TopLevel = true;
 			GlobalTransform = Transform3D.Identity;
+			if (_size > 1)
+			{
+				float radius = HeadWidth * _size * .5f;
+				_bolt = new MeshInstance3D {
+					Position = _pos, Mesh = new SphereMesh { Radius = radius, Height = 2 * radius, RadialSegments = 8, Rings = 4 },
+					MaterialOverride = new StandardMaterial3D { ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded, AlbedoColor = _color },
+					CastShadow = GeometryInstance3D.ShadowCastingSetting.Off
+				};
+				AddChild(_bolt);
+			}
 			_seed = GD.Randf() * 100f;
 			_sharedShader ??= new Shader { Code = SmokeShader };   // un seul shader pour toutes les balles : il n'est compilé qu'une fois
 			var _smoke = new ShaderMaterial { Shader = _sharedShader };
@@ -129,6 +148,8 @@ void fragment() {
 			Vector3 head = _pos;
 			if (!_stopped) head += _vel * (float)(Engine.GetPhysicsInterpolationFraction() / Engine.PhysicsTicksPerSecond);
 
+			if (_bolt != null) { _bolt.Visible = !_stopped; _bolt.Position = head; }
+
 			int n = _points.Count + (_stopped ? 0 : 1);
 			if (n < 2) return;
 			_mesh.SurfaceBegin(Mesh.PrimitiveType.TriangleStrip);
@@ -149,7 +170,7 @@ void fragment() {
 				float life = Mathf.Clamp(1f - (float)(age / TrailSeconds), 0f, 1f);
 				float old = 1f - life;
 				// la fumée s'élargit en vieillissant ; fine et dense à la tête
-				float width = HeadWidth + SmokeSpread * Mathf.Pow(old, 1.2f);
+				float width = HeadWidth * _size + SmokeSpread * Mathf.Pow(old, 1.2f);
 				float dist = isHead ? (_points.Count > 0 ? _points[^1].Dist + _points[^1].Pos.DistanceTo(head) : 0f) : _points[i].Dist;
 				// presque blanc-gris, avec la couleur de la munition près de la balle
 				Color c = smoke.Lerp(_color, Mathf.Pow(life, 3f) * 0.85f);

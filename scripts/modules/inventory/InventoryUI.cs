@@ -144,6 +144,7 @@ namespace Openesport.Inventory
 
 		public void Toggle()
 		{
+			if (!Visible) return;
 			Openesport.Diagnostics.LagTracer.Event("inventaire : ouvrir / fermer");
 			if (_gameManager.GetCurrentState() != GameManager.GameState.Gameplay)
 				return;

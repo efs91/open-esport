@@ -65,7 +65,7 @@ namespace Openesport.Online
 			_points = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center, Visible = false };
 			_points.AddThemeConstantOverride("separation", 10);
 			top.AddChild(_points);
-			string[] names = { "BASE", "A", "B", "C", "BASE" };
+			string[] names = { "A", "B", "C", "D", "E" };
 			for (int i = 0; i < 5; i++)
 			{
 				var cell = new VBoxContainer { CustomMinimumSize = new Vector2(64, 0) };
@@ -335,7 +335,7 @@ namespace Openesport.Online
 				: I18n.T("C : classe ({0})", I18n.T(Loadouts.Get(m.ClassId).Name));
 			if (m.Invulnerable) hint += "   " + I18n.T("(protégé)");
 			_footer.Text = (role.Length > 0 ? role + "\n" : "") + hint;
-			_footer.Visible = phase != MatchPhase.Over;
+			_footer.Visible = phase != MatchPhase.Over && m.Ride(MyId(),out _) == null;
 
 			_action.Visible = _actionLabel.Visible = m.Action != 0;
 			if (m.Action != 0) { _action.Value = m.ActionProgress; _actionLabel.Text = m.Action == 1 ? I18n.T("Pose de la bombe…") : I18n.T("Désamorçage…"); }
@@ -524,7 +524,7 @@ namespace Openesport.Online
 						var beam = new MeshInstance3D { Mesh = new CylinderMesh { TopRadius = 0.35f, BottomRadius = 0.35f, Height = 16f }, Position = pos + new Vector3(0, 8f, 0), MaterialOverride = Glow(Gray, 0.25f) };
 						AddChild(ring); AddChild(beam);
 						_rings[i] = ring; _beams[i] = beam;
-						string name = i == 0 || i == 4 ? "BASE" : ((char)('A' + i - 1)).ToString();
+						string name = ((char)('A' + i)).ToString();
 						AddChild(new Label3D { Text = name, Position = pos + new Vector3(0, 17f, 0), Billboard = BaseMaterial3D.BillboardModeEnum.Enabled, FontSize = 220, PixelSize = 0.01f, NoDepthTest = true, Modulate = Colors.White, OutlineSize = 20 });
 						break;
 					}

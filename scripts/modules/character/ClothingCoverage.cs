@@ -20,6 +20,8 @@ internal static class ClothingCoverage
         return mask;
     }
 
+    public static int Layer(string name) => Layers.GetValueOrDefault(name);
+
     private static void Load()
     {
         using var file = new MemoryStream(Godot.FileAccess.GetFileAsBytes(CharacterKit.Folder + "coverage.bytes"));

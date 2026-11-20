@@ -214,7 +214,7 @@ def write_coverage(files, data, bindings):
     layers = {}
     for raw in files:
         name = raw.stem.rsplit("_", 1)[0]
-        if name in CUSTOM:
+        if name in CUSTOM or name.startswith("c_new_"):
             layers[name] = (50, np.zeros(BASE_COUNT, dtype=bool))
         elif name.startswith(("c_", "s_")):
             with np.load(next(data.rglob(name[2:] + ".mhpxy"))) as proxy:
@@ -226,14 +226,26 @@ def write_coverage(files, data, bindings):
     body_file = next(raw for raw in files if raw.stem == "Body_0")
     body = bindings[body_file][0]
     normals = np.fromfile(str(body_file) + ".normals", dtype="<f4").reshape(-1, 3)
+    from build_newskins import FULL_SUIT
     interiors = {}
     for raw in files:
         part = raw.stem.rsplit("_", 1)[0]
-        if part in (SCIFI, "c_mandalorian"):
+        if part in (SCIFI, "c_mandalorian") or part.removeprefix("c_new_") in FULL_SUIT:
             interiors[part] = scifi_coverage(body, Glb(OUT / "character_kit.glb"), .20 if part == SCIFI else .05)
         elif part in layers and part not in hats:
             triangles = np.fromfile(str(raw) + ".indices", dtype="<i4").reshape(-1, 3)
             interiors[part] = garment_interior(body, normals, bindings[raw][0], triangles)
+            if part in ("c_new_harley_quinn","c_new_drift"):
+                core = (body[:,1]>.92) & (body[:,1]<1.33) & (np.abs(body[:,0])<.17)
+                interiors[part] |= core
+            if part.startswith("c_new_"):
+                interiors[part] |= body[:,1] < .09
+            if part == "c_new_harley_quinn":
+                sleeves = (np.abs(body[:,0])>.18) & (body[:,1]>1.04)
+                interiors[part] |= sleeves & scifi_coverage(body,Glb(OUT/"character_kit.glb"),.055)
+                interiors[part] |= (body[:,1]>.86) & (body[:,1]<1.0) & (np.abs(body[:,0])<.18)
+            if part == "c_new_ryuji":
+                interiors[part] |= (body[:,1]<1.05) & (np.abs(body[:,0])<.28)
             if part == "c_renegade_raider":
                 interiors[part] |= (body[:,1] < 1.06) & (np.abs(body[:,0]) < .32)
     surfaces = {}
@@ -310,6 +322,11 @@ def main():
             dist, near = cKDTree(unique).query(coords, k=3)
             weights = 1 / np.maximum(dist, .0001)**2
             bindings[custom] = (coords, body_refs[first[near], 0], weights / weights.sum(1, keepdims=True))
+        from build_hair_library import build_library
+        bindings.update(build_library(posed, Path(tmp), args.godot))
+        from build_newskins import build_newskins
+        bindings.update(build_newskins(Path(tmp), args.godot, bindings[Path(tmp)/"Body_0.raw"]))
+        files = sorted(bindings)
         expected = json.loads((OUT / "kit.json").read_text(encoding="utf8"))["items"]
         assert {raw.stem for raw in files} == {"Body_0"} | {it["id"]+"_0" for group in expected.values() for it in group}
         write_coverage(files, data, bindings)

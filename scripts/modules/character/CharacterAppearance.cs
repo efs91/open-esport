@@ -11,7 +11,7 @@ public static class CharacterKit
 	public const string Folder = "res://assets/characters/kit/";
 	public const string ModelPath = Folder + "character_kit.glb";
 
-	public sealed class Item { public string Id; public string Name; public bool IncludesShoes; }
+	public sealed class Item { public string Id; public string Name; public bool IncludesShoes; public string MeshFile, Cover; }
 	public sealed class Skin { public string Name; public string File; }
 
 	public static List<Skin> Skins { get; private set; } = new();
@@ -55,7 +55,7 @@ public static class CharacterKit
 			foreach (var it in kv.Value.AsGodotArray())
 			{
 				var d = it.AsGodotDictionary();
-				list.Add(new Item { Id = d["id"].AsString(), Name = d["name"].AsString(), IncludesShoes = d.ContainsKey("includes_shoes") && d["includes_shoes"].AsBool() });
+				list.Add(new Item { Id = d["id"].AsString(), Name = d["name"].AsString(), Cover = d.ContainsKey("cover") ? d["cover"].AsString() : null, MeshFile = d.ContainsKey("mesh") ? d["mesh"].AsString() : null, IncludesShoes = d.ContainsKey("includes_shoes") && d["includes_shoes"].AsBool() });
 			}
 			Groups[kv.Key.AsString()] = list;
 		}
@@ -172,8 +172,9 @@ public sealed class CharacterAppearance
 		b[6] = (byte)(Piece("clothes") + 1);
 		b[7] = (byte)(Piece("shoes") + 1);
 		b[8] = (byte)(Piece("hair") + 1);
-		// Two formerly unused high bits keep legacy appearances and morph offsets intact.
-		b[9] = (byte)(((Piece("eyebrows") + 1) & 63) | (Math.Clamp(Piece("headwear") + 1, 0, 3) << 6));
+		// Preserve the first four headwear codes in bits 6-7. Bits 2-5 extend the catalog.
+		int hat = Math.Clamp(Piece("headwear") + 1, 0, 63);
+		b[9] = (byte)(((Piece("eyebrows") + 1) & 3) | (hat & 60) | ((hat & 3) << 6));
 		return b;
 	}
 
@@ -197,7 +198,7 @@ public sealed class CharacterAppearance
 		foreach (var g in CharacterKit.Choosable)
 		{
 			int count = CharacterKit.Items(g).Count;
-			int v = g switch { "headwear" => b[9] >> 6, "eyebrows" => b[9] & 63, _ => b[i++] };
+			int v = g switch { "headwear" => (b[9] >> 6) | (b[9] & 60), "eyebrows" => b[9] & 3, _ => b[i++] };
 			a.Pieces[g] = v == 0 || count == 0 ? -1 : (v - 1) % count;
 		}
 		return a;

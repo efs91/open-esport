@@ -60,6 +60,27 @@ public partial class CharacterAnimator : Node3D
 
 	private readonly System.Collections.Generic.Dictionary<string, Texture2D> _skinCache = new();
 	private StandardMaterial3D _skinMaterial;
+	private MeshInstance3D _libraryHair, _libraryClothes, _libraryHeadwear;
+
+	private void SetLibraryPiece(string group, ref MeshInstance3D instance, CharacterAppearance look, HashSet<string> visible)
+	{
+		var styles = CharacterKit.Items(group);
+		int choice = look.Piece(group);
+		var style = choice >= 0 && choice < styles.Count ? styles[choice] : null;
+		if (style?.MeshFile == null || !visible.Contains(style.Id)) style = null;
+		if (instance != null)
+		{
+			if (instance.Name.ToString() == style?.Id) return;
+			_kitMeshes.Remove(instance);
+			instance.Free();
+			instance = null;
+		}
+		if (style == null || _character.FindChild("Body", true, false) is not MeshInstance3D body) return;
+		instance = new MeshInstance3D { Name = style.Id, Mesh = GD.Load<ArrayMesh>(CharacterKit.Folder + style.MeshFile),
+			Transform = body.Transform, Skin = body.Skin, Skeleton = body.Skeleton };
+		body.GetParent().AddChild(instance);
+	}
+
 	private readonly System.Collections.Generic.Dictionary<MeshInstance3D,ArrayMesh> _kitMeshes = new();
 
 	/// <summary>Applique morphologie, peau et pièces au modèle.</summary>
@@ -79,15 +100,23 @@ public partial class CharacterAnimator : Node3D
 		foreach (var g in CharacterKit.Always)
 			foreach (var it in CharacterKit.Items(g)) visible.Add(it.Id);
 
-		if (visible.Contains("hat_mandalorian"))
+		var headwear = CharacterKit.Items("headwear");
+		int hatIndex = a.Piece("headwear");
+		var hat = hatIndex >= 0 && hatIndex < headwear.Count ? headwear[hatIndex] : null;
+		if (visible.Contains("hat_mandalorian") || hat?.Cover == "helmet")
 			foreach (var group in new[] { "hair", "eyebrows", "eyes", "eyelashes" })
 				foreach (var item in CharacterKit.Items(group)) visible.Remove(item.Id);
 
+		SetLibraryPiece("hair", ref _libraryHair, a, visible);
+		SetLibraryPiece("clothes", ref _libraryClothes, a, visible);
+		SetLibraryPiece("headwear", ref _libraryHeadwear, a, visible);
 		var outfit = CharacterKit.Items("clothes");
 		int selected = a.Piece("clothes");
 		if (selected >= 0 && selected < outfit.Count && outfit[selected].IncludesShoes)
 			foreach (var shoe in CharacterKit.Items("shoes")) visible.Remove(shoe.Id);
 		int coverage = ClothingCoverage.Equipped(visible);
+		if (hat?.Cover == "helmet" || hat?.Cover == "crown")
+			coverage |= ClothingCoverage.Layer(hat.Cover == "helmet" ? "hat_mandalorian" : "hat_fedora");
 		var detailMoves = CharacterDetails.Displacements(a);
 		var detailJoints = detailMoves == null ? null : CharacterDetails.JointOffsets(detailMoves);
 		if (_offsets != null)

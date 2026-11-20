@@ -17,8 +17,8 @@ OUTFITS = [
 ]
 
 
-def registration(source, kit):
-    bones = {re.sub(r"_0\d+$", "", k): v*.01 for k,v in source.joints().items()}
+def registration(source, kit, unit=.01):
+    bones = {re.sub(r"_0\d+$", "", k): v*unit for k,v in source.joints().items()}
     dest = kit.joints()
     pairs = {"pelvis":"Hips", "spine_02":"Spine", "spine_03":"Spine1", "spine_05":"Spine2",
              "neck_01":"Neck", "head":"Head"}

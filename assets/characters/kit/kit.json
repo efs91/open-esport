@@ -1522,6 +1522,66 @@
     "id": "c_renegade_raider",
     "name": "Renegade Raider",
     "includes_shoes": true
+   },
+   {
+    "id": "c_new_drift",
+    "name": "Drift",
+    "mesh": "wardrobe/c_new_drift.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_harley_quinn",
+    "name": "Harley Quinn",
+    "mesh": "wardrobe/c_new_harley_quinn.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_indigo_kuno",
+    "name": "Indigo Kuno",
+    "mesh": "wardrobe/c_new_indigo_kuno.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_oblivion",
+    "name": "Oblivion",
+    "mesh": "wardrobe/c_new_oblivion.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_iron_man",
+    "name": "Iron Man",
+    "mesh": "wardrobe/c_new_iron_man.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_ishowspeed",
+    "name": "IShowSpeed",
+    "mesh": "wardrobe/c_new_ishowspeed.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_jules",
+    "name": "Jules",
+    "mesh": "wardrobe/c_new_jules.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_ryuji",
+    "name": "Ryuji",
+    "mesh": "wardrobe/c_new_ryuji.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_stormtrooper",
+    "name": "Stormtrooper",
+    "mesh": "wardrobe/c_new_stormtrooper.res",
+    "includes_shoes": true
+   },
+   {
+    "id": "c_new_vengeance_jones",
+    "name": "Vengeance Jones",
+    "mesh": "wardrobe/c_new_vengeance_jones.res",
+    "includes_shoes": true
    }
   ],
   "shoes": [
@@ -1562,6 +1622,131 @@
    {
     "id": "h_short04",
     "name": "Short04"
+   },
+   {
+    "id": "h_cc0_cortu_shaggy_green_hair",
+    "name": "Cortu Shaggy Green Hair",
+    "mesh": "hair/h_cc0_cortu_shaggy_green_hair.res"
+   },
+   {
+    "id": "h_cc0_cortu_short_messy_hair",
+    "name": "Cortu Short Messy Hair",
+    "mesh": "hair/h_cc0_cortu_short_messy_hair.res"
+   },
+   {
+    "id": "h_cc0_cortu_straight_bangs",
+    "name": "Cortu Straight Bangs",
+    "mesh": "hair/h_cc0_cortu_straight_bangs.res"
+   },
+   {
+    "id": "h_cc0_cortu_strawberry_cloud_hair",
+    "name": "Cortu Strawberry Cloud Hair",
+    "mesh": "hair/h_cc0_cortu_strawberry_cloud_hair.res"
+   },
+   {
+    "id": "h_cc0_culturalibre_hair_01",
+    "name": "Culturalibre Hair 01",
+    "mesh": "hair/h_cc0_culturalibre_hair_01.res"
+   },
+   {
+    "id": "h_cc0_culturalibre_hair_02",
+    "name": "Culturalibre Hair 02",
+    "mesh": "hair/h_cc0_culturalibre_hair_02.res"
+   },
+   {
+    "id": "h_cc0_culturalibre_hair_05",
+    "name": "Culturalibre Hair 05",
+    "mesh": "hair/h_cc0_culturalibre_hair_05.res"
+   },
+   {
+    "id": "h_cc0_culturalibre_hair_06",
+    "name": "Culturalibre Hair 06",
+    "mesh": "hair/h_cc0_culturalibre_hair_06.res"
+   },
+   {
+    "id": "h_cc0_elvs_double_mh_braid",
+    "name": "Elvs Double Mh Braid",
+    "mesh": "hair/h_cc0_elvs_double_mh_braid.res"
+   },
+   {
+    "id": "h_cc0_elvs_french_braid_variation",
+    "name": "Elvs French Braid Variation",
+    "mesh": "hair/h_cc0_elvs_french_braid_variation.res"
+   },
+   {
+    "id": "h_cc0_elvs_reverse_french_braid_bun",
+    "name": "Elvs Reverse French Braid Bun",
+    "mesh": "hair/h_cc0_elvs_reverse_french_braid_bun.res"
+   },
+   {
+    "id": "h_cc0_elvs_unkempt_french_braid",
+    "name": "Elvs Unkempt French Braid",
+    "mesh": "hair/h_cc0_elvs_unkempt_french_braid.res"
+   },
+   {
+    "id": "h_cc0_faydaen_hair_1",
+    "name": "Faydaen Hair 1",
+    "mesh": "hair/h_cc0_faydaen_hair_1.res"
+   },
+   {
+    "id": "h_cc0_learning_anime_hair",
+    "name": "Learning Anime Hair",
+    "mesh": "hair/h_cc0_learning_anime_hair.res"
+   },
+   {
+    "id": "h_cc0_littleright_bobcut_hair",
+    "name": "Littleright Bobcut Hair",
+    "mesh": "hair/h_cc0_littleright_bobcut_hair.res"
+   },
+   {
+    "id": "h_cc0_o4saken_long01",
+    "name": "O4Saken Long01",
+    "mesh": "hair/h_cc0_o4saken_long01.res"
+   },
+   {
+    "id": "h_cc0_rehmanpolanski_hair_bun_brown",
+    "name": "Rehmanpolanski Hair Bun Brown",
+    "mesh": "hair/h_cc0_rehmanpolanski_hair_bun_brown.res"
+   },
+   {
+    "id": "h_cc0_sonntag78_blond_with_headband",
+    "name": "Sonntag78 Blond With Headband",
+    "mesh": "hair/h_cc0_sonntag78_blond_with_headband.res"
+   },
+   {
+    "id": "h_cc0_sonntag78_junglebook_hair",
+    "name": "Sonntag78 Junglebook Hair",
+    "mesh": "hair/h_cc0_sonntag78_junglebook_hair.res"
+   },
+   {
+    "id": "h_cc0_toigo_blunt_bob",
+    "name": "Toigo Blunt Bob",
+    "mesh": "hair/h_cc0_toigo_blunt_bob.res"
+   },
+   {
+    "id": "h_cc0_toigo_blunt_bob_with_bangs",
+    "name": "Toigo Blunt Bob With Bangs",
+    "mesh": "hair/h_cc0_toigo_blunt_bob_with_bangs.res"
+   },
+   {
+    "id": "h_cc0_toigo_curled_under_bob",
+    "name": "Toigo Curled Under Bob",
+    "mesh": "hair/h_cc0_toigo_curled_under_bob.res"
+   },
+   {
+    "id": "h_cc0_toigo_curled_under_bob_with_bangs",
+    "name": "Toigo Curled Under Bob With Bangs",
+    "mesh": "hair/h_cc0_toigo_curled_under_bob_with_bangs.res"
+   },
+   {
+    "id": "h_cc0_toigo_inverted_bob",
+    "name": "Toigo Inverted Bob",
+    "mesh": "hair/h_cc0_toigo_inverted_bob.res"
+   },
+   {
+    "id": "h_cc0_toigo_inverted_bob_with_bangs",
+    "name": "Toigo Inverted Bob With Bangs",
+    "mesh": "hair/h_cc0_toigo_inverted_bob_with_bangs.res"
    }
   ],
   "eyebrows": [
@@ -1598,6 +1783,48 @@
    {
     "id": "hat_raider",
     "name": "Bandeau Renegade Raider"
+   },
+   {
+    "id": "gear_drift",
+    "name": "Masque de Drift",
+    "mesh": "wardrobe/gear_drift.res",
+    "cover": "face"
+   },
+   {
+    "id": "gear_indigo_kuno",
+    "name": "Masque Indigo Kuno",
+    "mesh": "wardrobe/gear_indigo_kuno.res",
+    "cover": "face"
+   },
+   {
+    "id": "gear_oblivion",
+    "name": "Casque Oblivion",
+    "mesh": "wardrobe/gear_oblivion.res",
+    "cover": "helmet"
+   },
+   {
+    "id": "gear_iron_man",
+    "name": "Casque Iron Man",
+    "mesh": "wardrobe/gear_iron_man.res",
+    "cover": "helmet"
+   },
+   {
+    "id": "gear_jules",
+    "name": "Lunettes de Jules",
+    "mesh": "wardrobe/gear_jules.res",
+    "cover": "face"
+   },
+   {
+    "id": "gear_ryuji",
+    "name": "Chapeau de Ryuji",
+    "mesh": "wardrobe/gear_ryuji.res",
+    "cover": "crown"
+   },
+   {
+    "id": "gear_stormtrooper",
+    "name": "Casque Stormtrooper",
+    "mesh": "wardrobe/gear_stormtrooper.res",
+    "cover": "helmet"
    }
   ]
  }

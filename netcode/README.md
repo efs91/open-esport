@@ -166,7 +166,9 @@ Menu Multijoueur > page « Mode de jeu » : Battle Royale, Deathmatch, Team Deat
 | Team Deathmatch | 2 équipes de 2 à 5 | 50 éliminations d'équipe ou 12 min |
 | Capture du drapeau | 2 équipes de 4, 5 ou 10 | 3 prises ou 12 min ; drapeau lâché : retour à la base après 20 s ; porteur ralenti de 10 % |
 | Sabotage | 2 équipes de 4 ou 5 | premier à 7 manches, mi-temps (camps échangés, argent remis à zéro) ; achat 15 s, manche 1 min 55, bombe 40 s, pose 3 s, désamorçage 5 s (3 s avec kit) ; économie à la Counter-Strike (touche B : boutique) |
-| Contrôle | 2 équipes de 5 à 10 | 5 points (base bleue, A, B, C, base rouge) à capturer en restant dessus (5 s, plus vite à plusieurs, bloqué si les deux équipes y sont) ; chaque seconde l'équipe qui tient le plus de points marque l'écart ; 100 points |
+| Contrôle | 2 équipes de 5 à 10 | Cinq relais A à E initialement neutres. Chaque seconde, l’équipe qui tient le plus de relais marque l’écart. La première à 100 points gagne. |
+
+En Contrôle, chaque base dispose d’un hover monoplace et d’un AT-ST à cinq places. E permet d’embarquer puis de sortir. Le hover vole en vue extérieure (saut pour monter, accroupi pour descendre). Dans le marcheur, F1 commande la conduite et la mitrailleuse, F2 le canon, F3 à F5 les trois meurtrières pour les armes personnelles. Maintenir la commande Viser (clic droit par défaut) grossit la vue du pilote ×2 et celle de l’artilleur ×4. La mitrailleuse du marcheur inflige 32 dégâts de base, le canon 140 à l’impact direct avec une explosion. Les trois passagers tirent depuis une cabine blindée à travers leur propre meurtrière. Le serveur attribue les sièges libres, valide les déplacements et les arcs de tir, applique les impacts et réplique les véhicules aux deux équipes. Utiliser le protocole 32 et la même version de `controle.world` des deux côtés.
 
 En Capture du drapeau et en Contrôle, on choisit sa classe avec C. Le Sabotage utilise sa boutique. Les bots jouent les objectifs de chaque mode.
 

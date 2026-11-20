@@ -303,7 +303,7 @@ namespace OpenEsport.Core
 			return pos;
 		}
 
-		private static void PushOut(ref Vec3 pos, Aabb b, float radius, float height, float stepHeight)
+		internal static void PushOut(ref Vec3 pos, Aabb b, float radius, float height, float stepHeight)
 		{
 			// obstacle seulement s'il recouvre la hauteur du joueur au-dessus de ses pieds
 			if (b.Max.Y <= pos.Y + stepHeight || b.Min.Y >= pos.Y + height) return;
@@ -411,7 +411,7 @@ namespace OpenEsport.Core
 			return hit;
 		}
 
-		private static bool RayAabb(Vec3 o, Vec3 d, Aabb b, out float tHit)
+		public static bool RayAabb(Vec3 o, Vec3 d, Aabb b, out float tHit)
 		{
 			float tMin = 0f, tMax = float.MaxValue;
 			tHit = 0;

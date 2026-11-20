@@ -279,7 +279,7 @@ namespace OpenEsport.Server
 				var list = Info.Mode == GameMode.Deathmatch ? Points(MapPointKind.SpawnFfa).ToList() : Points(MapPointKind.SpawnTeam).Where(pt => pt.Team == SideOf(p)).ToList();
 				if (Info.Mode == GameMode.TeamDeathmatch && list.Count == 0) list = Points(MapPointKind.SpawnFfa).ToList();
 				if (list.Count == 0) return S.PickSpawn();
-				if (Info.Mode == GameMode.CaptureTheFlag || Info.Mode == GameMode.TeamDeathmatch)
+				if (Info.Mode == GameMode.CaptureTheFlag || Info.Mode == GameMode.TeamDeathmatch || Info.Mode == GameMode.Control)
 				{
 					var free = list.Where(pt => !Players.Any(q => q != p && q.Alive && q.Team == p.Team && Vec3.DistanceSquared(q.State.Pos, pt.Pos) < 9f)).ToList();
 					if (free.Count > 0) list = free;
@@ -377,6 +377,7 @@ namespace OpenEsport.Server
 
 			public override void OnStart()
 			{
+				S.StartVehicles();
 				var list = Points(MapPointKind.ControlPoint).OrderBy(pt => pt.Index).ToList();
 				for (int i = 0; i < 5; i++)
 				{
@@ -389,11 +390,15 @@ namespace OpenEsport.Server
 				foreach (var p in Players) { p.State = PlayerMovement.Spawn(Spawn(p), S._world); S.ApplyKit(p, Loadouts.Get(p.ClassId)); p.ProtectUntil = S._tick + (uint)(GameBalance.F("mode.respawnProtection") * S._m.TickRate); }
 			}
 
+			public override void OnKill(ServerPlayer killer, ServerPlayer victim, byte weapon) => S.ReleaseSeat(victim);
+			public override void OnPlayerLeft(ServerPlayer p) => S.ReleaseSeat(p);
+
 			public int Held(int team) { int n = 0; for (int i = 0; i < 5; i++) if (_owner[i] == team) n++; return n; }
 
 			public override void Tick(float dt)
 			{
 				TimeLeft -= dt;
+				S.TickVehicles(dt);
 				float capture = MathF.Max(0.5f, GameBalance.F("mode.controlCaptureSeconds"));
 				for (int i = 0; i < 5; i++)
 				{
@@ -426,6 +431,7 @@ namespace OpenEsport.Server
 
 			public override void FillState(ref ModeState st, ServerPlayer viewer)
 			{
+				st.Vehicles = S._vehicles;
 				st.Target = (ushort)GameBalance.F("mode.controlScore");
 				for (int i = 0; i < 5; i++) st.Points[i] = new ControlPointState { Owner = _owner[i], Progress = (sbyte)Math.Clamp((int)_progress[i], -100, 100), Contested = _contested[i] };
 			}

@@ -16,7 +16,7 @@ namespace OpenEsport.Core
 		CaptureTheFlag = 3,
 		/// <summary>Deux équipes de 4 ou 5, à la Counter-Strike : manches, bombe à poser ou à désamorcer, économie et achats.</summary>
 		Sabotage = 4,
-		/// <summary>Deux équipes de 5 à 10 : cinq points à tenir (base bleue, A, B, C, base rouge) ; 100 points pour gagner.</summary>
+		/// <summary>Deux équipes de 5 à 10, cinq relais A à E à tenir, 100 points pour gagner.</summary>
 		Control = 5,
 	}
 

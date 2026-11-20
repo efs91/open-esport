@@ -17,7 +17,7 @@ namespace OpenEsport.Core
 		/// <summary>La navigation adaptée à la carte : sur plusieurs niveaux pour une arène (tremplins, téléporteurs), sinon la grille au sol.</summary>
 		public static INav For(WorldData data)
 		{
-			bool elevatedObjective = data.Points.Exists(p => p.Kind == MapPointKind.FlagBase && p.Pos.Y > data.HeightAt(p.Pos.X, p.Pos.Z) + 0.55f);
+			bool elevatedObjective = data.Points.Exists(p => (p.Kind == MapPointKind.FlagBase || p.Kind == MapPointKind.ControlPoint) && p.Pos.Y > data.HeightAt(p.Pos.X, p.Pos.Z) + 0.55f);
 			return data.Jumps.Count > 0 || data.Teleports.Count > 0 || elevatedObjective ? new LayeredNav(data) : new NavGrid(data);
 		}
 	}

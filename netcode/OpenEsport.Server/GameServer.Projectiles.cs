@@ -20,9 +20,10 @@ namespace OpenEsport.Server
 
 		private struct Projectile
 		{
-			public bool Active;
+			public bool Active, Cannon;
 			public ServerPlayer Owner;
 			public byte WeaponId;
+			public ControlVehicle SourceVehicle;
 			public float Damage;
 			public Vec3 Pos, Vel;
 			public uint StartTick, ViewTick;
@@ -38,7 +39,7 @@ namespace OpenEsport.Server
 			_bulletHigh = 0;
 		}
 
-		private void SpawnProjectile(ServerPlayer owner, byte weaponId, float damage, WeaponDef def, Vec3 origin, Vec3 dir, uint viewTick)
+		private void SpawnProjectile(ServerPlayer owner, byte weaponId, float damage, WeaponDef def, Vec3 origin, Vec3 dir, uint viewTick, bool cannon = false)
 		{
 			int idx = -1;
 			for (int i = 0; i < _bulletHigh; i++) if (!_bullets[i].Active) { idx = i; break; }
@@ -46,7 +47,7 @@ namespace OpenEsport.Server
 			if (idx < 0) return;
 			_bullets[idx] = new Projectile
 			{
-				Active = true, Owner = owner, WeaponId = weaponId, Damage = damage, Pos = origin, Vel = dir * def.Speed,
+				Active = true, Cannon = cannon, SourceVehicle = owner.Ride, Owner = owner, WeaponId = weaponId, Damage = damage, Pos = origin, Vel = dir * def.Speed,
 				StartTick = _tick, ViewTick = viewTick, MaxDistance = def.Range
 			};
 			BroadcastShot(owner, weaponId, origin, dir);
@@ -56,7 +57,9 @@ namespace OpenEsport.Server
 		private void BroadcastShot(ServerPlayer shooter, byte weaponId, Vec3 origin, Vec3 dir)
 		{
 			_tmp.Reset();
-			new ServerEvent { Type = EventType.Shot, A = shooter.Id, C = weaponId, Pos = origin, Dir = dir }.Write(_tmp);
+			new ServerEvent { Type = EventType.Shot, A = shooter.Id, C = weaponId,
+                D = (byte)(shooter.Ride?.Hover == false && shooter.Seat < 2
+                    ? (shooter.Seat == 1 ? ShotAppearance.WalkerCannon : ShotAppearance.WalkerMachineGun) : ShotAppearance.Standard), Pos = origin, Dir = dir }.Write(_tmp);
 			foreach (var q in _humans)
 			{
 				float dx = q.State.Pos.X - shooter.State.Pos.X, dz = q.State.Pos.Z - shooter.State.Pos.Z;
@@ -83,6 +86,12 @@ namespace OpenEsport.Server
 				float reach = len;
 				bool wall = _world.Raycast(b.Pos, dir, len, out float wallDist, out int pane);
 				if (wall) reach = wallDist;
+				ControlVehicle hull = null;
+				foreach (var v in _vehicles)
+				{
+					if (v == b.SourceVehicle || v.Integrity <= 0) continue;
+					if (StaticWorld.RayAabb(b.Pos,dir,v.Hull,out float t) && t < reach) { hull=v; reach=t; }
+				}
 
 				// là où le tireur voyait les autres au moment de tirer, décalé du temps de vol
 				uint rewindTick = Math.Min(_tick, b.ViewTick + (_tick - b.StartTick));
@@ -92,7 +101,7 @@ namespace OpenEsport.Server
 				for (int k = 0; k < _players.Count; k++)
 				{
 					var o = _players[k];
-					if (o == b.Owner || !o.Alive) continue;
+					if (o == b.Owner || o.Ride != null && !o.Ride.Hover || !o.Alive) continue;
 					if (!_m.FriendlyFire && o.Team == b.Owner.Team) continue;
 					if (!o.History.TryGet(rewindTick, out var h) || !h.Alive) continue;
 					float dx = h.Pos.X - b.Pos.X, dz = h.Pos.Z - b.Pos.Z;
@@ -104,10 +113,23 @@ namespace OpenEsport.Server
 					}
 				}
 
+				if (b.Cannon && (best != null || wall || hull != null))
+				{
+					var impact = b.Pos + dir * MathF.Max(0,bestT-.08f);
+					var frag = GrenadeDefs.Get(ItemIds.GrenadeFrag);
+					BroadcastExplosion(frag.Kind, impact);
+					Blast(b.Owner, frag, impact);
+				}
 				if (best != null)
 				{
 					ApplyDamage(b.Owner, best, b.Damage * Hitboxes.Multiplier(bestZone), bestZone, b.WeaponId);
 					b.Active = false;
+					continue;
+				}
+				if (hull != null)
+				{
+					HitVehicle(hull,b.Owner,b.Damage);
+					b.Active=false;
 					continue;
 				}
 				if (wall)

@@ -133,11 +133,12 @@ namespace OpenEsport.Core
 		EquipBomb = 14,
 		/// <summary>Sort une grenade en main (arg = identifiant de l'objet) ou la range (0) : le clic gauche la lance ensuite.</summary>
 		EquipGrenade = 15,
+		BoardVehicle = 16,
 	}
 
 	public static class Protocol
 	{
-		public const ushort Version = 31;
+		public const ushort Version = 32;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";

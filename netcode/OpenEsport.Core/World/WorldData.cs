@@ -79,12 +79,13 @@ namespace OpenEsport.Core
 		SpawnFfa = 1,
 		/// <summary>Point d'apparition d'une équipe (Team = 0 bleue, 1 rouge ; en Sabotage 0 = défenseurs, 1 = attaquants).</summary>
 		SpawnTeam = 2,
-		/// <summary>Point de contrôle (Index 0 = base bleue, 1 = A, 2 = B, 3 = C, 4 = base rouge ; Team = propriétaire au départ, 255 = personne).</summary>
+		/// <summary>Relais A à E (Index 0 à 4 ; Team = propriétaire au départ, 255 = personne).</summary>
 		ControlPoint = 3,
 		/// <summary>Base d'un drapeau (Team = l'équipe à qui il appartient).</summary>
 		FlagBase = 4,
 		/// <summary>Site de bombe (Index 0 = A, 1 = B).</summary>
 		BombSite = 5,
+		VehicleBay = 6,
 	}
 
 	/// <summary>Un point d'attention posé dans la carte (nœud MapPoint) : apparitions, points de contrôle, bases de drapeau, sites de bombe.</summary>

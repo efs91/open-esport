@@ -392,9 +392,12 @@ namespace OpenEsport.Core
 
 			// on repart de l'état du serveur et on rejoue ce qu'il n'a pas encore vu
 			var s = authoritative;
-			if (Alive)
+			if (Alive && Mode.Ride(PlayerId, out _) == null)
 				for (int i = 0; i < _pending.Count; i++)
-					PlayerMovement.Step(ref s, _pending[i], _world, Dt, MoveScale);
+					{
+						PlayerMovement.Step(ref s, _pending[i], _world, Dt, MoveScale);
+						ControlVehicle.Separate(Mode.Vehicles,ref s);
+					}
 
 			if (aliveChanged)
 			{
@@ -431,13 +434,14 @@ namespace OpenEsport.Core
 			if (State != NetState.Playing) return;
 
 			var input = PlayerInput.Create(_nextSeq++, forward, strafe, buttons, slot, yaw, pitch, ViewTick, InteractTarget);
-			if (Alive)
+			if (Alive && Mode.Ride(PlayerId, out _) == null)
 			{
 				if (Passenger) ExtrapolatePassenger(ref Predicted);
 				else
 				{
 					var before = Predicted.Pos;
 					PlayerMovement.Step(ref Predicted, input, _world, Dt, MoveScale);
+					ControlVehicle.Separate(Mode.Vehicles,ref Predicted);
 					// téléporteur : la caméra se tourne vers la sortie (la vitesse, elle, a déjà été orientée par la simulation)
 					if (Vec3.Distance(before, Predicted.Pos) > 4f && _world is StaticWorld sw && sw.TeleportExit(Predicted.Pos, out float exitYaw))
 					{

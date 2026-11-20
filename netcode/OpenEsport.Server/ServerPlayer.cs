@@ -17,6 +17,9 @@ namespace OpenEsport.Server
 		public bool IsBot;
 		/// <summary>Dernière commande jouée (le chef de saut la prête à ses coéquipiers pendant la chute) et état du bouton « passer le commandement ».</summary>
 		public PlayerInput LastInput;
+		public ControlVehicle Ride;
+		public int Seat;
+		public uint RideInputTick;
 		public bool PrevPass;
 		internal object Brain;
 

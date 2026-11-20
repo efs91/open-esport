@@ -41,6 +41,18 @@ namespace OpenEsport.Core
 		public bool HasKit, CanBuy, Invulnerable;
 		public ControlPointState[] Points;
 		public FlagState Flag0, Flag1;
+		public ControlVehicle[] Vehicles;
+		public ControlVehicle Ride(ushort player, out int seat)
+		{
+			if (Vehicles != null)
+				foreach (var v in Vehicles)
+				{
+					seat = Array.IndexOf(v.Seats, player);
+					if (seat >= 0) return v;
+				}
+			seat = -1;
+			return null;
+		}
 		public byte BombState;        // 0 = portée, 1 = au sol, 2 = posée, 3 = désamorcée, 4 = explosée
 		public ushort BombCarrier;
 		public Vec3 BombPos;
@@ -70,6 +82,11 @@ namespace OpenEsport.Core
 			w.WriteByte(BombState); w.WriteUInt16(BombCarrier); w.WriteVec3(BombPos); w.WriteFloat(BombTimer); w.WriteByte(BombSite);
 			w.WriteByte(Action); w.WriteByte(ActionProgress);
 			w.WriteByte(BombAction); w.WriteByte(BombActionProgress); w.WriteUInt16(BombActor);
+			if (Mode == GameMode.Control)
+			{
+				w.WriteByte((byte)(Vehicles?.Length ?? 0));
+				if (Vehicles != null) foreach (var vehicle in Vehicles) vehicle.Write(w);
+			}
 		}
 
 		private static void WriteFlag(BitWriter w, FlagState f) { w.WriteByte(f.State); w.WriteUInt16(f.Carrier); w.WriteVec3(f.Pos); }
@@ -89,6 +106,11 @@ namespace OpenEsport.Core
 			s.BombState = r.ReadByte(); s.BombCarrier = r.ReadUInt16(); s.BombPos = r.ReadVec3(); s.BombTimer = r.ReadFloat(); s.BombSite = r.ReadByte();
 			s.Action = r.ReadByte(); s.ActionProgress = r.ReadByte();
 			s.BombAction = r.ReadByte(); s.BombActionProgress = r.ReadByte(); s.BombActor = r.ReadUInt16();
+			if (s.Mode == GameMode.Control)
+			{
+				s.Vehicles = new ControlVehicle[r.ReadByte()];
+				for (int i=0; i<s.Vehicles.Length; i++) s.Vehicles[i] = ControlVehicle.Read(r);
+			}
 			return s;
 		}
 	}

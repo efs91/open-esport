@@ -80,6 +80,11 @@ namespace OpenEsport.Server
 				p.TryDequeueInput(out var inp);
 				p.LastProcessedSeq = inp.Seq;
 				if (!p.Alive) { p.Holding = false; continue; }
+				if (p.Ride != null)
+				{
+					if (Phase == MatchPhase.Playing) VehicleInput(p, inp);
+					continue;
+				}
 				float modeScale = 1f;
 				if (Modal)
 				{
@@ -90,6 +95,7 @@ namespace OpenEsport.Server
 				}
 				var before = p.State.Stance;
 				PlayerMovement.Step(ref p.State, inp, _world, dt, (p.Inventory.Active == null ? GameBalance.UnarmedMultiplier : 1f) * modeScale);
+				ControlVehicle.Separate(_vehicles,ref p.State);
 				p.Yaw = inp.Yaw;
 				p.Pitch = p.State.Stance == Stance.Diving ? PlayerMovement.DivePitch(PlayerMovement.DiveAmount(inp.Pitch, inp.Forward > 12)) : inp.Pitch;
 				p.LastButtons = inp.Buttons;
@@ -609,6 +615,8 @@ namespace OpenEsport.Server
 			if (_reader.Overflow) return;
 			if (type == CommandType.SelectClass || type == CommandType.Buy) { HandleModeCommand(p, type, arg); return; }
 			if (!p.Alive) return;
+			if (type == CommandType.BoardVehicle) { ToggleVehicle(p, arg); return; }
+			if (p.Ride != null) return;
 
 			// arène : on ne jette rien et les viseurs restent sur leur arme
 			if (Arena && type is CommandType.DropWeapon or CommandType.DropItem or CommandType.DropShield or CommandType.EquipOptic or CommandType.EquipOpticOn or CommandType.DropOptic or CommandType.UnequipOptic) return;

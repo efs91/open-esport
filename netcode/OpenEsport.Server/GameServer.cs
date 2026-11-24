@@ -55,11 +55,16 @@ namespace OpenEsport.Server
 		public long Tournament; public int TournamentRace, TournamentLobby;
 		/// <summary>Match de duel d'un tournoi (clé du match, vide = aucun) et nombre de victimes pour le gagner (0 = valeur du jeu).</summary>
 		public string TournamentMatch; public int ScoreLimit;
+		/// <summary>1 VS 1 : équipement tiré au hasard à chaque manche (partie normale), choisi par chacun au début, ou imposé (<see cref="DuelFixed"/>). Voir <c>--duel-loadout</c>.</summary>
+		public DuelPolicy DuelPolicy = DuelPolicy.Random;
+		public DuelLoadout DuelFixed = new DuelLoadout(3, 3, 2, 1, 1, 0);
 		public bool ExitWhenOver;
 		/// <summary>Le serveur s'arrête si la salle d'attente reste vide ce nombre de secondes (0 = jamais).</summary>
 		public float IdleExitSeconds;
 		/// <summary>Une partie en cours sans aucun humain connecté (il ne reste que des bots) se termine au bout de ce délai (s) : le serveur s'arrête si <see cref="ExitWhenOver"/>, sinon il revient à la salle d'attente.</summary>
 		public float EmptyExitSeconds = 3f;
+		/// <summary>Connexion perdue en cours de partie (coupure, plantage) : le personnage reste en jeu ce nombre de secondes, le temps que le joueur revienne avec son compte.</summary>
+		public float ReconnectSeconds = 180f;
 		/// <summary>Réglage des zones du mode battle royale (par défaut : celles d'Apex Legends). Voir <see cref="ZoneConfig"/> et <c>--zones</c>.</summary>
 		public ZoneConfig Zones = ZonePresets.Apex();
 		/// <summary>Mode de jeu. Tout mode autre que le battle royale se joue sur sa carte dédiée, avec salle d'attente puis fin de partie comme le battle royale.</summary>
@@ -91,6 +96,8 @@ namespace OpenEsport.Server
 		private readonly List<ServerPlayer> _players = new List<ServerPlayer>();
 		/// <summary>Les joueurs connectés au réseau (sans les bots).</summary>
 		private readonly List<ServerPlayer> _humans = new List<ServerPlayer>();
+		/// <summary>Humains dont la connexion a été perdue en cours de partie : leur personnage reste en jeu en attendant leur retour (voir <see cref="GameServerOptions.ReconnectSeconds"/>).</summary>
+		private readonly List<ServerPlayer> _away = new List<ServerPlayer>();
 		private readonly TeamRoster _teams;
 		private readonly EntityState[] _packed;
 
@@ -224,6 +231,7 @@ namespace OpenEsport.Server
 			int gcBefore = GC.CollectionCount(2) + GC.CollectionCount(1);
 			float dt = 1f / _m.TickRate;
 			TickMatch(dt);
+			if (_away.Count > 0) ExpireAway();
 			ThinkBots(dt);
 			long tBots = Stopwatch.GetTimestamp();
 			for (int i = 0; i < _players.Count; i++)
@@ -237,7 +245,12 @@ namespace OpenEsport.Server
 			for (int i = 0; i < _players.Count; i++)
 			{
 				var p = _players[i];
-				p.History.Record(_tick, p.State.Pos, p.State.Stance, p.Alive && p.State.Stance != Stance.Plane);
+				float ground = MathF.Sqrt(p.State.Vel.X * p.State.Vel.X + p.State.Vel.Z * p.State.Vel.Z);
+				var clip = BodyPoses.ClipFor(p.State.Stance, p.State.OnGround, ground);
+				p.Gait = BodyPoses.AdvanceGait(p.Gait, clip, ground, dt);
+				var body = new BodyHitbox.State { Yaw = p.Yaw, Stance = p.State.Stance, Clip = clip, Phase = p.Gait, Weapon = p.Inventory.ActiveWeaponId };
+				BodyHitbox.ReadLook(p.Appearance, ref body);
+				p.History.Record(_tick, p.State.Pos, p.State.Stance, p.Alive && p.State.Stance != Stance.Plane, body);
 				_packed[p.Id] = Pack(p);
 				_playerGrid.Insert(p.Id, p.State.Pos.X, p.State.Pos.Z);
 				if (p.FireFlagTicks > 0) p.FireFlagTicks--;
@@ -297,7 +310,65 @@ namespace OpenEsport.Server
 
 		private void OnPeerDisconnected(NetPeer peer, DisconnectInfo info)
 		{
-			if (peer.Tag is ServerPlayer p) RemovePlayer(p);
+			if (peer.Tag is not ServerPlayer p) return;
+			// connexion perdue (pas un départ volontaire) pendant la partie : le personnage attend son joueur
+			bool lost = info.Reason != DisconnectReason.RemoteConnectionClose && info.Reason != DisconnectReason.DisconnectPeerCalled;
+			if (lost && CanWaitFor(p)) SetAway(p);
+			else RemovePlayer(p);
+		}
+
+		/// <summary>Le personnage d'un joueur déconnecté peut-il attendre son retour ? Partie en cours, joueur avec compte, encore en jeu.</summary>
+		private bool CanWaitFor(ServerPlayer p) => _accounts != null && p.AccountId != 0 && _opt.ReconnectSeconds > 0f
+			&& Phased && Phase == MatchPhase.Playing && !(Royale && !p.Alive);
+
+		private void SetAway(ServerPlayer p)
+		{
+			if (p.Peer != null) p.Peer.Tag = null;
+			p.Peer = null;
+			_humans.Remove(p);
+			_away.Add(p);
+			p.AwayUntil = _tick + (uint)(_opt.ReconnectSeconds * _m.TickRate);
+			Log($"~ {p.Name} : connexion perdue, son personnage l'attend {_opt.ReconnectSeconds:F0} s");
+		}
+
+		/// <summary>Joueurs absents trop longtemps (ou partie terminée) : ils quittent la partie pour de bon.</summary>
+		private void ExpireAway()
+		{
+			for (int i = _away.Count - 1; i >= 0; i--)
+			{
+				var p = _away[i];
+				if (_tick >= p.AwayUntil || Phase != MatchPhase.Playing) { Log($"~ {p.Name} n'est pas revenu"); RemovePlayer(p); }
+			}
+		}
+
+		/// <summary>Le joueur revient (nouvelle connexion, même compte) : il reprend son personnage là où il l'a laissé.</summary>
+		private void Reattach(NetPeer peer, ServerPlayer p)
+		{
+			_away.Remove(p);
+			p.AwayUntil = 0;
+			p.Peer = peer;
+			peer.Tag = p;
+			p.ResetInputs();
+			p.Rep = new ClientReplication();                // le nouveau client ne connaît encore aucune entité
+			_humans.Add(p);
+			var accept = new JoinAccept
+			{
+				PlayerId = p.Id, Team = p.Team, TickRate = (byte)_m.TickRate, SnapshotDivisor = (byte)_m.SnapshotDivisor,
+				InterpTicks = (byte)_m.InterpTicks, TeamSize = (byte)_m.TeamSize, MaxPlayers = (ushort)_m.MaxPlayers,
+				MinX = _quant.MinX, MinY = _quant.MinY, MinZ = _quant.MinZ, ServerTick = _tick, WorldChecksum = _worldChecksum, Spawn = p.State
+			};
+			_tmp.Reset();
+			Messages.WriteBalance(_tmp);
+			peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.ReliableOrdered);
+			_tmp.Reset();
+			accept.Write(_tmp);
+			peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.ReliableOrdered);
+			SendInventory(p);
+			for (int i = 0; i < _world.Windows.Length; i++)
+				if (!_world.Windows[i].IsNew) SendEvent(p, WindowEvent(i));
+			BroadcastRoster();
+			BroadcastZone();
+			Log($"~ {p.Name} est revenu (joueur {p.Id}, équipe {p.Team})");
 		}
 
 		private void OnUnconnected(IPEndPoint remote, NetPacketReader reader, UnconnectedMessageType type)
@@ -354,7 +425,8 @@ namespace OpenEsport.Server
 			string token = _reader.ReadString();
 			if (_reader.Overflow) return;
 			if (peer.Tag != null) return;                                   // déjà entré, ou vérification de son compte en cours
-			if (Phased && Phase != MatchPhase.Lobby) { Reject(peer, "Partie déjà commencée"); return; }
+			// partie commencée : seul un joueur qui revient (vérifié avec son compte) peut encore entrer
+			if (!CanJoinNow && (_accounts == null || Phase != MatchPhase.Playing)) { Reject(peer, "Partie déjà commencée"); return; }
 
 			if (_accounts != null)
 			{
@@ -378,14 +450,26 @@ namespace OpenEsport.Server
 				if (peer.ConnectionState != ConnectionState.Connected) return;           // il est parti pendant la vérification
 				if (account != null && TournamentRefusal(account.AccountId) is { } refusal) { Reject(peer, refusal); return; }
 				if (account == null) { Reject(peer, unreachable ? "Service de comptes injoignable : réessaie dans un instant." : "Session invalide : reconnecte-toi."); return; }
+				// retour d'un joueur : son personnage l'attend (ou son ancienne connexion n'a pas encore expiré : la nouvelle la remplace)
+				var back = _away.Find(a => a.AccountId == account.AccountId);
+				if (back == null)
+				{
+					var old = _humans.Find(h => h.AccountId == account.AccountId);
+					if (old != null && CanWaitFor(old)) { var oldPeer = old.Peer; SetAway(old); oldPeer?.Disconnect(); back = old; }
+				}
+				if (back != null) { Reattach(peer, back); return; }
 				foreach (var h in _humans) if (h.AccountId == account.AccountId) { Reject(peer, "Ce compte est déjà connecté."); return; }
 				CompleteJoin(peer, account.Login, appearance, account.AccountId, account.PartyId, account.PartySize);
 			});
 		}
 
+		/// <summary>Peut-on entrer maintenant ? En salle d'attente toujours ; en cours de partie seulement en Deathmatch, Team Deathmatch et Capture du drapeau, hors tournoi.</summary>
+		private bool CanJoinNow => !Phased || Phase == MatchPhase.Lobby
+			|| (Phase == MatchPhase.Playing && Modal && Modes.JoinInProgress(_opt.Mode) && _opt.Tournament == 0);
+
 		private void CompleteJoin(NetPeer peer, string name, byte[] appearance, long accountId, long partyId = 0, int partySize = 0)
 		{
-			if (Phased && Phase != MatchPhase.Lobby) { Reject(peer, "Partie déjà commencée"); return; }
+			if (!CanJoinNow) { Reject(peer, "Partie déjà commencée"); return; }
 
 			int slot = -1;
 			// partie complétée par des bots : l'humain prend la place d'un bot (et donc de son équipe)
@@ -395,8 +479,9 @@ namespace OpenEsport.Server
 			if (slot < 0 && !TryFreeSlotFromBot(out slot)) { Reject(peer, "Serveur plein"); return; } // un bot cède sa place
 			if (slot < 0) { Reject(peer, "Serveur plein"); return; }
 
+			(partyId, partySize) = TournamentParty(accountId, partyId, partySize);        // tournoi : l'équipe vient de l'inscription, pas du groupe en jeu
 			if (partyId != 0 && partySize > 1 && !_partyWait.ContainsKey(partyId)) _partyWait[partyId] = (partySize, DateTime.UtcNow.AddSeconds(PartyWaitSeconds));
-			var p = new ServerPlayer { Id = (ushort)slot, Peer = peer, Name = SanitizeName(name, slot), Team = (byte)(_tournamentSide.TryGetValue(accountId, out int side) ? side : JoinTeam(partyId)), Appearance = appearance, AccountId = accountId, PartyId = partyId };
+			var p = new ServerPlayer { Id = (ushort)slot, JoinTick = _tick, Peer = peer, Name = SanitizeName(name, slot), Team = (byte)(_tournamentSide.TryGetValue(accountId, out int side) ? side : JoinTeam(partyId)), Appearance = appearance, AccountId = accountId, PartyId = partyId };
 			Vec3 spawn = Modal ? ModalSpawn(p) : PickSpawn();
 			p.State = (_opt.Dropship && !Royale) ? NewFlight() : PlayerMovement.Spawn(spawn, _world);
 			p.Yaw = 0;
@@ -420,6 +505,7 @@ namespace OpenEsport.Server
 			peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.ReliableOrdered);
 			GiveStartingLoadout(p);
 			if (Modal) ApplyKit(p, _mode.KitFor(p));
+			if (Modal && Phase == MatchPhase.Playing) p.ProtectUntil = _tick + (uint)(GameBalance.F("mode.respawnProtection") * _m.TickRate);     // arrivée en cours de partie
 			SendInventory(p);
 			for (int i = 0; i < _world.Windows.Length; i++)
 				if (!_world.Windows[i].IsNew) SendEvent(p, WindowEvent(i));
@@ -468,9 +554,11 @@ namespace OpenEsport.Server
 			_slots[p.Id] = null;
 			_players.Remove(p);
 			_humans.Remove(p);
-			if (_humans.Count == 0) ReportAbandoned();
+			_away.Remove(p);
+			p.AwayUntil = 0;
+			if (_humans.Count == 0 && _away.Count == 0) ReportAbandoned();
 			LeaveTeam(p.Team);
-			p.Peer.Tag = null;
+			if (p.Peer != null) p.Peer.Tag = null;
 			BroadcastRoster();
 			Log($"- {p.Name} — {_players.Count}/{_m.MaxPlayers} ({_humans.Count} humains)");
 		}
@@ -523,7 +611,7 @@ namespace OpenEsport.Server
 				Flags = flags, Health = (byte)Math.Clamp((int)MathF.Ceiling(p.Health), 0, 100),
 				Shield = (byte)Math.Clamp((int)MathF.Ceiling(p.Shield), 0, 127), ShieldTier = (byte)(p.Inventory.ShieldTier + 1),
 				Zip = (byte)(s.Stance == Stance.Zipping ? 1 : s.Stance == Stance.Climbing ? 2 : s.Stance == Stance.Plane ? 3 : s.Stance == Stance.Diving ? 4 : s.Stance == Stance.Downed ? 5 : 0),
-				Weapon = p.Inventory.ActiveWeaponId, Team = p.Team
+				Weapon = p.Inventory.ActiveWeaponId, Team = p.Team, Gait = (byte)((int)(p.Gait * 32f) & 31)
 			};
 		}
 

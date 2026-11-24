@@ -24,7 +24,7 @@ public partial class CharacterAnimator : Node3D
 	public float RunThreshold = -1f;
 	private float RunAt => RunThreshold > 0f ? RunThreshold : OpenEsport.Core.Sim.BaseSpeed * (1f + OpenEsport.Core.Sim.SprintMultiplier) * 0.5f;
 
-	private static readonly string[] ClipNames = { "idle", "idle_unarmed", "walk", "run", "jump_up", "jump_loop", "jump_down", "slide", "hang_start", "hang_idle", "climb" };
+	private static readonly string[] ClipNames = { "idle", "idle_unarmed", "walk", "run", "jump_up", "jump_loop", "jump_down", "slide", "hang_start", "hang_idle", "climb", "crouch_idle", "crouch_walk" };
 
 	/// <summary>Animations des bras seuls (sans arme) : garde devant soi, et coups de poing.</summary>
 	private static readonly string[] ArmClipNames = { "fight_idle", "punch" };
@@ -314,11 +314,13 @@ public partial class CharacterAnimator : Node3D
 	// ------------------------------------------------------------------ chute libre et parachute
 
 	private bool _skydive;
+	private DiveArms _diveArms;
 	public bool Skydiving => _skydive;
 
 	/// <summary>
-	/// Chute libre (mode 4) : le corps est couché vers l'avant, à plat ventre (dive = 0) ou en piqué, tête la première (dive = 1), bras écartés
-	/// (clip « jump_loop », en attendant une vraie animation de chute libre). À terre (mode 5) : couché au sol. Mode 0 : fin.
+	/// Chute libre (mode 4) : le corps est couché vers l'avant, à plat ventre (dive = 0, « avancer » relâché, mains près des hanches),
+	/// à l'horizontale (0,5, « avancer » maintenu en regardant devant) ou tête la première (1), bras tendus au-dessus de la tête dès 0,5.
+	/// À terre (mode 5) : couché au sol. Mode 0 : fin.
 	/// </summary>
 	public void Skydive(int mode, float dive)
 	{
@@ -331,6 +333,7 @@ public partial class CharacterAnimator : Node3D
 			if (_player != null) { _player.SpeedScale = 1f; _player.Play(on ? (mode == 4 ? "jump_loop" : "idle_unarmed") : IdleClip, 0.15); }
 			if (!on) { Rotation = Vector3.Zero; Position = Vector3.Zero; }
 		}
+		if (_diveArms != null) { _diveArms.On = mode == 4; _diveArms.Raise = dive >= 0.45f ? 1f : 0f; }
 		if (!on) return;
 		// chute libre : à plat ventre (dive = 0) ou en piqué ; à terre : couché à plat ventre, au ras du sol
 		// dive = 0 : redressé, presque à plat ventre (descente lente) ; dive = 1 : tête la première
@@ -506,6 +509,8 @@ public partial class CharacterAnimator : Node3D
 			Skeleton.AddChild(_offsets); // d'abord : les autres travaillent sur le squelette déjà morphé
 			_ik = new ArmIK { Name = "ArmIK" };
 			Skeleton.AddChild(_ik); // les bras libres ont leur propre pose
+			_diveArms = new DiveArms { Name = "DiveArms" };
+			Skeleton.AddChild(_diveArms); // chute libre : bras au-dessus de la tête ou le long du corps
 		}
 		SetAppearance(Appearance ?? CharacterAppearance.Current);
 
@@ -651,12 +656,35 @@ public partial class CharacterAnimator : Node3D
 
 		if (sliding)
 			Play("slide");
+		else if (Crouching)
+		{
+			if (groundSpeed < IdleThreshold) Play("crouch_idle");
+			else Play("crouch_walk", GroundSpeedScale("crouch_walk", groundSpeed));
+		}
 		else if (groundSpeed < IdleThreshold)
 			Play(IdleClip);
 		else if (groundSpeed < RunAt)
 			Play("walk", GroundSpeedScale("walk", groundSpeed));
 		else
 			Play("run", GroundSpeedScale("run", groundSpeed));
+		FollowGait();
+	}
+
+	/// <summary>Accroupi : clips d'accroupi au lieu du repos et de la marche.</summary>
+	public bool Crouching;
+
+	private float _gait = -1f;
+	/// <summary>Phase du pas imposée par le serveur (0..1), -1 = libre : les jambes sont alors là où le serveur juge les tirs.</summary>
+	public void SetGait(float phase) => _gait = phase;
+
+	private void FollowGait()
+	{
+		if (_gait < 0f || (_player.CurrentAnimation != "walk" && _player.CurrentAnimation != "run" && _player.CurrentAnimation != "crouch_walk")) return;
+		double length = _player.CurrentAnimationLength, target = _gait * length, at = _player.CurrentAnimationPosition;
+		double drift = System.Math.Abs(target - at);
+		drift = System.Math.Min(drift, length - drift);
+		// même cadence que le serveur : on ne recale que si l'écart devient visible
+		if (drift > length * .04) _player.Seek(target, true);
 	}
 
 	/// <summary>Sans arme : garde les deux mains devant soi, ou boxe si on frappe. Avec une arme : les bras sont posés par l'IK.</summary>

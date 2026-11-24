@@ -93,6 +93,12 @@ namespace Openesport.Menus
 			sensRow.AddChild(sens);
 			sensRow.AddChild(sensValue);
 			column.AddChild(sensRow);
+
+			// statistiques d'utilisation anonymes (mesure d'audience) : le joueur peut les refuser
+			var stats = new CheckButton { Text = I18n.T("Envoyer des statistiques d'utilisation anonymes"), ButtonPressed = Telemetry.Enabled };
+			stats.Toggled += on => Telemetry.Enabled = on;
+			stats.TooltipText = I18n.T("Écrans visités, temps passé, modes joués : aucun compte n'y est relié. Elles servent à améliorer le jeu et sont effacées après 25 mois.");
+			column.AddChild(stats);
 			column.AddChild(new HSeparator());
 
 			// la liste défile : « Retour » reste visible même dans une petite fenêtre

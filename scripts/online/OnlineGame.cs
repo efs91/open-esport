@@ -96,6 +96,19 @@ namespace Openesport.Online
 			AddChild(_hud);
 			_grenadeView = new GrenadeView { Name = "Grenades" };
 			worldRoot.AddChild(_grenadeView);
+			_damageNumbers = new DamageNumbers { Name = "Degats" };
+			worldRoot.AddChild(_damageNumbers);
+			_slideSound = new SlideSound { Name = "Glissade", Positional = false, VolumeDb = -4f };
+			AddChild(_slideSound);
+			// ambiance de la carte (bas mais permanent) et bruit de l'avion tant qu'on est à bord
+			_ambience = new AudioStreamPlayer { Name = "Ambiance", Stream = GameAudio.Looping("res://assets/sounds/background/background_forest_loop.ogg"), VolumeDb = -20f, Bus = "Master" };
+			AddChild(_ambience);
+			_ambience.Play();
+			_planeSound = new AudioStreamPlayer { Name = "Avion", Stream = GameAudio.Looping("res://assets/sounds/avion/avion_2.mp3"), VolumeDb = -6f, Bus = "Master" };
+			AddChild(_planeSound);
+			_fallSound = new AudioStreamPlayer { Name = "ChuteLibre", Stream = GameAudio.Looping("res://assets/sounds/avion/chute libre.mp3"), VolumeDb = -10f, Bus = "Master" };
+			AddChild(_fallSound);
+			InventoryUI.HoldNeeded = item => Client != null && GodotObject.IsInstanceValid(item) && NeedsHold(item);
 			_flash = new FlashOverlay { Name = "Eclair" };
 			AddChild(_flash);
 			_radial = new RadialMenu { Name = "MenuCirculaire" };
@@ -131,25 +144,125 @@ namespace Openesport.Online
 			Client.Disconnected += reason => { _disconnectReason = reason; _hud.SetStatus(I18n.T("Déconnecté : {0}", I18n.T(reason)), 0f); };
 			_hud.OnLeave = LeaveToMenu;
 			Client.ErrorLog = e => GD.PrintErr("[OnlineGame] erreur de traitement d'un paquet : " + e);
+			// reprise de partie : retenue tant qu'on y joue (voir MatchSettings.TryResume)
+			Client.Joined += () => { MatchSettings.RememberMatch(host, port); _resumeClock = 0f; };
 			Client.Connect(host, port, playerName, CharacterAppearance.Current.Pack(), AccountClient.Token);
+		}
+
+		private float _resumeClock;
+
+		/// <summary>Reprise de partie : présence notée toutes les 5 s ; oubliée en fin de partie.</summary>
+		private void TrackResume(float delta)
+		{
+			if (Client == null || Client.State != NetState.Playing) return;
+			if (Client.MatchKnown && Client.Match.Phase == MatchPhase.Over) { MatchSettings.ForgetMatch(); return; }
+			_resumeClock -= delta;
+			if (_resumeClock <= 0f) { _resumeClock = 5f; MatchSettings.TouchMatch(); }
 		}
 
 		public override void _ExitTree()
 		{
+			// départ volontaire (encore connecté) ou retour refusé : pas de reprise. Coupure réseau : la reprise reste possible.
+			if (Client != null && (Client.State == NetState.Playing || Client.State == NetState.Failed)) MatchSettings.ForgetMatch();
+			InventoryUI.HoldNeeded = null;
 			Client?.Disconnect();
 			if (Instance == this) Instance = null;
 		}
 
 		// ------------------------------------------------------------------ IInventoryNetwork
 
-		public void RequestInteract() { _interactTicks = 2; }
+		public void RequestInteract()
+		{
+			// une arme qui remplacerait la sienne (emplacements pleins), ou un bouclier moins bon que le sien : il faut maintenir la touche
+			var target = _inventory.Target;
+			bool hold = target != null && GodotObject.IsInstanceValid(target) && NeedsHold(target);
+			if (hold) { StartHold(target, 0, SwapHoldSeconds, null); return; }
+			// vitre visée : réparer (3 s) ou renforcer (5 s) en maintenant la touche, avec son bruit
+			ushort aimed = Client?.InteractTarget ?? PlayerInput.NoTarget;
+			if ((target == null || !GodotObject.IsInstanceValid(target)) && aimed != PlayerInput.NoTarget && aimed >= WindowState.TargetBase)
+			{
+				int code = aimed - WindowState.TargetBase, pane = code % WindowState.MaxPanes;
+				bool reinforce = code >= WindowState.MaxPanes;
+				if (pane < _windowViews.Count)
+				{
+					StartHold(null, aimed, reinforce ? ReinforceSeconds : RepairSeconds,
+						reinforce ? "res://assets/sounds/fenetre/renfort_fenetre.mp3" : "res://assets/sounds/fenetre/reparation.mp3", _windowViews[pane].GlobalPosition);
+					return;
+				}
+			}
+			_interactTicks = 2;
+		}
+
+		/// <summary>Durée de maintien de la touche d'interaction pour échanger son arme ou prendre un bouclier de niveau inférieur.</summary>
+		public const float SwapHoldSeconds = 2f;
+		/// <summary>Durées de maintien pour réparer une vitre et pour la renforcer (celles de leurs sons).</summary>
+		public const float RepairSeconds = 3f, ReinforceSeconds = 5f;
+		private GroundItem _holdItem;
+		/// <summary>Vitre en cours de réparation ou de renfort (cible d'interaction), 0 = aucune.</summary>
+		private ushort _holdWindow;
+		private float _holdTime, _holdDuration;
+		private AudioStreamPlayer3D _holdSound;
+
+		private void StartHold(GroundItem item, ushort window, float seconds, string sound, Vector3 at = default)
+		{
+			StopHold();
+			_holdItem = item; _holdWindow = window; _holdTime = 0f; _holdDuration = seconds;
+			if (sound == null) return;
+			_holdSound = new AudioStreamPlayer3D { Stream = GD.Load<AudioStream>(sound), MaxDistance = 40f, UnitSize = 8f, Bus = "Master" };
+			_worldRoot.AddChild(_holdSound);
+			_holdSound.GlobalPosition = at;
+			_holdSound.Finished += _holdSound.QueueFree;
+			_holdSound.Play();
+		}
+
+		/// <summary>Fin du maintien ; <paramref name="cancelled"/> : le bruit de l'action s'arrête aussi.</summary>
+		private void StopHold(bool cancelled = true)
+		{
+			if (cancelled && _holdSound != null && GodotObject.IsInstanceValid(_holdSound)) _holdSound.QueueFree();
+			_holdSound = null;
+			_holdItem = null; _holdWindow = 0;
+			_hud.SetHoldProgress(0f, Colors.White);
+		}
+
+		/// <summary>
+		/// Ramassage à confirmer en maintenant la touche : une arme quand les deux emplacements sont pleins (elle remplace celle qu'on tient),
+		/// un bouclier d'un niveau inférieur à celui qu'on porte (même vide).
+		/// </summary>
+		private bool NeedsHold(GroundItem item)
+		{
+			var def = item.Definition;
+			if (def == null || Client == null) return false;
+			var inv = Client.Inventory;
+			if (def.Type == ItemType.Weapon) return System.Array.IndexOf(inv.Weapons, null) < 0;
+			if (def.Type == ItemType.Shield) return inv.ShieldTier > item.Tier;
+			return false;
+		}
+
+		/// <summary>
+		/// Maintien en cours (échange d'objet, réparation ou renfort d'une vitre) : l'anneau se remplit ; touche relâchée, autre cible visée
+		/// ou menu ouvert : annulé ; au bout du temps, l'action part au serveur.
+		/// </summary>
+		private void TickHold(float dt)
+		{
+			if (_holdItem == null && _holdWindow == 0) return;
+			bool still = Input.IsActionPressed(InputManager.Actions.INTERACT) && Input.MouseMode == Input.MouseModeEnum.Captured
+				&& (_holdItem != null ? GodotObject.IsInstanceValid(_holdItem) && _inventory.Target == _holdItem
+					: Client != null && Client.InteractTarget == _holdWindow);
+			if (!still) { StopHold(); return; }
+			_holdTime += dt;
+			if (_holdTime >= _holdDuration) { _interactTicks = 2; StopHold(cancelled: false); return; }
+			_hud.SetHoldProgress(_holdTime / _holdDuration, _holdItem != null ? ItemTierStyle.ColorOf(_holdItem.Tier) : Colors.White);
+		}
 		public void RequestSlot(int slot) { _slotRequest = slot < 0 ? 3 : slot + 1; }
 		public void SendCommand(CommandType type, int arg) { Client?.SendCommand(type, (byte)arg); }
 
 		// ------------------------------------------------------------------ connexion
 
+		private ulong _joinedAtMs;
+
 		private void OnJoined()
 		{
+			_joinedAtMs = Time.GetTicksMsec();
 			for (int i = 0; i < _windowViews.Count; i++)
 				if (!_windowViews[i].Visible || _windowViews[i].GetNode<Node3D>("Reinforcement").Visible) UpdateWindowView(i);
 			_prevView = _currView = Client.ViewPosition;
@@ -180,9 +293,16 @@ namespace Openesport.Online
 			switch (e.Type)
 			{
 				case EventType.WindowChanged:
-					if (e.A < _windowViews.Count) UpdateWindowView(e.A);
+					if (e.A < _windowViews.Count)
+					{
+						bool wasUp = _windowViews[e.A].Visible;
+						UpdateWindowView(e.A);
+						// la vitre vient de voler en éclats (pas l'état des vitres reçu à l'arrivée dans la partie)
+						if (wasUp && !_windowViews[e.A].Visible && Time.GetTicksMsec() - _joinedAtMs > 3000)
+							GameAudio.GlassBreak(_worldRoot, _windowViews[e.A].GlobalPosition);
+					}
 					break;
-				case EventType.HitConfirm: _hud.HitMarker((e.D & 0x80) != 0); break;
+				case EventType.HitConfirm: OnHitConfirm(e); break;
 				// Sabotage : un adversaire touché ou vu par notre équipe apparaît 3 s sur les cartes.
 				case EventType.TeamHit:
 				case EventType.Spotted: _spottedUntil[e.A] = Time.GetTicksMsec() / 1000.0 + RevealSeconds; break;
@@ -222,6 +342,7 @@ namespace Openesport.Online
 			Vector3 d = (aim - muzzle).Normalized();
 			if (d.Dot(dir) < 0.9f) d = dir;
 			ShotTracer.Spawn(_worldRoot, muzzle, d, ShotTracer.ColorFor(WeaponDefs.Get(e.C)?.AmmoType ?? 0), WeaponDefs.Get(e.C)?.Speed ?? 0f, (ShotAppearance)e.D);
+			if (e.D != 0) WalkerFired(e.A);
 			if (e.C != 0) GameAudio.Shot(_worldRoot, muzzle, (WeaponDefs.Get(e.C)?.AmmoType ?? 0) == 1, e.A == Client.PlayerId);
 		}
 
@@ -260,7 +381,9 @@ namespace Openesport.Online
 
 			// Sabotage, phase d'achat : on ne bouge pas (le serveur fait de même, la prédiction reste donc juste)
 			Openesport.Inventory.InventoryUI.WalkPickup = Client.ModeKnown && Modes.UsesArenaRules(Client.Mode.Mode);
-			bool frozen = Client.ModeKnown && Client.Mode.Mode == GameMode.Sabotage && Client.Mode.Stage == (byte)SabotageStage.Buy && Client.Match.Phase == MatchPhase.Playing;
+			bool frozen = Client.ModeKnown && Client.Match.Phase == MatchPhase.Playing
+				&& (Client.Mode.Mode == GameMode.Sabotage && Client.Mode.Stage == (byte)SabotageStage.Buy
+					|| Client.Mode.Mode == GameMode.Duel && (Client.Mode.Stage == (byte)DuelStage.Pick || Client.Mode.Stage == (byte)DuelStage.Prepare));
 			if (frozen) { forward = 0f; strafe = 0f; buttons &= ~(Buttons.Jump | Buttons.Sprint | Buttons.Fire | Buttons.Crouch); }
 			InputManager.AirborneLock = Client.Predicted.Stance == Stance.Plane || Client.Predicted.Stance == Stance.Diving;
 			_player.NetworkVelocity = new Vector3(Client.Predicted.Vel.X, Client.Predicted.Vel.Y, Client.Predicted.Vel.Z);
@@ -276,6 +399,7 @@ namespace Openesport.Online
 			}
 			else _aimLocked = false;
 			_diveHeadingLocked = lockAim;
+			_diveHeld = forward > 0.1f; _diveSentPitch = sendPitch;      // pose du corps en chute libre (bras tendus ou le long du corps)
 			using (LagTracer.Scope("Client.Tick")) Client.Tick(forward, strafe, buttons, slot, sendYaw, sendPitch);
 			_prevView = _currView;
 			_currView = Client.ViewPosition;
@@ -560,6 +684,20 @@ namespace Openesport.Online
 
 		public override void _Process(double delta)
 		{
+			TrackResume((float)delta);
+			TickHold((float)delta);
+			bool inPlane = Client != null && Client.State == NetState.Playing && Client.Predicted.Stance == Stance.Plane;
+			if (inPlane != _planeSound.Playing) { if (inPlane) _planeSound.Play(); else _planeSound.Stop(); }
+			// chute libre : le vent, plus fort quand on tombe vite
+			bool falling = Client != null && Client.State == NetState.Playing && Client.Predicted.Stance == Stance.Diving;
+			if (falling != _fallSound.Playing) { if (falling) _fallSound.Play(); else _fallSound.Stop(); }
+			if (falling)
+			{
+				var fallVel = Client.Predicted.Vel;
+				float speed = Mathf.Clamp((fallVel.Length() - 20f) / 50f, 0f, 1f);
+				_fallSound.VolumeDb = Mathf.Lerp(_fallSound.VolumeDb, Mathf.Lerp(-10f, 0f, speed), Mathf.Min(1f, (float)delta * 3f));
+			}
+			_slideSound?.Set(Client != null && Client.State == NetState.Playing && Client.Alive && Client.Predicted.Stance == Stance.Sliding);
 			// à-coups : on évite les grandes pauses du ramasse-miettes et on journalise les images très longues (cause probable d'un lag d'une seconde)
 			if (delta > 0.2)
 			{
@@ -643,8 +781,8 @@ namespace Openesport.Online
 			if (best == PlayerInput.NoTarget && aimedPane >= 0)
 			{
 				var window = _worldCollision.Windows[aimedPane];
-				string action = window.Health < window.Capacity ? I18n.T("E · Réparer") :
-					window.Reinforced ? I18n.T("Vitre renforcée") : I18n.T("E · Renforcer");
+				string action = window.Health < window.Capacity ? I18n.T("Maintenir E · Réparer") :
+					window.Reinforced ? I18n.T("Vitre renforcée") : I18n.T("Maintenir E · Renforcer");
 				_windowHint = $"{action}   {window.Health}/{window.Capacity} PV";
 				return window.ActionTarget(aimedPane);
 			}
@@ -819,7 +957,7 @@ namespace Openesport.Online
 				// le corps suit la trajectoire (cap figé compris) : cap = direction de la vitesse, inclinaison = vitesse de chute
 				float hs = Mathf.Sqrt(st.Vel.X * st.Vel.X + st.Vel.Z * st.Vel.Z);
 				float bodyYaw = hs > 1f ? Mathf.Atan2(-st.Vel.X, -st.Vel.Z) : _player.GlobalRotation.Y;
-				var e = new InterpolatedEntity { Id = 0xFFFE, Kind = EntityKind.Player, Pos = view, Yaw = bodyYaw, Pitch = PlayerMovement.DivePitch(PlayerMovement.DiveFromFall(st.Vel.Y)), Vel = st.Vel, Zip = 4, Health = 100, Team = Client.TeamId };
+				var e = new InterpolatedEntity { Id = 0xFFFE, Kind = EntityKind.Player, Pos = view, Yaw = bodyYaw, Pitch = PlayerMovement.DivePitch(PlayerMovement.DiveAmount(_diveSentPitch, _diveHeld)), Vel = st.Vel, Zip = 4, Health = 100, Team = Client.TeamId };
 				_selfBody.Apply(e, "", false, delta);
 			}
 			else if (_selfBody != null)
@@ -832,6 +970,26 @@ namespace Openesport.Online
 		private ZoneWall _zoneWall;
 		private ModeHud _modeHud;
 		private GrenadeView _grenadeView;
+		private DamageNumbers _damageNumbers;
+		private SlideSound _slideSound;
+		private bool _diveHeld;
+		private float _diveSentPitch;
+		private AudioStreamPlayer _ambience, _planeSound, _fallSound;
+
+		/// <summary>
+		/// Un de nos tirs a touché : marqueur au centre et dégâts sur la cible, de la couleur de son bouclier s'il a encaissé le coup
+		/// (blanc sur la vie, rouge si elle meurt), et le bruit du bouclier qui casse.
+		/// </summary>
+		private void OnHitConfirm(ServerEvent e)
+		{
+			bool kill = (e.D & 0x80) != 0, head = (e.D & 3) == (int)HitZone.Head;
+			int tier = (e.B & 7) - 1;
+			bool onShield = (e.B & 0x10) != 0 && tier >= 0, broke = (e.B & 0x20) != 0;
+			var color = onShield ? Openesport.Inventory.ItemTierStyle.ColorOf(tier) : Colors.White;
+			_hud.HitMarker(kill, color, broke);
+			if (e.C > 0 && e.Pos.Y != 0f) _damageNumbers.Add(new Vector3(e.Pos.X, e.Pos.Y, e.Pos.Z), e.C, kill ? new Color(1f, 0.3f, 0.25f) : color, head);
+			if (broke) GameAudio.ShieldBreak(this);
+		}
 		private RadialMenu _radial;
 		private GrenadePreview _preview;
 		private PingView _pingView;
@@ -861,6 +1019,7 @@ namespace Openesport.Online
 				_modeHud.Send = (t, a) => Client.SendCommand(t, (byte)a);
 				_modeHud.LocalPosition = () => _player != null && GodotObject.IsInstanceValid(_player) ? _player.GlobalPosition : null;
 				_modeHud.MyId = () => Client.PlayerId;
+				if (_worldCollision != null) _modeHud.Stations = Resupply.Stations(_worldCollision.Data);
 				_hud.MoveStatusForMode();      // le message d'état ne doit pas recouvrir les scores ni le bandeau d'annonce
 				AddChild(_modeHud);
 			}
@@ -878,6 +1037,25 @@ namespace Openesport.Online
 			_modeHud.Visible = !_hud.IsLoading;      // pas de scores par-dessus l'écran de chargement
 			_modeHud.Refresh(Client.Mode, Client.Match.Phase, Client.Alive);
 			_modeWorld.Refresh(Client.Mode);
+			FaceDuelOpponent();
+		}
+
+		private int _duelFaced = -1;
+
+		/// <summary>1 VS 1 : au début de chaque manche (et pendant le choix), on se retrouve face au centre de la salle, donc face à l'adversaire.</summary>
+		private void FaceDuelOpponent()
+		{
+			var m = Client.Mode;
+			if (m.Mode != GameMode.Duel || Client.Match.Phase != MatchPhase.Playing || _player == null || !GodotObject.IsInstanceValid(_player)) return;
+			var stage = (DuelStage)m.Stage;
+			if (stage != DuelStage.Pick && stage != DuelStage.Prepare) return;
+			int key = stage == DuelStage.Pick ? 0 : m.Round;
+			if (key == _duelFaced) return;
+			var pos = Client.Predicted.Pos;
+			if (MathF.Abs(pos.X) < 4f) return;          // pas encore replacé de son côté : on attend
+			_duelFaced = key;
+			var r = _player.Rotation; r.Y = MathF.Atan2(pos.X, pos.Z); _player.Rotation = r;
+			if (_head != null) { var h = _head.Rotation; h.X = 0f; _head.Rotation = h; }
 		}
 
 		private static string Clock(float seconds) { int s = Mathf.CeilToInt(Mathf.Max(0f, seconds)); return $"{s / 60}:{s % 60:00}"; }

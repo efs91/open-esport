@@ -86,6 +86,36 @@ namespace Openesport.Online
 		private static readonly System.Random Rng = new System.Random();
 		private static AudioStream Pick(AudioStream[] list) => list.Length == 0 ? null : list[Rng.Next(list.Length)];
 
+		private static AudioStream _shieldBreak, _glassBreak;
+
+		/// <summary>Charge un son en boucle (copie : le fichier importé reste tel quel).</summary>
+		public static AudioStream Looping(string path)
+		{
+			var s = GD.Load<AudioStream>(path);
+			if (s is AudioStreamMP3 mp3) { mp3 = (AudioStreamMP3)mp3.Duplicate(); mp3.Loop = true; return mp3; }
+			if (s is AudioStreamOggVorbis ogg) { ogg = (AudioStreamOggVorbis)ogg.Duplicate(); ogg.Loop = true; return ogg; }
+			return s;
+		}
+
+		/// <summary>Une vitre vole en éclats.</summary>
+		public static void GlassBreak(Node parent, Vector3 pos)
+		{
+			_glassBreak ??= GD.Load<AudioStream>("res://assets/sounds/fenetre/kave_msri-glass-break-316720.mp3");
+			PlayAt(parent, _glassBreak, pos, 0f, 70f, 8f, 0.95f + (float)Rng.NextDouble() * 0.1f);
+		}
+
+		/// <summary>Le bouclier d'un adversaire vient de casser sous nos tirs : son non spatialisé, pour le tireur.</summary>
+		public static void ShieldBreak(Node parent)
+		{
+			if (parent == null || !GodotObject.IsInstanceValid(parent)) return;
+			_shieldBreak ??= GD.Load<AudioStream>("res://assets/sounds/shield/shield_break8.mp3");
+			if (_shieldBreak == null) return;
+			var p = new AudioStreamPlayer { Stream = _shieldBreak, VolumeDb = -2f, Bus = "Master" };
+			parent.AddChild(p);
+			p.Finished += p.QueueFree;
+			p.Play();
+		}
+
 		/// <summary>Joue un son 3D qui se supprime tout seul. maxDistance : au-delà, on n'entend plus rien.</summary>
 		public static void PlayAt(Node parent, AudioStream stream, Vector3 position, float volumeDb, float maxDistance, float unitSize, float pitch = 1f)
 		{

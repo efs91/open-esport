@@ -98,14 +98,13 @@ Des robots peureux (sans combat) : tick p99 1,7 ms, aucune divergence. Le défau
 
 ## Limites connues
 
-- **Une partie par processus.** Plusieurs parties sur une machine = plusieurs conteneurs.
-- **Tirs instantanés** (pas de balle qui voyage ni de chute). Le serveur juge un rayon contre des cylindres par posture (jambes, torse, tête), sans squelette.
-- **La carte exportée ne contient que le relief.** Les rochers, bâtiments et autres décors du jeu ne bloquent ni le déplacement ni les tirs côté serveur tant qu'ils ne sont pas exportés (le format sait déjà décrire des boîtes).
-- **Pas de jeu de zone** (cercle qui se réduit), pas de matchmaking, pas de salon : un serveur = une partie qui tourne.
-- **Mesures faites sur la machine locale** (robots et serveur sur le même ordinateur, latence quasi nulle). Les corrections et la compensation sont testées avec des pertes de paquets simulées en mémoire, pas sur un vrai réseau.
+- **Une partie par processus.** Le matchmaking lance un conteneur par partie (`open-esport-<mode>-<port>`).
+- **Hitbox calées sur des poses relevées, pas sur le squelette en direct.** Le serveur juge les balles contre une sphère pour la tête et des capsules pour le cou, le tronc, les bras, les mains, les jambes et les pieds. Ces volumes sont posés sur des poses relevées dans le jeu (`tools/hitbox/bake_body_poses.gd` → `OpenEsport.Core/Game/body_poses.bin`) selon l'arme en main, le clip (repos, marche, course, glissade, saut, accroupi, marche accroupie), la phase du pas (répliquée) et la morphologie (sexe, taille, corpulence). Le serveur ignore l'atterrissage, les coups de poing et le buste qui suivrait le regard ; à terre, en tyrolienne, en escalade et en chute libre, il garde des volumes simples. Toute nouvelle animation ou nouvelle prise d'arme impose de relancer le relevé.
+- **Le décor côté serveur se résume à des boîtes.** La carte exportée (`.world`) contient le relief, des boîtes de collision et les vitres. Ce qui n'est pas converti en boîtes ne bloque ni le déplacement ni les tirs.
+- **Mesures de performance faites en local** (robots et serveur sur le même ordinateur, latence quasi nulle). Les corrections et la compensation sont testées avec des pertes de paquets simulées en mémoire. Le déploiement sur VPS sert en vrai, sans campagne de mesure dédiée.
 - **Déterminisme entre systèmes.** Windows et Linux calculent `sin` et `cos` avec des bibliothèques différentes : un client Windows et un serveur Linux peuvent différer d'une unité du dernier chiffre. C'est bien en dessous du seuil de correction (2 mm), mais à surveiller.
 - **Protection contre la triche limitée à l'autorité du serveur** : cadence de commandes bornée, paquets invalides ignorés, tirs et déplacements décidés par le serveur. Pas d'anti-triche logiciel.
-- **Animations du personnage** : pas d'accroupi (on écrase légèrement le modèle) et le buste ne suit pas encore le regard.
+- **Animations du personnage** : le buste ne suit pas encore le regard (ni à l'image, ni dans les hitbox).
 
 ## Matchmaking et parties à la demande
 
@@ -162,8 +161,8 @@ Plugin d'éditeur `addons/open_esport_config` (onglet « Open Esport » à côt�
 
 ## Modes de jeu
 
-Menu Multijoueur > page « Mode de jeu » : Battle Royale, Deathmatch, Team Deathmatch, Capture du drapeau, Sabotage, Contrôle. Chaque mode a sa taille d'équipe et sa carte
-(`assets/maps/relais.world` pour les deux modes Deathmatch, `drapeau.world`, `sabotage.world`, `controle.world`, et `frontiere01.world` pour le battle royale ; à copier toutes dans `MAPS_DIR` sur le serveur). Le serveur se lance avec `--mode br|dm|tdm|ctf|sab|ctl`
+Menu Multijoueur > page « Mode de jeu » : Battle Royale, Deathmatch, Team Deathmatch, Capture du drapeau, Sabotage, Contrôle, 1 VS 1. Chaque mode a sa taille d'équipe et sa carte
+(`assets/maps/relais.world` pour les deux modes Deathmatch, `drapeau.world`, `sabotage.world`, `controle.world`, `duel.world`, et `frontiere01.world` pour le battle royale ; à copier toutes dans `MAPS_DIR` sur le serveur). Le serveur se lance avec `--mode br|dm|tdm|ctf|sab|ctl|1v1`
 (le matchmaking le fait : demande `MM?|version|taille|mode`, conteneur `open-esport-<mode>-<taille>-<port>`). Un seul humain suffit pour démarrer, des bots complètent les équipes.
 
 | Mode | Équipes | Règles par défaut (réglables : panneau Godot, groupes « Modes de jeu » et « Sabotage ») |
@@ -172,9 +171,18 @@ Menu Multijoueur > page « Mode de jeu » : Battle Royale, Deathmatch, Team Deat
 | Team Deathmatch | 2 équipes de 2 à 5 | 50 éliminations d'équipe ou 12 min |
 | Capture du drapeau | 2 équipes de 4, 5 ou 10 | 3 prises ou 12 min ; drapeau lâché : retour à la base après 20 s ; porteur ralenti de 10 % |
 | Sabotage | 2 équipes de 4 ou 5 | premier à 7 manches, mi-temps (camps échangés, argent remis à zéro) ; achat 15 s, manche 1 min 55, bombe 40 s, pose 3 s, désamorçage 5 s (3 s avec kit) ; économie à la Counter-Strike (touche B : boutique) |
+| 1 VS 1 | un contre un | premier à 5 manches ; chaque manche : 3 s de préparation (immobiles), 1 min 30 de combat sans réapparition, toute la vie et un bouclier bleu plein ; au temps, la manche va à celui qui a le plus de vie + bouclier (égalité : manche nulle) ; un joueur qui quitte perd la partie |
 | Contrôle | 2 équipes de 5 à 10 | Cinq relais A à E initialement neutres. Chaque seconde, l’équipe qui tient le plus de relais marque l’écart. La première à 100 points gagne. |
 
-En Contrôle, chaque base dispose d’un hover monoplace et d’un AT-ST à cinq places. E permet d’embarquer puis de sortir. Le hover vole en vue extérieure (saut pour monter, accroupi pour descendre). Dans le marcheur, F1 commande la conduite et la mitrailleuse, F2 le canon, F3 à F5 les trois meurtrières pour les armes personnelles. Maintenir la commande Viser (clic droit par défaut) grossit la vue du pilote ×2 et celle de l’artilleur ×4. La mitrailleuse du marcheur inflige 32 dégâts de base, le canon 140 à l’impact direct avec une explosion. Les trois passagers tirent depuis une cabine blindée à travers leur propre meurtrière. Le serveur attribue les sièges libres, valide les déplacements et les arcs de tir, applique les impacts et réplique les véhicules aux deux équipes. Utiliser le protocole 33 et la même version de `controle.world` des deux côtés.
+En Contrôle, chaque base dispose d’un hover monoplace et d’un mécha à cinq places. E permet d’embarquer puis de sortir. Le hover vole en vue extérieure (saut pour monter, accroupi pour descendre). Dans le marcheur, F1 commande la conduite et la mitrailleuse, F2 le canon, F3 à F5 les trois meurtrières pour les armes personnelles. Maintenir la commande Viser (clic droit par défaut) grossit la vue du pilote ×2 et celle de l’artilleur ×4. La mitrailleuse du marcheur inflige 32 dégâts de base, le canon 140 à l’impact direct avec une explosion. Les trois passagers tirent depuis une cabine blindée à travers leur propre meurtrière. Le serveur attribue les sièges libres, valide les déplacements et les arcs de tir, applique les impacts et réplique les véhicules aux deux équipes. Utiliser le protocole 33 et la même version de `controle.world` des deux côtés.
+
+**1 VS 1** (`DuelRules`, `GameServer.Duel.cs`), carte « Duel » (`tools/map/gen_duel_map.py`, décor de Relais : une salle de 32 x 20 m, un bloc central de 2,2 m pour se cacher et l'escalader, une apparition de chaque côté).
+L'équipement (deux armes avec leur viseur, une grenade, un soin ; munitions infinies) suit `--duel-loadout` :
+- `random` (défaut, partie normale) : tiré au hasard à chaque manche, le même pour les deux joueurs ;
+- `choice` : chacun choisit le sien au début de la partie (25 s, écran de choix, puis « Valider » ; sans choix, au hasard) et le garde pour toutes les manches ;
+- `fixed:arme,viseur,arme2,viseur2,grenade,soin` (ex. `fixed:ak,x2,smg,point,frag,soins`) : imposé pour toute la partie. Clés : armes `c19 p2020 smg ak lmg pompe sniper`, viseurs `aucun point holo x2 x4 x6`,
+  grenades `aucune frag flash collante feu`, soins `soins recharges grand-soin grande-recharge`.
+`--score-limit` règle le nombre de manches à gagner. Dans un tournoi, chaque phase de 1 VS 1 choisit la règle d'équipement et le nombre de manches.
 
 En Capture du drapeau et en Contrôle, on choisit sa classe avec C. Le Sabotage utilise sa boutique. Les bots jouent les objectifs de chaque mode.
 
@@ -201,22 +209,32 @@ Carte « Relais » du Deathmatch : `python tools/map/gen_relais_map.py` (premier
 
 - **Groupes** (`PartyBook`) : jusqu'à 5 joueurs, un chef, invitations par nom de compte (`/api/party/...`). Le chef lance la partie (matchmaking avec la taille du groupe) et publie le serveur ; les autres membres le rejoignent. Le serveur de partie lit le groupe du joueur à la vérification du jeton (`partyId`, `partySize`) : mêmes équipes, départ retardé (40 s max) tant que le groupe n'est pas au complet ; les bots complètent les équipes de groupe.
 - **Amis** (`/api/friends/...`) : demande puis acceptation, présence « en ligne » = a interrogé le service dans les 45 dernières secondes.
-- **Tournois** : l'organisation est faite par **ManageComp** (`MANAGECOMP_API_KEY`, `MANAGECOMP_URL` dans le `.env` du serveur). Format actuel : battle royale en N manches (phase « Lobby (série) », points par place, classement cumulé calculé par ManageComp).
-  1. un joueur crée le tournoi (`POST /api/tournaments`) : une compétition ManageComp est créée ; les joueurs s'inscrivent (`/join`) ;
-  2. l'organisateur le lance (`/start`) : ManageComp répartit les inscrits en lobbys ;
-  3. chaque joueur clique « Jouer la manche » : le matchmaking (`MM?…|T<tournoi>:<manche>:<lobby>`) lance un serveur réservé aux inscrits du lobby (`--tournament --race --lobby`), complété par des bots ;
-  4. à la fin, le serveur rapporte les places (`/internal/tournament-race`) : elles sont saisies dans ManageComp, qui calcule le classement ; le tournoi avance de manche.
+- **Tournois** : l'organisation est faite par **ManageComp** (`MANAGECOMP_API_KEY`, `MANAGECOMP_URL` dans le `.env` du serveur). Page « Tournois » du jeu (liste, détail, création, modification) ; rappels et invitations dans l'encart du menu.
+  1. **Configuration** (`POST /api/tournaments` `{config, participate}`, modifiable jusqu'au départ par `PUT /api/tournaments/{id}`, voir `TournamentConfig`) :
+     inscription **en solo ou par équipes de 2 à 5**, inscrits mini / maxi, départ **à heure fixe** (lancé automatiquement, annulé s'il manque des inscrits)
+     ou **par l'organisateur** (heure indicative), période d'inscription (dès la création par défaut, jusqu'à un an à l'avance), **check-in** (5 à 60 min avant un départ fixe :
+     sans confirmation, l'équipe est retirée), et jusqu'à 6 **phases**, chacune dans son **mode de jeu** :
+     - **Battle Royale** : série de manches en lobbys (manches, joueurs ou équipes par lobby — 30 joueurs au plus —, points par place, points d'abandon) ;
+     - **Capture du drapeau** : série de matchs à deux équipes (un lobby = un match, 1re place au vainqueur, 2e au perdant ; une équipe seule dans son lobby est exemptée et gagne),
+       ou poules et tableau entre équipes inscrites ; prises pour gagner un match ;
+     - **1 VS 1** (inscription en solo) : poules et tableau, manches pour gagner un match, équipement au hasard, choisi ou imposé (`DuelRules`).
+     Équipes d'une phase : celles de l'inscription, ou **tirées au sort à chaque manche** parmi des inscrits en solo (Battle Royale en duos ou trios, Capture du drapeau).
+     Sélections : qualifiés au total ou par lobby / poule ; divisions : répartition « par niveau ». Le tableau est toujours la dernière phase.
+  2. **Équipes par invitation** : le chef s'inscrit (`/join`), puis invite ses coéquipiers par leur nom (`/invite {login}`) ; chacun voit l'invitation dans son jeu
+     (encart du menu, page du tournoi) et l'accepte (`/accept {reference}`) ou la refuse (`/decline`). Le chef retire un joueur ou annule une invitation (`/kick {login}`) ;
+     un coéquipier qui part (`/leave`) ne fait partir que lui, le chef qui part retire toute l'équipe. Le groupe en jeu n'a plus rien à voir avec l'inscription.
+     Avant le départ, une équipe n'existe que dans le jeu (référence négative) ; au départ, les équipes incomplètes ou absentes au check-in sont retirées,
+     les autres sont inscrites dans ManageComp (nom « a & b »), dans l'ordre d'inscription.
+  3. **Départ** (`/start` ou automatique, minuterie de 30 s) : la formule ManageComp est construite d'après la configuration du moment (appel → phases → classement général), la première phase est composée.
+  4. **Séries de manches** (Battle Royale, Capture du drapeau) : « Jouer ma manche » → matchmaking (`MM?…|taille|mode|…|T<tournoi>:<manche>:<lobby>`, la manche a un numéro global)
+     → serveur réservé au lobby (`--mode --tournament --race --lobby`), complété par des bots. Le serveur lit la partie (`/internal/tournament/{id}/lobby/{n}` : comptes, mode, taille
+     des équipes, prises pour gagner, et les équipes : `groups` en battle royale — équipe inscrite ou tirée au sort —, `sides` en Capture du drapeau) ; si le mode ne correspond pas,
+     il s'arrête. Il rapporte les places (`/internal/tournament-race`) ; un inscrit du lobby qui n'a pas joué compte comme abandon. Une phase finie, ses qualifiés passent à la suivante.
+  5. **Matchs** (poules, tableau) : « Jouer mon match » (`/api/tournaments/{id}/me`, clé `p<poule>m<match>` ou `t<jeu>n<noeud>`) → matchmaking (`MM?…|TD<tournoi>:<clé>`)
+     → serveur 1 VS 1, Capture du drapeau ou match à mort (anciens duels) réservé aux deux camps, sans bots (`/internal/tournament/{id}/match/{clé}` : camps, mode, score, équipement).
+     Un camp absent après 120 s perd par forfait ; une égalité n'est pas enregistrée (le match reste à jouer) ; le score est saisi dans ManageComp (`/internal/tournament-match`).
   Les tournois publiés directement dans ManageComp apparaissent aussi dans l'encart du menu (`/api/tournaments`, champ `tournaments`).
 
-### Tournois en duels (1 contre 1 / 2 contre 2)
+### Classement
 
-Format « duel » : poules puis tableau, calculés par ManageComp (formule par défaut). Chaque match est une partie de match à mort par équipes (TDM) sur un serveur réservé aux deux camps, sans bots, jouée jusqu'à N victimes (réglable à la création, 3 à 30, 10 par défaut).
-- 2 contre 2 : l'équipe est le **groupe de deux joueurs** ; son chef l'inscrit (un seul participant côté ManageComp, nommé « a & b »).
-- « Jouer mon match » : le jeu demande le match en attente du joueur (`/api/tournaments/{id}/me`, clé `p<poule>m<match>` ou `t<jeu>n<noeud>`), puis le matchmaking (`MM?…|TD<tournoi>:<clé>`) lance `--tournament --match <clé>` ; le serveur lit les camps (`/internal/tournament/{id}/match/{clé}`), impose les équipes, rejoue sans bots.
-- Un camp absent après 120 s perd par forfait. Une égalité (fin du temps) n'est pas enregistrée : le match reste à jouer.
-- À la fin, le score est saisi dans ManageComp (`/internal/tournament-match`) ; quand une phase est terminée, le tournoi passe à la suivante (poules → tableau → classement) puis se termine.
-
-### Battle royale par équipes et classement
-
-- Un tournoi battle royale peut se jouer par équipes de 2 à 5 : l'équipe est le groupe, son chef l'inscrit (un seul participant « a & b » côté ManageComp, toute l'équipe est placée dans le même lobby et dans la même équipe en partie).
 - « Classement » dans l'encart du menu : `GET /api/tournaments/{id}` renvoie `standings` (place, nom, détail), tiré du classement cumulé de ManageComp (battle royale) ou du classement final (duels).

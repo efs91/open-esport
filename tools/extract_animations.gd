@@ -19,6 +19,8 @@ const CLIPS := {
 	"Jump To Hang": ["hang_start", false, ""],
 	"Hanging Idle": ["hang_idle", true, ""],
 	"Freehang Climb": ["climb", false, "rise"],
+	"Idle Crouching": ["crouch_idle", true, ""],
+	"Crouch Walking": ["crouch_walk", true, "linear"],
 }
 
 # Le squelette du personnage est en pose en T comme celui de Mixamo (réglage « Fix Silhouette » de l'import du modèle) :
@@ -69,8 +71,12 @@ func _keep_arms_only(anim: Animation) -> void:
 
 func _init() -> void:
 	DirAccess.make_dir_recursive_absolute("res://assets/animations/clips")
+	# OE_ONLY="crouch_idle,crouch_walk" : n'extrait que ces clips (les autres .res restent tels quels)
+	var only := OS.get_environment("OE_ONLY").split(",", false)
 	for src in CLIPS:
 		var clip_name: String = CLIPS[src][0]
+		if only.size() > 0 and not only.has(clip_name):
+			continue
 		var scene: Node = load("res://assets/animations/%s.fbx" % src).instantiate()
 		var player: AnimationPlayer = scene.get_node("AnimationPlayer")
 		# Mixamo exporte la vraie animation sous « mixamo_com » ; certains fichiers contiennent en plus une prise figée

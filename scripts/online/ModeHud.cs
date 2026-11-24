@@ -153,13 +153,40 @@ namespace Openesport.Online
 			if (e is not InputEventKey k || !k.Pressed || k.Echo) return;
 			if (_last.Mode == GameMode.BattleRoyale || _phase == MatchPhase.Over) return;
 			if (k.Keycode == Key.B && _last.Mode == GameMode.Sabotage && _last.CanBuy) { ToggleMenu("buy"); GetViewport().SetInputAsHandled(); }
-			else if (k.Keycode == Key.C && _last.Mode != GameMode.Sabotage && !Modes.UsesArenaRules(_last.Mode)) { ToggleMenu("class"); GetViewport().SetInputAsHandled(); }
+			else if (k.Keycode == Key.C && HasClasses(_last.Mode)) { ToggleMenu("class"); GetViewport().SetInputAsHandled(); }
 			else if (k.Keycode == Key.Escape && MenuOpen) { CloseMenu(); GetViewport().SetInputAsHandled(); }
+		}
+
+		/// <summary>Stations de ravitaillement de la carte (Capture du drapeau), pour savoir si le joueur est dessus.</summary>
+		public System.Collections.Generic.List<MapPoint> Stations = new();
+		private bool _classOffered, _wasAlive = true, _autoMenu;
+
+		private static bool HasClasses(GameMode mode) => mode != GameMode.BattleRoyale && mode != GameMode.Sabotage && mode != GameMode.Duel && !Modes.UsesArenaRules(mode);
+
+		private bool AtStation()
+		{
+			if (_last.Mode != GameMode.CaptureTheFlag || !_alive) return false;
+			var p = LocalPosition();
+			if (p == null) return false;
+			var pos = new Vec3(p.Value.X, p.Value.Y, p.Value.Z);
+			foreach (var st in Stations) if (st.Team == _last.MySide && Resupply.Inside(st, pos)) return true;
+			return false;
+		}
+
+		/// <summary>Choix de la classe : proposé à l'arrivée dans la partie et à chaque mort ; refermé tout seul à la réapparition s'il s'était ouvert seul.</summary>
+		private void OfferClass(bool alive, MatchPhase phase)
+		{
+			if (!HasClasses(_last.Mode) || phase == MatchPhase.Over) { _wasAlive = alive; return; }
+			if (!_classOffered) { _classOffered = true; if (!MenuOpen) { ToggleMenu("class"); _autoMenu = true; } }
+			else if (_wasAlive && !alive && !MenuOpen) { ToggleMenu("class"); _autoMenu = true; }
+			else if (!_wasAlive && alive && _autoMenu && MenuOpen && _menuKind == "class") { CloseMenu(); }
+			_wasAlive = alive;
 		}
 
 		private void ToggleMenu(string kind)
 		{
 			if (MenuOpen && _menuKind == kind) { CloseMenu(); return; }
+			_autoMenu = false;
 			_menuKind = kind;
 			Rebuild();
 			_menu.Visible = true;
@@ -177,6 +204,12 @@ namespace Openesport.Online
 		{
 			foreach (var c in _menuBox.GetChildren()) c.QueueFree();
 			bool buy = _menuKind == "buy";
+			if (_menuKind == "duel")
+			{
+				_menu.OffsetLeft = -400; _menu.OffsetRight = 400; _menu.OffsetTop = -340; _menu.OffsetBottom = 340;
+				BuildDuelPick();
+				return;
+			}
 			// la boutique est large (une colonne par famille d'articles), le menu de classe reste étroit
 			_menu.OffsetLeft = buy ? -600 : -250; _menu.OffsetRight = buy ? 600 : 250;
 			_menu.OffsetTop = buy ? -300 : -240; _menu.OffsetBottom = buy ? 300 : 240;
@@ -185,12 +218,14 @@ namespace Openesport.Online
 			var title = new Label { Text = I18n.T("Choisis ta classe"), HorizontalAlignment = HorizontalAlignment.Center };
 			title.AddThemeFontSizeOverride("font_size", 24);
 			_menuBox.AddChild(title);
-			_menuBox.AddChild(new Label { Text = I18n.T("Le changement prend effet à ta prochaine réapparition (tout de suite en salle d'attente)."), AutowrapMode = TextServer.AutowrapMode.WordSmart });
+			_menuBox.AddChild(new Label { Text = _last.Mode == GameMode.CaptureTheFlag
+				? I18n.T("Le changement prend effet à ta prochaine réapparition, ou tout de suite à la station de ravitaillement de ta base.")
+				: I18n.T("Le changement prend effet à ta prochaine réapparition (tout de suite en salle d'attente)."), AutowrapMode = TextServer.AutowrapMode.WordSmart });
 			foreach (var kit in Loadouts.Kits)
 			{
 				var k = kit;
 				var b = new Button { Text = $"{(k.Id == _last.ClassId ? "✔  " : "")}{I18n.T(k.Name)} — {I18n.T(k.Description)}", CustomMinimumSize = new Vector2(0, 46), AutowrapMode = TextServer.AutowrapMode.WordSmart };
-				b.Pressed += () => { Send?.Invoke(CommandType.SelectClass, k.Id); _last.ClassId = k.Id; Rebuild(); };
+				b.Pressed += () => { Send?.Invoke(CommandType.SelectClass, k.Id); _last.ClassId = k.Id; MatchSettings.Loadout = k.Id; CloseMenu(); };
 				_menuBox.AddChild(b);
 			}
 			var close = new Button { Text = I18n.T("Fermer") };
@@ -292,6 +327,7 @@ namespace Openesport.Online
 		{
 			bool classChanged = m.ClassId != _last.ClassId || m.Money != _last.Money;
 			_last = m; _phase = phase; _alive = alive;
+			OfferClass(alive, phase);
 			if (MenuOpen && _menuKind == "buy" && !m.CanBuy) CloseMenu();
 			if (MenuOpen && classChanged && _menuKind == "buy") Rebuild();
 			string timer = m.TimeLeft > 0 ? Clock(m.TimeLeft) : "";
@@ -320,6 +356,9 @@ namespace Openesport.Online
 						_pointBars[i].Modulate = c.Progress < 0 ? Blue : c.Progress > 0 ? Red : Gray;
 					}
 					break;
+				case GameMode.Duel:
+					(l1, l2) = DuelLines(m, timer);
+					break;
 				case GameMode.Sabotage:
 					l1 = I18n.T("Manche {0}", m.Round) + $"   ·   {Side(0)} [b]{m.Score0}[/b]  —  [b]{m.Score1}[/b] {Side(1)}   " + I18n.T("(premier à {0})", m.Target);
 					l2 = SabotageText(m, timer);
@@ -330,9 +369,11 @@ namespace Openesport.Online
 
 			string role = m.Mode == GameMode.Sabotage ? (m.MySide == 1 ? I18n.T("Attaquant") : I18n.T("Défenseur")) + $"   ·   {m.Money} $" + (m.HasKit ? "   ·   " + I18n.T("kit de désamorçage") : "") : "";
 			// Deathmatch : pas de classe, on part au pistolet et les armes sont dans l'arène
-			string hint = m.Mode == GameMode.Sabotage ? (m.CanBuy ? I18n.T("B : boutique") : "")
+			string hint = m.Mode == GameMode.Duel ? DuelFooter(m)
+				: m.Mode == GameMode.Sabotage ? (m.CanBuy ? I18n.T("B : boutique") : "")
 				: Modes.UsesArenaRules(m.Mode) ? I18n.T("Arène : passe sur les armes et les soins pour les prendre")
 				: I18n.T("C : classe ({0})", I18n.T(Loadouts.Get(m.ClassId).Name));
+			if (AtStation()) hint = I18n.T("Ravitaillement : armes, munitions, grenades, soins, vie et bouclier rechargés") + "\n" + I18n.T("C : changer de classe tout de suite ({0})", I18n.T(Loadouts.Get(m.ClassId).Name));
 			if (m.Invulnerable) hint += "   " + I18n.T("(protégé)");
 			_footer.Text = (role.Length > 0 ? role + "\n" : "") + hint;
 			_footer.Visible = phase != MatchPhase.Over && m.Ride(MyId(),out _) == null;
@@ -340,6 +381,7 @@ namespace Openesport.Online
 			_action.Visible = _actionLabel.Visible = m.Action != 0;
 			if (m.Action != 0) { _action.Value = m.ActionProgress; _actionLabel.Text = m.Action == 1 ? I18n.T("Pose de la bombe…") : I18n.T("Désamorçage…"); }
 			UpdateMessages(m, phase);
+			if (m.Mode == GameMode.Duel) UpdateDuel(m, phase);
 		}
 
 		private static StyleBoxFlat PanelStyle(Color border, float alpha = 0.8f)
@@ -510,8 +552,28 @@ namespace Openesport.Online
 
 		private static StandardMaterial3D Glow(Color c, float alpha) => new StandardMaterial3D { AlbedoColor = c with { A = alpha }, ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded, Transparency = BaseMaterial3D.TransparencyEnum.Alpha, NoDepthTest = false };
 
+		private WorldData _data;
+		private bool _stationsBuilt;
+
+		/// <summary>Stations de ravitaillement (Capture du drapeau) : un disque à la couleur de l'équipe, une caisse lumineuse et une étiquette.</summary>
+		private void BuildStations()
+		{
+			_stationsBuilt = true;
+			foreach (var st in Resupply.Stations(_data))
+			{
+				var pos = new Vector3(st.Pos.X, st.Pos.Y, st.Pos.Z);
+				var col = st.Team == 0 ? Blue : Red;
+				AddChild(new MeshInstance3D { Mesh = new CylinderMesh { TopRadius = st.Radius, BottomRadius = st.Radius, Height = 0.06f, RadialSegments = 40 }, Position = pos + new Vector3(0, 0.05f, 0), MaterialOverride = Glow(col, 0.3f) });
+				var green = new Color(0.35f, 1f, 0.5f);
+				AddChild(new MeshInstance3D { Mesh = new BoxMesh { Size = new Vector3(0.9f, 0.9f, 0.9f) }, Position = pos + new Vector3(0, 0.45f, 0), MaterialOverride = Glow(green, 0.55f) });
+				AddChild(new MeshInstance3D { Mesh = new CylinderMesh { TopRadius = 0.12f, BottomRadius = 0.12f, Height = 6f }, Position = pos + new Vector3(0, 3f, 0), MaterialOverride = Glow(green, 0.25f) });
+				AddChild(new Label3D { Text = I18n.T("Ravitaillement"), Position = pos + new Vector3(0, 2.2f, 0), Billboard = BaseMaterial3D.BillboardModeEnum.Enabled, FontSize = 64, PixelSize = 0.01f, Modulate = green, OutlineSize = 12 });
+			}
+		}
+
 		public void Build(WorldData data)
 		{
+			_data = data;
 			foreach (var pt in data.Points)
 			{
 				var pos = new Vector3(pt.Pos.X, pt.Pos.Y, pt.Pos.Z);
@@ -577,6 +639,7 @@ namespace Openesport.Online
 		public void Refresh(ModeState m)
 		{
 			if (_flag0 == null) return;
+			if (!_stationsBuilt && m.Mode == GameMode.CaptureTheFlag && _data != null) BuildStations();
 			if (m.Mode == GameMode.Control)
 				for (int i = 0; i < 5; i++)
 				{

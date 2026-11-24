@@ -20,6 +20,7 @@ namespace Openesport.Menus
 		private Label _description, _sizeTitle;
 		private HBoxContainer _sizes;
 		private readonly System.Collections.Generic.Dictionary<GameMode, Button> _modeButtons = new();
+		private Control _card;
 
 		public ModeScreen() { Layer = 110; }
 
@@ -38,7 +39,8 @@ namespace Openesport.Menus
 			root.AddChild(center);
 			var box = new VBoxContainer { CustomMinimumSize = new Vector2(760, 0) };
 			box.AddThemeConstantOverride("separation", 14);
-			center.AddChild(MenuStyle.Card(box, margin: 28));
+			_card = MenuStyle.Card(box, margin: 28);
+			center.AddChild(_card);
 
 			var title = new Label { Text = I18n.T("Mode de jeu"), HorizontalAlignment = HorizontalAlignment.Center };
 			title.AddThemeFontSizeOverride("font_size", 34);
@@ -80,6 +82,22 @@ namespace Openesport.Menus
 			SelectMode(_mode);
 		}
 
+		/// <summary>La carte se réduit au besoin pour tenir en hauteur dans la fenêtre (« Continuer » et « Retour » toujours visibles).</summary>
+		private void FitToWindow()
+		{
+			if (!IsInstanceValid(_card)) return;
+			float need = _card.GetCombinedMinimumSize().Y;
+			float have = GetViewport().GetVisibleRect().Size.Y * 0.96f;
+			float s = need > have ? have / need : 1f;
+			_card.PivotOffset = _card.Size / 2f;
+			_card.Scale = new Vector2(s, s);
+		}
+
+		public override void _Process(double delta)
+		{
+			FitToWindow();
+		}
+
 		private void SelectMode(GameMode mode)
 		{
 			if (_mode != mode && mode == GameMode.Control) _teamSize = 10;
@@ -96,7 +114,8 @@ namespace Openesport.Menus
 			foreach (var c in _sizes.GetChildren()) c.QueueFree();
 			if (info.TeamSizes.Length <= 1)
 			{
-				_sizeTitle.Text = info.Mode == GameMode.Deathmatch ? I18n.T("Chacun pour soi (2 à 20 joueurs, complétés par des bots)") : "";
+				_sizeTitle.Text = info.Mode == GameMode.Deathmatch ? I18n.T("Chacun pour soi (2 à 20 joueurs, complétés par des bots)")
+					: info.Mode == GameMode.Duel ? I18n.T("Un contre un (contre un bot si personne d'autre n'attend)") : "";
 				return;
 			}
 			_sizeTitle.Text = info.Mode == GameMode.BattleRoyale ? I18n.T("Taille d'équipe") : I18n.T("Joueurs par équipe (deux équipes, complétées par des bots)");

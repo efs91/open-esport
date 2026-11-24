@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Open Esport — statistiques</title>
+<style>
+:root{--bg:#0e1116;--panel:#171b22;--line:#262c36;--text:#e6e9ee;--mute:#8b94a3;--ok:#3ecf8e;--warn:#f5b73b;--acc:#5aa9ff;--acc2:#b48cff}
+@media (prefers-color-scheme:light){:root{--bg:#f4f6f9;--panel:#fff;--line:#dfe3ea;--text:#1b2230;--mute:#5d6676}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,Segoe UI,sans-serif}
+header{padding:16px 24px;border-bottom:1px solid var(--line);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+h1{font-size:20px;margin:0}a{color:var(--acc)}
+.range{display:flex;gap:6px;flex-wrap:wrap}.range button{background:transparent;color:var(--text);border:1px solid var(--line);border-radius:99px;padding:4px 12px;cursor:pointer}
+.range button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+main{padding:18px 24px;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(420px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}.wide{grid-column:1/-1}
+.card h2{font-size:15px;margin:0 0 10px;color:var(--mute);font-weight:600}
+.kpis{display:flex;gap:28px;flex-wrap:wrap}.kpi b{display:block;font-size:28px;font-variant-numeric:tabular-nums}.kpi span{color:var(--mute);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:500}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--acc);border-radius:4px;min-width:2px}
+svg{width:100%;height:220px;display:block}.axis{fill:var(--mute);font-size:11px}.grid{stroke:var(--line)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mute);margin-top:6px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.empty{color:var(--mute);font-size:13px}footer{padding:10px 24px;color:var(--mute);font-size:12px}
+</style></head><body>
+<header><h1>Open Esport — statistiques d'utilisation</h1><a href="/">← serveurs de partie</a>
+<div class="range" id="range"></div></header>
+<main id="main"><div class="card wide empty">Chargement…</div></main>
+<footer id="foot">Statistiques anonymes : aucun compte n'y est relié. Les données de plus de 25 mois sont effacées.</footer>
+<script>
+const RANGES=[[1,'24 h'],[7,'7 jours'],[30,'30 jours'],[90,'90 jours'],[365,'1 an'],[760,'25 mois']];
+let days=+(localStorage.getItem('oe-stats-days')||1);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dur=s=>{s=Math.round(s||0);if(s<60)return s+' s';if(s<3600)return Math.floor(s/60)+' min '+(s%60?s%60+' s':'');return Math.floor(s/3600)+' h '+Math.round(s%3600/60)+' min'};
+const NAMES={LoginScreen:'Connexion',RegisterScreen:'Inscription',UpdateScreen:'Mise à jour',ModeScreen:'Choix du mode',CharacterPanel:'Choix du personnage',CharacterCreator:'Création de personnage',MatchmakingScreen:'Recherche de partie',KeyBindingsMenu:'Réglages des commandes',MainMenu:'Menu principal',ProfileStats:'Profil et statistiques'};
+const MODES={br:'Battle royale',dm:'Deathmatch',tdm:'Team Deathmatch',ctf:'Capture du drapeau',sab:'Sabotage',ctl:'Contrôle'};
+const modeName=k=>{const [m,s]=String(k).split(':');return (MODES[m]||m)+(s&&m!=='dm'?' ('+s+(m==='br'?'':' contre '+s)+')':'')};
+function rangeButtons(){range.innerHTML=RANGES.map(([d,l])=>`<button class="${d===days?'on':''}" onclick="setDays(${d})">${l}</button>`).join('')}
+function setDays(d){days=d;localStorage.setItem('oe-stats-days',d);rangeButtons();load()}
+function fmtTime(t,bucket){const d=new Date(t*1000);return bucket>=86400?d.toLocaleDateString(undefined,{day:'2-digit',month:'2-digit'}):bucket>=3600?d.toLocaleDateString(undefined,{day:'2-digit',month:'2-digit'})+' '+d.getHours()+'h':d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}
+// courbes (plusieurs séries) en SVG
+function lines(points,series,bucket){
+  if(!points.length)return '<div class="empty">Pas encore de données sur cette période.</div>';
+  const W=900,H=220,L=36,B=22,T=8,R=8;const max=Math.max(1,...points.flatMap(p=>series.map(s=>p[s.key])));
+  const x=i=>L+(points.length<2?0:i*(W-L-R)/(points.length-1)),y=v=>T+(H-T-B)*(1-v/max);
+  let g='';for(let k=0;k<=4;k++){const v=max*k/4,yy=y(v);g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}"/><text class="axis" x="${L-6}" y="${yy+4}" text-anchor="end">${Math.round(v*10)/10}</text>`}
+  const step=Math.max(1,Math.ceil(points.length/8));for(let i=0;i<points.length;i+=step)g+=`<text class="axis" x="${x(i)}" y="${H-6}" text-anchor="middle">${fmtTime(points[i].t,bucket)}</text>`;
+  for(const s of series)g+=`<polyline style="fill:none;stroke:${s.color};stroke-width:2" points="${points.map((p,i)=>x(i)+','+y(p[s.key])).join(' ')}"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${g}</svg><div class="legend">${series.map(s=>`<span><i style="background:${s.color}"></i>${s.label}</span>`).join('')}</div>`;
+}
+function bars(rows,label,value,fmt=v=>v){
+  if(!rows.length)return '<div class="empty">Aucune donnée.</div>';
+  const max=Math.max(1,...rows.map(value));
+  return '<table>'+rows.map(r=>`<tr><td style="width:40%">${esc(label(r))}</td><td><div class="bar" style="width:${100*value(r)/max}%"></div></td><td class="n" style="width:90px">${fmt(value(r))}</td></tr>`).join('')+'</table>';
+}
+function table(rows,cols){
+  if(!rows.length)return '<div class="empty">Aucune donnée.</div>';
+  return '<table><tr>'+cols.map(c=>`<th class="${c.n?'n':''}">${c.h}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+cols.map(c=>`<td class="${c.n?'n':''}">${esc(c.f(r))}</td>`).join('')+'</tr>').join('')+'</table>';
+}
+function card(title,body,wide){return `<div class="card${wide?' wide':''}"><h2>${title}</h2>${body}</div>`}
+async function load(){
+  let d;try{const r=await fetch('/api/stats?days='+days);if(!r.ok)throw 0;d=await r.json()}catch(e){main.innerHTML='<div class="card wide empty">Statistiques indisponibles : service de comptes injoignable, ou matchmaking lancé sans OE_ACCOUNTS_URL / OE_ACCOUNTS_KEY.</div>';return}
+  const n=d.now,t=d.totals;let h='';
+  h+=card('En ce moment',`<div class="kpis"><div class="kpi"><b>${n.total}</b><span>joueurs connectés</span></div><div class="kpi"><b>${n.menu}</b><span>au menu</span></div><div class="kpi"><b>${n.lobby}</b><span>en salle d'attente</span></div><div class="kpi"><b>${n.playing}</b><span>en partie</span></div></div>`
+    +(Object.keys(n.playingByMode||{}).length?'<p class="empty">En partie : '+Object.entries(n.playingByMode).map(([k,v])=>esc(MODES[k]||k)+' '+v).join(' · ')+'</p>':''),true);
+  h+=card('Sur la période',`<div class="kpis"><div class="kpi"><b>${t.players}</b><span>joueurs différents</span></div><div class="kpi"><b>${t.sessions}</b><span>sessions de jeu</span></div><div class="kpi"><b>${dur(t.avgSession)}</b><span>durée moyenne d'une session</span></div><div class="kpi"><b>${t.peak}</b><span>pic de joueurs connectés</span></div></div>`,true);
+  h+=card('Joueurs connectés',lines(d.series,[{key:'max',label:'pic',color:'var(--acc2)'},{key:'avg',label:'moyenne',color:'var(--acc)'},{key:'playing',label:'en partie (moyenne)',color:'var(--ok)'},{key:'menu',label:'au menu (moyenne)',color:'var(--warn)'}],d.bucket),true);
+  h+=card('Joueurs différents par jour',lines(d.daily.map(x=>({t:x.day,players:x.players,sessions:x.sessions})),[{key:'players',label:'joueurs différents',color:'var(--acc)'},{key:'sessions',label:'sessions',color:'var(--acc2)'}],86400),true);
+  h+=card('Parcours : du lancement à la partie',bars(d.funnel,r=>r.step,r=>r.sessions,v=>v+' sessions'));
+  h+=card('Création de personnage',`<div class="kpis"><div class="kpi"><b>${d.character.saved}</b><span>enregistrés (${dur(d.character.avgSavedSeconds)} en moyenne)</span></div><div class="kpi"><b>${d.character.cancelled}</b><span>abandonnés (${dur(d.character.avgCancelledSeconds)} en moyenne)</span></div></div>`);
+  h+=card('Temps passé par écran',table(d.screens,[{h:'Écran',f:r=>NAMES[r.name]||r.name},{h:'Visites',n:1,f:r=>r.visits},{h:'Moyenne',n:1,f:r=>dur(r.avgSeconds)},{h:'Total',n:1,f:r=>dur(r.totalSeconds)}]));
+  h+=card('Boutons du menu',bars(d.menu,r=>r.name,r=>r.clicks,v=>v+' clics'));
+  h+=card('Matchmaking',table(d.matchmaking,[{h:'Mode',f:r=>modeName(r.mode)},{h:'Rapide',n:1,f:r=>r.quick},{h:'Liste',n:1,f:r=>r.join},{h:'Trouvées',n:1,f:r=>r.found},{h:'Annulées',n:1,f:r=>r.cancelled},{h:'Échecs',n:1,f:r=>r.failed},{h:'Attente',n:1,f:r=>dur(r.avgWait)}]),true);
+  h+=card('Parties jouées',table(d.games,[{h:'Mode',f:r=>modeName(r.mode)},{h:'Parties',n:1,f:r=>r.games},{h:'Durée moyenne',n:1,f:r=>dur(r.avgSeconds)},{h:'Temps total',n:1,f:r=>dur(r.totalSeconds)}]));
+  h+=card('Versions du jeu',bars(d.versions,r=>r.name,r=>r.sessions));
+  h+=card('Systèmes',bars(d.systems,r=>r.name,r=>r.sessions));
+  h+=card('Langues',bars(d.langs,r=>r.name,r=>r.sessions));
+  main.innerHTML=h;foot.textContent='Mis à jour '+new Date().toLocaleTimeString()+' · statistiques anonymes, aucun compte n\'y est relié · données effacées après 25 mois';
+}
+rangeButtons();load();setInterval(load,60000);
+</script></body></html>

@@ -239,6 +239,24 @@ namespace OpenEsport.Tests
 			Assert.True(rig.WaitUntil(() => b.C.Alive && b.C.Health == 100, 1.0));
 		}
 
+		[Fact]
+		public void Punching_Confirms_The_Hit_With_Its_Damage_And_Where_To_Show_It()
+		{
+			using var rig = new Rig(o => o.Match.TeamSize = 1);
+			var a = rig.Connect("Boxeur"); var b = rig.Connect("Cible");
+			Assert.True(rig.WaitPlaying(a)); Assert.True(rig.WaitPlaying(b));
+			rig.Teleport(a, new Vec3(0, 0, 0)); rig.Teleport(b, new Vec3(0, 0, -1.2f));
+			rig.Run(0.4);
+			a.Pitch = 0f;
+			a.Buttons = Buttons.Fire;
+			rig.Run(1.0);
+			a.Buttons = Buttons.None;
+			rig.Run(0.2);
+			var hit = a.Events.FirstOrDefault(e => e.Type == EventType.HitConfirm);
+			Assert.True(hit.Type == EventType.HitConfirm, "les coups de poing sont confirmés");
+			Assert.True(hit.C > 0 && hit.Pos.Y != 0f, $"dégâts {hit.C}, hauteur {hit.Pos.Y}");
+		}
+
 		private static (int fired, int hits) ChaseAndShoot(bool lagCompensation)
 		{
 			using var rig = new Rig(o => { o.Match.TeamSize = 1; o.LagCompensation = lagCompensation; });

@@ -20,6 +20,7 @@ namespace OpenEsport.Tests
 		public readonly Dictionary<int, int?[]> Finishes = new Dictionary<int, int?[]>();
 		public int Races = 1;
 		public bool Down;
+		private int _current;
 
 		private static HttpResponseMessage Json(object o, HttpStatusCode code = HttpStatusCode.OK) => new HttpResponseMessage(code) { Content = new StringContent(JsonSerializer.Serialize(o), System.Text.Encoding.UTF8, "application/json") };
 
@@ -30,8 +31,9 @@ namespace OpenEsport.Tests
 			Calls.Add(req.Method + " " + path);
 			Assert.Equal("clef-test", req.Headers.GetValues("X-Api-Key").Single());
 			if (path == "/api/contests" && req.Method == HttpMethod.Post) return Json(new { id = "c1" }, HttpStatusCode.Created);
-			if (path.EndsWith("/schedule/stages") && req.Method == HttpMethod.Post) return Json(new { stages = new[] { new { index = 0, kind = "checkin" }, new { index = 1, kind = "lobby" } } });
-			if (path.EndsWith("/schedule") ) return Json(new { stages = new[] { new { index = 0, kind = "checkin" }, new { index = 1, kind = "lobby" } } });
+			if (path.EndsWith("/schedule/stages") && req.Method == HttpMethod.Post) return Json(new { current = _current, stages = new[] { new { index = 0, kind = "checkin" }, new { index = 1, kind = "lobby" } } });
+			if (path.EndsWith("/schedule") ) return Json(new { current = _current, stages = new[] { new { index = 0, kind = "checkin" }, new { index = 1, kind = "lobby" } } });
+			if (path.EndsWith("/next")) { if (_current >= 1) return Json(new { error = "dernière phase" }, HttpStatusCode.BadRequest); _current++; return Json(new { }); }
 			if (path.EndsWith("/checkin/fencers") && req.Method == HttpMethod.Post)
 			{
 				int r = ++_players; Finishes[r] = new int?[Races];
@@ -96,7 +98,7 @@ namespace OpenEsport.Tests
 			var (svc, _, _, owner, _, _) = Setup();
 			Assert.NotNull((await svc.Create(owner, "ab", Soon, 2, 20)).Error);
 			Assert.NotNull((await svc.Create(owner, "Nom valable", DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds(), 2, 20)).Error);
-			Assert.NotNull((await svc.Create(owner, "Nom valable", DateTimeOffset.UtcNow.AddDays(90).ToUnixTimeSeconds(), 2, 20)).Error);
+			Assert.NotNull((await svc.Create(owner, "Nom valable", DateTimeOffset.UtcNow.AddDays(400).ToUnixTimeSeconds(), 2, 20)).Error);
 			Assert.NotNull((await svc.Create(owner, "Nom valable", Soon, 99, 20)).Error);
 			for (int i = 0; i < TournamentService.MaxOpenPerOwner; i++) Assert.Null((await svc.Create(owner, "Tournoi " + i, Soon, 1, 20)).Error);
 			Assert.NotNull((await svc.Create(owner, "Un de trop", Soon, 1, 20)).Error);
@@ -111,6 +113,169 @@ namespace OpenEsport.Tests
 			fake2.Down = true;
 			Assert.Contains("injoignable", (await svc2.Create(owner2, "Open de test", Soon, 2, 20)).Error);
 			Assert.Empty(store2.Tournaments());
+		}
+
+		private static TournamentConfig Config(long startAt, string startMode = "fixed", int checkIn = 0, int min = 1, int max = 100, long opensAt = 0) => new TournamentConfig
+		{
+			Title = "Open configuré", Format = "br", TeamSize = 1, StartAt = startAt, StartMode = startMode, CheckInMinutes = checkIn, MinEntries = min, MaxEntries = max, RegistrationOpensAt = opensAt,
+			Phases = new List<PhaseConfig> { new PhaseConfig { Kind = "lobby", Races = 1, LobbySize = 20, Scale = new List<int> { 10, 6, 3 } } },
+		};
+
+		[Fact]
+		public async Task Periode_d_inscription_et_maximum_d_inscrits()
+		{
+			var (svc, _, _, owner, a, b) = Setup();
+			var later = await svc.Create(owner, Config(Soon + 86400, opensAt: Soon));
+			Assert.Null(later.Error);
+			Assert.Contains("pas encore ouvertes", (await svc.Join(later.Id, a, "alice")).Error);
+			var full = await svc.Create(owner, Config(Soon, max: 2, min: 1));
+			Assert.Null((await svc.Join(full.Id, a, "alice")).Error);
+			Assert.Null((await svc.Join(full.Id, b, "bob")).Error);
+			Assert.Contains("complet", (await svc.Join(full.Id, owner, "orga")).Error);
+		}
+
+		[Fact]
+		public async Task Depart_automatique_check_in_et_annulation_faute_d_inscrits()
+		{
+			var (svc, store, _, owner, a, b) = Setup(races: 1);
+			// check-in de 15 min, départ dans 10 min : le check-in est ouvert ; seule alice confirme
+			var t = await svc.Create(owner, Config(DateTimeOffset.UtcNow.AddMinutes(10).ToUnixTimeSeconds(), checkIn: 15, min: 1));
+			Assert.Null((await svc.Join(t.Id, a, "alice")).Error);                       // inscrite pendant le check-in : présente d'office
+			store.AddTournamentPlayer(t.Id, b, 99);                                       // bob inscrit avant, sans confirmer
+			Assert.Null(svc.CheckIn(t.Id, a).Error);
+			store.UpdateTournament(t.Id, Config(AccountStore.Now() - 1, checkIn: 15, min: 1));   // l'heure est venue
+			await svc.Tick();
+			Assert.Equal("running", store.Tournament(t.Id).State);
+			Assert.DoesNotContain(store.TournamentPlayers(t.Id), p => p.account == b);   // absent : retiré
+
+			var empty = await svc.Create(owner, Config(Soon, min: 3));
+			store.UpdateTournament(empty.Id, Config(AccountStore.Now() - 1, min: 3));
+			await svc.Tick();
+			Assert.Equal("cancelled", store.Tournament(empty.Id).State);
+			Assert.Contains("Annulé au départ", store.Tournament(empty.Id).Note);
+		}
+
+		[Fact]
+		public async Task Depart_par_l_organisateur_et_modification_avant_le_depart()
+		{
+			var (svc, store, _, owner, a, _) = Setup();
+			var t = await svc.Create(owner, Config(Soon, startMode: "manual", min: 1));
+			await svc.Tick();
+			Assert.Equal("open", store.Tournament(t.Id).State);                          // départ manuel : rien d'automatique
+			var changed = Config(Soon, startMode: "manual", min: 1); changed.Title = "Nouveau nom";
+			Assert.NotNull(svc.Update(t.Id, a, changed).Error);                           // seul l'organisateur
+			Assert.Null(svc.Update(t.Id, owner, changed).Error);
+			Assert.Equal("Nouveau nom", store.Tournament(t.Id).Title);
+			await svc.Join(t.Id, a, "alice");
+			var duos = Config(Soon, startMode: "manual"); duos.TeamSize = 2;
+			Assert.Contains("taille", svc.Update(t.Id, owner, duos).Error);              // inscrits : la taille des équipes ne change plus
+			Assert.Null((await svc.Start(t.Id, owner)).Error);
+			Assert.Equal("running", store.Tournament(t.Id).State);
+		}
+
+		[Fact]
+		public async Task Equipe_par_invitations_accepter_refuser_retirer_et_equipe_incomplete_retiree_au_depart()
+		{
+			var (svc, store, _, owner, a, b) = Setup(races: 1);
+			long c = store.CreateAccount("carol", new byte[] { 1 }, new byte[] { 1 }, 1), d = store.CreateAccount("dave", new byte[] { 1 }, new byte[] { 1 }, 1);
+			var cfg = Config(Soon, startMode: "manual", min: 1); cfg.TeamSize = 2; cfg.Phases[0].LobbySize = 15;
+			var t = await svc.Create(owner, cfg);
+			Assert.Null(t.Error);
+			Assert.Null((await svc.Join(t.Id, a, "alice")).Error);                       // alice devient cheffe de son équipe
+			Assert.NotNull(svc.Invite(t.Id, b, "carol").Error);                           // bob n'est chef de rien
+			Assert.Contains("Aucun joueur", svc.Invite(t.Id, a, "personne").Error);
+			Assert.Null(svc.Invite(t.Id, a, "bob").Error);
+			Assert.Contains("complet", svc.Invite(t.Id, a, "carol").Error);              // 2 places : alice + l'invitation en attente
+			Assert.Empty(store.TournamentPlayers(t.Id).Where(p => p.account == b));       // pas dans l'équipe tant qu'il n'a pas accepté
+			Assert.Null(svc.Decline(t.Id, b).Error);
+			Assert.Empty(store.TournamentInvites(t.Id));
+			Assert.Null(svc.Invite(t.Id, a, "bob").Error);
+			Assert.Null(svc.Accept(t.Id, b).Error);
+			Assert.Equal(2, store.TournamentPlayers(t.Id).Count(p => p.reference == store.TournamentPlayers(t.Id).First(x => x.account == a).reference));
+			Assert.NotNull(svc.Accept(t.Id, b).Error);                                    // plus d'invitation
+			// un coéquipier qui part ne fait partir que lui ; le chef peut retirer un joueur
+			Assert.Null((await svc.Leave(t.Id, b)).Error);
+			Assert.Single(store.TournamentPlayers(t.Id));
+			Assert.Null(svc.Invite(t.Id, a, "bob").Error); Assert.Null(svc.Accept(t.Id, b).Error);
+			Assert.Null(svc.Kick(t.Id, a, "bob").Error);
+			Assert.Single(store.TournamentPlayers(t.Id));
+			Assert.Null(svc.Invite(t.Id, a, "bob").Error); Assert.Null(svc.Accept(t.Id, b).Error);
+			// carol inscrit une équipe qu'elle ne complète pas : retirée au départ
+			Assert.Null((await svc.Join(t.Id, c, "carol")).Error);
+			Assert.Null(svc.Invite(t.Id, c, "dave").Error);
+			Assert.Null((await svc.Start(t.Id, owner)).Error);
+			Assert.DoesNotContain(store.TournamentPlayers(t.Id), p => p.account == c);
+			Assert.Empty(store.TournamentInvites(t.Id));
+			Assert.All(store.TournamentPlayers(t.Id), p => Assert.True(p.reference > 0));          // inscrits dans ManageComp au départ
+			Assert.Contains("incomplète", store.Tournament(t.Id).Note);
+		}
+
+		[Fact]
+		public void Phases_de_modes_differents_et_regles_de_compatibilite()
+		{
+			long now = AccountStore.Now();
+			TournamentConfig Make(int teamSize, params PhaseConfig[] phases) => new TournamentConfig { Title = "Mixte", TeamSize = teamSize, StartAt = now + 3600, Phases = phases.ToList() };
+			// solo : battle royale (sélection), puis poules de 1 VS 1
+			var mix = Make(1, new PhaseConfig { Kind = "lobby", Mode = "br", Races = 2, LobbySize = 20, Qualified = 8 }, new PhaseConfig { Kind = "pools", Mode = "1v1", MaxScore = 3, Loadout = "choice" });
+			Assert.Null(mix.Validate(now, true));
+			Assert.Equal("mix", mix.Format);
+			Assert.Equal(2, mix.MinEntries);                                                       // des matchs : deux inscrits au moins
+			Assert.Contains("solo", Make(2, new PhaseConfig { Kind = "pools", Mode = "1v1", MaxScore = 3 }).Validate(now, true));
+			Assert.Contains("poules", Make(1, new PhaseConfig { Kind = "lobby", Mode = "1v1" }).Validate(now, true));
+			Assert.Contains("équipement", Make(1, new PhaseConfig { Kind = "pools", Mode = "1v1", MaxScore = 3, Loadout = "bazooka" }).Validate(now, true));
+			// Capture du drapeau : équipes inscrites (lobby de deux équipes) ou tirées au sort parmi des solos
+			var ctf = Make(4, new PhaseConfig { Kind = "lobby", Mode = "ctf", Races = 3, LobbySize = 20, MaxScore = 3 });
+			Assert.Null(ctf.Validate(now, true));
+			Assert.Equal(2, ctf.Phases[0].LobbySize);
+			var random = Make(1, new PhaseConfig { Kind = "lobby", Mode = "ctf", Teams = "random", TeamSize = 5, Races = 2, MaxScore = 3 });
+			Assert.Null(random.Validate(now, true));
+			Assert.Equal(10, random.Phases[0].LobbySize);
+			Assert.Contains("solo", Make(2, new PhaseConfig { Kind = "lobby", Mode = "ctf", Teams = "random", TeamSize = 4, MaxScore = 3 }).Validate(now, true));
+			Assert.Contains("équipes", Make(1, new PhaseConfig { Kind = "lobby", Mode = "ctf", MaxScore = 3 }).Validate(now, true));
+			Assert.Contains("lobbys", Make(1, new PhaseConfig { Kind = "pools", Mode = "ctf", Teams = "random", TeamSize = 4, MaxScore = 3 }).Validate(now, true));
+			// battle royale par équipes : 30 joueurs au plus par lobby
+			Assert.Contains("équipes de 3", Make(3, new PhaseConfig { Kind = "lobby", Mode = "br", LobbySize = 20 }).Validate(now, true));
+			Assert.Contains("dernière phase", Make(1, new PhaseConfig { Kind = "table", Mode = "1v1", MaxScore = 3 }, new PhaseConfig { Kind = "lobby", Mode = "br" }).Validate(now, true));
+		}
+
+		[Fact]
+		public async Task Capture_du_drapeau_equipes_tirees_au_sort_et_places_des_deux_camps()
+		{
+			var (svc, store, fake, owner, a, b) = Setup(races: 1);
+			long c = store.CreateAccount("carol", new byte[] { 1 }, new byte[] { 1 }, 1), d = store.CreateAccount("dave", new byte[] { 1 }, new byte[] { 1 }, 1);
+			var cfg = Config(Soon, startMode: "manual", min: 1);
+			cfg.Phases = new List<PhaseConfig> { new PhaseConfig { Kind = "lobby", Mode = "ctf", Teams = "random", TeamSize = 2, Races = 1, MaxScore = 3 } };
+			var t = await svc.Create(owner, cfg);
+			Assert.Null(t.Error);
+			foreach (var (id, name) in new[] { (a, "alice"), (b, "bob"), (c, "carol"), (d, "dave") }) Assert.Null((await svc.Join(t.Id, id, name)).Error);
+			Assert.Null((await svc.Start(t.Id, owner)).Error);
+			var game = JsonDocument.Parse(JsonSerializer.Serialize(await svc.LobbyGame(t.Id, 0))).RootElement;
+			Assert.Equal("ctf", game.GetProperty("mode").GetString());
+			Assert.Equal(2, game.GetProperty("teamSize").GetInt32());
+			Assert.Equal(3, game.GetProperty("scoreLimit").GetInt32());
+			var sides = game.GetProperty("sides").EnumerateObject().ToDictionary(p => long.Parse(p.Name), p => p.Value.GetInt32());
+			Assert.Equal(4, sides.Count);
+			Assert.Equal(2, sides.Values.Count(s => s == 0));                                      // deux contre deux
+			Assert.Equal(JsonSerializer.Serialize(await svc.LobbyGame(t.Id, 0)), JsonSerializer.Serialize(await svc.LobbyGame(t.Id, 0)));   // tirage stable
+			var mine = JsonSerializer.Serialize(await svc.MyRace(t.Id, a));
+			Assert.Contains("\"mode\":\"ctf\"", mine);
+			// le camp gagnant prend la 1re place, l'autre la 2e
+			var won = sides.Where(s => s.Value == 0).Select(s => (s.Key, 1)).Concat(sides.Where(s => s.Value == 1).Select(s => (s.Key, 2))).ToList();
+			Assert.Null((await svc.ReportRace(t.Id, 0, 0, won)).Error);
+			Assert.Equal("done", store.Tournament(t.Id).State);
+		}
+
+		[Fact]
+		public async Task Un_inscrit_du_lobby_qui_ne_joue_pas_compte_comme_abandon()
+		{
+			var (svc, store, fake, owner, a, b) = Setup(races: 1);
+			var t = await svc.Create(owner, Config(Soon, startMode: "manual", min: 1));
+			await svc.Join(t.Id, a, "alice"); await svc.Join(t.Id, b, "bob");
+			Assert.Null((await svc.Start(t.Id, owner)).Error);
+			Assert.Null((await svc.ReportRace(t.Id, 0, 0, new[] { (a, 1) })).Error);          // bob ne s'est pas présenté
+			Assert.Equal("done", store.Tournament(t.Id).State);
+			int refB = store.TournamentPlayers(t.Id).First(p => p.account == b).reference;
+			Assert.Equal(-1, fake.Finishes[refB][0]);                                          // « A » : abandon
 		}
 
 		[Fact]
@@ -150,6 +315,21 @@ namespace OpenEsport.Tests
 			Assert.StartsWith("MM!WAIT", mm.HandleRequest(req("7:0:1")));            // autre lobby : un autre serveur
 			Assert.Equal(2, launcher.Launched.Count);
 			Assert.StartsWith("MM!ERR", mm.HandleRequest(req("x:y")));
+		}
+
+		[Fact]
+		public void Le_mode_de_la_phase_choisit_le_serveur_capture_du_drapeau_ou_1_vs_1()
+		{
+			var launcher = new StubLauncher();
+			var mm = new OpenEsport.Matchmaker.MatchmakerService(new OpenEsport.Matchmaker.MatchmakerOptions { Port = 0 }, launcher);
+			Assert.StartsWith("MM!WAIT", mm.HandleRequest($"MM?|{OpenEsport.Core.Protocol.Version}|2|ctf|1|T9:3:0"));
+			Assert.Equal(OpenEsport.Core.GameMode.CaptureTheFlag, launcher.Launched[0].Mode);
+			Assert.Equal(2, launcher.Launched[0].TeamSize);                                          // pas ramené à 4 : la taille de la phase
+			Assert.Equal(4, launcher.Launched[0].Players);
+			Assert.StartsWith("MM!WAIT", mm.HandleRequest($"MM?|{OpenEsport.Core.Protocol.Version}|1|1v1|1|TD9:p0m1"));
+			Assert.Equal(OpenEsport.Core.GameMode.Duel, launcher.Launched[1].Mode);
+			Assert.Equal(2, launcher.Launched[1].Players);
+			Assert.StartsWith("MM!ERR", mm.HandleRequest($"MM?|{OpenEsport.Core.Protocol.Version}|1|dm|1|T9:3:1"));
 		}
 
 		[Fact]
@@ -232,8 +412,9 @@ namespace OpenEsport.Tests
 
 			var mine = await svc.NextMatch(t.Id, a);
 			Assert.Equal("p0m0", mine.Key); Assert.Equal(0, mine.Side); Assert.Equal("bob", mine.Opponent);
-			var sides = await svc.MatchSides(t.Id, "p0m0");
-			Assert.Equal(new[] { a }, sides.Value.a); Assert.Equal(new[] { b }, sides.Value.b); Assert.Equal(10, sides.Value.scoreLimit);
+			var sides = JsonDocument.Parse(JsonSerializer.Serialize(await svc.MatchGame(t.Id, "p0m0"))).RootElement;
+			Assert.Equal(a, sides.GetProperty("a")[0].GetInt64()); Assert.Equal(b, sides.GetProperty("b")[0].GetInt64()); Assert.Equal(10, sides.GetProperty("scoreLimit").GetInt32());
+			Assert.Equal("tdm", sides.GetProperty("mode").GetString());
 
 			Assert.NotNull((await svc.ReportMatch(t.Id, "p0m0", 7, 7)).Error);                  // égalité refusée : le match reste à jouer
 			Assert.Null((await svc.ReportMatch(t.Id, "p0m0", 10, 4)).Error);                    // poule jouée → tableau
@@ -248,19 +429,20 @@ namespace OpenEsport.Tests
 		}
 
 		[Fact]
-		public async Task Duel_a_deux_l_equipe_est_le_groupe_de_deux_joueurs()
+		public async Task Duel_a_deux_l_equipe_se_forme_par_invitation_et_le_chef_la_retire_entiere()
 		{
 			var store = new AccountStore(_db);
 			var svc = new TournamentService(store, new ManageCompApi(new HttpClient(new FakeDuelManageComp()), "http://fake", "clef"));
 			long Make(string l) => store.CreateAccount(l, new byte[] { 1 }, new byte[] { 1 }, 1);
 			long orga = Make("orga"), a = Make("alice"), b = Make("bob");
 			var t = await svc.Create(orga, "Duel a deux", Soon, 0, 20, "duel", 2, 10);
-			Assert.NotNull((await svc.Join(t.Id, a, "alice")).Error);                           // il faut un groupe de deux
-			Assert.Null((await svc.Join(t.Id, a, "alice", new[] { (a, "alice"), (b, "bob") })).Error);
+			Assert.Null((await svc.Join(t.Id, a, "alice")).Error);
+			Assert.Null(svc.Invite(t.Id, a, "bob").Error);
+			Assert.Null(svc.Accept(t.Id, b).Error);
 			Assert.Equal(2, store.TournamentPlayers(t.Id).Count);
 			Assert.Single(store.TournamentPlayers(t.Id).Select(p => p.reference).Distinct());   // une seule équipe pour ManageComp
-			Assert.Null((await svc.Leave(t.Id, b)).Error);
-			Assert.Empty(store.TournamentPlayers(t.Id));                                         // toute l'équipe part
+			Assert.Null((await svc.Leave(t.Id, a)).Error);
+			Assert.Empty(store.TournamentPlayers(t.Id));                                         // la cheffe part : toute l'équipe part
 		}
 	}
 }
@@ -281,10 +463,14 @@ namespace OpenEsport.Tests
 			long orga = Make("orga"), a = Make("alice"), b = Make("bob"), c = Make("carol");
 			var t = await svc.Create(orga, "BR en duo", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds(), 1, 20, "br", 2);
 			Assert.Null(t.Error);
-			Assert.NotNull((await svc.Join(t.Id, a, "alice")).Error);                                              // seul : refusé
-			Assert.NotNull((await svc.Join(t.Id, a, "alice", new[] { (a, "alice"), (b, "bob"), (c, "carol") })).Error); // trois : refusé
-			Assert.Null((await svc.Join(t.Id, a, "alice", new[] { (a, "alice"), (b, "bob") })).Error);
+			Assert.Null((await svc.Join(t.Id, a, "alice")).Error);
+			Assert.Null(svc.Invite(t.Id, a, "bob").Error);
+			Assert.NotNull(svc.Invite(t.Id, a, "carol").Error);                                                   // équipe de deux : complète
+			Assert.Null(svc.Accept(t.Id, b).Error);
 			Assert.Null((await svc.Start(t.Id, orga)).Error);
+			var game = JsonDocument.Parse(JsonSerializer.Serialize(await svc.LobbyGame(t.Id, 0))).RootElement;
+			var groups = game.GetProperty("groups").EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetInt64());
+			Assert.Equal(groups[a.ToString()], groups[b.ToString()]);                                              // le serveur les met dans la même équipe
 			var mineA = await svc.MyRace(t.Id, a); var mineB = await svc.MyRace(t.Id, b);
 			Assert.NotNull(mineA); Assert.NotNull(mineB);
 			Assert.Equal(JsonSerializer.Serialize(mineA), JsonSerializer.Serialize(mineB));                         // même manche, même lobby, équipes de 2

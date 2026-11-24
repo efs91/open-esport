@@ -21,6 +21,7 @@ public partial class MenuManager : Control
     private Label _accountLabel;
     /// <summary>Tournois, groupe et amis (en haut à gauche) : seulement dans le menu principal, pas pendant une partie.</summary>
     private Openesport.Menus.MenuSocial _social;
+    private Openesport.Menus.MenuAccountCard _accountCard;
 
     public override void _Ready()
     {
@@ -34,6 +35,9 @@ public partial class MenuManager : Control
         AddChild(_accountLabel);
         _social = new Openesport.Menus.MenuSocial { Name = "MenuSocial" };
         AddChild(_social);
+        // sous le nom du compte : classement général, dernière partie et lien vers le profil complet
+        _accountCard = new Openesport.Menus.MenuAccountCard { Name = "MenuAccountCard", OpenProfile = () => ExecuteAction("open_character_panel") };
+        AddChild(_accountCard);
         //_logManager.Info("[MenuManager] _Ready appelé");
 
         _gameManager = GetNode<GameManager>(GlobalPaths.Managers.GAME_MANAGER);
@@ -52,6 +56,8 @@ public partial class MenuManager : Control
         string who = Openesport.Online.AccountClient.LoggedIn ? Openesport.Utils.I18n.T("Connecté : {0}", Openesport.Online.AccountClient.Login) : "";
         if (_accountLabel != null && _accountLabel.Text != who) _accountLabel.Text = who;
         if (_social != null) _social.Visible = !_inGame;
+        if (_accountCard != null) _accountCard.Visible = !_inGame && Openesport.Online.AccountClient.LoggedIn;
+        if (Visible) FitMenuToWindow();
     }
 
     private void OnGameStateChanged(int newState)
@@ -82,6 +88,7 @@ public partial class MenuManager : Control
     {
         //_logManager.Info($"[MenuManager] Tentative d'affichage du menu - État actuel : Visible={Visible}");
         Show();
+        Openesport.Utils.Telemetry.MainMenuShown(true);
         DisplaySubMenu(0); // Afficher le menu racine
         //_logManager.Info($"[MenuManager] Menu affiché - Nouvel état : Visible={Visible}");
 
@@ -96,6 +103,7 @@ public partial class MenuManager : Control
     {
         //_logManager.Info($"[MenuManager] Tentative de masquage du menu - État actuel : Visible={Visible}");
         Hide();
+        Openesport.Utils.Telemetry.MainMenuShown(false);
         //_logManager.Info($"[MenuManager] Menu masqué - Nouvel état : Visible={Visible}");
     }
 
@@ -313,12 +321,33 @@ public partial class MenuManager : Control
             return;
         }
 
+        // Graphismes (plein écran ou fenêtre, qualité) : écran construit en code
+        if (uiPath == "graphics")
+        {
+            var graphics = new Openesport.Menus.GraphicsScreen { Name = "GraphicsScreen" };
+            graphics.Closed += Show;
+            GetTree().Root.AddChild(graphics);
+            Hide();
+            return;
+        }
+
+        // Crédits (auteurs et licences des ressources utilisées) : écran construit en code
+        if (uiPath == "credits")
+        {
+            var credits = new Openesport.Menus.CreditsScreen { Name = "CreditsScreen" };
+            credits.Closed += Show;
+            GetTree().Root.AddChild(credits);
+            Hide();
+            return;
+        }
+
         Hide();
     }
 
     private void OnElementPressed(MenuElement element)
     {
         //_logManager.Info($"[MenuManager] Élément pressé : {element.Name} (ID: {element.Id})");
+        Openesport.Utils.Telemetry.Track("menu", element.Name);
 
         // 1. Si une action existe, l'exécuter
         if (element.Properties.TryGetValue("action", out var actionObj) && actionObj is string action)
@@ -392,17 +421,16 @@ public partial class MenuManager : Control
             container.AddChild(backButton);
         }
 
-        FitMenuToWindow();
     }
 
-    /// <summary>Le menu (logo, titre, boutons) se réduit au besoin pour tenir en hauteur dans la fenêtre, quel que soit le nombre de boutons.</summary>
-    private async void FitMenuToWindow()
+    /// <summary>
+    /// Le menu (logo, titre, boutons) se réduit au besoin pour tenir en hauteur dans la fenêtre, quel que soit le nombre de boutons.
+    /// Recalculé à chaque image (voir _Process) : la mise en page suit les changements de sous-menu et de taille de fenêtre.
+    /// </summary>
+    private void FitMenuToWindow()
     {
         var box = GetNodeOrNull<Control>("MenuCenterContainer/MenuVBoxContainer");
         if (box == null) return;
-        box.Scale = Vector2.One;
-        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); // le temps que la mise en page se recalcule
-        if (!IsInstanceValid(box)) return;
         float need = box.GetCombinedMinimumSize().Y;
         float have = GetViewportRect().Size.Y * 0.96f;
         box.PivotOffset = box.Size / 2f;

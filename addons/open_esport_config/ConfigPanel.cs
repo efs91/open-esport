@@ -23,6 +23,7 @@ namespace Openesport.EditorTools
 			Add("Zones (battle royale)", () => new ZonesTab());
 			Add("Objets", () => new ItemsTab { OpenBalanceFilter = text => { balance?.SetFilter(text); _tabs.CurrentTab = 0; } });
 			Add("Carte (export)", () => new MapTab());
+			Add("Export du jeu", () => new ExportTab());
 			Add("Réseau", () => new NetworkTab());
 			GD.Print($"[Open Esport] panneau créé : {_tabs.GetTabCount()} onglet(s)");
 		}

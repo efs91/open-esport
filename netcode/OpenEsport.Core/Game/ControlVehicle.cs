@@ -7,7 +7,7 @@ namespace OpenEsport.Core
     public sealed class ControlVehicle
     {
         public const ushort Empty = ushort.MaxValue;
-        public const float HoverScale = 2.7f, WalkerScale = 2.65f;
+        public const float HoverScale = 2.7f, WalkerScale = 3.93f;   // mécha de 1,90 unité à la hauteur de la coque (7,48 m)
         public bool Hover;
         public byte Team;
         public Vec3 Pos, Velocity;

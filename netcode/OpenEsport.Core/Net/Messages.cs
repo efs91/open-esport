@@ -77,7 +77,11 @@ namespace OpenEsport.Core
 
 	public enum EventType : byte
 	{
-		/// <summary>Au tireur : A = cible, C = dégâts, D = zone (bits 0-1) | 0x80 si la cible est morte.</summary>
+		/// <summary>
+		/// Au tireur : A = cible, C = dégâts, D = zone (bits 0-1) | 0x80 si la cible est morte,
+		/// B = bouclier de la cible : niveau + 1 (bits 0-2, 0 = aucun) | 0x10 si le coup a touché le bouclier | 0x20 si le bouclier vient de casser,
+		/// Pos = point touché (à la hauteur de la zone) pour afficher les dégâts sur la cible.
+		/// </summary>
 		HitConfirm = 1,
 		/// <summary>À la victime : A = tireur, C = dégâts, D = 1 si elle est morte, Pos = position du tireur.</summary>
 		Damaged = 2,
@@ -134,11 +138,13 @@ namespace OpenEsport.Core
 		/// <summary>Sort une grenade en main (arg = identifiant de l'objet) ou la range (0) : le clic gauche la lance ensuite.</summary>
 		EquipGrenade = 15,
 		BoardVehicle = 16,
+		/// <summary>1 VS 1, étape de choix : arg = catégorie × 16 + numéro (catégorie 0 arme, 1 viseur, 2 grenade, 3 soin ; <see cref="DuelRules.ConfirmPick"/> = valider).</summary>
+		DuelPick = 17,
 	}
 
 	public static class Protocol
 	{
-		public const ushort Version = 33;
+		public const ushort Version = 34;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";

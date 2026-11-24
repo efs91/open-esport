@@ -33,6 +33,7 @@ namespace OpenEsport.Server
 				GameMode.Control => new ControlMode(s, info),
 				GameMode.CaptureTheFlag => new CtfMode(s, info),
 				GameMode.Sabotage => new SabotageMode(s, info),
+				GameMode.Duel => new DuelMode(s, info),
 				_ => null,
 			};
 		}
@@ -68,7 +69,19 @@ namespace OpenEsport.Server
 		}
 
 		/// <summary>Donne à un joueur l'équipement de sa classe (sac, armes, munitions, bouclier, soins).</summary>
-		private void ApplyKit(ServerPlayer p, ClassKit k)
+		private void ApplyKit(ServerPlayer p, ClassKit k, bool keepSlot = false)
+		{
+			int slot = p.Inventory?.ActiveSlot ?? -1;
+			var inv = KitInventory(k);
+			if (keepSlot && slot >= 0 && slot < inv.Weapons.Length && inv.Weapons[slot] != null) inv.ActiveSlot = slot;
+			p.Inventory = inv;
+			p.Shield = k.ShieldTier >= 0 && !k.ShieldEmpty ? Consumables.ShieldMaxOf(k.ShieldTier) : 0f;
+			p.UseId = 0; p.Reloading = false;
+			SendInventory(p);
+		}
+
+		/// <summary>L'inventaire complet d'une classe : sac, armes chargées, munitions de réserve, soins, grenades et niveau de bouclier.</summary>
+		private static InventoryState KitInventory(ClassKit k)
 		{
 			var inv = new InventoryState();
 			var none = new List<LootItem>();
@@ -90,17 +103,16 @@ namespace OpenEsport.Server
 				}
 			}
 			AddAmmoFor(k.Primary); AddAmmoFor(k.Secondary);
-			if (k.Secondary != ItemIds.None) { var w2 = LootItem.Of(k.Secondary); inv.TryPickup(ref w2, none); }
+			if (k.Secondary != ItemIds.None) { var w2 = LootItem.Of(k.Secondary); w2.Optic = k.SecondaryOptic; w2.Tier = k.WeaponTier; inv.TryPickup(ref w2, none); }
 			if (k.Primary != ItemIds.None) { var w1 = LootItem.Of(k.Primary); w1.Optic = k.PrimaryOptic; w1.Tier = k.WeaponTier; inv.TryPickup(ref w1, none); }
 			for (int i = 0; i < inv.Weapons.Length; i++) if (inv.Weapons[i] != null && inv.Weapons[i].WeaponId == k.Primary) inv.ActiveSlot = i;
 			if (k.HealSmall > 0) { var h = LootItem.Of(ItemIds.HealSmall); h.Count = (ushort)k.HealSmall; inv.TryPickup(ref h, none); }
 			if (k.ShieldSmall > 0) { var h = LootItem.Of(ItemIds.ShieldSmall); h.Count = (ushort)k.ShieldSmall; inv.TryPickup(ref h, none); }
+			if (k.HealBig > 0) { var h = LootItem.Of(ItemIds.HealBig); h.Count = (ushort)k.HealBig; inv.TryPickup(ref h, none); }
+			if (k.ShieldBig > 0) { var h = LootItem.Of(ItemIds.ShieldBig); h.Count = (ushort)k.ShieldBig; inv.TryPickup(ref h, none); }
 			if (k.Grenades != null) foreach (var gid in k.Grenades) { var gi = LootItem.Of(gid); inv.TryPickup(ref gi, none); }
 			inv.ShieldTier = k.ShieldTier;
-			p.Inventory = inv;
-			p.Shield = k.ShieldTier >= 0 && !k.ShieldEmpty ? Consumables.ShieldMaxOf(k.ShieldTier) : 0f;
-			p.UseId = 0; p.Reloading = false;
-			SendInventory(p);
+			return inv;
 		}
 
 		private void ChooseClass(ServerPlayer p, int id)
@@ -109,6 +121,7 @@ namespace OpenEsport.Server
 			p.ClassId = (byte)Math.Clamp(id, 0, Loadouts.Kits.Length - 1);
 			// en salle d'attente, le changement est immédiat ; en partie il prend effet à la prochaine réapparition (le mode peut en décider autrement)
 			if (Phase == MatchPhase.Lobby) ApplyKit(p, _mode.KitFor(p));
+			else if (p.Alive && _mode.AtResupply(p)) { ApplyKit(p, _mode.KitFor(p)); p.Health = 100f; }      // à la station de sa base : tout de suite
 		}
 
 		private Vec3 ModalSpawn(ServerPlayer p) => _mode.Spawn(p);
@@ -125,6 +138,7 @@ namespace OpenEsport.Server
 		private void StartModalMatch()
 		{
 			Phase = MatchPhase.Playing;
+			_playStartTick = _tick;
 			_departed.Clear();
 			_countdown = -1f;
 			if (_opt.FillBots)
@@ -134,7 +148,7 @@ namespace OpenEsport.Server
 			}
 			foreach (var p in _players)
 			{
-				p.Alive = true; p.Health = 100f; p.Kills = 0; p.Deaths = 0; p.DamageDealt = 0f; p.Placement = 0; p.LastAttacker = null;
+				p.Alive = true; p.Health = 100f; p.Kills = 0; p.Deaths = 0; p.DamageDealt = 0f; p.Placement = 0; p.LastAttacker = null; p.OutTick = 0;
 				if (p.Brain is BotBrain bb) p.ClassId = (byte)bb.Rng.Next(Loadouts.Kits.Length);
 				p.ProtectUntil = 0;
 			}
@@ -225,6 +239,7 @@ namespace OpenEsport.Server
 			if (!Modal) return;
 			if (type == CommandType.SelectClass) ChooseClass(p, arg);
 			else if (type == CommandType.Buy) _mode.OnBuy(p, arg);
+			else if (type == CommandType.DuelPick) _mode.OnDuelPick(p, (byte)arg);
 		}
 
 		// ------------------------------------------------------------------ la logique d'un mode
@@ -249,7 +264,11 @@ namespace OpenEsport.Server
 			public virtual float SpeedScale(ServerPlayer p) => 1f;
 			public virtual float RespawnDelay(ServerPlayer p) => Info.RespawnSeconds;
 			public virtual ClassKit KitFor(ServerPlayer p) => Loadouts.Get(p.ClassId);
+			/// <summary>Le joueur est-il à une station de ravitaillement de son équipe (Capture du drapeau) ?</summary>
+			public virtual bool AtResupply(ServerPlayer p) => false;
 			public virtual void OnBuy(ServerPlayer p, int code) { }
+			/// <summary>1 VS 1 : le joueur règle son équipement ou valide son choix (voir <see cref="CommandType.DuelPick"/>).</summary>
+			public virtual void OnDuelPick(ServerPlayer p, byte arg) { }
 			public virtual void OnPlayerLeft(ServerPlayer p) { }
 			/// <summary>Le joueur lâche la bombe qu'il porte (Sabotage).</summary>
 			public virtual void OnDropBomb(ServerPlayer p) { }
@@ -462,10 +481,53 @@ namespace OpenEsport.Server
 			private readonly ServerPlayer[] _carrier = new ServerPlayer[2];
 			private readonly Vec3[] _pos = new Vec3[2];
 			private readonly float[] _dropTimer = new float[2];
+			private List<MapPoint> _stations = new List<MapPoint>();
 			public CtfMode(GameServer s, ModeInfo info) : base(s, info) { }
+
+			public override bool AtResupply(ServerPlayer p)
+			{
+				foreach (var st in _stations) if (st.Team == p.Team && Resupply.Inside(st, p.State.Pos)) return true;
+				return false;
+			}
+
+			/// <summary>Stations de ravitaillement : armes, munitions, grenades et soins de la classe, vie et bouclier au maximum (au plus une fois par seconde, et seulement s'il manque quelque chose).</summary>
+			private void TickResupply(float dt)
+			{
+				foreach (var p in Players)
+				{
+					if (!p.Alive) continue;
+					if (p.ResupplyClock > 0f) p.ResupplyClock -= dt;
+					if (p.ResupplyClock > 0f || !AtResupply(p)) continue;
+					p.ResupplyClock = Resupply.Interval;
+					var kit = KitFor(p);
+					if (!NeedsResupply(p, kit)) continue;
+					S.ApplyKit(p, kit, keepSlot: true);
+					p.Health = 100f;
+					S.SendEvent(p, new ServerEvent { Type = EventType.ArenaPickup, A = p.Id, Pos = p.State.Pos });
+				}
+			}
+
+			private static bool NeedsResupply(ServerPlayer p, ClassKit kit)
+			{
+				if (p.Health < 99.5f) return true;
+				if (kit.ShieldTier >= 0 && p.Shield < Consumables.ShieldMaxOf(kit.ShieldTier) - 0.5f) return true;
+				var inv = p.Inventory;
+				if (inv == null) return true;
+				var full = KitInventory(kit);
+				for (int i = 0; i < full.Weapons.Length; i++)
+				{
+					var want = full.Weapons[i];
+					if (want == null) continue;
+					var have = Array.Find(inv.Weapons, w => w != null && w.WeaponId == want.WeaponId);
+					if (have == null || have.Magazine < want.Magazine) return true;
+				}
+				foreach (var it in full.Items) if (inv.CountOf(it.Id) < it.Count) return true;
+				return false;
+			}
 
 			public override void OnStart()
 			{
+				_stations = Resupply.Stations(S._data);
 				foreach (var pt in Points(MapPointKind.FlagBase)) if (pt.Team < 2) _home[pt.Team] = pt.Pos;
 				for (int t = 0; t < 2; t++) { _state[t] = 0; _carrier[t] = null; _pos[t] = _home[t]; }
 				Score[0] = Score[1] = 0;
@@ -480,6 +542,7 @@ namespace OpenEsport.Server
 			public override void Tick(float dt)
 			{
 				TimeLeft -= dt;
+				TickResupply(dt);
 				const float reach = 1.8f;
 				for (int flag = 0; flag < 2; flag++)
 				{
@@ -520,11 +583,14 @@ namespace OpenEsport.Server
 					{
 						Score[mine]++;
 						ReturnHome(flag);
-						if (Score[mine] >= (int)GameBalance.F("mode.ctfCaptures")) { S.EndModal((byte)mine); return; }
+						if (Score[mine] >= Captures) { S.EndModal((byte)mine); return; }
 					}
 				}
 				if (TimeLeft <= 0f) { TimeLeft = 0f; S.EndModal(Score[0] == Score[1] ? (byte)255 : (byte)(Score[0] > Score[1] ? 0 : 1)); }
 			}
+
+			/// <summary>Prises pour gagner : celles d'un match de tournoi, sinon le réglage du jeu.</summary>
+			private int Captures => S._opt.ScoreLimit > 0 ? S._opt.ScoreLimit : (int)GameBalance.F("mode.ctfCaptures");
 
 			private void DropFlag(int flag, Vec3 pos)
 			{
@@ -545,7 +611,7 @@ namespace OpenEsport.Server
 
 			public override void FillState(ref ModeState st, ServerPlayer viewer)
 			{
-				st.Target = (ushort)GameBalance.F("mode.ctfCaptures");
+				st.Target = (ushort)Captures;
 				st.Flag0 = new FlagState { State = _state[0], Carrier = _carrier[0]?.Id ?? (ushort)0xFFFF, Pos = _pos[0] };
 				st.Flag1 = new FlagState { State = _state[1], Carrier = _carrier[1]?.Id ?? (ushort)0xFFFF, Pos = _pos[1] };
 			}

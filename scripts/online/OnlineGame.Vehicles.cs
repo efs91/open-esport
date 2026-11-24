@@ -10,6 +10,9 @@ namespace Openesport.Online
     {
         private readonly List<Node3D> _vehicleModels = new();
         private readonly List<AnimationPlayer> _walkerAnimations = new();
+        /// <summary>Tir du mécha, joué par-dessus la marche : seules les pistes du canon et des tubes y restent.</summary>
+        private readonly List<AnimationPlayer> _walkerGuns = new();
+        private const string WalkerAsset = "Bipedal_Mech_AT27_rig";
         private Camera3D _rideCamera;
         private Node3D _passengerCabin;
         private CharacterAnimator _rider;
@@ -27,7 +30,7 @@ namespace Openesport.Online
             if (Client.Mode.Ride(Client.PlayerId, out _) != null) return "";
             foreach (var v in fleet)
                 if (v.Team == Client.TeamId && v.CanBoard(Client.Predicted.Pos) && Array.IndexOf(v.Seats, ControlVehicle.Empty) >= 0)
-                    return v.Hover ? "E : piloter le hover" : "E : embarquer dans l’AT-ST";
+                    return v.Hover ? "E : piloter le hover" : "E : embarquer dans le mécha";
             return null;
         }
 
@@ -80,6 +83,40 @@ namespace Openesport.Online
             GetViewport().SetInputAsHandled();
         }
 
+        /// <summary>Second lecteur sur le même squelette, ajouté après celui des jambes : il n'écrit que le canon et les tubes,
+        /// donc le tir se joue pendant la marche sans figer les jambes.</summary>
+        private static AnimationPlayer WalkerGunPlayer(AnimationPlayer legs)
+        {
+            foreach (var loop in new[] { "walk", "idle" })
+                if (legs.HasAnimation(loop)) legs.GetAnimation(loop).LoopMode = Animation.LoopModeEnum.Linear;
+            if (!legs.HasAnimation("fire")) return null;
+            var fire = (Animation)legs.GetAnimation("fire").Duplicate();
+            for (int t = fire.GetTrackCount() - 1; t >= 0; t--)
+            {
+                string path = fire.TrackGetPath(t).ToString();
+                if (!path.EndsWith(":gun") && !path.EndsWith(":barrel")) fire.RemoveTrack(t);
+            }
+            fire.LoopMode = Animation.LoopModeEnum.None;
+            var library = new AnimationLibrary();
+            library.AddAnimation("fire", fire);
+            var gun = new AnimationPlayer { Name = "GunPlayer" };
+            legs.AddSibling(gun);
+            gun.RootNode = legs.RootNode;   // frères : même chemin relatif vers la scène
+            gun.AddAnimationLibrary("", library);
+            return gun;
+        }
+
+        /// <summary>Un tir de mitrailleuse ou de canon du marcheur : le mécha où est assis le tireur joue « fire ».</summary>
+        private void WalkerFired(ushort shooter)
+        {
+            var fleet = Client.Mode.Vehicles;
+            var ride = Client.Mode.Ride(shooter, out _);
+            int i = fleet == null || ride == null ? -1 : Array.IndexOf(fleet, ride);
+            if (i < 0 || i >= _walkerGuns.Count || _walkerGuns[i] is not { } gun) return;
+            gun.Stop();
+            gun.Play("fire");
+        }
+
         private void UpdateVehicles(float dt)
         {
             var fleet = Client.Mode.Vehicles;
@@ -90,15 +127,20 @@ namespace Openesport.Online
                 var v = fleet[_vehicleModels.Count];
                 var body = new Node3D();
                 _worldRoot.AddChild(body);
-                var asset = v.Hover ? "AI_Military_Combat_Hover" : "at-st";
+                var asset = v.Hover ? "AI_Military_Combat_Hover" : WalkerAsset;
                 var mesh = GD.Load<PackedScene>("res://assets/Vehicules/" + asset + ".glb").Instantiate<Node3D>();
                 mesh.Scale = Vector3.One * (v.Hover ? ControlVehicle.HoverScale : ControlVehicle.WalkerScale);
                 mesh.Rotation = new Vector3(0, v.Hover ? -Mathf.Pi / 2 : Mathf.Pi, 0);
                 if (v.Hover) mesh.Position = Vector3.Up * .68f;
                 body.AddChild(mesh);
                 _walkerAnimations.Add(null);
+                _walkerGuns.Add(null);
                 if (!v.Hover && mesh.FindChildren("*", "AnimationPlayer", true, false) is { Count: > 0 } players)
-                    _walkerAnimations[^1] = (AnimationPlayer)players[0];
+                {
+                    var legs = (AnimationPlayer)players[0];
+                    _walkerAnimations[^1] = legs;
+                    _walkerGuns[^1] = WalkerGunPlayer(legs);
+                }
                 body.GlobalPosition = WorldVector(v.Pos);
                 body.Rotation = new Vector3(v.Pitch, v.Yaw, v.Roll);
                 _vehicleModels.Add(body);
@@ -114,11 +156,10 @@ namespace Openesport.Online
                 int seat = Array.IndexOf(v.Seats, Client.PlayerId);
                 bool aboard = seat >= 0 && Client.Alive && Client.Match.Phase == MatchPhase.Playing;
                 var animation = _walkerAnimations[i];
-                if (animation != null && animation.HasAnimation("atst_bm_walk_frwd"))
+                if (animation != null)
                 {
-                    bool moving = v.Velocity.LengthSquared() > .25f;
-                    if (moving && !animation.IsPlaying()) animation.Play("atst_bm_walk_frwd");
-                    if (!moving && animation.IsPlaying()) animation.Pause();
+                    string clip = v.Velocity.LengthSquared() > .25f ? "walk" : "idle";
+                    if (animation.HasAnimation(clip) && (animation.CurrentAnimation != clip || !animation.IsPlaying())) animation.Play(clip, .25);
                 }
                 body.Visible = v.Integrity > 0 && (!aboard || v.Hover);
                 if (aboard) { myRide = i; mySeat = seat; }

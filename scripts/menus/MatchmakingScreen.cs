@@ -16,8 +16,9 @@ namespace Openesport.Menus
 		public Action OnCancel;
 		/// <summary>Manche de tournoi (« tournoi:manche:lobby ») : battle royale réservé aux joueurs du lobby ; sinon partie ordinaire.</summary>
 		public string Tournament;
-		/// <summary>Duel de tournoi (tag « D… ») : joueurs par équipe.</summary>
+		/// <summary>Partie de tournoi : joueurs par équipe et mode de jeu de la phase (br, ctf, 1v1, tdm).</summary>
 		public int TournamentTeamSize = 1;
+		public string TournamentMode = "br";
 
 		private MatchmakerClient _client;
 		private Label _status, _title;
@@ -26,6 +27,9 @@ namespace Openesport.Menus
 		private string _mmHost; private int _mmPort;
 		private int _teamSize;
 		private GameMode _mode;
+		private ulong _searchSince;
+		private string ModeKey => $"{Modes.Get(_mode).Key}:{_teamSize}";
+		private double Waited => Math.Round((Time.GetTicksMsec() - _searchSince) / 1000.0, 1);
 
 		public MatchmakingScreen() { Layer = 130; }
 
@@ -35,7 +39,12 @@ namespace Openesport.Menus
 			_mode = MatchSettings.Mode;
 			// un groupe joue ensemble : l'équipe est au moins aussi grande que le groupe (les places en plus sont prises par des bots)
 			_teamSize = Modes.ValidTeamSize(_mode, Math.Max(MatchSettings.TeamSize, SocialClient.PartySize));
-			if (!string.IsNullOrEmpty(Tournament)) { bool duel = Tournament.StartsWith("D"); _mode = duel ? GameMode.TeamDeathmatch : GameMode.BattleRoyale; _teamSize = duel ? Math.Clamp(TournamentTeamSize, 1, 2) : Math.Clamp(TournamentTeamSize, 1, 5); }
+			if (!string.IsNullOrEmpty(Tournament))
+			{
+				// le mode et la taille des équipes sont ceux de la phase (pas ramenés aux tailles des parties ordinaires)
+				_mode = Modes.TryParse(TournamentMode, out var tm) ? tm : Tournament.StartsWith("D") ? GameMode.TeamDeathmatch : GameMode.BattleRoyale;
+				_teamSize = _mode == GameMode.Duel ? 1 : Math.Clamp(TournamentTeamSize, 1, 5);
+			}
 			var root = new Control();
 			root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(root);
@@ -65,6 +74,8 @@ namespace Openesport.Menus
 			_client?.Dispose();
 			_client = new MatchmakerClient();
 			_client.Start(_mmHost, _mmPort, _mode, _teamSize, string.IsNullOrEmpty(Tournament) ? SocialClient.PartySize : 1, Tournament);
+			_searchSince = Time.GetTicksMsec();
+			Telemetry.Track("mm_start", ModeKey, 0, !string.IsNullOrEmpty(Tournament) ? "tournament" : "quick");
 			_cancel.Text = I18n.T("Annuler");
 		}
 
@@ -94,6 +105,7 @@ namespace Openesport.Menus
 					break;
 				case MatchmakingState.Found:
 					_status.Text = I18n.T("Partie trouvée ({0} joueur(s) dans la salle d'attente)…", _client.Humans);
+					Telemetry.Track("mm_found", ModeKey, Waited);
 					var found = OnFound; string host = _client.Host; int port = _client.ServerPort;
 					if (SocialClient.InParty && string.IsNullOrEmpty(Tournament)) _ = SocialClient.PartyActionAsync("match", host: host, port: port, mode: Modes.Get(_mode).Key, teamSize: _teamSize);     // les autres membres rejoignent
 					_client.Dispose(); _client = null;
@@ -101,6 +113,7 @@ namespace Openesport.Menus
 					found?.Invoke(host, port);
 					break;
 				case MatchmakingState.Failed:
+					Telemetry.Track("mm_fail", ModeKey, Waited, _client.Message);
 					_status.Text = Localize(_client.Message) + "\n" + I18n.T("(matchmaking : {0}:{1})", _mmHost, _mmPort);
 					_cancel.Text = I18n.T("Retour");
 					_client.Dispose(); _client = null;
@@ -119,6 +132,7 @@ namespace Openesport.Menus
 
 		private void Cancel()
 		{
+			if (_client != null) Telemetry.Track("mm_cancel", ModeKey, Waited);
 			_client?.Dispose(); _client = null;
 			var cancel = OnCancel;
 			QueueFree();

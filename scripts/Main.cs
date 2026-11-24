@@ -23,6 +23,8 @@ public partial class Main : Node
 		language = LocalizationManager.SavedLanguage;
 		LocalizationManager.LoadLanguage(language);
 		InitializeManagers();
+		GraphicsSettings.Install(GetTree());       // plein écran ou fenêtre et qualité graphique (menu Paramètres → Graphismes)
+		Telemetry.Install(GetTree().Root);         // statistiques d'utilisation anonymes (désactivables dans les réglages)
 		StartGame();
 	}
 
@@ -57,7 +59,7 @@ public partial class Main : Node
 	public void ShowLogin()
 	{
 		var login = new Openesport.Menus.LoginScreen { Name = "LoginScreen" };
-		login.OnSuccess = () => _gameManager.ChangeState(GameManager.GameState.MainMenu);
+		login.OnSuccess = () => { Telemetry.Track("login"); _gameManager.ChangeState(GameManager.GameState.MainMenu); };
 		GetTree().Root.CallDeferred(Node.MethodName.AddChild, login);
 	}
 }

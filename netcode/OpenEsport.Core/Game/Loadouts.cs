@@ -9,13 +9,15 @@ namespace OpenEsport.Core
 		public byte Id;
 		public string Name, Description;
 		/// <summary>Armes (arme principale puis secondaire), avec viseur éventuel.</summary>
-		public byte Primary, Secondary, PrimaryOptic;
+		public byte Primary, Secondary, PrimaryOptic, SecondaryOptic;
 		/// <summary>Chargeurs de réserve par arme.</summary>
 		public int ReserveMagazines = 3;
 		/// <summary>Bouclier : niveau 0 à 3, ou −1 pour aucun.</summary>
 		public int ShieldTier;
 		/// <summary>Soins emportés : petits soins de vie et petits boucliers.</summary>
 		public int HealSmall, ShieldSmall;
+		/// <summary>Grands soins de vie et grandes recharges de bouclier (1 VS 1).</summary>
+		public int HealBig, ShieldBig;
 		/// <summary>Grenades emportées (une entrée par grenade : ItemIds.GrenadeFrag…).</summary>
 		public byte[] Grenades;
 		/// <summary>Le bouclier est porté vide (Deathmatch : il se remplit avec les boucliers ramassés).</summary>
@@ -57,6 +59,46 @@ namespace OpenEsport.Core
 		public const float KillHeal = 50f;
 		/// <summary>Portée (m) à laquelle on ramasse un objet en marchant dessus.</summary>
 		public const float WalkPickupRange = 1.3f;
+	}
+
+	/// <summary>
+	/// Stations de ravitaillement de la Capture du drapeau : une par équipe, dans sa base. On y recharge armes, munitions, grenades et soins, la vie et le bouclier,
+	/// et on peut y changer de classe tout de suite. La carte les place avec des marqueurs « Ravitaillement » ; sans marqueur, la station d'une équipe
+	/// est posée sur son point d'apparition le plus central (un endroit où l'on peut toujours marcher).
+	/// </summary>
+	public static class Resupply
+	{
+		public const float DefaultRadius = 3f;
+		/// <summary>Délai minimal (s) entre deux recharges d'un même joueur.</summary>
+		public const float Interval = 1f;
+
+		public static List<MapPoint> Stations(WorldData data)
+		{
+			var list = new List<MapPoint>();
+			if (data == null) return list;
+			foreach (var p in data.PointsOf(MapPointKind.Resupply)) list.Add(p.Radius > 0.1f ? p : p with { Radius = DefaultRadius });
+			for (byte team = 0; team < 2; team++)
+			{
+				if (list.Exists(s => s.Team == team)) continue;
+				var spawns = new List<MapPoint>();
+				foreach (var p in data.PointsOf(MapPointKind.SpawnTeam)) if (p.Team == team) spawns.Add(p);
+				if (spawns.Count == 0) continue;
+				float cx = 0, cz = 0;
+				foreach (var s in spawns) { cx += s.Pos.X; cz += s.Pos.Z; }
+				cx /= spawns.Count; cz /= spawns.Count;
+				var best = spawns[0]; float bd = float.MaxValue;
+				foreach (var s in spawns) { float d = (s.Pos.X - cx) * (s.Pos.X - cx) + (s.Pos.Z - cz) * (s.Pos.Z - cz); if (d < bd) { bd = d; best = s; } }
+				list.Add(new MapPoint { Kind = MapPointKind.Resupply, Team = team, Pos = best.Pos, Radius = DefaultRadius, Yaw = best.Yaw });
+			}
+			return list;
+		}
+
+		/// <summary>Le joueur (pieds en <paramref name="pos"/>) est-il dans la zone de la station ?</summary>
+		public static bool Inside(MapPoint station, Vec3 pos)
+		{
+			float dx = pos.X - station.Pos.X, dz = pos.Z - station.Pos.Z;
+			return dx * dx + dz * dz <= station.Radius * station.Radius && MathF.Abs(pos.Y - station.Pos.Y) < 3f;
+		}
 	}
 
 	public static class Loadouts

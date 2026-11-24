@@ -182,6 +182,7 @@ namespace OpenEsport.Server
 		private void RemoveBot(ServerPlayer bot)
 		{
 			if (_slots[bot.Id] != bot) return;
+			if (Modal) _mode.OnPlayerLeft(bot);        // un bot qui part en pleine partie lâche le drapeau qu'il porte
 			if (bot.Alive && !Modal) DropAllLoot(bot);
 			_slots[bot.Id] = null;
 			_players.Remove(bot);

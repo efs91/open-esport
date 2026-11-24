@@ -24,21 +24,120 @@ namespace Openesport.Online
 	public sealed class FriendDto { public string Login { get; set; } public string State { get; set; } public bool Online { get; set; } public long PartyId { get; set; } }
 	public sealed class FriendsDto { public List<FriendDto> Friends { get; set; } = new List<FriendDto>(); }
 	public sealed class TournamentDto { public string Id { get; set; } public string Title { get; set; } public string Subtitle { get; set; } public string Date { get; set; } public string Url { get; set; } }
+	/// <summary>Un tournoi du jeu tel que la liste le montre : configuration principale, état, phase en cours, inscription du joueur.</summary>
 	public sealed class GameTournamentDto
 	{
 		public long Id { get; set; }
 		public string Title { get; set; }
+		public string Description { get; set; }
 		public string Mode { get; set; }
 		public int TeamSize { get; set; }
 		public int ScoreLimit { get; set; }
 		public int Races { get; set; }
 		public int Race { get; set; }
+		/// <summary>open (inscriptions), running, done, cancelled.</summary>
 		public string State { get; set; }
+		public string Note { get; set; }
 		public long StartAt { get; set; }
+		/// <summary>fixed : lancé à l'heure ; manual : lancé par l'organisateur (l'heure est indicative).</summary>
+		public string StartMode { get; set; }
+		public long RegistrationOpensAt { get; set; }
+		public long RegistrationClosesAt { get; set; }
+		public bool RegistrationOpen { get; set; }
+		public int CheckInMinutes { get; set; }
+		public long CheckInOpensAt { get; set; }
+		public int MinEntries { get; set; }
+		public int MaxEntries { get; set; }
 		public string Owner { get; set; }
 		public int Players { get; set; }
 		public bool Joined { get; set; }
+		public bool CheckedIn { get; set; }
 		public bool IsOwner { get; set; }
+		public int Phase { get; set; }
+		public int Phases { get; set; }
+		public string PhaseName { get; set; }
+		public int PhaseRace { get; set; }
+		public int PhaseRaces { get; set; }
+		public int LobbySize { get; set; }
+		/// <summary>Modes de jeu des phases (br, ctf, 1v1, tdm) ; mode et déroulement (lobby, pools, table) de la phase en cours.</summary>
+		public List<string> Modes { get; set; } = new List<string>();
+		public string PhaseMode { get; set; } = "";
+		public string PhaseKind { get; set; } = "";
+		/// <summary>Équipes complètes (par équipes, une inscription compte dès que le chef s'inscrit).</summary>
+		public int CompleteEntries { get; set; }
+		/// <summary>Mon équipe (si je suis inscrit) et les invitations que j'ai reçues dans ce tournoi.</summary>
+		public MyTournamentTeamDto MyTeam { get; set; }
+		public List<TournamentInvitationDto> Invitations { get; set; } = new List<TournamentInvitationDto>();
+
+		/// <summary>La phase en cours se joue en matchs (poules, tableau) : « Jouer mon match » plutôt que « Jouer ma manche ».</summary>
+		public bool Duel => State == "running" ? PhaseKind != "" && PhaseKind != "lobby" : Mode == "duel";
+		public bool Teams => TeamSize > 1;
+		public bool CheckInOpen => State == "open" && CheckInOpensAt > 0 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() >= CheckInOpensAt;
+	}
+
+	/// <summary>Mon équipe dans un tournoi : chef, joueurs, invitations en attente, complète ou non.</summary>
+	public sealed class MyTournamentTeamDto
+	{
+		public bool Captain { get; set; }
+		public string CaptainName { get; set; }
+		public List<string> Members { get; set; } = new List<string>();
+		public List<string> Invites { get; set; } = new List<string>();
+		public bool Complete { get; set; }
+	}
+
+	/// <summary>Une invitation reçue : l'équipe (référence) et son chef.</summary>
+	public sealed class TournamentInvitationDto { public int Reference { get; set; } public string Captain { get; set; } }
+
+	/// <summary>Une phase d'un tournoi (même forme que côté service) : mode de jeu, série de lobbys, poules ou tableau, équipes inscrites ou tirées au sort.</summary>
+	public sealed class PhaseConfigDto
+	{
+		public string Kind { get; set; } = "lobby";
+		/// <summary>br, ctf, 1v1 (tdm : anciens tournois en duels).</summary>
+		public string Mode { get; set; } = "br";
+		/// <summary>entry : équipes inscrites ; random : tirées au sort à chaque manche (inscription en solo), de <see cref="TeamSize"/> joueurs.</summary>
+		public string Teams { get; set; } = "entry";
+		public int TeamSize { get; set; } = 2;
+		/// <summary>1 VS 1 : random, choice ou fixed:arme,viseur,arme2,viseur2,grenade,soin.</summary>
+		public string Loadout { get; set; } = "random";
+		public string Name { get; set; } = "";
+		public int Races { get; set; } = 5;
+		public int LobbySize { get; set; } = 20;
+		public List<int> Scale { get; set; } = new List<int> { 12, 9, 7, 5, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1 };
+		public int AbandonPoints { get; set; }
+		public string Distribution { get; set; } = "balanced";
+		public string QualifyMode { get; set; } = "total";
+		public int Qualified { get; set; }
+		public int MaxScore { get; set; } = 10;
+		public string Places { get; set; } = "third";
+	}
+
+	/// <summary>Configuration complète d'un tournoi (page de création et de modification).</summary>
+	public sealed class TournamentConfigDto
+	{
+		public string Title { get; set; } = "";
+		public string Description { get; set; } = "";
+		public string Format { get; set; } = "br";
+		public int TeamSize { get; set; } = 1;
+		public int MinEntries { get; set; } = 2;
+		public int MaxEntries { get; set; } = 100;
+		public string StartMode { get; set; } = "fixed";
+		public long StartAt { get; set; }
+		public long RegistrationOpensAt { get; set; }
+		public long RegistrationClosesAt { get; set; }
+		public int CheckInMinutes { get; set; } = 15;
+		public List<PhaseConfigDto> Phases { get; set; } = new List<PhaseConfigDto>();
+	}
+
+	public sealed class TournamentTeamDto { public string Name { get; set; } public bool CheckedIn { get; set; } public bool Complete { get; set; } = true; public List<string> Invites { get; set; } = new List<string>(); }
+	public sealed class StandingDto { public string Place { get; set; } public string Name { get; set; } public string Detail { get; set; } }
+
+	/// <summary>Détail d'un tournoi : résumé, configuration, inscrits (équipes) et classement de la phase en cours (ou final).</summary>
+	public sealed class TournamentDetailsDto
+	{
+		public GameTournamentDto Summary { get; set; }
+		public TournamentConfigDto Config { get; set; }
+		public List<TournamentTeamDto> Teams { get; set; } = new List<TournamentTeamDto>();
+		public List<StandingDto> Standings { get; set; } = new List<StandingDto>();
 	}
 	public sealed class TournamentsDto
 	{
@@ -113,21 +212,32 @@ namespace Openesport.Online
 			return e;
 		}
 
-		/// <summary>Crée un tournoi (battle royale en <paramref name="races"/> manches) qui commence à <paramref name="startAtUnix"/> ; l'organisateur y est inscrit.</summary>
-		public static async Task<string> CreateTournamentAsync(string title, long startAtUnix, int races, string mode = "br", int teamSize = 1, int scoreLimit = 0)
+		/// <summary>Crée un tournoi d'après sa configuration ; <paramref name="participate"/> : l'organisateur s'inscrit aussi (en solo). Retourne (erreur, identifiant).</summary>
+		public static async Task<(string error, long id)> CreateTournamentAsync(TournamentConfigDto config, bool participate)
 		{
-			var (code, body) = await AccountClient.SendAsync(HttpMethod.Post, "/api/tournaments", new { title, startAt = startAtUnix, races, mode, teamSize, scoreLimit });
+			var (code, body) = await AccountClient.SendAsync(HttpMethod.Post, "/api/tournaments", new { config, participate });
+			if (code != 200) return (AccountClient.ErrorOf(code, body), 0);
+			try { return (null, JsonDocument.Parse(body).RootElement.GetProperty("id").GetInt64()); }
+			catch (Exception e) when (e is JsonException || e is KeyNotFoundException) { return (null, 0); }
+		}
+
+		/// <summary>L'organisateur modifie son tournoi avant le départ.</summary>
+		public static async Task<string> UpdateTournamentAsync(long id, TournamentConfigDto config)
+		{
+			var (code, body) = await AccountClient.SendAsync(HttpMethod.Put, $"/api/tournaments/{id}", new { config });
 			return code == 200 ? null : AccountClient.ErrorOf(code, body);
 		}
 
-		/// <summary>join, leave ou start (réservé à l'organisateur).</summary>
-		public static async Task<string> TournamentActionAsync(long id, string action)
+		public static async Task<(string error, TournamentDetailsDto details)> TournamentDetailsAsync(long id) => await Get<TournamentDetailsDto>(HttpMethod.Get, $"/api/tournaments/{id}");
+
+		/// <summary>join, leave, checkin ; start et cancel (organisateur) ; invite et kick (chef d'équipe, <paramref name="login"/>) ; accept et decline (invité, <paramref name="reference"/> : l'équipe).</summary>
+		public static async Task<string> TournamentActionAsync(long id, string action, string login = null, int reference = 0)
 		{
-			var (code, body) = await AccountClient.SendAsync(HttpMethod.Post, $"/api/tournaments/{id}/{action}", new { });
+			var (code, body) = await AccountClient.SendAsync(HttpMethod.Post, $"/api/tournaments/{id}/{action}", new { login, reference });
 			return code == 200 ? null : AccountClient.ErrorOf(code, body);
 		}
 
-		/// <summary>Ce que le joueur doit jouer maintenant dans un tournoi : « tag » pour le matchmaking (manche de battle royale « tournoi:manche:lobby » ou duel « Dtournoi:match »), mode et taille d'équipe.</summary>
+		/// <summary>Ce que le joueur doit jouer maintenant dans un tournoi : « tag » pour le matchmaking (manche d'une série « tournoi:manche:lobby » ou match « Dtournoi:match »), mode de la phase et taille des équipes en jeu.</summary>
 		public static async Task<(string error, string tag, string mode, int teamSize)> MyRaceAsync(long id)
 		{
 			var (code, body) = await AccountClient.SendAsync(HttpMethod.Get, $"/api/tournaments/{id}/me");
@@ -135,9 +245,11 @@ namespace Openesport.Online
 			try
 			{
 				var r = JsonDocument.Parse(body).RootElement;
-				if (r.GetProperty("kind").GetString() == "duel")
-					return (null, $"D{r.GetProperty("tournament").GetInt64()}:{r.GetProperty("match").GetString()}", "tdm", r.GetProperty("teamSize").GetInt32());
-				return (null, $"{r.GetProperty("tournament").GetInt64()}:{r.GetProperty("race").GetInt32()}:{r.GetProperty("lobby").GetInt32()}", "br", r.TryGetProperty("teamSize", out var ts) ? ts.GetInt32() : 1);
+				bool match = r.GetProperty("kind").GetString() == "duel";
+				string mode = r.TryGetProperty("mode", out var m) && m.ValueKind == JsonValueKind.String ? m.GetString() : match ? "tdm" : "br";
+				int teamSize = r.TryGetProperty("teamSize", out var ts) ? ts.GetInt32() : 1;
+				if (match) return (null, $"D{r.GetProperty("tournament").GetInt64()}:{r.GetProperty("match").GetString()}", mode, teamSize);
+				return (null, $"{r.GetProperty("tournament").GetInt64()}:{r.GetProperty("race").GetInt32()}:{r.GetProperty("lobby").GetInt32()}", mode, teamSize);
 			}
 			catch (Exception e) when (e is JsonException || e is KeyNotFoundException) { return (I18n.T("Réponse inattendue du service de comptes : {0}", e.Message), null, null, 1); }
 		}

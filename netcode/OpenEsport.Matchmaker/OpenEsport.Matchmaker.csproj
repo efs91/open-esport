@@ -6,6 +6,9 @@
     <RollForward>Major</RollForward>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="StatsPage.html" LogicalName="StatsPage.html" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\OpenEsport.Core\OpenEsport.Core.csproj" />
   </ItemGroup>
 </Project>

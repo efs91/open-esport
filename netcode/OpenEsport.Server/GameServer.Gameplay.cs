@@ -45,6 +45,7 @@ namespace OpenEsport.Server
 			// Une commande par tick. Si le joueur a pris du retard, on en joue parfois deux, dans la limite d'un budget :
 			// sans cette limite, un client truqué pourrait envoyer plus de commandes que de ticks et courir plus vite.
 			p.CatchUpBudget = MathF.Min(3f, p.CatchUpBudget + 0.125f);
+			if (p.Away) p.EnqueueIdle();        // joueur déconnecté : son personnage reste sur place en attendant son retour
 			int toRun = 0;
 			if (p.PendingInputs > 0)
 			{
@@ -231,7 +232,7 @@ namespace OpenEsport.Server
 					float dx = h.Pos.X - origin.X, dz = h.Pos.Z - origin.Z;
 					float reach = bestT + 1f;
 					if (dx * dx + dz * dz > reach * reach) continue;
-					if (Hitboxes.RayVsPlayer(h.Pos, h.Stance, origin, dir, bestT, out float t, out var zone) && t < bestT)
+					if (Hitboxes.RayVsBody(h, origin, dir, bestT, out float t, out var zone) && t < bestT)
 					{
 						best = o; bestT = t; bestZone = zone;
 					}
@@ -249,6 +250,7 @@ namespace OpenEsport.Server
 			if (!victim.Alive) return;
 			if (victim.State.Stance == Stance.Plane) return;
 			// le bouclier absorbe d'abord ; ce qui dépasse touche la vie
+			float shieldBefore = victim.Shield;
 			float absorbed = MathF.Min(victim.Shield, damage);
 			victim.Shield -= absorbed;
 			victim.Health -= damage - absorbed;
@@ -258,7 +260,12 @@ namespace OpenEsport.Server
 			victim.LastHurtTick = _tick; victim.RegenClock = 0f;
 			byte dmg = (byte)Math.Clamp((int)MathF.Round(damage), 0, 255);
 
-			SendEvent(attacker, new ServerEvent { Type = EventType.HitConfirm, A = victim.Id, C = dmg, D = (byte)((byte)zone | (killed ? 0x80 : 0)) });
+			// le tireur voit la couleur du bouclier touché, ses dégâts sur la cible, et entend le bouclier casser
+			int shieldInfo = Math.Clamp(victim.Inventory.ShieldTier + 1, 0, 7) | (absorbed > 0f ? 0x10 : 0) | (shieldBefore > 0f && victim.Shield <= 0f ? 0x20 : 0);
+			float height = zone == HitZone.Head ? 1.65f : zone == HitZone.Torso ? 1.2f : 0.6f;
+			if (victim.State.Stance == Stance.Crouching || victim.State.Stance == Stance.Sliding) height *= 0.65f;
+			SendEvent(attacker, new ServerEvent { Type = EventType.HitConfirm, A = victim.Id, B = (ushort)shieldInfo, C = dmg, D = (byte)((byte)zone | (killed ? 0x80 : 0)),
+				Pos = new Vec3(victim.State.Pos.X, victim.State.Pos.Y + height, victim.State.Pos.Z) });
 			SendEvent(victim, new ServerEvent { Type = EventType.Damaged, A = attacker.Id, C = dmg, D = (byte)(killed ? 1 : 0), Pos = attacker.State.Pos });
 			if (attacker.Team != victim.Team) NotifyTeam(attacker.Team, EventType.TeamHit, victim.Id);
 			if (killed) Kill(attacker, victim, weaponId);
@@ -613,7 +620,7 @@ namespace OpenEsport.Server
 			var type = (CommandType)_reader.ReadByte();
 			int arg = _reader.ReadByte();
 			if (_reader.Overflow) return;
-			if (type == CommandType.SelectClass || type == CommandType.Buy) { HandleModeCommand(p, type, arg); return; }
+			if (type == CommandType.SelectClass || type == CommandType.Buy || type == CommandType.DuelPick) { HandleModeCommand(p, type, arg); return; }
 			if (!p.Alive) return;
 			if (type == CommandType.BoardVehicle) { ToggleVehicle(p, arg); return; }
 			if (p.Ride != null) return;

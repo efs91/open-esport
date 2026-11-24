@@ -127,6 +127,10 @@ namespace Openesport.Menus
 			Action(I18n.T("Se connecter"), Submit, main: true);
 			Action(I18n.T("Pas encore de compte ? Créer un compte"), OpenRegister);
 			Action(I18n.T("Quitter"), () => GetTree().Quit());
+			// information sur la mesure d'audience (anonyme, désactivable)
+			var notice = new Label { Text = I18n.T("Le jeu envoie des statistiques d'utilisation anonymes (aucun compte n'y est relié). Tu peux les désactiver dans les réglages des commandes."), AutowrapMode = TextServer.AutowrapMode.WordSmart, HorizontalAlignment = HorizontalAlignment.Center, Modulate = new Color(1, 1, 1, 0.55f) };
+			notice.AddThemeFontSizeOverride("font_size", 12);
+			Form.AddChild(notice);
 			CallDeferred(nameof(Start));
 		}
 

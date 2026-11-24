@@ -180,11 +180,25 @@ namespace OpenEsport.Core
 		}
 
 		/// <summary>
-		/// Part (0 à 1) d'un piqué : 0 = redressé, à plat ventre, descente lente ; 1 = tête la première. On plonge en maintenant « avancer » (au moins 72 %,
-		/// plus si on regarde vers le bas) ; en relâchant « avancer » on se redresse et on ralentit.
+		/// Pose de la chute (0 à 1) : 0 = à plat ventre, bras le long du corps (« avancer » relâché) ; à partir de 0,5 = « avancer » maintenu,
+		/// bras tendus au-dessus de la tête, le corps couché à l'horizontale quand on regarde devant (0,5), tête la première quand on regarde le sol (1).
 		/// </summary>
 		public static float DiveAmount(float pitch, bool forwardHeld)
-			=> forwardHeld ? MathF.Max(Math.Clamp(-pitch / 1.4f, 0f, 1f), 0.72f) : 0f;
+			=> forwardHeld ? 0.5f + 0.5f * DiveDown(pitch) : 0f;
+
+		/// <summary>Part du regard vers le sol (0 = droit devant ou plus haut, 1 = vers le bas).</summary>
+		public static float DiveDown(float pitch) => Math.Clamp(-pitch / 1.4f, 0f, 1f);
+
+		/// <summary>
+		/// Vitesses de chute et d'avancée : « avancer » relâché, à plat ventre, on descend lentement en planant ; maintenu, on accélère dans la
+		/// direction du regard — droit devant on file loin vers l'avant, vers le sol on pique tête la première. La souris dirige dans tous les cas.
+		/// </summary>
+		public static void DiveSpeeds(bool forwardHeld, float down, out float fall, out float glide)
+		{
+			if (!forwardHeld) { fall = Sim.DiveFallMin; glide = Sim.DiveGlideMax; return; }
+			fall = (Sim.DiveFallHeld + (Sim.DiveFallMax - Sim.DiveFallHeld) * down) * Sim.DiveSprintBoost;
+			glide = Sim.DiveGlideHeld + (Sim.DiveGlideMin - Sim.DiveGlideHeld) * down;
+		}
 
 		/// <summary>Inclinaison montrée sur le corps (0 à 1) d'après le « pitch » que le serveur réplique pour un plongeur : voir <see cref="DivePitch"/>.</summary>
 		public static float DivePose(float pitch) => Math.Clamp(-pitch / 1.4f, 0f, 1f);
@@ -195,18 +209,14 @@ namespace OpenEsport.Core
 		/// <summary>Part de piqué d'après la vitesse de chute (pour montrer la pose sans connaître les commandes).</summary>
 		public static float DiveFromFall(float verticalSpeed) => Math.Clamp((-verticalSpeed - Sim.DiveFallMin) / (Sim.DiveFallMax * Sim.DiveSprintBoost - Sim.DiveFallMin), 0f, 1f);
 
-		/// <summary>Chute libre dirigée comme dans Apex : le regard donne la direction, plus on plonge plus on tombe vite (et moins on avance) ;
-		/// « avancer » = piqué, relâché = on se redresse et on ralentit. Pas de parachute : on se pose à la vitesse de la chute (freinée juste avant le sol).</summary>
+		/// <summary>Chute libre dirigée comme dans Apex : le regard donne la direction (avec ou sans « avancer ») ; « avancer » maintenu = on accélère
+		/// vers où l'on regarde (devant : loin et vite, vers le sol : piqué), relâché = à plat ventre, on plane en descendant lentement. Pas de parachute : on se pose à la vitesse de la chute (freinée juste avant le sol).</summary>
 		private static void StepDive(ref PlayerState s, in PlayerInput inp, IWorld world, float dt, bool plunge, float sy, float cy)
 		{
 			float f = inp.Forward / 127f, r = inp.Strafe / 127f;
 			float terrain = world.HeightAt(s.Pos.X, s.Pos.Z);
 			bool flare = s.Pos.Y - terrain < Sim.FlareHeight;
-			float t = DiveAmount(inp.Pitch, plunge);
-			float fall, glide;
-			fall = Sim.DiveFallMin + (Sim.DiveFallMax - Sim.DiveFallMin) * t;
-			glide = Sim.DiveGlideMax + (Sim.DiveGlideMin - Sim.DiveGlideMax) * t;
-			if (plunge) fall *= Sim.DiveSprintBoost;
+			DiveSpeeds(plunge, DiveDown(inp.Pitch), out float fall, out float glide);
 			if (flare) fall = MathF.Min(fall, Sim.FlareFall);
 						var fwd = new Vec3(-sy, 0, -cy);
 			var right = new Vec3(cy, 0, -sy);
@@ -273,6 +283,19 @@ namespace OpenEsport.Core
 					var moved = world.ResolveObstacles(probe, Sim.Radius * 0.9f, Sim.HeightStanding, 0f);
 					float dx = moved.X - probe.X, dy = moved.Y - probe.Y, dz = moved.Z - probe.Z;
 					if (dx * dx + dy * dy + dz * dz > 0.02f * 0.02f) blocked = true;
+				}
+				if (blocked) continue;
+				// et pas à travers un mur posé sur le rebord (façade d'un étage) : le passage de la verticale du joueur jusqu'à l'arrivée,
+				// à hauteur des genoux, du torse et de la tête, doit être libre
+				float hx = fixedPos.X - pos.X, hz = fixedPos.Z - pos.Z, reach = MathF.Sqrt(hx * hx + hz * hz);
+				if (reach > 0.01f)
+				{
+					var along = new Vec3(hx / reach, 0f, hz / reach);
+					for (int h = 0; h < 3 && !blocked; h++)
+					{
+						var from = new Vec3(pos.X, ltop + 0.3f + 0.6f * h, pos.Z);
+						if (world.Raycast(from, along, reach + Sim.Radius, out _)) blocked = true;
+					}
 				}
 				if (blocked) continue;
 				landing = new Vec3(fixedPos.X, ltop, fixedPos.Z);

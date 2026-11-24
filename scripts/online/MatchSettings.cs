@@ -16,6 +16,57 @@ namespace Openesport.Online
 
 		private static int _mode = -1;
 
+		/// <summary>
+		/// Reprise de partie : la partie en cours est retenue tant qu'on y joue (instant de la dernière présence mis à jour régulièrement).
+		/// Après une coupure ou un plantage, « Jouer » y ramène directement tant que le serveur garde le personnage (180 s côté serveur).
+		/// Oubliée quand on quitte volontairement, en fin de partie, ou si le serveur refuse le retour.
+		/// </summary>
+		public const double ResumeSeconds = 170;
+
+		public static void RememberMatch(string host, int port)
+		{
+			var cfg = new ConfigFile();
+			cfg.Load(Path);
+			cfg.SetValue("resume", "host", host);
+			cfg.SetValue("resume", "port", port);
+			cfg.SetValue("resume", "mode", (int)Mode);
+			cfg.SetValue("resume", "team_size", TeamSize);
+			cfg.SetValue("resume", "seen", Time.GetUnixTimeFromSystem());
+			cfg.Save(Path);
+		}
+
+		/// <summary>Toujours dans la partie : met à jour l'instant de la dernière présence.</summary>
+		public static void TouchMatch()
+		{
+			var cfg = new ConfigFile();
+			if (cfg.Load(Path) != Error.Ok || !cfg.HasSection("resume")) return;
+			cfg.SetValue("resume", "seen", Time.GetUnixTimeFromSystem());
+			cfg.Save(Path);
+		}
+
+		public static void ForgetMatch()
+		{
+			var cfg = new ConfigFile();
+			if (cfg.Load(Path) != Error.Ok || !cfg.HasSection("resume")) return;
+			cfg.EraseSection("resume");
+			cfg.Save(Path);
+		}
+
+		/// <summary>Une partie quittée sur une coupure il y a peu : on peut y revenir.</summary>
+		public static bool TryResume(out string host, out int port, out GameMode mode, out int teamSize)
+		{
+			host = null; port = 0; mode = GameMode.BattleRoyale; teamSize = 1;
+			var cfg = new ConfigFile();
+			if (cfg.Load(Path) != Error.Ok || !cfg.HasSection("resume")) return false;
+			double seen = (double)cfg.GetValue("resume", "seen", 0.0);
+			if (Time.GetUnixTimeFromSystem() - seen > ResumeSeconds) { ForgetMatch(); return false; }
+			host = (string)cfg.GetValue("resume", "host", "");
+			port = (int)cfg.GetValue("resume", "port", 0);
+			mode = (GameMode)Mathf.Clamp((int)cfg.GetValue("resume", "mode", 0), 0, 5);
+			teamSize = (int)cfg.GetValue("resume", "team_size", 1);
+			return host.Length > 0 && port > 0;
+		}
+
 		/// <summary>Mode de jeu choisi dans le menu Multijoueur (mémorisé).</summary>
 		public static GameMode Mode
 		{

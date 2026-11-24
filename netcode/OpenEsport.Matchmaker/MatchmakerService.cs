@@ -74,6 +74,8 @@ namespace OpenEsport.Matchmaker
 		public bool Ready;
 		public MatchPhase Phase;
 		public int Humans, Needed, Max;
+		/// <summary>Partie en cours (modes hors battle royale) : temps restant (s) et scores des deux équipes.</summary>
+		public int TimeLeft, Score0, Score1;
 		/// <summary>Dernier rapport de télémétrie du serveur (JSON) et instant de sa réception.</summary>
 		public string TelemetryJson;
 		public DateTime TelemetryAt = DateTime.MinValue;
@@ -92,7 +94,10 @@ namespace OpenEsport.Matchmaker
 		private readonly EventBasedNetListener _listener = new EventBasedNetListener();
 		private readonly NetManager _net;
 		private readonly List<GameServerInfo> _servers = new List<GameServerInfo>();
-		private DateTime _nextProbe = DateTime.MinValue;
+		private DateTime _nextProbe = DateTime.MinValue, _nextReport = DateTime.MinValue;
+		/// <summary>Service de comptes : le matchmaking lui envoie chaque minute le nombre de joueurs en partie (statistiques d'utilisation). Vide : pas d'envoi.</summary>
+		public string AccountsUrl, AccountsKey;
+		private static readonly System.Net.Http.HttpClient Http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(10) };
 		public Action<string> Log = s => Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {s}");
 
 		public int ServerCount { get { lock (_servers) return _servers.Count; } }
@@ -115,6 +120,7 @@ namespace OpenEsport.Matchmaker
 			{
 				_net.PollEvents();
 				Probe();
+				ReportPlayers();
 				Thread.Sleep(10);
 			}
 			_net.Stop();
@@ -179,6 +185,46 @@ namespace OpenEsport.Matchmaker
 			}
 		}
 
+		/// <summary>Chaque minute : humains en salle d'attente et en partie, par mode, envoyés au service de comptes (en tâche de fond, sans bloquer le matchmaking).</summary>
+		private void ReportPlayers()
+		{
+			if (string.IsNullOrEmpty(AccountsUrl) || string.IsNullOrEmpty(AccountsKey) || DateTime.UtcNow < _nextReport) return;
+			_nextReport = DateTime.UtcNow.AddSeconds(60);
+			var playing = new Dictionary<string, int>(); var lobby = new Dictionary<string, int>();
+			lock (_servers)
+				foreach (var s in _servers.Where(x => x.Ready))
+				{
+					var d = s.Phase == MatchPhase.Lobby ? lobby : playing;
+					string key = Modes.Get(s.Spec.Mode).Key;
+					d[key] = d.GetValueOrDefault(key) + s.Humans;
+				}
+			string json = System.Text.Json.JsonSerializer.Serialize(new { playing, lobby });
+			_ = System.Threading.Tasks.Task.Run(async () =>
+			{
+				try
+				{
+					using var req = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Post, AccountsUrl.TrimEnd('/') + "/internal/telemetry/servers") { Content = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json") };
+					req.Headers.Add("X-Server-Key", AccountsKey);
+					using var _ = await Http.SendAsync(req);
+				}
+				catch (Exception) { }
+			});
+		}
+
+		/// <summary>Statistiques d'utilisation (JSON) demandées au service de comptes pour le tableau de bord ; null s'il ne répond pas.</summary>
+		public async System.Threading.Tasks.Task<string> UsageStatsAsync(int days)
+		{
+			if (string.IsNullOrEmpty(AccountsUrl) || string.IsNullOrEmpty(AccountsKey)) return null;
+			try
+			{
+				using var req = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, $"{AccountsUrl.TrimEnd('/')}/internal/telemetry/stats?days={days}");
+				req.Headers.Add("X-Server-Key", AccountsKey);
+				using var res = await Http.SendAsync(req);
+				return res.IsSuccessStatusCode ? await res.Content.ReadAsStringAsync() : null;
+			}
+			catch (Exception) { return null; }
+		}
+
 		// ------------------------------------------------------------------ messages
 
 		private void OnMessage(IPEndPoint remote, NetPacketReader reader, UnconnectedMessageType type)
@@ -212,6 +258,7 @@ namespace OpenEsport.Matchmaker
 				s.LastReply = DateTime.UtcNow;
 				s.Phase = (MatchPhase)int.Parse(p[1]);
 				s.Humans = int.Parse(p[2]); s.Needed = int.Parse(p[3]); s.Max = int.Parse(p[5]);
+				if (p.Length >= 10) { int.TryParse(p[7], out s.TimeLeft); int.TryParse(p[8], out s.Score0); int.TryParse(p[9], out s.Score1); }
 			}
 		}
 
@@ -223,31 +270,34 @@ namespace OpenEsport.Matchmaker
 			if (int.Parse(p[1]) != Protocol.Version) return Matchmaking.ReplyTag + "ERR|Version du jeu différente de celle du service";
 			GameMode mode = GameMode.BattleRoyale;
 			if (p.Length >= 4 && !Modes.TryParse(p[3], out mode)) return Matchmaking.ReplyTag + "ERR|Mode de jeu inconnu";
-			int teamSize = Modes.ValidTeamSize(mode, Math.Clamp(int.Parse(p[2]), MatchConfig.MinTeamSize, MatchConfig.MaxTeamSize));
+			int rawTeamSize = Math.Clamp(int.Parse(p[2]), MatchConfig.MinTeamSize, MatchConfig.MaxTeamSize);
+			int teamSize = Modes.ValidTeamSize(mode, rawTeamSize);
 			// un groupe réserve autant de places que de membres (le chef demande pour tout le monde)
 			int party = p.Length >= 5 && int.TryParse(p[4], out int n) ? Math.Clamp(n, 1, MatchConfig.MaxTeamSize) : 1;
 			string label = Modes.Label(mode, teamSize);
 
-			// partie de tournoi : « MM?|version|taille|mode|groupe|T tournoi:manche:lobby » — tous les joueurs du lobby vont sur le même serveur, réservé à eux
+			// partie de tournoi : « MM?|version|taille|mode|groupe|T tournoi:manche:lobby » — tous les joueurs du lobby vont sur le même serveur, réservé à eux ;
+			// « …|TD tournoi:clé » : un match de poule ou de tableau. Le mode et la taille des équipes sont ceux de la phase (le serveur les vérifie auprès du service de comptes).
 			if (p.Length >= 6 && p[5].StartsWith("T", StringComparison.Ordinal))
 			{
 				if (p[5].StartsWith("TD", StringComparison.Ordinal))
 				{
 					var d = p[5].Substring(2).Split(':');
 					if (d.Length != 2 || !long.TryParse(d[0], out long did) || did <= 0 || d[1].Length == 0 || d[1].Length > 12 || !d[1].All(char.IsLetterOrDigit)) return Matchmaking.ReplyTag + "ERR|Demande de duel invalide";
-					return HandleDuelRequest(did, d[1], teamSize);
+					return HandleDuelRequest(did, d[1], mode, Math.Clamp(rawTeamSize, 1, 5));
 				}
 				var t = p[5].Substring(1).Split(':');
 				if (t.Length != 3 || !long.TryParse(t[0], out long tid) || !int.TryParse(t[1], out int trace) || !int.TryParse(t[2], out int tlobby) || tid <= 0 || trace < 0 || tlobby < 0)
 					return Matchmaking.ReplyTag + "ERR|Demande de tournoi invalide";
-				return HandleTournamentRequest(tid, trace, tlobby, teamSize);
+				return HandleTournamentRequest(tid, trace, tlobby, mode, Math.Clamp(rawTeamSize, 1, 5));
 			}
 
 			lock (_servers)
 			{
-				// 1) une salle d'attente du bon mode, prête, avec de la place : on remplit la plus pleine
-				var open = _servers.Where(s => s.Ready && s.Phase == MatchPhase.Lobby && s.Spec.Mode == mode && s.Spec.TeamSize == teamSize && s.Humans + s.PendingCount + party <= s.Max)
-					.OrderByDescending(s => s.Humans + s.PendingCount).FirstOrDefault();
+				// 1) une salle d'attente du bon mode, prête, avec de la place : on remplit la plus pleine ;
+				//    sinon (Deathmatch, Team Deathmatch, Capture du drapeau) une partie en cours avec de la place et au moins une minute à jouer
+				var open = _servers.Where(s => s.Spec.Mode == mode && s.Spec.TeamSize == teamSize && Joinable(s, party) == null && (s.Phase == MatchPhase.Lobby || s.TimeLeft >= 60))
+					.OrderBy(s => s.Phase == MatchPhase.Lobby ? 0 : 1).ThenByDescending(s => s.Humans + s.PendingCount).FirstOrDefault();
 				if (open != null)
 				{
 					for (int i = 0; i < party; i++) open.Pending.Add(DateTime.UtcNow);
@@ -272,9 +322,13 @@ namespace OpenEsport.Matchmaker
 			}
 		}
 
-		/// <summary>La partie d'une manche de tournoi : le serveur du lobby s'il existe, sinon on le lance (battle royale, joueurs du lobby complétés par des bots).</summary>
-		private string HandleTournamentRequest(long tournament, int race, int lobby, int teamSize)
+		/// <summary>
+		/// La partie d'une manche de tournoi : le serveur du lobby s'il existe, sinon on le lance — battle royale, ou Capture du drapeau (deux équipes),
+		/// avec les joueurs du lobby complétés par des bots.
+		/// </summary>
+		private string HandleTournamentRequest(long tournament, int race, int lobby, GameMode mode, int teamSize)
 		{
+			if (mode != GameMode.BattleRoyale && mode != GameMode.CaptureTheFlag) return Matchmaking.ReplyTag + "ERR|Mode de jeu inattendu pour une manche de tournoi";
 			lock (_servers)
 			{
 				var existing = _servers.FirstOrDefault(s => s.Spec.Tournament == tournament && s.Spec.TournamentRace == race && s.Spec.TournamentLobby == lobby);
@@ -284,7 +338,7 @@ namespace OpenEsport.Matchmaker
 				if (port < 0) return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant";
 				var spec = new ServerSpec
 				{
-					Name = $"open-esport-tournoi-{tournament}-{race}-{lobby}-{port}", Port = port, Mode = GameMode.BattleRoyale, TeamSize = Math.Clamp(teamSize, 1, 5), Players = _opt.Players,
+					Name = $"open-esport-tournoi-{Modes.Get(mode).Key}-{tournament}-{race}-{lobby}-{port}", Port = port, Mode = mode, TeamSize = teamSize, Players = mode == GameMode.BattleRoyale ? _opt.Players : 2 * teamSize,
 					MinPlayers = _opt.MinPlayers, LobbyCountdown = _opt.LobbyCountdown, IdleExitSeconds = _opt.IdleExitSeconds, Zones = _opt.Zones,
 					Tournament = tournament, TournamentRace = race, TournamentLobby = lobby
 				};
@@ -296,10 +350,14 @@ namespace OpenEsport.Matchmaker
 			}
 		}
 
-		/// <summary>Le match de duel d'un tournoi : un serveur de match à mort par équipes, réservé aux deux camps (<paramref name="teamSize"/> joueurs chacun), sans bots.</summary>
-		private string HandleDuelRequest(long tournament, string key, int teamSize)
+		/// <summary>
+		/// Un match de poule ou de tableau : un serveur réservé aux deux camps (<paramref name="teamSize"/> joueurs chacun), sans bots —
+		/// 1 VS 1, Capture du drapeau, ou match à mort par équipe (anciens tournois en duels).
+		/// </summary>
+		private string HandleDuelRequest(long tournament, string key, GameMode mode, int teamSize)
 		{
-			teamSize = Math.Clamp(teamSize, 1, 2);
+			if (mode != GameMode.Duel && mode != GameMode.CaptureTheFlag && mode != GameMode.TeamDeathmatch) return Matchmaking.ReplyTag + "ERR|Mode de jeu inattendu pour un match de tournoi";
+			if (mode == GameMode.Duel) teamSize = 1;
 			lock (_servers)
 			{
 				var existing = _servers.FirstOrDefault(s => s.Spec.Tournament == tournament && s.Spec.TournamentMatch == key);
@@ -309,7 +367,7 @@ namespace OpenEsport.Matchmaker
 				if (port < 0) return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant";
 				var spec = new ServerSpec
 				{
-					Name = $"open-esport-duel-{tournament}-{key}-{port}", Port = port, Mode = GameMode.TeamDeathmatch, TeamSize = teamSize, Players = teamSize * 2,
+					Name = $"open-esport-match-{Modes.Get(mode).Key}-{tournament}-{key}-{port}", Port = port, Mode = mode, TeamSize = teamSize, Players = teamSize * 2,
 					MinPlayers = 1, LobbyCountdown = _opt.LobbyCountdown, IdleExitSeconds = _opt.IdleExitSeconds, Zones = _opt.Zones, Tournament = tournament, TournamentMatch = key
 				};
 				try { _launcher.Launch(spec); }
@@ -318,6 +376,17 @@ namespace OpenEsport.Matchmaker
 				Log($"Serveur de duel lancé : {spec.Name}");
 				return Matchmaking.ReplyTag + "WAIT|Lancement de ton match de tournoi…";
 			}
+		}
+
+		/// <summary>Pourquoi on ne peut pas rejoindre ce serveur (null = on peut) : pas prêt, tournoi réservé, partie commencée dans un mode qui ne l'accepte pas, terminée, pleine.</summary>
+		private static string Joinable(GameServerInfo s, int party)
+		{
+			if (!s.Ready) return "Partie en préparation";
+			if (s.Spec.Tournament != 0) return "Partie de tournoi réservée aux inscrits";
+			if (s.Phase == MatchPhase.Over) return "Partie terminée";
+			if (s.Phase == MatchPhase.Playing && !Modes.JoinInProgress(s.Spec.Mode)) return "Partie déjà commencée";
+			if (s.Humans + s.PendingCount + party > s.Max) return "Partie pleine";
+			return null;
 		}
 
 		private int FreePort()

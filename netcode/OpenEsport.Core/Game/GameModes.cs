@@ -18,6 +18,8 @@ namespace OpenEsport.Core
 		Sabotage = 4,
 		/// <summary>Deux équipes de 5 à 10, cinq relais A à E à tenir, 100 points pour gagner.</summary>
 		Control = 5,
+		/// <summary>1 VS 1 : deux joueurs, une petite salle, des manches ; même équipement pour les deux (tiré au hasard), ou choisi, ou imposé.</summary>
+		Duel = 6,
 	}
 
 	public sealed class ModeInfo
@@ -54,9 +56,14 @@ namespace OpenEsport.Core
 				TeamSizes = new[] { 4, 5 }, TwoTeams = true, MapFile = "sabotage.world", MapScene = "res://scenes/maps/Sabotage.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 0f },
 			new ModeInfo { Mode = GameMode.Control, Key = "ctl", Label = "Contrôle", Description = "Tiens les points de contrôle : 100 points pour gagner.",
 				TeamSizes = new[] { 5, 6, 7, 8, 9, 10 }, TwoTeams = true, MapFile = "controle.world", MapScene = "res://scenes/maps/Controle.tscn", PlayersFor = s => 2 * s, RespawnSeconds = 4f },
+			new ModeInfo { Mode = GameMode.Duel, Key = "1v1", Label = "1 VS 1", Description = "Un contre un, en manches : le même équipement tiré au hasard pour les deux à chaque manche. Le premier à 5 manches gagne.",
+				TeamSizes = new[] { 1 }, TwoTeams = true, MapFile = "duel.world", MapScene = "res://scenes/maps/Duel.tscn", PlayersFor = s => 2, RespawnSeconds = 0f },
 		};
 
 		public static bool UsesArenaRules(GameMode mode) => mode == GameMode.Deathmatch || mode == GameMode.TeamDeathmatch;
+
+		/// <summary>Modes où l'on peut rejoindre une partie déjà commencée (on y réapparaît de toute façon) : Deathmatch, Team Deathmatch, Capture du drapeau.</summary>
+		public static bool JoinInProgress(GameMode mode) => mode == GameMode.Deathmatch || mode == GameMode.TeamDeathmatch || mode == GameMode.CaptureTheFlag;
 
 		public static ModeInfo Get(GameMode mode) => All.First(m => m.Mode == mode);
 
@@ -76,10 +83,10 @@ namespace OpenEsport.Core
 
 		/// <summary>Nom du mode et de la taille d'équipe : sert à nommer les conteneurs (jamais de nom anonyme).</summary>
 		public static string Name(GameMode mode, int teamSize)
-			=> mode == GameMode.BattleRoyale ? Matchmaking.ModeName(teamSize) : mode == GameMode.Deathmatch ? "dm" : $"{Get(mode).Key}-{teamSize}";
+			=> mode == GameMode.BattleRoyale ? Matchmaking.ModeName(teamSize) : mode == GameMode.Deathmatch ? "dm" : mode == GameMode.Duel ? "1v1" : $"{Get(mode).Key}-{teamSize}";
 
 		public static string Label(GameMode mode, int teamSize)
 			=> mode == GameMode.BattleRoyale ? Get(mode).Label + " — " + Matchmaking.ModeLabel(teamSize)
-			: mode == GameMode.Deathmatch ? Get(mode).Label : $"{Get(mode).Label} — {teamSize} contre {teamSize}";
+			: mode == GameMode.Deathmatch || mode == GameMode.Duel ? Get(mode).Label : $"{Get(mode).Label} — {teamSize} contre {teamSize}";
 	}
 }

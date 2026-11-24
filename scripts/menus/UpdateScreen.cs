@@ -8,7 +8,7 @@ namespace Openesport.Menus
 	/// <summary>Version du jeu publiée (étiquette de la release GitHub, sans le « v »). À augmenter à chaque release.</summary>
 	public static class GameVersion
 	{
-		public const string Current = "0.8";
+		public const string Current = "0.9";
 		public const string Repository = "efs91/open-esport";
 
 		/// <summary>« 0.5 », « v0.10 », « v0.3 WIN64 » → (0, 5), (0, 10), (0, 3) : comparaison nombre par nombre.</summary>

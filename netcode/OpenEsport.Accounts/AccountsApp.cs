@@ -20,6 +20,8 @@ namespace OpenEsport.Accounts
 	public sealed class AccountsOptions
 	{
 		public string DbPath = "accounts.db";
+		/// <summary>Base des statistiques d'utilisation anonymes ; par défaut telemetry.db à côté de la base des comptes.</summary>
+		public string TelemetryDbPath;
 		public int Port = 27090;
 		public string Bind = "0.0.0.0";
 		/// <summary>Clé que présentent les serveurs de partie (en-tête X-Server-Key) pour vérifier un jeton et rapporter une partie. Vide : ces routes sont désactivées.</summary>
@@ -32,7 +34,16 @@ namespace OpenEsport.Accounts
 	public sealed class RegisterRequest { public string Login { get; set; } public string Password { get; set; } }
 	public sealed class CharacterRequest { public string Name { get; set; } public string Appearance { get; set; } }
 	public sealed class VerifyRequest { public string Token { get; set; } }
-	public sealed class TournamentRequest { public string Title { get; set; } public long StartAt { get; set; } public int Races { get; set; } public int LobbySize { get; set; } public string Mode { get; set; } public int TeamSize { get; set; } public int ScoreLimit { get; set; } }
+	/// <summary>Création d'un tournoi : la configuration complète (page du jeu), ou l'ancienne forme courte (titre, date, manches…).</summary>
+	public sealed class TournamentRequest
+	{
+		public TournamentConfig Config { get; set; }
+		/// <summary>L'organisateur s'inscrit aussi (par équipes, il en devient le chef et invite ses coéquipiers).</summary>
+		public bool? Participate { get; set; }
+		public string Title { get; set; } public long StartAt { get; set; } public int Races { get; set; } public int LobbySize { get; set; } public string Mode { get; set; } public int TeamSize { get; set; } public int ScoreLimit { get; set; }
+	}
+	/// <summary>Équipe de tournoi : le joueur invité ou retiré (nom de compte), l'équipe dont on accepte ou refuse l'invitation (0 = la première).</summary>
+	public sealed class TournamentTeamRequest { public string Login { get; set; } public int Reference { get; set; } }
 	public sealed class MatchReportRequest { public long TournamentId { get; set; } public string Key { get; set; } public int ScoreA { get; set; } public int ScoreB { get; set; } }
 	public sealed class RaceReport { public long TournamentId { get; set; } public int Race { get; set; } public int Lobby { get; set; } public System.Collections.Generic.List<PlayerResult> Players { get; set; } }
 	public sealed class PartyRequest { public string Login { get; set; } public long PartyId { get; set; } public string Host { get; set; } public int Port { get; set; } public string Mode { get; set; } public int TeamSize { get; set; } }
@@ -85,6 +96,23 @@ namespace OpenEsport.Accounts
 
 			var loginThrottle = new Throttle(5, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(1));
 			var registerThrottle = new Throttle(10, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+			var telemetryThrottle = new Throttle(120, TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(10));
+
+			// statistiques d'utilisation anonymes : base à part, photo du nombre de joueurs chaque minute
+			string telemetryPath = o.TelemetryDbPath ?? System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(o.DbPath)) ?? ".", "telemetry.db");
+			var telemetry = new TelemetryStore(telemetryPath);
+			var telemetryTimer = new System.Threading.Timer(_ => { try { telemetry.Tick(); } catch (Exception e) { Console.Error.WriteLine("Télémétrie : " + e.Message); } }, null, TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60));
+			app.Lifetime.ApplicationStopping.Register(() => telemetryTimer.Dispose());
+			// tournois à heure fixe : lancés (ou annulés faute d'inscrits) à l'heure prévue
+			int tournamentTickBusy = 0;
+			var tournamentTimer = new System.Threading.Timer(_ =>
+			{
+				if (System.Threading.Interlocked.Exchange(ref tournamentTickBusy, 1) == 1) return;
+				try { tournaments.Tick().GetAwaiter().GetResult(); }
+				catch (Exception e) { Console.Error.WriteLine("Tournois : " + e.Message); }
+				finally { System.Threading.Interlocked.Exchange(ref tournamentTickBusy, 0); }
+			}, null, TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(30));
+			app.Lifetime.ApplicationStopping.Register(() => tournamentTimer.Dispose());
 
 			string Ip(HttpContext c) => c.Connection.RemoteIpAddress?.ToString() ?? "?";
 			string Bearer(HttpContext c)
@@ -105,10 +133,17 @@ namespace OpenEsport.Accounts
 			{
 				var modes = store.ModeStats(a.Id);
 				var general = store.General(a.Id);
+				var last = store.LastMatch(a.Id);
+				var lastInfo = last == null ? null : Modes.All.FirstOrDefault(x => x.Key == last.Mode);
 				return new
 				{
 					id = a.Id, login = a.Login, created = a.Created, selectedCharacter = a.SelectedCharacter,
 					general = new { rating = general.rating, rank = general.rank, matches = general.matches },
+					lastMatch = last == null || lastInfo == null ? null : new
+					{
+						at = last.At, mode = last.Mode, label = lastInfo.Label, teams = lastInfo.TwoTeams, teamSize = last.TeamSize, seconds = last.Seconds, placement = last.Placement,
+						players = last.Players, kills = last.Kills, deaths = last.Deaths, damage = last.Damage, won = last.Won, delta = last.Delta, rating = last.Rating
+					},
 					modes = modes.Select(m => new
 					{
 						mode = m.Mode, label = Modes.All.First(x => x.Key == m.Mode).Label, matches = m.Matches, wins = m.Wins, kills = m.Kills, deaths = m.Deaths,
@@ -159,13 +194,6 @@ namespace OpenEsport.Accounts
 
 
 			// tournois annoncés (publiés dans ManageComp) : visibles sans compte, même depuis l'écran de connexion
-			// l'équipe d'un joueur pour un tournoi à deux : son groupe, s'il est chef d'un groupe de deux
-			System.Collections.Generic.IReadOnlyList<(long id, string login)> TeamOf(long me)
-			{
-				var v = parties.View(me).Party;
-				if (v == null || v.Leader != me || v.Members.Count < 2) return null;
-				return v.Members.Select(m => (m, store.FindById(m)?.Login ?? "?")).ToList();
-			}
 			app.MapGet("/api/tournaments", (HttpContext ctx) =>
 			{
 				string Name(long id) => store.FindById(id)?.Login ?? "?";
@@ -187,22 +215,49 @@ namespace OpenEsport.Accounts
 			{
 				long me = Account(ctx);
 				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
-				var req = await ctx.Request.ReadFromJsonAsync<TournamentRequest>() ?? new TournamentRequest();
-				var r = await tournaments.Create(me, req.Title, req.StartAt, req.Races, req.LobbySize, string.IsNullOrEmpty(req.Mode) ? "br" : req.Mode, req.TeamSize, req.ScoreLimit);
-				if (r.Error == null && req.TeamSize > 1) return Results.Json(new { id = r.Id });      // tournoi par équipes : le chef inscrit son équipe lui-même
+				TournamentRequest req;
+				try { req = await ctx.Request.ReadFromJsonAsync<TournamentRequest>() ?? new TournamentRequest(); }
+				catch (System.Text.Json.JsonException) { return Error(400, "Configuration illisible."); }
+				var r = req.Config != null
+					? await tournaments.Create(me, req.Config)
+					: await tournaments.Create(me, req.Title, req.StartAt, req.Races, req.LobbySize, string.IsNullOrEmpty(req.Mode) ? "br" : req.Mode, req.TeamSize, req.ScoreLimit);
 				if (r.Error != null) return Error(400, r.Error);
-				await tournaments.Join(r.Id, me, store.FindById(me).Login, TeamOf(me));           // l'organisateur joue aussi (il peut se désinscrire)
+				// l'organisateur joue aussi s'il le souhaite (il peut se désinscrire) ; par équipes, il devient chef d'équipe et invite ses coéquipiers
+				if (req.Participate ?? true) await tournaments.Join(r.Id, me);
 				return Results.Json(new { id = r.Id });
+			});
+			app.MapPut("/api/tournaments/{id:long}", async (HttpContext ctx, long id) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				TournamentRequest req;
+				try { req = await ctx.Request.ReadFromJsonAsync<TournamentRequest>() ?? new TournamentRequest(); }
+				catch (System.Text.Json.JsonException) { return Error(400, "Configuration illisible."); }
+				var r = tournaments.Update(id, me, req.Config);
+				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
 			});
 			app.MapPost("/api/tournaments/{id:long}/{action}", async (HttpContext ctx, long id, string action) =>
 			{
 				long me = Account(ctx);
 				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				TournamentTeamRequest team = null;
+				if (action is "invite" or "kick" or "accept" or "decline")
+				{
+					try { team = ctx.Request.ContentLength > 0 ? await ctx.Request.ReadFromJsonAsync<TournamentTeamRequest>() : null; }
+					catch (System.Text.Json.JsonException) { return Error(400, "Demande illisible."); }
+					team ??= new TournamentTeamRequest();
+				}
 				TournamentResult r = action switch
 				{
-					"join" => await tournaments.Join(id, me, store.FindById(me).Login, TeamOf(me)),
+					"join" => await tournaments.Join(id, me),
+					"invite" => tournaments.Invite(id, me, team.Login),
+					"kick" => tournaments.Kick(id, me, team.Login),
+					"accept" => tournaments.Accept(id, me, team.Reference),
+					"decline" => tournaments.Decline(id, me, team.Reference),
 					"leave" => await tournaments.Leave(id, me),
 					"start" => await tournaments.Start(id, me),
+					"checkin" => tournaments.CheckIn(id, me),
+					"cancel" => await tournaments.Cancel(id, me),
 					_ => TournamentResult.Fail("Action inconnue."),
 				};
 				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
@@ -350,7 +405,30 @@ namespace OpenEsport.Accounts
 				return Results.Json(new { mode = key ?? "all", rows = store.Leaderboard(key, top ?? 50) });
 			});
 
+			// statistiques d'utilisation anonymes envoyées par le jeu (sans compte : identifiant aléatoire de l'installation)
+			app.MapPost("/api/telemetry", async (HttpContext ctx) =>
+			{
+				string ip = Ip(ctx);
+				if (telemetryThrottle.IsBlocked(ip)) return Error(429, "Trop d'envois.");
+				telemetryThrottle.Fail(ip);           // compte chaque envoi : au-delà de 120 en 10 min (plusieurs joueurs derrière la même box), on refuse un moment
+				TelemetryBatch batch;
+				try { batch = await ctx.Request.ReadFromJsonAsync<TelemetryBatch>(); }
+				catch (Exception) { return Error(400, "Paquet invalide."); }
+				return telemetry.Ingest(batch) ? Results.Ok() : Error(400, "Paquet invalide.");
+			});
+
 			// routes réservées aux serveurs de partie
+			app.MapPost("/internal/telemetry/servers", async (HttpContext ctx) =>
+			{
+				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
+				telemetry.ReportServers(await ctx.Request.ReadFromJsonAsync<ServersSnapshot>());
+				return Results.Ok();
+			});
+			app.MapGet("/internal/telemetry/stats", (HttpContext ctx, int? days) =>
+			{
+				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
+				return Results.Json(telemetry.Stats(days ?? 1));
+			});
 			app.MapPost("/internal/verify", async (HttpContext ctx) =>
 			{
 				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
@@ -365,16 +443,14 @@ namespace OpenEsport.Accounts
 			app.MapGet("/internal/tournament/{id:long}/lobby/{lobby:int}", async (HttpContext ctx, long id, int lobby) =>
 			{
 				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
-				var t = store.Tournament(id);
-				if (t == null || t.State != "running") return Error(404, "Tournoi introuvable ou pas en cours.");
-				var all = await tournaments.Lobbies(id);
-				return Results.Json(new { race = t.Race, races = t.Races, accounts = all.Where(kv => kv.Value == lobby).Select(kv => kv.Key) });
+				var game = await tournaments.LobbyGame(id, lobby);
+				return game == null ? Error(404, "Tournoi introuvable ou pas en série de manches.") : Results.Json(game);
 			});
 			app.MapGet("/internal/tournament/{id:long}/match/{key}", async (HttpContext ctx, long id, string key) =>
 			{
 				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
-				var sides = await tournaments.MatchSides(id, key);
-				return sides == null ? Error(404, "Match introuvable ou déjà joué.") : Results.Json(new { a = sides.Value.a, b = sides.Value.b, scoreLimit = sides.Value.scoreLimit, teamSize = sides.Value.teamSize });
+				var game = await tournaments.MatchGame(id, key);
+				return game == null ? Error(404, "Match introuvable ou déjà joué.") : Results.Json(game);
 			});
 			app.MapPost("/internal/tournament-match", async (HttpContext ctx) =>
 			{

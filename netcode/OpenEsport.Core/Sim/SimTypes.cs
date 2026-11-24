@@ -68,6 +68,7 @@ namespace OpenEsport.Core
 		public const float DiveFallMin = 16f, DiveFallMax = 62f;     // vitesse de chute (m/s) : à plat ventre / en piqué
 		public const float DiveGlideMax = 32f, DiveGlideMin = 5f;    // vitesse horizontale : à plat ventre / en piqué
 		public const float DiveSprintBoost = 1.18f;
+		public const float DiveFallHeld = 28f, DiveGlideHeld = 38f;  // « avancer » maintenu en regardant droit devant : on file vers l'avant
 		public const float DiveAccelH = 2.6f, DiveAccelV = 9f;
 		// pas de parachute (comme dans Apex) : on se pose à la vitesse de la chute ; sous FlareHeight la chute se freine un peu pour un atterrissage en douceur
 		public const float FlareHeight = 45f, FlareFall = 20f;

@@ -41,3 +41,9 @@ builds/
 
 # copie temporaire du plugin Terrain3D créée par l'éditeur quand il tourne (ne jamais versionner)
 addons/terrain_3d/bin/~*
+
+# modèle source du mécha (110 Mo, au-delà de la limite GitHub) : le jeu utilise Bipedal_Mech_AT27_rig.glb
+/assets/Vehicules/Bipedal_Mech_AT27.glb
+/assets/Vehicules/Bipedal_Mech_AT27.glb.import
+/assets/Vehicules/Bipedal_Mech_AT27_[0-9].jpg
+/assets/Vehicules/Bipedal_Mech_AT27_[0-9].jpg.import

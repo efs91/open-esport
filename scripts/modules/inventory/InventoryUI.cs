@@ -284,12 +284,19 @@ namespace Openesport.Inventory
 		/// <summary>Règles d'arène : soins, boucliers et munitions se prennent en marchant dessus (l'invite le dit).</summary>
 		public static bool WalkPickup;
 
+		/// <summary>En ligne : ce ramassage doit-il être confirmé en maintenant la touche (arme alors qu'on en tient une, bouclier moins bon) ? L'invite le dit.</summary>
+		public static System.Func<GroundItem, bool> HoldNeeded;
+
 		private void Refresh()
 		{
 			var target = Inventory.Target;
 			// arène (Deathmatch) : tout se prend en marchant dessus
 			bool walk = WalkPickup && target != null;
-			_prompt.Text = target != null && !IsOpen ? (walk ? I18n.T("Marcher dessus : {0}", target.GetPromptName()) : $"[E] Ramasser : {target.GetPromptName()}") : "";
+			bool hold = target != null && HoldNeeded != null && HoldNeeded(target);
+			_prompt.Text = target == null || IsOpen ? ""
+				: walk ? I18n.T("Marcher dessus : {0}", target.GetPromptName())
+				: hold ? I18n.T("[E] Maintenir : échanger contre {0}", target.GetPromptName())
+				: $"[E] Ramasser : {target.GetPromptName()}";
 			// l'invite prend la couleur du niveau de l'objet visé (blanc, bleu, violet, rouge)
 			_prompt.AddThemeColorOverride("font_color", target != null ? ItemTierStyle.ColorOf(target.Tier) : Colors.White);
 

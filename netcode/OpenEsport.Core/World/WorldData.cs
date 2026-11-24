@@ -86,6 +86,8 @@ namespace OpenEsport.Core
 		/// <summary>Site de bombe (Index 0 = A, 1 = B).</summary>
 		BombSite = 5,
 		VehicleBay = 6,
+		/// <summary>Station de ravitaillement d'une équipe (Team = l'équipe qui s'en sert, Radius = taille de la zone).</summary>
+		Resupply = 7,
 	}
 
 	/// <summary>Un point d'attention posé dans la carte (nœud MapPoint) : apparitions, points de contrôle, bases de drapeau, sites de bombe.</summary>

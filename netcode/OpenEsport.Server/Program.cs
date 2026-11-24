@@ -94,6 +94,9 @@ namespace OpenEsport.Server
 						case "--lobby": opt.TournamentLobby = int.Parse(Next()); break;
 						case "--match": opt.TournamentMatch = Next(); break;
 						case "--score-limit": opt.ScoreLimit = int.Parse(Next()); break;
+						case "--duel-loadout":
+							if (!DuelRules.TryParsePolicy(Next(), out opt.DuelPolicy, out opt.DuelFixed)) { Console.Error.WriteLine("--duel-loadout : random, choice ou fixed:arme,viseur,grenade,soin (ex. fixed:ak,x2,frag,soins)"); return 2; }
+							break;
 						case "--idle-exit": opt.IdleExitSeconds = float.Parse(Next(), System.Globalization.CultureInfo.InvariantCulture); break;
 						case "--bot-target": opt.BotFillTarget = int.Parse(Next()); break;
 						case "--max-bots": opt.MaxBots = int.Parse(Next()); opt.FillBots = opt.MaxBots != 0; break;

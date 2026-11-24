@@ -107,7 +107,7 @@ namespace OpenEsport.Server
 					float dx = h.Pos.X - b.Pos.X, dz = h.Pos.Z - b.Pos.Z;
 					float r = bestT + 1f;
 					if (dx * dx + dz * dz > r * r) continue;
-					if (Hitboxes.RayVsPlayer(h.Pos, h.Stance, b.Pos, dir, bestT, out float t, out var zone) && t < bestT)
+					if (Hitboxes.RayVsBody(h, b.Pos, dir, bestT, out float t, out var zone) && t < bestT)
 					{
 						best = o; bestT = t; bestZone = zone;
 					}

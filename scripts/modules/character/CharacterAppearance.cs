@@ -246,7 +246,11 @@ public sealed class CharacterAppearance
 			}
 		}
 		foreach (var g in CharacterKit.Choosable)
+		{
 			if (d.ContainsKey("piece_" + g)) a.Pieces[g] = d["piece_" + g].AsInt32();
+			// pièce retirée du kit depuis la sauvegarde : on reprend la pièce par défaut (ou rien pour un couvre-chef)
+			if (a.Piece(g) >= CharacterKit.Items(g).Count) a.Pieces[g] = new CharacterAppearance().Piece(g);
+		}
 		return a;
 	}
 

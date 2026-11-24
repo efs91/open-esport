@@ -97,6 +97,13 @@ Salle du Rail (nord, +8 m, sniper légendaire) et salle Roquette (sud, +4 m, LMG
   textures CC0 d'ambientCG dans `assets/textures/arena/`. Ambiance : `relais_env.tres` (occlusion, éclairage indirect d'écran, halo, brouillard volumétrique léger).
 - **Après toute modification** : `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Relais.tscn --out=res://assets/maps/relais.world`, puis copier `relais.world` sur le serveur.
 
+## Duel (1 VS 1)
+
+- **Premier jet** : `python tools/map/gen_duel_map.py` (écrit `scenes/maps/Duel.tscn` et `assets/maps/duel.png` ; refuse d'écraser la scène, qui s'édite ensuite dans Godot ; `--minimap` redessine seulement l'image).
+- **Nœuds** : `Structure` (murs, pilastres, `Bloc_Central` de 2,4 x 2,2 x 5 m : 2,2 m cache un joueur debout et reste sous la hauteur d'escalade de 2,3 m), `Plafond`, `Decor` (plinthes et dalles de départ cyan / violet, médiane orange, liseré du bloc, verrière), `Lumieres`, `Points` (deux apparitions par camp : bleus à l'ouest, rouges à l'est).
+- **Matières** : celles de Relais (`scenes/maps/relais/`).
+- **Après toute modification** : `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Duel.tscn --out=res://assets/maps/duel.world`.
+
 ## Les Deux Écluses (Capture du drapeau)
 
 `scenes/maps/Drapeau.tscn` contient deux forteresses en miroir sur un terrain de 224 × 120 m. Chaque camp dispose de dix apparitions derrière le mur de rassemblement. Les drapeaux sont espacés de 188 m. La traversée centrale passe par le pont couvert, celle du nord par la passerelle de pierre. Au niveau du canal, le collecteur relie les deux rives et se divise sous chaque fort. Un escalier débouche dans la cour, l’autre à l’intérieur du donjon.
@@ -108,6 +115,6 @@ Salle du Rail (nord, +8 m, sniper légendaire) et salle Roquette (sud, +4 m, LMG
 
 ## Contrôle — le canyon
 
-La scène `scenes/maps/Controle.tscn` couvre 320 × 208 m. A et B surplombent la rive nord, C occupe la plateforme centrale et D et E se trouvent sur la rive basse. Les joueurs disposent de trois ponts, de deux rampes depuis C et des chemins de rive. Les herbes, fougères, sapins et rochers sont instanciés dans les régions Terrain3D de `maps/controle/terrain`. Les garages sont des MapMarker de type Garage, avec l’index 0 pour le hover et 1 pour l’AT-ST.
+La scène `scenes/maps/Controle.tscn` couvre 320 × 208 m. A et B surplombent la rive nord, C occupe la plateforme centrale et D et E se trouvent sur la rive basse. Les joueurs disposent de trois ponts, de deux rampes depuis C et des chemins de rive. Les herbes, fougères, sapins et rochers sont instanciés dans les régions Terrain3D de `maps/controle/terrain`. Les garages sont des MapMarker de type Garage, avec l’index 0 pour le hover et 1 pour le mécha.
 
 Le générateur `Godot --headless --path . --script res://tools/map/build_control.gd -- --force` remplace la scène, les régions, les matériaux de terrain et la minimap. Après une modification du relief, d’un garage ou d’un bâtiment, exporter les hauteurs et obstacles utilisés en réseau avec `Godot --headless res://tools/export_world.tscn -- --map=res://scenes/maps/Controle.tscn --out=res://assets/maps/controle.world`.

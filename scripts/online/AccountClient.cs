@@ -27,6 +27,42 @@ namespace Openesport.Online
 		public bool Teams { get; set; }
 	}
 
+	/// <summary>La dernière partie jouée (historique du service de comptes).</summary>
+	public sealed class LastMatchStat
+	{
+		public long At { get; set; }
+		public string Mode { get; set; }
+		public string Label { get; set; }
+		public bool Teams { get; set; }
+		public int TeamSize { get; set; }
+		public int Seconds { get; set; }
+		public int Placement { get; set; }
+		public int Players { get; set; }
+		public int Kills { get; set; }
+		public int Deaths { get; set; }
+		public long Damage { get; set; }
+		public bool Won { get; set; }
+		public int Delta { get; set; }
+		public int Rating { get; set; }
+
+		/// <summary>« Battle Royale — Solo », « Team Deathmatch — 3 contre 3 »…</summary>
+		public string ModeText => OpenEsport.Core.Modes.TryParse(Mode, out var m) ? GameText.Label(m, TeamSize) : I18n.T(Label ?? "");
+		public string Duration => $"{Seconds / 60}:{Seconds % 60:00}";
+		/// <summary>Place (« 3e / 20 ») dans les modes au classement, victoire ou défaite dans les modes à deux équipes.</summary>
+		public string Result => Teams ? (Won ? I18n.T("Victoire") : I18n.T("Défaite"))
+			: Placement > 0 ? (Placement == 1 ? I18n.T("1re place") : I18n.T("{0}e place", Placement)) + (Players > 0 ? $" / {Players}" : "") : "—";
+		public string DeltaText => Delta >= 0 ? $"+{Delta}" : Delta.ToString();
+		/// <summary>« il y a 5 min », « il y a 2 h », « il y a 3 j ».</summary>
+		public string Ago
+		{
+			get
+			{
+				long s = Math.Max(0, DateTimeOffset.UtcNow.ToUnixTimeSeconds() - At);
+				return s < 60 ? I18n.T("à l'instant") : s < 3600 ? I18n.T("il y a {0} min", s / 60) : s < 86400 ? I18n.T("il y a {0} h", s / 3600) : I18n.T("il y a {0} j", s / 86400);
+			}
+		}
+	}
+
 	public sealed class GeneralStat { public int Rating { get; set; } = 1000; public int Rank { get; set; } public int Matches { get; set; } }
 	public sealed class AccountCharacter { public long Id { get; set; } public string Name { get; set; } public string Appearance { get; set; } }
 
@@ -36,6 +72,7 @@ namespace Openesport.Online
 		public string Login { get; set; }
 		public long SelectedCharacter { get; set; }
 		public GeneralStat General { get; set; } = new GeneralStat();
+		public LastMatchStat LastMatch { get; set; }
 		public List<ModeStat> Modes { get; set; } = new List<ModeStat>();
 		public List<AccountCharacter> Characters { get; set; } = new List<AccountCharacter>();
 	}

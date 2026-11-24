@@ -9,6 +9,7 @@ namespace Openesport.Online
 	/// </summary>
 	public partial class RemotePlayer : Node3D
 	{
+		private SlideSound _slide;
 		private CharacterAnimator _animator;
 		private Label3D _label;
 		private Vector3 _lastPos;
@@ -64,6 +65,8 @@ namespace Openesport.Online
 		{
 			_animator = new CharacterAnimator { Name = "Animator" };
 			AddChild(_animator);
+			_slide = new SlideSound { Name = "Glissade" };
+			AddChild(_slide);
 
 			_label = new Label3D
 			{
@@ -119,7 +122,7 @@ namespace Openesport.Online
 
 			bool dead = e.Has(EntityFlags.Dead);
 			Visible = !dead && e.Zip != 3;        // dans l'avion : pas sur la carte
-			if (dead) { _hasLast = false; return; }
+			if (dead) { _hasLast = false; _slide.Set(false); return; }
 
 			// la vitesse verticale n'est pas répliquée : on la déduit du déplacement, pour animer les sauts
 			if (_hasLast && delta > 0.0001f)
@@ -143,6 +146,7 @@ namespace Openesport.Online
 			// bruits perceptibles (sert à la minimap) : course et sprint, glissade, tirs
 			if (onGround && !e.Has(EntityFlags.Crouching) && hs > 4.2f) Noise(0.9, hs > 5.8f ? 60f : 40f);
 			if (sliding) Noise(1.0, 55f);
+			_slide.Set(hover == null && sliding && onGround && Visible);
 			if (e.Has(EntityFlags.Firing)) Noise(2.5, 150f);
 			_wasOnGround = onGround;
 			// à mains nues, un tir signalé par le serveur est un coup de poing : les bras jouent la boxe un moment après le dernier coup
@@ -157,11 +161,10 @@ namespace Openesport.Online
 			_animator.SetZipline(zip);
 			if (zip) Noise(1.0, 100f);                      // sur un câble : audible à 100 m, pas plus loin
 			_animator.SetUsing(e.Has(EntityFlags.Using), ItemDatabase.Get("heal_small"));   // le flacon exact n'est pas répliqué : un flacon générique
+			_animator.SetGait(e.Gait);
+			_animator.Crouching = e.Has(EntityFlags.Crouching);
 			_animator.Tick(new Vector3(e.Vel.X, onGround ? 0f : _vy, e.Vel.Z), onGround, sliding, delta);
 
-			// pas d'animation d'accroupi pour l'instant : on écrase légèrement le personnage
-			float crouch = e.Has(EntityFlags.Crouching) ? 0.72f : 1f;
-			_animator.Scale = new Vector3(1f, Mathf.Lerp(_animator.Scale.Y, crouch, 0.3f), 1f);
 
 			_label.Visible = _bars.Visible = friendly;
 			if (friendly)

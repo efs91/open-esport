@@ -14,6 +14,7 @@ public partial class CharacterCreator : CanvasLayer
 {
 	public event Action<CharacterAppearance> Confirmed;
 	public event Action Cancelled;
+	private readonly ulong _openedAt = Time.GetTicksMsec();
 
 	/// <summary>Apparence de départ (sinon le personnage choisi).</summary>
 	public CharacterAppearance Initial;
@@ -30,6 +31,7 @@ public partial class CharacterCreator : CanvasLayer
 	private CharacterAppearance _app;
 	private CharacterAnimator _animator;
 	private Node3D _turntable;
+	private Node3D _hitbox;
 	private Camera3D _camera;
 	private SubViewportContainer _viewContainer;
 	private float _yaw = Mathf.Pi; // de face
@@ -122,7 +124,7 @@ public partial class CharacterCreator : CanvasLayer
 			if (d != null && d.Type == ItemType.Weapon) { weapons.Add(d.DisplayName); _weaponIds.Add(id); }
 		}
 		_weaponOption = AddOption(box, "weapon", I18n.T("Arme en main"), weapons, _ => UpdatePreviewState(), selected: 0);
-		_poseOption = AddOption(box, "pose", I18n.T("Animation"), new List<string> { I18n.T("Repos"), I18n.T("Marche"), I18n.T("Course"), I18n.T("Glissade"), I18n.T("Coup de poing") }, _ => UpdatePreviewState());
+		_poseOption = AddOption(box, "pose", I18n.T("Animation"), new List<string> { I18n.T("Repos"), I18n.T("Marche"), I18n.T("Course"), I18n.T("Glissade"), I18n.T("Coup de poing"), I18n.T("Accroupi"), I18n.T("Marche accroupie") }, _ => UpdatePreviewState());
 
 		var views = new HBoxContainer();
 		views.AddThemeConstantOverride("separation", 6);
@@ -144,6 +146,9 @@ public partial class CharacterCreator : CanvasLayer
 			zooms.AddChild(b);
 		}
 		box.AddChild(zooms);
+		var hitbox = new CheckBox { Text = I18n.T("Hitbox") };
+		hitbox.Toggled += on => { if (_hitbox != null) _hitbox.Visible = on; };
+		box.AddChild(hitbox);
 
 		box = panel;
 		box.AddChild(new HSeparator());
@@ -168,12 +173,13 @@ public partial class CharacterCreator : CanvasLayer
 		{
 			// le panneau Personnage range le résultat dans la bibliothèque et le choisit
 			CharacterName = _nameEdit.Text.Trim();
+			Openesport.Utils.Telemetry.Track("char_save", "", Math.Round((Time.GetTicksMsec() - _openedAt) / 1000.0));
 			Confirmed?.Invoke(_app.Clone());
 			QueueFree();
 		};
 		box.AddChild(play);
 		var back = new Button { Text = I18n.T("Retour") };
-		back.Pressed += () => { Cancelled?.Invoke(); QueueFree(); };
+		back.Pressed += () => { Openesport.Utils.Telemetry.Track("char_cancel", "", Math.Round((Time.GetTicksMsec() - _openedAt) / 1000.0)); Cancelled?.Invoke(); QueueFree(); };
 		box.AddChild(back);
 		return panel;
 	}
@@ -340,6 +346,8 @@ public partial class CharacterCreator : CanvasLayer
 		vp.AddChild(_turntable);
 		_animator = new CharacterAnimator { Appearance = _app.Clone(), UseNinjaIdle = true };
 		_turntable.AddChild(_animator);
+		_hitbox = BuildHitbox();
+		_turntable.AddChild(_hitbox);
 
 
 		_camera = new Camera3D { Current = true, Fov = _camFov };
@@ -351,6 +359,65 @@ public partial class CharacterCreator : CanvasLayer
 				_yaw -= m.Relative.X * 0.01f;
 		};
 		return _viewContainer;
+	}
+
+	private readonly List<MeshInstance3D> _hitboxParts = new();
+
+	/// <summary>Les volumes que le serveur touche (OpenEsport.Core.BodyHitbox), posés comme lui les pose : même clip, même phase, même arme, même morphologie.</summary>
+	private Node3D BuildHitbox()
+	{
+		var root = new Node3D { Name = "Hitbox", Visible = false };
+		StandardMaterial3D Mat(Color c) => new()
+		{
+			AlbedoColor = c, Transparency = BaseMaterial3D.TransparencyEnum.Alpha, ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
+			CullMode = BaseMaterial3D.CullModeEnum.Disabled
+		};
+		foreach (var v in OpenEsport.Core.BodyHitbox.Volumes)
+		{
+			var zone = OpenEsport.Core.BodyHitbox.ZoneOf(v.Part);
+			var color = zone == OpenEsport.Core.HitZone.Head ? new Color(1f, .2f, .2f, .35f) : zone == OpenEsport.Core.HitZone.Torso ? new Color(1f, .8f, .1f, .3f) : new Color(.2f, .9f, .3f, .3f);
+			var part = new MeshInstance3D { MaterialOverride = Mat(color), CastShadow = GeometryInstance3D.ShadowCastingSetting.Off };
+			root.AddChild(part);
+			_hitboxParts.Add(part);
+		}
+		return root;
+	}
+
+	private void UpdateHitbox()
+	{
+		var player = _animator.FindChild("AnimationPlayer", true, false) as AnimationPlayer;
+		string clipName = player?.CurrentAnimation ?? "";
+		var clip = clipName switch
+		{
+			"walk" => OpenEsport.Core.BodyClip.Walk, "run" => OpenEsport.Core.BodyClip.Run, "slide" => OpenEsport.Core.BodyClip.Slide,
+			"crouch_idle" => OpenEsport.Core.BodyClip.CrouchIdle, "crouch_walk" => OpenEsport.Core.BodyClip.CrouchWalk,
+			_ when clipName.StartsWith("jump") => OpenEsport.Core.BodyClip.Air, _ => OpenEsport.Core.BodyClip.Idle
+		};
+		float phase = player != null && player.CurrentAnimationLength > 0 ? (float)(player.CurrentAnimationPosition / player.CurrentAnimationLength) : 0f;
+		string weapon = _weaponIds[Mathf.Clamp(_weaponOption.Selected, 0, _weaponIds.Count - 1)];
+		var state = new OpenEsport.Core.BodyHitbox.State
+		{
+			Stance = _animator.Crouching ? OpenEsport.Core.Stance.Crouching : OpenEsport.Core.Stance.Standing, Clip = clip, Phase = phase,
+			Weapon = _posePreview && weapon != null ? OpenEsport.Core.ItemDefs.ByName(weapon)?.Id ?? 0 : (byte)0
+		};
+		OpenEsport.Core.BodyHitbox.ReadLook(_app.Pack(), ref state);
+		var joints = OpenEsport.Core.BodyHitbox.Joints(OpenEsport.Core.Vec3.Zero, state);
+		float scale = OpenEsport.Core.BodyHitbox.RadiusScale(state);
+		for (int i = 0; i < _hitboxParts.Count; i++)
+		{
+			var v = OpenEsport.Core.BodyHitbox.Volumes[i];
+			v.Ends(joints, out var ja, out var jb);
+			var a = new Vector3(ja.X, ja.Y, ja.Z);
+			var b = new Vector3(jb.X, jb.Y, jb.Z);
+			float r = v.Radius * scale, length = a.DistanceTo(b);
+			var mesh = _hitboxParts[i];
+			if (mesh.Mesh is not CapsuleMesh) mesh.Mesh = new CapsuleMesh { RadialSegments = 16, Rings = 4 };
+			var capsule = (CapsuleMesh)mesh.Mesh;
+			capsule.Radius = r; capsule.Height = length + 2 * r;
+			var up = length > .001f ? (b - a) / length : Vector3.Up;
+			var side = Mathf.Abs(up.Dot(Vector3.Forward)) < .9f ? up.Cross(Vector3.Forward).Normalized() : up.Cross(Vector3.Right).Normalized();
+			mesh.Transform = new Transform3D(new Basis(side, up, side.Cross(up)), (a + b) / 2);
+		}
 	}
 
 	// ------------------------------------------------------------------ état
@@ -404,8 +471,10 @@ public partial class CharacterCreator : CanvasLayer
 			2 => (new Vector3(0, 0, -6.5f), false),
 			3 => (new Vector3(0, 0, -9f), true),
 			4 => (Vector3.Zero, false),
+			6 => (new Vector3(0, 0, -1.5f), false),
 			_ => (Vector3.Zero, false)
 		};
+		_animator.Crouching = _poseOption.Selected >= 5;
 	}
 
 	public override void _Process(double delta)
@@ -415,6 +484,7 @@ public partial class CharacterCreator : CanvasLayer
 		_animator.Attacking = _poseOption.Selected == 4 && _weaponOption.Selected == 0; // à mains nues seulement : un coup après l'autre
 		if (_posePreview) _animator.Tick(_velocity, true, _sliding, delta);
 		_turntable.Rotation = new Vector3(0, _yaw, 0);
+		if (_hitbox != null && _hitbox.Visible) UpdateHitbox();
 		_camera.Fov = Mathf.Lerp(_camera.Fov, _camFov, 0.2f);
 		var focus = new Vector3(0, _camDistance < .5f ? .9f : _camHeight - .05f, 0);
 		if (_sampleEyes > 0 && --_sampleEyes == 0 && _eyes != null)

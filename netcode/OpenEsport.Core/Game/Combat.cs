@@ -21,6 +21,21 @@ namespace OpenEsport.Core
 		public const float HeadCenter = 1.64f, HeadRadius = 0.27f;
 		public const float DownedTop = 0.55f, DownedRadius = 0.85f;
 
+		/// <summary>
+		/// Tir contre un joueur tel qu'il était à ce tick : le corps animé (tête, tronc, bras, mains, jambes, pieds) quand sa pose est connue,
+		/// sinon (à terre, tyrolienne, escalade, chute libre) les volumes simples.
+		/// </summary>
+		public static bool RayVsBody(in HistoryEntry h, Vec3 origin, Vec3 dir, float maxDist, out float t, out HitZone zone)
+		{
+			if (h.HasBody && BodyPoses.Loaded && (h.Stance == Stance.Standing || h.Stance == Stance.Crouching || h.Stance == Stance.Sliding))
+			{
+				bool hit = BodyHitbox.Ray(h.Pos, h.Body, origin, dir, maxDist, out t, out var part);
+				zone = BodyHitbox.ZoneOf(part);
+				return hit;
+			}
+			return RayVsPlayer(h.Pos, h.Stance, origin, dir, maxDist, out t, out zone);
+		}
+
 		public static bool RayVsPlayer(Vec3 feet, Stance stance, Vec3 origin, Vec3 dir, float maxDist, out float t, out HitZone zone)
 		{
 			t = 0;
@@ -103,6 +118,9 @@ namespace OpenEsport.Core
 		public Vec3 Pos;
 		public Stance Stance;
 		public bool Alive;
+		/// <summary>Pose du corps à ce tick (orientation, clip, phase du pas, arme, morphologie).</summary>
+		public BodyHitbox.State Body;
+		public bool HasBody;
 	}
 
 	/// <summary>
@@ -116,9 +134,11 @@ namespace OpenEsport.Core
 		private uint _newest;
 		private bool _any;
 
-		public void Record(uint tick, Vec3 pos, Stance stance, bool alive)
+		public void Record(uint tick, Vec3 pos, Stance stance, bool alive) => Record(tick, pos, stance, alive, default, false);
+
+		public void Record(uint tick, Vec3 pos, Stance stance, bool alive, in BodyHitbox.State body, bool hasBody = true)
 		{
-			_ring[tick % Capacity] = new HistoryEntry { Tick = tick, Pos = pos, Stance = stance, Alive = alive };
+			_ring[tick % Capacity] = new HistoryEntry { Tick = tick, Pos = pos, Stance = stance, Alive = alive, Body = body, HasBody = hasBody };
 			_newest = tick;
 			_any = true;
 		}

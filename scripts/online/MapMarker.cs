@@ -20,6 +20,7 @@ namespace Openesport.Online
 			BaseDeDrapeau = 4,
 			SiteDeBombe = 5,
 			Garage = 6,
+			Ravitaillement = 7,
 		}
 
 		private KindEnum _kind = KindEnum.ApparitionEquipe;
@@ -57,8 +58,9 @@ namespace Openesport.Online
 				KindEnum.ApparitionChacunPourSoi => "Apparition (chacun pour soi)",
 				KindEnum.ApparitionEquipe => $"Apparition — {team}",
 				KindEnum.PointDeControle => $"Point de contrôle {(char)('A' + _index)} — départ : {team}",
-				KindEnum.Garage => _index == 0 ? "Hangar hover" : "Hangar AT-ST",
+				KindEnum.Garage => _index == 0 ? "Hangar hover" : "Hangar mécha",
 				KindEnum.BaseDeDrapeau => $"Base du drapeau — {team}",
+				KindEnum.Ravitaillement => $"Ravitaillement — {team}",
 				_ => $"Site de bombe {(char)('A' + _index)}",
 			};
 		}

@@ -62,6 +62,10 @@ namespace OpenEsport.Core
 		/// <summary>Pose (1) ou désamorçage (2) en cours, vus de tous : avancement 0-100 et auteur (0xFFFF = personne). Sert aux messages « l'adversaire désamorce ».</summary>
 		public byte BombAction, BombActionProgress;
 		public ushort BombActor;
+		/// <summary>1 VS 1 : règle d'équipement, mon équipement de la manche, celui de l'adversaire, et mon choix fait (étape de choix).</summary>
+		public DuelPolicy DuelPolicy;
+		public DuelLoadout Loadout, OpponentLoadout;
+		public bool Picked;
 
 		public static ModeState Empty => new ModeState { Points = new ControlPointState[5], WinnerTeam = 255, RoundWinner = 255, BombActor = 0xFFFF };
 
@@ -87,7 +91,14 @@ namespace OpenEsport.Core
 				w.WriteByte((byte)(Vehicles?.Length ?? 0));
 				if (Vehicles != null) foreach (var vehicle in Vehicles) vehicle.Write(w);
 			}
+			if (Mode == GameMode.Duel)
+			{
+				w.WriteByte((byte)DuelPolicy); WriteLoadout(w, Loadout); WriteLoadout(w, OpponentLoadout); w.WriteBool(Picked);
+			}
 		}
+
+		private static void WriteLoadout(BitWriter w, DuelLoadout l) { w.WriteByte(l.Weapon); w.WriteByte(l.Optic); w.WriteByte(l.Weapon2); w.WriteByte(l.Optic2); w.WriteByte(l.Grenade); w.WriteByte(l.Heal); }
+		private static DuelLoadout ReadLoadout(BitReader r) => new DuelLoadout { Weapon = r.ReadByte(), Optic = r.ReadByte(), Weapon2 = r.ReadByte(), Optic2 = r.ReadByte(), Grenade = r.ReadByte(), Heal = r.ReadByte() };
 
 		private static void WriteFlag(BitWriter w, FlagState f) { w.WriteByte(f.State); w.WriteUInt16(f.Carrier); w.WriteVec3(f.Pos); }
 		private static FlagState ReadFlag(BitReader r) => new FlagState { State = r.ReadByte(), Carrier = r.ReadUInt16(), Pos = r.ReadVec3() };
@@ -110,6 +121,10 @@ namespace OpenEsport.Core
 			{
 				s.Vehicles = new ControlVehicle[r.ReadByte()];
 				for (int i=0; i<s.Vehicles.Length; i++) s.Vehicles[i] = ControlVehicle.Read(r);
+			}
+			if (s.Mode == GameMode.Duel)
+			{
+				s.DuelPolicy = (DuelPolicy)r.ReadByte(); s.Loadout = ReadLoadout(r); s.OpponentLoadout = ReadLoadout(r); s.Picked = r.ReadBool();
 			}
 			return s;
 		}

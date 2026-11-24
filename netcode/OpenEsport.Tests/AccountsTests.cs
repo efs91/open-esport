@@ -68,7 +68,7 @@ namespace OpenEsport.Tests
 			Assert.Equal(HttpStatusCode.OK, code);
 			Assert.Equal("Alice", me.GetProperty("login").GetString());
 			Assert.Equal(1000, me.GetProperty("general").GetProperty("rating").GetInt32());
-			Assert.Equal(6, me.GetProperty("modes").GetArrayLength());
+			Assert.Equal(OpenEsport.Core.Modes.All.Length, me.GetProperty("modes").GetArrayLength());
 
 			var (c2, login) = await Post("/api/login", new { login = "alice", password = "motdepasse1" });          // l'identifiant ne tient pas compte de la casse
 			Assert.Equal(HttpStatusCode.OK, c2);

@@ -9,6 +9,8 @@ namespace OpenEsport.Core
 		public EntityKind Kind;
 		public Vec3 Pos;
 		public float Yaw, Pitch;
+		/// <summary>Phase du pas (0..1).</summary>
+		public float Gait;
 		public Vec3 Vel;
 		public EntityFlags Flags;
 		public byte Health, Shield, ShieldTier, Weapon, Team, Zip;
@@ -106,6 +108,9 @@ namespace OpenEsport.Core
 				while (d > MathF.PI) d -= MathF.PI * 2f;
 				while (d < -MathF.PI) d += MathF.PI * 2f;
 				r.Yaw = ya + d * t;
+				float ga = a.Gait / 32f, gd = b.Gait / 32f - ga;
+				if (gd < -.5f) gd += 1f; else if (gd > .5f) gd -= 1f;
+				r.Gait = ga + gd * t; r.Gait -= MathF.Floor(r.Gait);
 				r.Pitch = EntityState.DequantizePitch8(a.Pitch) + (EntityState.DequantizePitch8(b.Pitch) - EntityState.DequantizePitch8(a.Pitch)) * t;
 				r.Vel = new Vec3(EntityState.DequantizeVel(a.VelX) + (EntityState.DequantizeVel(b.VelX) - EntityState.DequantizeVel(a.VelX)) * t, 0,
 					EntityState.DequantizeVel(a.VelZ) + (EntityState.DequantizeVel(b.VelZ) - EntityState.DequantizeVel(a.VelZ)) * t);

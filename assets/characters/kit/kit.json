@@ -1514,73 +1514,8 @@
     "includes_shoes": true
    },
    {
-    "id": "c_mandalorian",
-    "name": "Mandalorien",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_renegade_raider",
-    "name": "Renegade Raider",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_drift",
-    "name": "Drift",
-    "mesh": "wardrobe/c_new_drift.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_harley_quinn",
-    "name": "Harley Quinn",
-    "mesh": "wardrobe/c_new_harley_quinn.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_indigo_kuno",
-    "name": "Indigo Kuno",
-    "mesh": "wardrobe/c_new_indigo_kuno.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_oblivion",
-    "name": "Oblivion",
-    "mesh": "wardrobe/c_new_oblivion.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_iron_man",
-    "name": "Iron Man",
-    "mesh": "wardrobe/c_new_iron_man.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_ishowspeed",
-    "name": "IShowSpeed",
-    "mesh": "wardrobe/c_new_ishowspeed.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_jules",
-    "name": "Jules",
-    "mesh": "wardrobe/c_new_jules.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_ryuji",
-    "name": "Ryuji",
-    "mesh": "wardrobe/c_new_ryuji.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_stormtrooper",
-    "name": "Stormtrooper",
-    "mesh": "wardrobe/c_new_stormtrooper.res",
-    "includes_shoes": true
-   },
-   {
-    "id": "c_new_vengeance_jones",
-    "name": "Vengeance Jones",
-    "mesh": "wardrobe/c_new_vengeance_jones.res",
+    "id": "c_sigkiller",
+    "name": "SigKiller",
     "includes_shoes": true
    }
   ],
@@ -1777,53 +1712,8 @@
     "name": "Fedora MakeHuman"
    },
    {
-    "id": "hat_mandalorian",
-    "name": "Casque du Mandalorien"
-   },
-   {
-    "id": "hat_raider",
-    "name": "Bandeau Renegade Raider"
-   },
-   {
-    "id": "gear_drift",
-    "name": "Masque de Drift",
-    "mesh": "wardrobe/gear_drift.res",
-    "cover": "face"
-   },
-   {
-    "id": "gear_indigo_kuno",
-    "name": "Masque Indigo Kuno",
-    "mesh": "wardrobe/gear_indigo_kuno.res",
-    "cover": "face"
-   },
-   {
-    "id": "gear_oblivion",
-    "name": "Casque Oblivion",
-    "mesh": "wardrobe/gear_oblivion.res",
-    "cover": "helmet"
-   },
-   {
-    "id": "gear_iron_man",
-    "name": "Casque Iron Man",
-    "mesh": "wardrobe/gear_iron_man.res",
-    "cover": "helmet"
-   },
-   {
-    "id": "gear_jules",
-    "name": "Lunettes de Jules",
-    "mesh": "wardrobe/gear_jules.res",
-    "cover": "face"
-   },
-   {
-    "id": "gear_ryuji",
-    "name": "Chapeau de Ryuji",
-    "mesh": "wardrobe/gear_ryuji.res",
-    "cover": "crown"
-   },
-   {
-    "id": "gear_stormtrooper",
-    "name": "Casque Stormtrooper",
-    "mesh": "wardrobe/gear_stormtrooper.res",
+    "id": "hat_sigkiller",
+    "name": "Tête SigKiller",
     "cover": "helmet"
    }
   ]

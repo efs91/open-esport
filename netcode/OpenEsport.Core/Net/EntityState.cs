@@ -57,6 +57,7 @@ namespace OpenEsport.Core
 		public byte Zip;       // 3 bits : 1 = tyrolienne, 2 = escalade, 3 = dans l'avion, 4 = chute libre, 5 = à terre
 		public byte Weapon;    // 8 bits : identifiant de l'arme en main
 		public byte Team;      // 7 bits
+		public byte Gait;      // 5 bits : phase du pas (marche, course), pour que le client anime les jambes là où le serveur les juge
 		// Butin : Weapon = identifiant de l'objet, Count = quantité
 		public ushort Count;
 
@@ -84,7 +85,7 @@ namespace OpenEsport.Core
 		{
 			return Id == o.Id && Kind == o.Kind && X == o.X && Z == o.Z && Y == o.Y && Yaw == o.Yaw && Pitch == o.Pitch
 				&& VelX == o.VelX && VelZ == o.VelZ && Flags == o.Flags && Health == o.Health && Shield == o.Shield && ShieldTier == o.ShieldTier && Zip == o.Zip && Weapon == o.Weapon
-				&& Team == o.Team && Count == o.Count;
+				&& Team == o.Team && Gait == o.Gait && Count == o.Count;
 		}
 
 		public override bool Equals(object obj) => obj is EntityState e && Equals(e);
@@ -114,6 +115,7 @@ namespace OpenEsport.Core
 				w.WriteBits(Zip, 3);
 				w.WriteBits(Weapon, 8);
 				w.WriteBits(Team, 7);
+				w.WriteBits(Gait, 5);
 			}
 			else
 			{
@@ -143,6 +145,7 @@ namespace OpenEsport.Core
 				e.Zip = (byte)r.ReadBits(3);
 				e.Weapon = (byte)r.ReadBits(8);
 				e.Team = (byte)r.ReadBits(7);
+				e.Gait = (byte)r.ReadBits(5);
 			}
 			else
 			{

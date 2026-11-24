@@ -4,6 +4,8 @@
     <AssemblyName>OpenEsport.Core</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <!-- poses du corps relevées dans le jeu (tools/hitbox/bake_body_poses.gd), pour les hitbox -->
+    <EmbeddedResource Include="Game/body_poses.bin" LogicalName="OpenEsport.Core.body_poses.bin" Condition="Exists('Game/body_poses.bin')" />
     <PackageReference Include="LiteNetLib" Version="2.*" />
   </ItemGroup>
 </Project>

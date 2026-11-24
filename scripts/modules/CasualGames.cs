@@ -132,6 +132,7 @@ namespace Openesport.Modules
 			// pas de robot local : les autres joueurs viennent du serveur
 			_sceneManager.CurrentScene.GetNodeOrNull("AI_player")?.QueueFree();
 
+			Openesport.Utils.Telemetry.GameStarted($"{OpenEsport.Core.Modes.Get(Openesport.Online.MatchSettings.Mode).Key}:{Openesport.Online.MatchSettings.TeamSize}");
 			var game = new Openesport.Online.OnlineGame { Name = "OnlineGame" };
 			_sceneManager.CurrentScene.AddChild(game);
 			game.Begin(player, _sceneManager.CurrentScene, host, port, name, Openesport.Online.OnlineGame.WorldPathFor(_mapPath));
@@ -161,6 +162,16 @@ namespace Openesport.Modules
 			{
 				var panel = new Openesport.Menus.CharacterPanel { Name = "CharacterPanel", ShowStats = true };
 				((SceneTree)Engine.GetMainLoop()).Root.CallDeferred(Node.MethodName.AddChild, panel);
+				return;
+			}
+
+			// reprise : le joueur a perdu la connexion pendant une partie (coupure, plantage) : on le ramène dans son personnage
+			if (action == "start_online_game" && Openesport.Online.MatchSettings.TryResume(out string rHost, out int rPort, out var rMode, out int rTeam))
+			{
+				_logManager.Info($"[{ModuleName}] Reprise de la partie en cours : {rHost}:{rPort}");
+				Openesport.Online.MatchSettings.Mode = rMode; Openesport.Online.MatchSettings.TeamSize = rTeam;
+				Openesport.Online.MatchSettings.AssignedHost = rHost; Openesport.Online.MatchSettings.AssignedPort = rPort;
+				StartGame("start_online_game");
 				return;
 			}
 

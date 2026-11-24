@@ -44,7 +44,7 @@ namespace Openesport.Online
                 DrawString(ThemeDB.FallbackFont, new Vector2(x,y), value, HorizontalAlignment.Left, -1, size, color);
             string station = Seat == 0 ? "Pilote · Mitrailleuse" : Seat == 1 ? "Artilleur · Canon" : "Passager · Arme personnelle";
             if (Seat < 2) station += ZoomPower > 1 ? $"   ×{ZoomPower}" : "   ·   Viser pour zoomer";
-            Text(-334, -60, "AT-ST   /   " + station, 15, accent);
+            Text(-334, -60, "MÉCHA   /   " + station, 15, accent);
             Text(-334, -35, $"{v.Velocity.Length() * 3.6f:0} km/h     CAP {Mathf.PosMod(Mathf.RoundToInt(-Mathf.RadToDeg(v.Yaw)), 360):000}°     ALT {v.Pos.Y:0} m", 18, Colors.White);
             Text(-334, -12, $"Tangage {Mathf.RadToDeg(v.Pitch):+0;-0;0}°     Roulis {Mathf.RadToDeg(v.Roll):+0;-0;0}°", 15, accent);
             Text(18, -60, $"BLINDAGE    {v.Integrity} / {v.FullIntegrity}", 15, hullColor);

@@ -121,6 +121,7 @@ namespace Openesport.Menus
 		private void FillGeneral(AccountProfile p, List<LeaderRow> top)
 		{
 			var sb = new StringBuilder();
+			LastMatch(sb, p.LastMatch);
 			sb.AppendLine("[font_size=26][b]" + I18n.T("Classement général") + "[/b][/font_size]");
 			sb.AppendLine(p.General.Matches == 0
 				? "[color=#9aa4b2]" + I18n.T("Non classé : joue une partie pour obtenir un score.") + "[/color]"
@@ -138,6 +139,24 @@ namespace Openesport.Menus
 			}
 			Board(sb, top, p.Login);
 			Set(General, sb.ToString());
+		}
+
+		/// <summary>La dernière partie : mode, résultat, durée, éliminations, morts, dégâts et points gagnés ou perdus.</summary>
+		private static void LastMatch(StringBuilder sb, LastMatchStat m)
+		{
+			sb.AppendLine("[font_size=26][b]" + I18n.T("Dernière partie") + "[/b][/font_size]");
+			if (m == null) { sb.AppendLine("[color=#9aa4b2]" + I18n.T("Aucune partie enregistrée pour le moment.") + "[/color]"); sb.AppendLine(); return; }
+			sb.AppendLine($"[b]{Escape(m.ModeText)}[/b]   [color=#9aa4b2]{m.Ago}[/color]");
+			sb.AppendLine("[table=2]");
+			void Row(string name, string value) => sb.AppendLine($"[cell][color=#9aa4b2]{name}[/color]      [/cell][cell][b]{value}[/b][/cell]");
+			Row(I18n.T("Résultat"), m.Result);
+			Row(I18n.T("Temps de jeu"), m.Duration);
+			Row(I18n.T("Éliminations"), m.Kills.ToString());
+			Row(I18n.T("Morts"), m.Deaths.ToString());
+			Row(I18n.T("Dégâts infligés"), m.Damage.ToString("N0"));
+			Row(I18n.T("Score du mode"), $"{m.Rating} pts  ({m.DeltaText})");
+			sb.AppendLine("[/table]");
+			sb.AppendLine();
 		}
 
 		private void FillMode(ModeStat m, List<LeaderRow> rows)

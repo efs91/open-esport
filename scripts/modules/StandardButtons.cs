@@ -86,6 +86,28 @@ namespace Openesport.Modules
                             ""poids"": 21
                         },
                         {
+                            ""id"": 7,
+                            ""name"": ""MENU_SETTINGS_GRAPHICS"",
+                            ""type"": ""Button"",
+                            ""description"": ""Graphismes"",
+                            ""icon"": """",
+                            ""action"": """",
+                            ""parentId"": 2,
+                            ""uiPath"": ""graphics"",
+                            ""poids"": 22
+                        },
+                        {
+                            ""id"": 6,
+                            ""name"": ""MENU_CREDITS"",
+                            ""type"": ""Button"",
+                            ""description"": ""Crédits"",
+                            ""icon"": """",
+                            ""action"": """",
+                            ""parentId"": 2,
+                            ""uiPath"": ""credits"",
+                            ""poids"": 10
+                        },
+                        {
                             ""id"": 4,
                             ""name"": ""SETTINGS_LANGUAGE"",
                             ""type"": ""Button"",

@@ -32,6 +32,8 @@ namespace OpenEsport.Server
 		public byte UseId;
 		public float UseLeft, UseTotal;
 		public float Yaw, Pitch;
+		/// <summary>Phase du pas (0..1) : pose des jambes pour les hitbox, répliquée pour l'animation.</summary>
+		public float Gait;
 		public Buttons LastButtons;
 
 		// commandes reçues, en attente d'être jouées (une par tick)
@@ -44,7 +46,10 @@ namespace OpenEsport.Server
 
 		public InventoryState Inventory = new InventoryState();
 		public readonly PositionHistory History = new PositionHistory();
-		public readonly ClientReplication Rep = new ClientReplication();
+		public ClientReplication Rep = new ClientReplication();
+		/// <summary>Connexion perdue en cours de partie : le personnage reste en jeu (immobile) jusqu'à ce tick, le temps que le joueur revienne. 0 = connecté.</summary>
+		public uint AwayUntil;
+		public bool Away => AwayUntil != 0;
 
 		// armes
 		public float ShotCooldown;
@@ -76,10 +81,14 @@ namespace OpenEsport.Server
 		public float DamageDealt;
 		/// <summary>Classement de l'équipe quand elle est éliminée (0 = en jeu).</summary>
 		public byte Placement;
+		/// <summary>Tick d'arrivée dans la partie et tick d'élimination (battle royale ; 0 = encore en jeu) : le temps de jeu rapporté en fin de partie.</summary>
+		public uint JoinTick, OutTick;
 		public ServerPlayer LastAttacker;
 		/// <summary>Tick de la dernière blessure (Deathmatch : la vie remonte seule quelques secondes après) et temps accumulé de régénération.</summary>
 		public uint LastHurtTick;
 		public float RegenClock;
+		/// <summary>Temps (s) avant la prochaine recharge possible à une station de ravitaillement.</summary>
+		public float ResupplyClock;
 		/// <summary>Coéquipier à terre qu'on est en train de relever, et temps restant.</summary>
 		public ServerPlayer ReviveTarget;
 		public float ReviveLeft;
@@ -104,6 +113,23 @@ namespace OpenEsport.Server
 			if (_count == _inputs.Length) { _head = (_head + 1) % _inputs.Length; _count--; }
 			_inputs[(_head + _count) % _inputs.Length] = input;
 			_count++;
+		}
+
+		/// <summary>Joueur absent : une commande neutre par tick (il reste sur place, la gravité continue de s'appliquer).</summary>
+		public void EnqueueIdle()
+		{
+			if (_count > 0) return;
+			var idle = LastInput;
+			idle.Forward = 0; idle.Strafe = 0; idle.ButtonBits = 0; idle.Seq = LastReceivedSeq;
+			_inputs[_head] = idle;
+			_count = 1;
+		}
+
+		/// <summary>Retour du joueur sur une nouvelle connexion : ses commandes repartent de zéro.</summary>
+		public void ResetInputs()
+		{
+			_head = 0; _count = 0;
+			AnyInput = false; LastReceivedSeq = 0; LastProcessedSeq = 0; CatchUpBudget = 0f;
 		}
 
 		public bool TryDequeueInput(out PlayerInput input)

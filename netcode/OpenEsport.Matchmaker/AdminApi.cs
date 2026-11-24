@@ -59,6 +59,15 @@ namespace OpenEsport.Matchmaker
 				string path = ctx.Request.Url.AbsolutePath;
 				if (ctx.Request.HttpMethod == "GET" && path == "/") { Send(ctx, 200, "text/html; charset=utf-8", Dashboard.Html); return; }
 				if (ctx.Request.HttpMethod == "GET" && path == "/api/servers") { Send(ctx, 200, "application/json", ServersJson()); return; }
+				if (ctx.Request.HttpMethod == "GET" && path == "/stats") { Send(ctx, 200, "text/html; charset=utf-8", StatsPage.Value); return; }
+				if (ctx.Request.HttpMethod == "GET" && path == "/api/stats")
+				{
+					int.TryParse(ctx.Request.QueryString["days"], out int days);
+					string json = _service.UsageStatsAsync(Math.Clamp(days, 1, 760)).GetAwaiter().GetResult();
+					if (json == null) Send(ctx, 503, "application/json", "{\"error\":\"service de comptes injoignable\"}");
+					else Send(ctx, 200, "application/json", json);
+					return;
+				}
 				if (ctx.Request.HttpMethod == "GET" && path == "/api/health") { Send(ctx, 200, "application/json", "{\"ok\":true}"); return; }
 				if (ctx.Request.HttpMethod == "POST" && path.StartsWith("/api/servers/", StringComparison.Ordinal) && path.EndsWith("/stop", StringComparison.Ordinal))
 				{
@@ -126,6 +135,17 @@ namespace OpenEsport.Matchmaker
 		}
 	}
 
+	/// <summary>Page des statistiques d'utilisation (StatsPage.html, ressource intégrée).</summary>
+	internal static class StatsPage
+	{
+		public static readonly Lazy<string> Lazy = new Lazy<string>(() =>
+		{
+			using var s = typeof(StatsPage).Assembly.GetManifestResourceStream("StatsPage.html");
+			return s == null ? "<p>Page des statistiques absente.</p>" : new System.IO.StreamReader(s).ReadToEnd();
+		});
+		public static string Value => Lazy.Value;
+	}
+
 	/// <summary>La page du tableau de bord (une seule page, sans dépendance).</summary>
 	internal static class Dashboard
 	{
@@ -150,7 +170,7 @@ button{background:transparent;color:var(--bad);border:1px solid var(--bad);borde
 button:hover{background:var(--bad);color:#fff}.empty{color:var(--mute);padding:40px;text-align:center;grid-column:1/-1}
 footer{padding:12px 24px;color:var(--mute);font-size:12px}
 </style></head><body>
-<header><h1>Open Esport — serveurs de partie</h1>
+<header><h1>Open Esport — serveurs de partie</h1><a href=""/stats"" style=""color:var(--acc)"">Statistiques d'utilisation →</a>
 <div class=""sum""><span><b id=""t_servers"">0</b> serveurs</span><span><b id=""t_humans"">0</b> joueurs</span><span><b id=""t_play"">0</b> en partie</span><span><b id=""t_wait"">0</b> en attente</span></div></header>
 <main id=""list""><div class=""empty"">Chargement…</div></main>
 <footer id=""foot"">—</footer>

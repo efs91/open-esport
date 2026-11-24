@@ -26,6 +26,8 @@ namespace OpenEsport.Server
 		public int Kills { get; set; }
 		public int Deaths { get; set; }
 		public long Damage { get; set; }
+		/// <summary>Temps passé dans la partie (s) : jusqu'à son élimination en battle royale, jusqu'à son départ ou la fin sinon.</summary>
+		public int Seconds { get; set; }
 	}
 
 	/// <summary>
@@ -69,8 +71,42 @@ namespace OpenEsport.Server
 			}
 		}
 
-		/// <summary>Les comptes admis dans un lobby de tournoi et la manche en cours (null si le service ne répond pas ou si le tournoi n'est pas en cours).</summary>
-		public async Task<(int race, HashSet<long> accounts)?> TournamentLobbyAsync(long tournament, int lobby)
+		/// <summary>
+		/// Une partie de tournoi telle que la décrit le service de comptes : comptes admis, mode de jeu de la phase, taille des équipes en jeu,
+		/// score à atteindre (0 = valeur du jeu), équipe de chaque compte (<see cref="Groups"/> : même numéro = même équipe ; battle royale)
+		/// ou camp imposé (<see cref="Sides"/> : 0 ou 1 ; modes à deux équipes), règle d'équipement du 1 VS 1.
+		/// </summary>
+		public sealed class TournamentGame
+		{
+			public int Race;
+			public HashSet<long> Accounts = new HashSet<long>();
+			public string Mode = "br", Loadout = "";
+			public int TeamSize = 1, ScoreLimit;
+			public Dictionary<long, long> Groups = new Dictionary<long, long>();
+			public Dictionary<long, int> Sides = new Dictionary<long, int>();
+
+			public static TournamentGame Parse(JsonElement root)
+			{
+				var g = new TournamentGame();
+				if (root.TryGetProperty("race", out var r) && r.ValueKind == JsonValueKind.Number) g.Race = r.GetInt32();
+				if (root.TryGetProperty("mode", out var m) && m.ValueKind == JsonValueKind.String) g.Mode = m.GetString();
+				if (root.TryGetProperty("loadout", out var l) && l.ValueKind == JsonValueKind.String) g.Loadout = l.GetString();
+				if (root.TryGetProperty("teamSize", out var ts) && ts.ValueKind == JsonValueKind.Number) g.TeamSize = ts.GetInt32();
+				if (root.TryGetProperty("scoreLimit", out var sl) && sl.ValueKind == JsonValueKind.Number) g.ScoreLimit = sl.GetInt32();
+				if (root.TryGetProperty("accounts", out var acc)) foreach (var a in acc.EnumerateArray()) g.Accounts.Add(a.GetInt64());
+				// match à deux camps : « a » et « b »
+				if (root.TryGetProperty("a", out var sa)) foreach (var a in sa.EnumerateArray()) { g.Sides[a.GetInt64()] = 0; g.Accounts.Add(a.GetInt64()); }
+				if (root.TryGetProperty("b", out var sb)) foreach (var b in sb.EnumerateArray()) { g.Sides[b.GetInt64()] = 1; g.Accounts.Add(b.GetInt64()); }
+				if (root.TryGetProperty("groups", out var gr) && gr.ValueKind == JsonValueKind.Object)
+					foreach (var p in gr.EnumerateObject()) if (long.TryParse(p.Name, out long id)) g.Groups[id] = p.Value.GetInt64();
+				if (root.TryGetProperty("sides", out var sd) && sd.ValueKind == JsonValueKind.Object)
+					foreach (var p in sd.EnumerateObject()) if (long.TryParse(p.Name, out long id)) g.Sides[id] = p.Value.GetInt32();
+				return g;
+			}
+		}
+
+		/// <summary>La partie d'un lobby de tournoi (null si le service ne répond pas ou si le tournoi n'est pas en cours).</summary>
+		public async Task<TournamentGame> TournamentLobbyAsync(long tournament, int lobby)
 		{
 			try
 			{
@@ -78,10 +114,7 @@ namespace OpenEsport.Server
 				req.Headers.Add("X-Server-Key", _key);
 				using var res = await _http.SendAsync(req);
 				if (!res.IsSuccessStatusCode) return null;
-				var root = JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement;
-				var set = new HashSet<long>();
-				foreach (var a in root.GetProperty("accounts").EnumerateArray()) set.Add(a.GetInt64());
-				return (root.GetProperty("race").GetInt32(), set);
+				return TournamentGame.Parse(JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement);
 			}
 			catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException || e is JsonException) { Log($"Tournoi : service de comptes injoignable ({e.Message})"); return null; }
 		}
@@ -107,8 +140,8 @@ namespace OpenEsport.Server
 			});
 		}
 
-		/// <summary>Les camps d'un match de duel (comptes du camp 0 et du camp 1) et son score limite ; null si le match n'existe plus.</summary>
-		public async Task<(HashSet<long> a, HashSet<long> b, int scoreLimit)?> TournamentMatchAsync(long tournament, string key)
+		/// <summary>Un match de poule ou de tableau : les deux camps, le mode, le score à atteindre ; null si le match n'existe plus.</summary>
+		public async Task<TournamentGame> TournamentMatchAsync(long tournament, string key)
 		{
 			try
 			{
@@ -116,9 +149,7 @@ namespace OpenEsport.Server
 				req.Headers.Add("X-Server-Key", _key);
 				using var res = await _http.SendAsync(req);
 				if (!res.IsSuccessStatusCode) return null;
-				var root = JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement;
-				HashSet<long> Read(string name) { var set = new HashSet<long>(); foreach (var x in root.GetProperty(name).EnumerateArray()) set.Add(x.GetInt64()); return set; }
-				return (Read("a"), Read("b"), root.GetProperty("scoreLimit").GetInt32());
+				return TournamentGame.Parse(JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement);
 			}
 			catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException || e is JsonException) { Log($"Tournoi : service de comptes injoignable ({e.Message})"); return null; }
 		}
@@ -145,10 +176,10 @@ namespace OpenEsport.Server
 		}
 
 		/// <summary>Envoie le rapport d'une partie en arrière-plan (jusqu'à 4 essais espacés).</summary>
-		public void ReportMatch(string matchId, string mode, int winnerTeam, int playerCount, List<ReportedPlayer> players)
+		public void ReportMatch(string matchId, string mode, int teamSize, int winnerTeam, int playerCount, List<ReportedPlayer> players)
 		{
 			if (players.Count == 0) return;
-			var body = new { matchId, mode, winnerTeam, playerCount, players };
+			var body = new { matchId, mode, teamSize, winnerTeam, playerCount, players };
 			_ = Task.Run(async () =>
 			{
 				int[] waits = { 0, 3, 10, 30 };

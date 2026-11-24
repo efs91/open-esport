@@ -54,6 +54,11 @@ namespace Openesport.Online
 			_hit.HorizontalAlignment = HorizontalAlignment.Center;
 			_hit.Modulate = new Color(1, 1, 1, 0);
 
+			_holdRing = new HoldRing { Name = "Maintien" };
+			_holdRing.AnchorLeft = 0.5f; _holdRing.AnchorRight = 0.5f; _holdRing.AnchorTop = 0.5f; _holdRing.AnchorBottom = 0.5f;
+			_holdRing.OffsetLeft = -40; _holdRing.OffsetRight = 40; _holdRing.OffsetTop = -40; _holdRing.OffsetBottom = 40;
+			root.AddChild(_holdRing);
+
 			_dead = MakeLabel(root, 40, new Color(1f, 0.4f, 0.35f));
 			_dead.AnchorLeft = 0; _dead.AnchorRight = 1; _dead.AnchorTop = 0.35f; _dead.AnchorBottom = 0.35f; _dead.OffsetBottom = 60;
 			_dead.HorizontalAlignment = HorizontalAlignment.Center;
@@ -271,10 +276,22 @@ namespace Openesport.Online
 		/// <summary>Grenade choisie et son nombre (vide : aucune grenade dans le sac).</summary>
 		public void SetGrenade(string text) { if (_grenade.Text != text) _grenade.Text = text; }
 
-		public void HitMarker(bool kill)
+		/// <summary>Marqueur de touche : de la couleur du bouclier touché (blanc sur la vie), rouge pour une élimination, plus gros quand le bouclier casse.</summary>
+		private HoldRing _holdRing;
+
+		/// <summary>Anneau de maintien autour du viseur (échange d'arme ou de bouclier) : 0 = caché ; couleur de l'objet visé.</summary>
+		public void SetHoldProgress(float progress, Color tint)
 		{
-			_hit.Modulate = kill ? new Color(1f, 0.25f, 0.2f, 1f) : new Color(1f, 1f, 1f, 1f);
-			_hitTime = kill ? 0.5 : 0.2;
+			_holdRing.Tint = tint;
+			_holdRing.Progress = progress;
+		}
+
+		public void HitMarker(bool kill, Color color, bool shieldBreak = false)
+		{
+			_hit.Modulate = kill ? new Color(1f, 0.25f, 0.2f, 1f) : new Color(color.R, color.G, color.B, 1f);
+			_hit.Scale = shieldBreak && !kill ? new Vector2(1.5f, 1.5f) : Vector2.One;
+			_hit.PivotOffset = _hit.Size / 2f;
+			_hitTime = kill ? 0.5 : shieldBreak ? 0.35 : 0.2;
 		}
 
 		/// <summary>Dégât reçu : flash rouge (la vie est touchée) ou bleu clair (le bouclier a tout absorbé).</summary>

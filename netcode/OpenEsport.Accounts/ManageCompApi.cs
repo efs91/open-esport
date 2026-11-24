@@ -25,8 +25,8 @@ namespace OpenEsport.Accounts
 	}
 
 	/// <summary>
-	/// Appels de l'API de ManageComp utilisés pour les tournois : une compétition par tournoi, ses participants à l'appel, une phase « Lobby (série) »
-	/// dont chaque manche est une partie du jeu, la saisie des places et le classement cumulé. Le <see cref="HttpClient"/> est fourni de l'extérieur
+	/// Appels de l'API de ManageComp utilisés pour les tournois : une compétition par tournoi, ses participants à l'appel, une formule de phases
+	/// (séries de lobbys dont chaque manche est une partie du jeu, poules et tableau de duels), la saisie des places et des scores, les classements. Le <see cref="HttpClient"/> est fourni de l'extérieur
 	/// pour pouvoir tester sans réseau.
 	/// </summary>
 	public sealed class ManageCompApi
@@ -71,22 +71,30 @@ namespace OpenEsport.Accounts
 			}
 		}
 
-		/// <summary>Crée la compétition d'un tournoi avec sa phase de lobby (série) de <paramref name="races"/> manches ; retourne l'identifiant de la compétition.</summary>
-		public async Task<string> CreateTournament(string name, string date, int races)
+		/// <summary>Crée la compétition d'un tournoi (à l'appel) ; sa formule est construite au lancement, d'après la configuration du moment.</summary>
+		public async Task<string> CreateContest(string name, string date)
 		{
 			var created = await Send(HttpMethod.Post, "/api/contests", new { name, organizer = "Open Esport", location = "En ligne", weapon = "X", gender = "X", category = 9, date });
-			string id = created.GetProperty("id").GetString();
-			try
-			{
-				// la formule par défaut (poules + tableau) est remplacée par une seule phase de lobby
-				await Send(HttpMethod.Delete, $"/api/contests/{id}/schedule/stages/3");
-				await Send(HttpMethod.Delete, $"/api/contests/{id}/schedule/stages/2");
-				var stages = await Send(HttpMethod.Post, $"/api/contests/{id}/schedule/stages", new { kind = "lobby" });
-				int lobby = FindStage(stages, "lobby");
-				await SetRaces(id, lobby, races);
-			}
-			catch { try { await Delete(id); } catch { } throw; }
-			return id;
+			return created.GetProperty("id").GetString();
+		}
+
+		/// <summary>
+		/// Remplace la formule par défaut (poules + tableau) par les phases du tournoi, dans l'ordre : séries de lobbys, poules, tableau.
+		/// L'appel et le classement général restent au début et à la fin.
+		/// </summary>
+		public async Task BuildFormula(string contest, IReadOnlyList<PhaseConfig> phases)
+		{
+			var schedule = await Send(HttpMethod.Get, $"/api/contests/{contest}/schedule");
+			var removable = new List<int>();
+			if (schedule.ValueKind == JsonValueKind.Object && schedule.TryGetProperty("stages", out var stages))
+				foreach (var s in stages.EnumerateArray())
+				{
+					string kind = s.GetProperty("kind").GetString();
+					if (kind != "checkin" && kind != "classification" && kind != "pool_allocator") removable.Add(s.GetProperty("index").GetInt32());
+				}
+			// de la fin vers le début (les indices ne bougent pas) ; une phase de poules emporte sa composition
+			foreach (int index in removable.OrderByDescending(i => i)) await Send(HttpMethod.Delete, $"/api/contests/{contest}/schedule/stages/{index}");
+			foreach (var p in phases) await Send(HttpMethod.Post, $"/api/contests/{contest}/schedule/stages", new { kind = p.ManageCompKind });
 		}
 
 		private static int FindStage(JsonElement schedule, string kind)
@@ -96,18 +104,56 @@ namespace OpenEsport.Accounts
 			throw new ManageCompException("ManageComp : phase « " + kind + " » introuvable.");
 		}
 
-		public async Task SetRaces(string contest, int stage, int races)
+		/// <summary>Les phases jouées (lobbys, poules, tableau), dans l'ordre de la formule : la n-ième correspond à la n-ième phase du tournoi.</summary>
+		public async Task<List<(int index, string kind)>> PlayableStages(string contest)
 		{
+			var schedule = await Send(HttpMethod.Get, $"/api/contests/{contest}/schedule");
+			var list = new List<(int, string)>();
+			foreach (var s in schedule.GetProperty("stages").EnumerateArray())
+			{
+				string kind = s.GetProperty("kind").GetString();
+				if (kind == "lobby" || kind == "pool_supervisor" || kind == "table") list.Add((s.GetProperty("index").GetInt32(), kind));
+			}
+			return list;
+		}
+
+		/// <summary>Passe à la phase suivante (« Tour suivant ») ; erreur si la phase en cours n'est pas terminée.</summary>
+		public async Task Next(string contest) => await Send(HttpMethod.Post, $"/api/contests/{contest}/next");
+
+		/// <summary>Règle une série de lobbys (manches, points, qualifiés) et répartit ses joueurs en <paramref name="lobbies"/> lobbys.</summary>
+		public async Task ConfigureLobby(string contest, int stage, PhaseConfig p, int lobbies)
+		{
+			bool perLobby = p.QualifyMode == "lobby" && p.Qualified > 0;
 			await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{stage}", new
 			{
 				action = "settings",
 				settings = new
 				{
-					abandon_points = 0, distribution = "balanced", lobbies = 1, per_lobby = (int?)null, races, scale = PlacementPoints,
-					swapping = new[] { "club" }, team_best = 1, team_mode = "team", team_rule = "sum"
-				}
+					abandon_points = p.AbandonPoints, distribution = p.Distribution, lobbies = Math.Max(1, lobbies), per_lobby = perLobby ? p.Qualified : (int?)null, races = p.Races,
+					scale = p.Scale, swapping = Array.Empty<string>(), team_best = 1, team_mode = "team", team_rule = "sum"
+				},
+				nb_qualified = !perLobby && p.Qualified > 0 ? p.Qualified : 0,
 			});
+			await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{stage}", new { action = "composition", lobbies = Math.Max(1, lobbies), distribution = p.Distribution });
 		}
+
+		/// <summary>Nombre de participants d'une série de lobbys (les qualifiés de la phase précédente).</summary>
+		public async Task<int> LobbyCompetitors(string contest, int stage)
+		{
+			var data = (await Send(HttpMethod.Get, $"/api/contests/{contest}/stages/{stage}")).GetProperty("data");
+			return data.TryGetProperty("competitors", out var n) && n.ValueKind == JsonValueKind.Number ? n.GetInt32() : 0;
+		}
+
+		/// <summary>Règle des poules : victimes pour gagner, qualifiés pour la suite.</summary>
+		public async Task ConfigurePools(string contest, int stage, PhaseConfig p)
+			=> await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{stage}", new { action = "settings", max_score = p.MaxScore, nb_qualified = p.Qualified > 0 ? p.Qualified : (int?)null });
+
+		/// <summary>Règle un tableau : victimes pour gagner, places disputées.</summary>
+		public async Task ConfigureTable(string contest, int stage, PhaseConfig p)
+			=> await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{stage}", new { action = "settings", max_score = p.MaxScore, fenced_places = p.Places });
+
+		/// <summary>Les données d'une phase (lobbys et classement d'une série, poules, tableau).</summary>
+		public async Task<JsonElement> StageData(string contest, int stage) => (await Send(HttpMethod.Get, $"/api/contests/{contest}/stages/{stage}")).GetProperty("data");
 
 		public async Task Delete(string contest) => await Send(HttpMethod.Delete, $"/api/contests/{contest}");
 
@@ -122,47 +168,16 @@ namespace OpenEsport.Accounts
 
 		public async Task RemovePlayer(string contest, int reference) => await Send(HttpMethod.Delete, $"/api/contests/{contest}/checkin/fencers/{reference}");
 
-		/// <summary>Passe de l'appel à la phase de lobby et répartit les joueurs en <paramref name="lobbies"/> lobbys (la phase d'appel doit être terminée).</summary>
-		public async Task BeginLobby(string contest, int lobbies)
-		{
-			await Send(HttpMethod.Post, $"/api/contests/{contest}/next");
-			var schedule = await Send(HttpMethod.Get, $"/api/contests/{contest}/schedule");
-			int lobby = FindStage(schedule, "lobby");
-			await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{lobby}", new { action = "composition", lobbies = Math.Max(1, lobbies), distribution = "balanced" });
-		}
-
-		/// <summary>Saisit la place d'un joueur dans une manche (0 = première manche) du lobby <paramref name="lobbyIndex"/>. Place 0 ou moins : abandon.</summary>
-		public async Task SetFinish(string contest, int lobbyIndex, int race, int reference, int place)
-		{
-			var schedule = await Send(HttpMethod.Get, $"/api/contests/{contest}/schedule");
-			int stage = FindStage(schedule, "lobby");
-			await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{stage}", new { action = "finish", lobby = lobbyIndex, race, player = reference, value = place > 0 ? place.ToString() : "A" });
-		}
+		/// <summary>Saisit la place d'un joueur dans une manche (0 = première manche de la phase) d'un lobby de la phase <paramref name="stage"/>. Place 0 ou moins : abandon.</summary>
+		public async Task SetFinish(string contest, int stage, int lobbyIndex, int race, int reference, int place)
+			=> await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{stage}", new { action = "finish", lobby = lobbyIndex, race, player = reference, value = place > 0 ? place.ToString() : "A" });
 
 		// ------------------------------------------------------------------ duels (poules puis tableaux)
-
-		/// <summary>Crée la compétition d'un tournoi en duels : appel, poules, tableau et classement (la formule par défaut de ManageComp). Les scores vont jusqu'à <paramref name="scoreLimit"/>.</summary>
-		public async Task<string> CreateDuelTournament(string name, string date, int scoreLimit)
-		{
-			var created = await Send(HttpMethod.Post, "/api/contests", new { name, organizer = "Open Esport", location = "En ligne", weapon = "X", gender = "X", category = 9, date });
-			return created.GetProperty("id").GetString();
-		}
-
-		/// <summary>Ferme l'appel et passe aux poules ; le score maximum des poules et du tableau est réglé sur celui de la partie.</summary>
-		public async Task BeginDuels(string contest, int scoreLimit)
-		{
-			await Send(HttpMethod.Post, $"/api/contests/{contest}/next");        // appel → composition des poules
-			await Send(HttpMethod.Post, $"/api/contests/{contest}/next");        // composition → poules
-			var schedule = await Send(HttpMethod.Get, $"/api/contests/{contest}/schedule");
-			int pools = FindStage(schedule, "pool_supervisor"), table = FindStage(schedule, "table");
-			await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{pools}", new { action = "settings", max_score = scoreLimit });
-			await Send(HttpMethod.Post, $"/api/contests/{contest}/stages/{table}", new { action = "settings", max_score = scoreLimit });
-		}
 
 		public async Task<(string kind, int index)> CurrentStage(string contest)
 		{
 			var schedule = await Send(HttpMethod.Get, $"/api/contests/{contest}/schedule");
-			int current = schedule.GetProperty("current").GetInt32();
+			int current = schedule.TryGetProperty("current", out var c) && c.ValueKind == JsonValueKind.Number ? c.GetInt32() : 0;
 			foreach (var s in schedule.GetProperty("stages").EnumerateArray())
 				if (s.GetProperty("index").GetInt32() == current) return (s.GetProperty("kind").GetString(), current);
 			return (null, current);
@@ -244,12 +259,5 @@ namespace OpenEsport.Accounts
 			return (await Send(HttpMethod.Get, $"/api/contests/{contest}/stages/{stage}")).GetProperty("data");
 		}
 
-		/// <summary>Le classement cumulé de la phase de lobby (tel que ManageComp le calcule) et la composition des lobbys.</summary>
-		public async Task<JsonElement> Stage(string contest)
-		{
-			var schedule = await Send(HttpMethod.Get, $"/api/contests/{contest}/schedule");
-			int stage = FindStage(schedule, "lobby");
-			return (await Send(HttpMethod.Get, $"/api/contests/{contest}/stages/{stage}")).GetProperty("data");
-		}
 	}
 }

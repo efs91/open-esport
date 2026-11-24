@@ -17,9 +17,10 @@
     "MENU_MODULES": "Modules",
     "MAP_1": "Carte 1",
     "SETTINGS_LANGUAGE": "Langue",
+    "MENU_SETTINGS_GRAPHICS": "Graphismes",
     "SETTINGS_AVAILABLE_MODULES": "Modules Disponibles",
     "SETTINGS_INSTALLED_MODULES": "Modules Installés",
     "MENU_MAIN": "Retour au menu principal",
-    "MENU_INGAME": "Menu In-Game"
-
-} 
+    "MENU_INGAME": "Menu In-Game",
+    "MENU_CREDITS": "Crédits"
+}

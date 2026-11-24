@@ -16,8 +16,7 @@ namespace Openesport.Menus
 		private const double PollSeconds = 3.0, TournamentSeconds = 60.0;
 		private VBoxContainer _box;
 		private double _poll, _tournaments = TournamentSeconds;
-		private bool _busy, _showFriends = true, _showCreate;
-		private LineEdit _createName, _createWhen; private SpinBox _createRaces; private OptionButton _createFormat;
+		private bool _busy, _showFriends = true;
 		private string _signature = "", _message = "";
 		private int _joinedSeq;
 		private LineEdit _addField;
@@ -78,43 +77,56 @@ namespace Openesport.Menus
 			return string.Join("|", s.Party == null ? "-" : $"{s.Party.Id}:{s.Party.Leader}:{string.Join(",", s.Party.Members.Select(x => x.Login))}:{string.Join(",", s.Party.Pending)}",
 				string.Join(",", s.Invites.Select(i => i.PartyId + i.From)),
 				string.Join(",", f.Friends.Select(x => x.Login + x.State + x.Online + x.PartyId)),
-				string.Join(",", t.Tournaments.Take(4).Select(x => x.Id + x.Date)), string.Join(",", t.Games.Select(g => g.Id + g.State + g.Players + g.Joined + g.Race)), AccountClient.LoggedIn);
+				string.Join(",", t.Tournaments.Take(4).Select(x => x.Id + x.Date)), string.Join(",", t.Games.Select(g => g.Id + g.State + g.Players + g.Joined + g.Race + g.CheckedIn + g.StartAt + g.Invitations.Count + (g.MyTeam == null ? "" : g.MyTeam.Members.Count + "/" + g.MyTeam.Invites.Count))), AccountClient.LoggedIn);
 		}
 
 		private void Rebuild()
 		{
-			string sig = Signature() + _message + _showFriends + _showCreate;
+			string sig = Signature() + _message + _showFriends + (DateTimeOffset.UtcNow.ToUnixTimeSeconds() / 60);      // les comptes à rebours avancent
 			if (sig == _signature) return;
 			// on ne reconstruit pas pendant la saisie d'un nom d'ami
 			if (_addField != null && IsInstanceValid(_addField) && _addField.HasFocus()) return;
-			if ((_createName != null && IsInstanceValid(_createName) && _createName.HasFocus()) || (_createWhen != null && IsInstanceValid(_createWhen) && _createWhen.HasFocus())) return;
 			_signature = sig;
 			foreach (var c in _box.GetChildren()) c.QueueFree();
 
-			// ---- tournois programmés
+			// ---- tournois : rappels de ses tournois (date, check-in, manche à jouer), les prochains, la page dédiée
 			var tv = new VBoxContainer();
 			tv.AddThemeConstantOverride("separation", 4);
-			tv.AddChild(Title(I18n.T("Tournois programmés")));
-			var games = SocialClient.Tournaments.Games.Take(4).ToList();
-			var published = SocialClient.Tournaments.Tournaments.Take(Math.Max(0, 4 - games.Count)).ToList();
-			if (games.Count == 0 && published.Count == 0) tv.AddChild(Muted(SocialClient.Tournaments.Configured ? I18n.T("Aucun tournoi programmé pour le moment.") : I18n.T("Les tournois arrivent bientôt.")));
-			foreach (var g in games)
-			{
-				var row = new HBoxContainer();
-				string when = DateTimeOffset.FromUnixTimeSeconds(g.StartAt).ToLocalTime().ToString("dd/MM HH:mm");
-				string state = g.State == "running" ? (g.Mode == "duel" ? I18n.T("en cours") : I18n.T("manche {0}/{1}", Math.Min(g.Race + 1, g.Races), g.Races)) : g.State == "done" ? I18n.T("terminé") : I18n.T("{0} inscrit(s)", g.Players);
-				var label = new Label { Text = $"{when}  {g.Title}  ({state})", SizeFlagsHorizontal = SizeFlags.ExpandFill, ClipText = true, TooltipText = g.Mode == "duel" ? I18n.T("Duel {0} contre {0}, premier à {1}, organisé par {2}", g.TeamSize, g.ScoreLimit, g.Owner) : I18n.T("{0} manche(s), organisé par {1}", g.Races, g.Owner) };
-				row.AddChild(label);
-				long id = g.Id;
-				if (AccountClient.LoggedIn && g.State == "open")
+			tv.AddChild(Title(I18n.T("Tournois")));
+			var all = SocialClient.Tournaments.Games;
+			var mine = all.Where(g => g.Joined && (g.State == "open" || g.State == "running")).OrderBy(g => g.StartAt).Take(3).ToList();
+			var upcoming = all.Where(g => !g.Joined && g.State == "open").OrderBy(g => g.StartAt).Take(Math.Max(1, 3 - mine.Count)).ToList();
+			var published = SocialClient.Tournaments.Tournaments.Take(Math.Max(0, 3 - mine.Count - upcoming.Count)).ToList();
+			// invitations dans une équipe de tournoi : accepter ou refuser tout de suite
+			foreach (var g in all.Where(g => g.State == "open" && !g.Joined))
+				foreach (var inv in g.Invitations)
 				{
-					row.AddChild(Small(g.Joined ? I18n.T("Quitter") : I18n.T("S'inscrire"), () => Act(SocialClient.TournamentActionAsync(id, g.Joined ? "leave" : "join"))));
-					if (g.IsOwner) row.AddChild(Small(I18n.T("Lancer"), () => Act(SocialClient.TournamentActionAsync(id, "start"))));
+					long id = g.Id; int reference = inv.Reference;
+					tv.AddChild(Alert(I18n.T("✉ {0} t'invite dans son équipe pour « {1} » ({2}).", inv.Captain, g.Title, DateTimeOffset.FromUnixTimeSeconds(g.StartAt).ToLocalTime().ToString("dd/MM HH:mm"))));
+					var row = new HBoxContainer();
+					row.AddThemeConstantOverride("separation", 6);
+					row.AddChild(Small(I18n.T("Accepter"), () => Act(SocialClient.TournamentActionAsync(id, "accept", reference: reference))));
+					row.AddChild(Small(I18n.T("Refuser"), () => Act(SocialClient.TournamentActionAsync(id, "decline", reference: reference))));
+					row.AddChild(Small(I18n.T("Voir"), () => OpenTournaments(id)));
+					tv.AddChild(row);
 				}
-				if (AccountClient.LoggedIn && g.State == "running" && g.Joined)
-					row.AddChild(Small(g.Mode == "duel" ? I18n.T("Jouer mon match") : I18n.T("Jouer la manche"), () => PlayRace(id)));
-				if (g.State != "open") row.AddChild(Small(I18n.T("Classement"), () => ShowStandings(id, g.Title)));
+			if (mine.Count > 0) tv.AddChild(Muted(I18n.T("Tes tournois")));
+			foreach (var g in mine)
+			{
+				long id = g.Id;
+				string when = g.State == "running" ? (g.PhaseRaces > 0 ? I18n.T("en cours · {0} {1}/{2}", I18n.T(g.PhaseName), g.PhaseRace, g.PhaseRaces) : I18n.T("en cours · {0}", I18n.T(g.PhaseName)))
+					: $"{DateTimeOffset.FromUnixTimeSeconds(g.StartAt).ToLocalTime():dd/MM HH:mm} · {TournamentsScreen.Countdown(g.StartAt)}";
+				var row = new HBoxContainer();
+				row.AddChild(Link($"★ {g.Title}\n{when}", () => OpenTournaments(id)));
+				if (g.State == "running") row.AddChild(Small(g.Duel ? I18n.T("Jouer mon match") : I18n.T("Jouer"), () => TournamentsScreen.PlayTournament(this, id, e => { _message = e; _signature = ""; Rebuild(); })));
+				else if (g.CheckInOpen && !g.CheckedIn) row.AddChild(Small(I18n.T("Je suis présent"), () => Act(SocialClient.TournamentActionAsync(id, "checkin"))));
 				tv.AddChild(row);
+			}
+			if (upcoming.Count > 0) tv.AddChild(Muted(I18n.T("À venir")));
+			foreach (var g in upcoming)
+			{
+				long id = g.Id;
+				tv.AddChild(Link($"{DateTimeOffset.FromUnixTimeSeconds(g.StartAt).ToLocalTime():dd/MM HH:mm}  {g.Title}\n{TournamentsScreen.FormatLabel(g)} · {TournamentsScreen.StateLabel(g)}", () => OpenTournaments(id)));
 			}
 			foreach (var t in published)
 			{
@@ -123,13 +135,15 @@ namespace Openesport.Menus
 				b.Pressed += () => { if (!string.IsNullOrEmpty(url) && (url.StartsWith("https://") || url.StartsWith("http://"))) OS.ShellOpen(url); };
 				tv.AddChild(b);
 			}
-			if (AccountClient.LoggedIn && SocialClient.Tournaments.Configured)
-			{
-				var createHead = new Button { Text = (_showCreate ? "▾ " : "▸ ") + I18n.T("Créer un tournoi"), Flat = true, Alignment = HorizontalAlignment.Left };
-				createHead.Pressed += () => { _showCreate = !_showCreate; _signature = ""; Rebuild(); };
-				tv.AddChild(createHead);
-				if (_showCreate) tv.AddChild(CreateForm());
-			}
+			if (mine.Count == 0 && upcoming.Count == 0 && published.Count == 0)
+				tv.AddChild(Muted(SocialClient.Tournaments.Configured ? I18n.T("Aucun tournoi programmé pour le moment.") : I18n.T("Les tournois arrivent bientôt.")));
+			var buttons = new HBoxContainer();
+			buttons.AddThemeConstantOverride("separation", 6);
+			buttons.AddChild(Small(I18n.T("Tous les tournois"), () => OpenTournaments(0)));
+			if (AccountClient.LoggedIn && SocialClient.Tournaments.Configured) buttons.AddChild(Small(I18n.T("Créer"), () => OpenTournaments(0, create: true)));
+			tv.AddChild(buttons);
+			string reminder = Reminder(mine);
+			if (reminder != null) tv.AddChild(Alert(reminder));
 			_box.AddChild(MenuStyle.Card(tv, margin: 12));
 			if (!AccountClient.LoggedIn) return;
 
@@ -212,67 +226,30 @@ namespace Openesport.Menus
 			_box.AddChild(MenuStyle.Card(fv, margin: 12));
 		}
 
-		/// <summary>Formulaire de création : nom, date et heure locales (JJ/MM/AAAA HH:MM), nombre de manches (battle royale, classement cumulé).</summary>
-		private Control CreateForm()
+		/// <summary>Ouvre la page Tournois (sur un tournoi, ou sur la création).</summary>
+		private void OpenTournaments(long id, bool create = false)
 		{
-			var v = new VBoxContainer();
-			v.AddThemeConstantOverride("separation", 4);
-			_createName = new LineEdit { PlaceholderText = I18n.T("Nom du tournoi"), MaxLength = 60 };
-			_createWhen = new LineEdit { PlaceholderText = I18n.T("JJ/MM/AAAA HH:MM"), Text = DateTime.Now.AddHours(2).ToString("dd/MM/yyyy HH:00") };
-			v.AddChild(_createName);
-			v.AddChild(_createWhen);
-			_createFormat = new OptionButton();
-			_createFormat.AddItem(I18n.T("Battle royale (manches, classement cumulé)"));
-			_createFormat.AddItem(I18n.T("Battle royale en duo (équipes de 2)"));
-			_createFormat.AddItem(I18n.T("Battle royale en trio (équipes de 3)"));
-			_createFormat.AddItem(I18n.T("Duels 1 contre 1 (poules + tableau)"));
-			_createFormat.AddItem(I18n.T("Duels 2 contre 2 (poules + tableau)"));
-			v.AddChild(_createFormat);
-			var races = new HBoxContainer();
-			var racesLabel = new Label { Text = I18n.T("Manches"), SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			races.AddChild(racesLabel);
-			_createRaces = new SpinBox { MinValue = 1, MaxValue = 10, Value = 5 };
-			races.AddChild(_createRaces);
-			v.AddChild(races);
-			// duel : le nombre de manches devient le nombre de victimes pour gagner un match
-			_createFormat.ItemSelected += i =>
-			{
-				bool duel = i >= 3;
-				racesLabel.Text = duel ? I18n.T("Victimes pour gagner") : I18n.T("Manches");
-				_createRaces.MinValue = duel ? 3 : 1; _createRaces.MaxValue = duel ? 30 : 10; _createRaces.Value = duel ? 10 : 5;
-			};
-			v.AddChild(Small(I18n.T("Créer"), () =>
-			{
-				if (!DateTime.TryParseExact(_createWhen.Text.Trim(), "dd/MM/yyyy HH:mm", null, System.Globalization.DateTimeStyles.AssumeLocal, out var when))
-				{ _message = I18n.T("Date invalide : écris JJ/MM/AAAA HH:MM."); _signature = ""; Rebuild(); return; }
-				_showCreate = false;
-				int format = _createFormat.Selected;
-				bool duel = format >= 3;
-				Act(SocialClient.CreateTournamentAsync(_createName.Text, new DateTimeOffset(when).ToUnixTimeSeconds(), duel ? 0 : (int)_createRaces.Value,
-					duel ? "duel" : "br", duel ? format - 2 : format + 1, duel ? (int)_createRaces.Value : 0));
-			}));
-			return v;
+			var root = GetTree().Root;
+			root.GetNodeOrNull("TournamentsScreen")?.QueueFree();
+			var screen = new TournamentsScreen { Name = "TournamentsScreen", Focus = id, StartWithCreate = create };
+			screen.Closed += () => { _tournaments = TournamentSeconds; _signature = ""; };
+			root.AddChild(screen);
 		}
 
-		/// <summary>Cherche la partie de sa manche : le matchmaking réunit les joueurs du lobby sur un même serveur réservé.</summary>
-		private async void PlayRace(long id)
+		/// <summary>Rappel du moment : check-in ouvert, départ imminent, manche à jouer.</summary>
+		private static string Reminder(System.Collections.Generic.List<GameTournamentDto> mine)
 		{
-			var (error, tag, mode, teamSize) = await SocialClient.MyRaceAsync(id);
-			if (error != null) { _message = error; _signature = ""; Rebuild(); return; }
-			var screen = new MatchmakingScreen { Name = "MatchmakingScreen", Tournament = tag, TournamentTeamSize = teamSize };
-			screen.OnFound = (h, p) => SocialClient.JoinPartyGame?.Invoke(h, p, mode, teamSize);
-			GetTree().Root.AddChild(screen);
-		}
-
-		/// <summary>Affiche le classement d'un tournoi dans une fenêtre.</summary>
-		private async void ShowStandings(long id, string title)
-		{
-			var (error, lines) = await SocialClient.StandingsAsync(id);
-			string text = error ?? (lines.Count == 0 ? I18n.T("Pas encore de classement.") : string.Join((char)10, lines.Take(20)));
-			var dialog = new AcceptDialog { Title = title, DialogText = text };
-			dialog.Confirmed += dialog.QueueFree; dialog.Canceled += dialog.QueueFree;
-			GetTree().Root.AddChild(dialog);
-			dialog.PopupCentered(new Vector2I(420, 360));
+			foreach (var g in mine)
+			{
+				if (g.State == "running") return I18n.T("« {0} » est en cours : à toi de jouer !", g.Title);
+				if (g.MyTeam != null && !g.MyTeam.Complete && g.State == "open")
+					return g.MyTeam.Captain ? I18n.T("Ton équipe pour « {0} » est incomplète ({1}/{2}) : invite tes coéquipiers depuis la page du tournoi.", g.Title, g.MyTeam.Members.Count, g.TeamSize)
+						: I18n.T("L'équipe de {0} pour « {1} » est incomplète ({2}/{3}).", g.MyTeam.CaptainName, g.Title, g.MyTeam.Members.Count, g.TeamSize);
+				if (g.CheckInOpen && !g.CheckedIn) return I18n.T("Check-in ouvert pour « {0} » : confirme ta présence, sinon ton inscription sera retirée.", g.Title);
+				long s = g.StartAt - DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+				if (g.StartMode != "manual" && s > 0 && s <= 3600) return I18n.T("« {0} » commence {1}.", g.Title, TournamentsScreen.Countdown(g.StartAt));
+			}
+			return null;
 		}
 
 		private async void Act(System.Threading.Tasks.Task<string> task)
@@ -294,5 +271,13 @@ namespace Openesport.Menus
 		private static Label Title(string text) { var l = new Label { Text = text }; l.AddThemeFontSizeOverride("font_size", 18); return l; }
 		private static Label Muted(string text) { var l = new Label { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart }; l.AddThemeColorOverride("font_color", MenuStyle.Muted); l.AddThemeFontSizeOverride("font_size", 14); return l; }
 		private static Button Small(string text, Action onPressed) { var b = new Button { Text = text }; b.Pressed += onPressed; return b; }
+		private static Button Link(string text, Action onPressed)
+		{
+			var b = new Button { Text = text, Flat = true, Alignment = HorizontalAlignment.Left, ClipText = true, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+			b.AddThemeFontSizeOverride("font_size", 14);
+			b.Pressed += onPressed;
+			return b;
+		}
+		private static Label Alert(string text) { var l = new Label { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart }; l.AddThemeColorOverride("font_color", new Color(1f, 0.82f, 0.35f)); l.AddThemeFontSizeOverride("font_size", 14); return l; }
 	}
 }

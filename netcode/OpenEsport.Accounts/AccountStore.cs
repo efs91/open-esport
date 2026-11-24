@@ -14,6 +14,11 @@ namespace OpenEsport.Accounts
 		public string Mode; public int Matches, Wins, Kills, Deaths, Rating = Ratings.Start, BestPlacement, Rank;
 		public long Damage;
 	}
+	/// <summary>Une partie jouée par un compte (historique) : la page profil et le menu affichent la dernière.</summary>
+	public sealed class MatchHistoryRow
+	{
+		public long At; public string Mode; public int TeamSize, Seconds, Placement, Players, Kills, Deaths, Delta, Rating; public long Damage; public bool Won;
+	}
 	public sealed class LeaderboardRow
 	{
 		public int Rank { get; set; }
@@ -35,6 +40,8 @@ namespace OpenEsport.Accounts
 		public int Kills { get; set; }
 		public int Deaths { get; set; }
 		public long Damage { get; set; }
+		/// <summary>Temps passé dans la partie (s).</summary>
+		public int Seconds { get; set; }
 	}
 
 	/// <summary>
@@ -47,6 +54,7 @@ namespace OpenEsport.Accounts
 		public string Mode { get; set; }
 		public int WinnerTeam { get; set; } = -1;
 		public int PlayerCount { get; set; }
+		public int TeamSize { get; set; } = 1;
 		public List<PlayerResult> Players { get; set; } = new List<PlayerResult>();
 	}
 
@@ -70,15 +78,37 @@ namespace OpenEsport.Accounts
 				Exec(c, "CREATE TABLE IF NOT EXISTS mode_stats(account_id INTEGER NOT NULL, mode TEXT NOT NULL, matches INTEGER NOT NULL DEFAULT 0, wins INTEGER NOT NULL DEFAULT 0, kills INTEGER NOT NULL DEFAULT 0, deaths INTEGER NOT NULL DEFAULT 0, damage INTEGER NOT NULL DEFAULT 0, rating INTEGER NOT NULL DEFAULT 1000, best_placement INTEGER NOT NULL DEFAULT 0, last_played INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(account_id, mode))");
 				Exec(c, "CREATE INDEX IF NOT EXISTS mode_stats_rank ON mode_stats(mode, rating DESC)");
 				Exec(c, "CREATE TABLE IF NOT EXISTS matches(id TEXT PRIMARY KEY, at INTEGER NOT NULL)");
+				Exec(c, "CREATE TABLE IF NOT EXISTS match_history(account_id INTEGER NOT NULL, at INTEGER NOT NULL, mode TEXT NOT NULL, team_size INTEGER NOT NULL, seconds INTEGER NOT NULL, placement INTEGER NOT NULL, players INTEGER NOT NULL, kills INTEGER NOT NULL, deaths INTEGER NOT NULL, damage INTEGER NOT NULL, won INTEGER NOT NULL, delta INTEGER NOT NULL, rating INTEGER NOT NULL)");
+				Exec(c, "CREATE INDEX IF NOT EXISTS match_history_account ON match_history(account_id, at DESC)");
 				Exec(c, "CREATE TABLE IF NOT EXISTS friends(a INTEGER NOT NULL, b INTEGER NOT NULL, accepted INTEGER NOT NULL DEFAULT 0, created INTEGER NOT NULL, PRIMARY KEY(a, b))");
 				Exec(c, "CREATE INDEX IF NOT EXISTS friends_b ON friends(b)");
 				Exec(c, "CREATE TABLE IF NOT EXISTS tournaments(id INTEGER PRIMARY KEY AUTOINCREMENT, contest TEXT NOT NULL, title TEXT NOT NULL, mode TEXT NOT NULL, team_size INTEGER NOT NULL, races INTEGER NOT NULL, lobby_size INTEGER NOT NULL, start_at INTEGER NOT NULL, owner INTEGER NOT NULL, state TEXT NOT NULL, race INTEGER NOT NULL DEFAULT 0, score_limit INTEGER NOT NULL DEFAULT 0, created INTEGER NOT NULL)");
 				Exec(c, "CREATE TABLE IF NOT EXISTS tournament_players(tid INTEGER NOT NULL, account INTEGER NOT NULL, ref INTEGER NOT NULL, PRIMARY KEY(tid, account))");
+				// tournois : configuration complète (JSON), phase en cours et numéro de la première manche de cette phase ; présence confirmée (check-in)
+				AddColumn(c, "tournaments", "config", "TEXT NOT NULL DEFAULT ''");
+				AddColumn(c, "tournaments", "phase", "INTEGER NOT NULL DEFAULT 0");
+				AddColumn(c, "tournaments", "race_base", "INTEGER NOT NULL DEFAULT 0");
+				AddColumn(c, "tournaments", "note", "TEXT NOT NULL DEFAULT ''");
+				AddColumn(c, "tournament_players", "checked_in", "INTEGER NOT NULL DEFAULT 0");
+				AddColumn(c, "tournament_players", "captain", "INTEGER NOT NULL DEFAULT 0");
+				// invitations dans une équipe de tournoi : le chef propose, l'invité accepte ou refuse
+				Exec(c, "CREATE TABLE IF NOT EXISTS tournament_invites(tid INTEGER NOT NULL, account INTEGER NOT NULL, ref INTEGER NOT NULL, inviter INTEGER NOT NULL, created INTEGER NOT NULL, PRIMARY KEY(tid, account, ref))");
 				return 0;
 			});
 		}
 
 		public static long Now() => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+		/// <summary>Ajoute une colonne à une table existante si elle n'y est pas encore (mise à jour d'une base déjà en service).</summary>
+		private static void AddColumn(SqliteConnection c, string table, string column, string definition)
+		{
+			using (var cmd = c.CreateCommand())
+			{
+				cmd.CommandText = $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name = '{column}'";
+				if (Convert.ToInt64(cmd.ExecuteScalar()) > 0) return;
+			}
+			Exec(c, $"ALTER TABLE {table} ADD COLUMN {column} {definition}");
+		}
 
 		private T Run<T>(Func<SqliteConnection, T> body)
 		{
@@ -272,6 +302,15 @@ namespace OpenEsport.Accounts
 			return list;
 		});
 
+		/// <summary>La dernière partie jouée par le compte (null s'il n'en a joué aucune depuis la tenue de l'historique).</summary>
+		public MatchHistoryRow LastMatch(long accountId) => Run(c =>
+			Query(c, "SELECT at, mode, team_size, seconds, placement, players, kills, deaths, damage, won, delta, rating FROM match_history WHERE account_id = @a ORDER BY at DESC, rowid DESC LIMIT 1",
+				r => new MatchHistoryRow
+				{
+					At = r.GetInt64(0), Mode = r.GetString(1), TeamSize = r.GetInt32(2), Seconds = r.GetInt32(3), Placement = r.GetInt32(4), Players = r.GetInt32(5),
+					Kills = r.GetInt32(6), Deaths = r.GetInt32(7), Damage = r.GetInt64(8), Won = r.GetInt32(9) != 0, Delta = r.GetInt32(10), Rating = r.GetInt32(11)
+				}, ("@a", accountId)).FirstOrDefault());
+
 		/// <summary>Classement général du compte : (score, rang, parties). Le rang est 0 tant que le joueur a moins de <see cref="MinGeneralMatches"/> parties.</summary>
 		public (int rating, int rank, int matches) General(long accountId) => Run(c =>
 		{
@@ -345,6 +384,10 @@ namespace OpenEsport.Accounts
 					Exec(c, "INSERT INTO mode_stats(account_id, mode, matches, wins, kills, deaths, damage, rating, best_placement, last_played) VALUES(@a, @m, @n, @w, @k, @d, @g, @r, @b, @t) "
 						+ "ON CONFLICT(account_id, mode) DO UPDATE SET matches = @n, wins = @w, kills = @k, deaths = @d, damage = @g, rating = @r, best_placement = @b, last_played = @t",
 						("@a", p.AccountId), ("@m", key), ("@n", s.Matches), ("@w", s.Wins), ("@k", s.Kills), ("@d", s.Deaths), ("@g", s.Damage), ("@r", s.Rating), ("@b", s.BestPlacement), ("@t", Now()));
+					// historique : cette partie telle que le joueur l'a vécue
+					Exec(c, "INSERT INTO match_history(account_id, at, mode, team_size, seconds, placement, players, kills, deaths, damage, won, delta, rating) VALUES(@a, @t, @m, @s, @sec, @p, @n, @k, @d, @g, @w, @dl, @r)",
+						("@a", p.AccountId), ("@t", Now()), ("@m", key), ("@s", Math.Clamp(report.TeamSize, 1, 10)), ("@sec", Math.Max(0, p.Seconds)), ("@p", Math.Max(0, p.Placement)), ("@n", Math.Max(0, report.PlayerCount)),
+						("@k", Math.Max(0, p.Kills)), ("@d", Math.Max(0, p.Deaths)), ("@g", Math.Max(0, p.Damage)), ("@w", won ? 1 : 0), ("@dl", delta), ("@r", s.Rating));
 				}
 				tx.Commit();
 				return true;

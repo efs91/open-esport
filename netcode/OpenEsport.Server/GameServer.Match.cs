@@ -68,7 +68,7 @@ namespace OpenEsport.Server
 					break;
 			}
 			// plus que des bots : la partie n'a plus de raison d'être
-			if (Phase != MatchPhase.Lobby && _humans.Count == 0)
+			if (Phase != MatchPhase.Lobby && _humans.Count == 0 && _away.Count == 0)
 			{
 				_noHumansTimer += dt;
 				if (_noHumansTimer >= _opt.EmptyExitSeconds) { Log("Plus aucun joueur humain : fin de la partie"); _noHumansTimer = 0f; FinishMatch(); return; }
@@ -85,6 +85,7 @@ namespace OpenEsport.Server
 			_orders.Clear();
 			if (Modal) { StartModalMatch(); return; }
 			Phase = MatchPhase.Playing;
+			_playStartTick = _tick;
 			_departed.Clear();
 			_countdown = -1f;
 			if (_opt.FillBots)
@@ -96,7 +97,7 @@ namespace OpenEsport.Server
 			StartZone();
 			foreach (var p in _players)
 			{
-				p.Alive = true; p.Downed = false; p.Health = 100f; p.Kills = 0; p.Deaths = 0; p.DamageDealt = 0f; p.Placement = 0; p.LastAttacker = null; p.ReviveTarget = null;
+				p.Alive = true; p.Downed = false; p.Health = 100f; p.Kills = 0; p.Deaths = 0; p.DamageDealt = 0f; p.Placement = 0; p.LastAttacker = null; p.ReviveTarget = null; p.OutTick = 0;
 				p.Shield = Consumables.ShieldMaxOf(p.Inventory.ShieldTier);
 				p.State = _flight;
 				p.State.OnGround = false;
@@ -159,6 +160,7 @@ namespace OpenEsport.Server
 		private void EliminateCore(ServerPlayer victim, ServerPlayer killer, byte weaponId, bool announce)
 		{
 			victim.Alive = false; victim.Downed = false; victim.Deaths++;
+			if (Royale && victim.OutTick == 0) victim.OutTick = _tick;
 			victim.Health = 0f; victim.Shield = 0f;
 			victim.UseId = 0; victim.Reloading = false; victim.ReviveTarget = null;
 			victim.State.Stance = Stance.Standing;
@@ -297,8 +299,9 @@ namespace OpenEsport.Server
 			SendModeStates();
 		}
 
-		/// <summary>Réponse à la requête « STATUS » d'un matchmaking : OE|phase|humains|requis|taille d'équipe|places|compte à rebours.</summary>
-		private string StatusLine() => $"OE|{(int)Phase}|{_humans.Count}|{_opt.MinPlayers}|{_m.TeamSize}|{_m.MaxPlayers}|{Math.Max(0, (int)Math.Ceiling(_countdown))}";
+		/// <summary>Réponse à la requête « STATUS » d'un matchmaking : OE|phase|humains|requis|taille d'équipe|places|compte à rebours|temps restant (s)|score 0|score 1.</summary>
+		private string StatusLine() => $"OE|{(int)Phase}|{_humans.Count + _away.Count}|{_opt.MinPlayers}|{_m.TeamSize}|{_m.MaxPlayers}|{Math.Max(0, (int)Math.Ceiling(_countdown))}"
+			+ (Modal ? $"|{Math.Max(0, (int)Math.Ceiling(_mode.TimeLeft))}|{_mode.Score[0]}|{_mode.Score[1]}" : "|0|0|0");
 
 		// ------------------------------------------------------------------ fin de partie
 
@@ -478,22 +481,21 @@ namespace OpenEsport.Server
 				float dist = MathF.Sqrt(dx * dx + dz * dz);
 				float alt = Math.Max(5f, st.Pos.Y - _world.HeightAt(target.X, target.Z));
 				// l'inclinaison qui amène juste au-dessus du but : temps de chute = distance / vitesse horizontale
-				// « avancer » plonge (au moins 72 %), sinon on reste à plat ventre : le bot choisit entre les deux, plus les piqués plus raides
-				float bestT = 0f, bestErr = float.MaxValue;
+				// à plat ventre (« avancer » relâché) ou en accélérant, le regard plus ou moins vers le sol : le bot choisit ce qui tombe le plus juste
+				float bestDown = 0f, bestErr = float.MaxValue; bool bestHeld = false;
 				for (int i = -1; i <= 10; i++)
 				{
-					float t = i < 0 ? 0f : 0.72f + 0.28f * (i / 10f);
-					float fall = Sim.DiveFallMin + (Sim.DiveFallMax - Sim.DiveFallMin) * t;
-					float glide = Sim.DiveGlideMax + (Sim.DiveGlideMin - Sim.DiveGlideMax) * t;
+					bool held = i >= 0; float down = held ? i / 10f : 0f;
+					PlayerMovement.DiveSpeeds(held, down, out float fall, out float glide);
 					float err = MathF.Abs(dist - glide * alt / fall);
-					if (err < bestErr) { bestErr = err; bestT = t; }
+					if (err < bestErr) { bestErr = err; bestDown = down; bestHeld = held; }
 				}
 				float desiredYaw = MathF.Atan2(-dx, -dz);
 				float turn = 3.5f * dt;
 				b.Yaw += Math.Clamp(WrapAngle(desiredYaw - b.Yaw), -turn, turn);
-				pitch = -bestT * 1.4f;
+				pitch = -bestDown * 1.4f;
 				b.Pitch = pitch;
-				b.DiveForward = bestT > 0f;
+				b.DiveForward = bestHeld;
 			}
 			p.EnqueueInput(PlayerInput.Create(++b.Seq, st.Stance == Stance.Diving && b.DiveForward ? 1f : 0f, 0f, buttons, 0, b.Yaw, pitch, _tick));
 		}

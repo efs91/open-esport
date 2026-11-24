@@ -97,6 +97,7 @@ namespace OpenEsport.Matchmaker
 			Console.CancelKeyPress += (s, e) => { e.Cancel = true; cts.Cancel(); };
 			AppDomain.CurrentDomain.ProcessExit += (s, e) => cts.Cancel();
 			var service = new MatchmakerService(opt, launcher);
+			service.AccountsUrl = accountsUrl; service.AccountsKey = Environment.GetEnvironmentVariable("OE_ACCOUNTS_KEY");
 			AdminApi admin = null;
 			if (opt.AdminPort > 0)
 			{

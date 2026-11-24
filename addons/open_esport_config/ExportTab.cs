@@ -84,7 +84,7 @@ namespace Openesport.EditorTools
 					if (select)
 					{
 						Status("Tri des fichiers à exporter…");
-						var (code, text) = Exec(Python(), new[] { Path.Combine(project, "tools", "export", "select_export.py") }, project, null, TimeSpan.FromMinutes(5));
+						var (code, text) = Exec(Python(), new[] { Path.Combine(project, "tools", "export", "select_export.py"), "--godot", godot }, project, null, TimeSpan.FromMinutes(5));
 						Log(text.Trim());
 						ok = code == 0;
 						Log(ok ? "→ liste des fichiers mise à jour (export_presets.cfg)." : $"→ échec du tri (code {code}).");

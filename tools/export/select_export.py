@@ -10,11 +10,16 @@ presets of export_presets.cfg.
 Run it before each export (close the export dialog first; the editor rewrites the file on save):
   python tools/export/select_export.py            -> updates export_presets.cfg
   python tools/export/select_export.py --dry-run  -> prints the roots and the size left out
+  --godot <path>: the Godot used to read the dependencies (default: the GODOT variable, then PATH, then C:/Godot)
 """
 import fnmatch
+import glob
 import os
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -38,7 +43,6 @@ ALWAYS_GLOBS = ("assets/maps/*",)
 LITERAL = re.compile(r'"((?:[^"\\\n]|\\.)*)"')
 # res:// paths anywhere in a text, whatever the quoting (C# verbatim strings write ""res://..."")
 RAW_PATH = re.compile(r"""res://[^"'\n<>|]+?\.[A-Za-z0-9]{2,6}(?=["'\s,;)\]]|$)""")
-EXT_RESOURCE = re.compile(r"^\[ext_resource [^\n]*\]", re.M)
 DIR_PROPERTY = re.compile(r'^\w+ = "res://([^"]*)"\s*$', re.M)
 
 
@@ -148,31 +152,45 @@ def roots():
                 if (ROOT / folder).is_dir():
                     chosen.update(f for f in files if f.startswith(folder.rstrip("/") + "/"))
 
-    # dépendances des scènes et ressources texte (ext_resource) : Godot ne suit pas toujours celles qui n'ont pas d'uid
-    # (les matières de scenes/maps/relais/ manquaient à l'export : Relais et Duel ne se chargeaient pas)
-    known = set(files)
-    todo = [f for f in chosen if f.endswith((".tscn", ".tres"))]
-    seen = set()
-    while todo:
-        f = todo.pop()
-        if f in seen:
-            continue
-        seen.add(f)
-        try:
-            content = (ROOT / f).read_text(encoding="utf-8", errors="ignore")
-        except OSError:
-            continue
-        for line in EXT_RESOURCE.findall(content):
-            dep = None
-            uid = re.search(r'uid="(uid://\w+)"', line)
-            path = re.search(r'path="res://([^"]+)"', line)
-            if path and path.group(1) in known: dep = path.group(1)
-            elif uid and uid.group(1) in uids: dep = uids[uid.group(1)]
-            if dep and dep not in chosen:
-                chosen.add(dep)
-            if dep and dep.endswith((".tscn", ".tres")):
-                todo.append(dep)
     return sorted(chosen), files
+
+
+def find_godot():
+    if "--godot" in sys.argv:
+        return sys.argv[sys.argv.index("--godot") + 1]
+    if os.environ.get("GODOT"):
+        return os.environ["GODOT"]
+    for name in ("godot", "godot4", "godot-mono"):
+        if shutil.which(name): return shutil.which(name)
+    found = sorted(glob.glob("C:/Godot/*/Godot_v4*mono_win64_console.exe"))
+    return found[-1] if found else None
+
+
+def dependencies(chosen):
+    """Dépendances complètes, lues par Godot dans les fichiers importés (tools/export/dependencies.gd), et celles qui n'existent pas.
+    L'export de Godot se fie à un cache qui oublie celles des modèles importés : sans leurs matières, les armes devenaient un cube rose."""
+    godot = find_godot()
+    if not godot:
+        sys.exit("Godot introuvable : indiquer --godot <chemin> (ou la variable GODOT).")
+    with tempfile.TemporaryDirectory() as tmp:
+        source, result = Path(tmp) / "roots.txt", Path(tmp) / "deps.txt"
+        source.write_text("\n".join("res://" + f for f in chosen), encoding="utf-8", newline="\n")
+        log = Path(tmp) / "log.txt"
+        with open(log, "wb") as out:
+            run = subprocess.Popen([godot, "--headless", "--path", str(ROOT), "--script", "res://tools/export/dependencies.gd", "--", str(source), str(result)],
+                                   stdout=out, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+            try: run.wait(timeout=180)
+            except subprocess.TimeoutExpired: run.kill(); run.wait()
+        lines = result.read_text(encoding="utf-8").splitlines() if result.exists() else []
+        if not lines or lines[-1] != "# fin":
+            sys.exit("Lecture des dépendances impossible :\n" + log.read_text(encoding="utf-8", errors="replace")[-2000:])
+    found, missing = set(), []
+    for line in lines[:-1]:
+        if line.startswith("! "): missing.append(line[2:])
+        else:
+            f = line.removeprefix("res://")
+            if not f.startswith(".godot/") and (ROOT / f).is_file(): found.add(f)
+    return found, missing
 
 
 def write_presets(chosen):
@@ -242,13 +260,18 @@ def main():
     # les textures extraites des modèles .glb : l'export ne les suit pas toujours (fichiers recréés par une réimportation)
     present, missing = glb_textures(chosen)
     chosen = sorted(set(chosen) | set(present))
+    found, absent = dependencies(chosen)
+    chosen = sorted(set(chosen) | found)
+    if absent:
+        print("ATTENTION : dépendances introuvables (la ressource ne se chargera pas, ou incomplète) :")
+        for line in absent[:40]: print("  - " + line.replace("\t", " -> "))
     if missing:
         print("ATTENTION : textures extraites d'un modèle .glb supprimées, le modèle ne se chargera pas dans le jeu exporté.")
         print("  Dans Godot : clic droit sur le .glb > Réimporter (les textures sont recréées). Fichiers manquants :")
         for m in missing[:20]: print("  - " + m)
     if "--dry-run" in sys.argv:
         for f in chosen: print(f)
-    print(f"{len(chosen)} ressources racines sur {len(files)} (leurs dépendances suivent à l'export)")
+    print(f"{len(chosen)} ressources retenues, dépendances comprises (sur {len(files)})")
     if "--dry-run" not in sys.argv:
         write_presets(chosen)
         print("export_presets.cfg mis à jour :", ", ".join(PRESETS))

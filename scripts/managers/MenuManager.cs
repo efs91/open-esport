@@ -30,6 +30,7 @@ public partial class MenuManager : Control
         GetNode<TextureRect>("Background").Texture = GD.Load<Texture2D>(MenuStyle.BackgroundPath);
         GetNode<TextureRect>("Background").StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered;
         GetNode<TextureRect>("Background").MouseFilter = MouseFilterEnum.Ignore;
+        GetNode<TextureRect>("Background").AddChild(MenuStyle.Veil());
         _logManager = GetNode<LogManager>(GlobalPaths.Managers.LOG_MANAGER);
         _accountLabel = new Label { HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = MouseFilterEnum.Ignore };
         _accountLabel.AddThemeFontSizeOverride("font_size", 22);

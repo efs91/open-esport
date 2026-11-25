@@ -11,7 +11,7 @@ namespace Openesport.Menus
 		public static readonly Color Ink = new Color("edf4fc");
 		public static readonly Color Cyan = new Color("55d5ed");
 		public static readonly Color Red = new Color("ed4059");
-		public const string BackgroundPath = "res://assets/ui/menu/background.svg";
+		public const string BackgroundPath = "res://assets/textures/Menu/MenuBackgroug.png";
 		private static Theme _theme;
 		public static Theme SharedTheme => _theme ??= BuildTheme();
 
@@ -127,7 +127,16 @@ namespace Openesport.Menus
 			};
 			bg.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			root.AddChild(bg);
+			root.AddChild(Veil());
 			return root;
+		}
+
+		/// <summary>Voile sombre posé sur l'image de fond, pour que le contenu reste lisible.</summary>
+		public static ColorRect Veil()
+		{
+			var veil = new ColorRect { Color = new Color(0, 0, 0, 0.45f), MouseFilter = Control.MouseFilterEnum.Ignore };
+			veil.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+			return veil;
 		}
 
 		public static StyleBoxFlat CardStyle(int margin = 16) => Surface(CardColor, CardBorder, margin);

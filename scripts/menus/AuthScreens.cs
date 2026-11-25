@@ -33,35 +33,52 @@ namespace Openesport.Menus
 			// le décor du menu principal : image de fond, voile sombre, logo et titre
 			root.AddChild(MenuStyle.Backdrop());
 
-			var center = new CenterContainer();
-			center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-			root.AddChild(center);
-			Form = new VBoxContainer { CustomMinimumSize = new Vector2(400, 0) };
-			Form.AddThemeConstantOverride("separation", 14);
-			center.AddChild(MenuStyle.Card(Form, margin: 28));
+			Form = new VBoxContainer { CustomMinimumSize = new Vector2(440, 0) };
+			Form.AddThemeConstantOverride("separation", 8);
+			_card = MenuStyle.Card(Form, margin: 22);
+			root.AddChild(_card);
+			root.Resized += Fit;
+			_card.MinimumSizeChanged += () => CallDeferred(nameof(Fit));
 
 			Form.AddChild(new TextureRect
 			{
 				Texture = GD.Load<Texture2D>("res://assets/textures/logo/logo_294x155.png"),
-				CustomMinimumSize = new Vector2(0, 120), ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
+				CustomMinimumSize = new Vector2(0, 78), ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
 			});
 			var title = new Label { Text = "Open Esport", HorizontalAlignment = HorizontalAlignment.Center };
-			title.AddThemeFontSizeOverride("font_size", 64);
+			title.AddThemeFontSizeOverride("font_size", 38);
 			Form.AddChild(title);
 			var sub = new Label { Text = Subtitle, HorizontalAlignment = HorizontalAlignment.Center };
-			sub.AddThemeFontSizeOverride("font_size", 26);
+			sub.AddThemeFontSizeOverride("font_size", 20);
 			Form.AddChild(sub);
 
 			BuildForm();
 
-			Status = new Label { HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(400, 40) };
+			Status = new Label { HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(440, 24) };
+			Status.AddThemeFontSizeOverride("font_size", 16);
 			Form.AddChild(Status);
+			CallDeferred(nameof(Fit));
+		}
+
+		private PanelContainer _card;
+
+		/// <summary>Centre la carte ; elle occupe au plus 84 % de la hauteur (réduite si le texte est long ou la fenêtre petite) et tient donc toujours en entier.</summary>
+		private void Fit()
+		{
+			if (_card == null || !IsInstanceValid(_card) || !_card.IsInsideTree()) return;
+			var screen = _card.GetParentAreaSize();
+			var size = _card.GetCombinedMinimumSize();
+			if (screen.Y <= 0 || size.Y <= 0) return;
+			float scale = Mathf.Min(1f, Mathf.Min(screen.Y * 0.84f / size.Y, (screen.X - 24f) / size.X));
+			_card.Size = size;
+			_card.Scale = Vector2.One * scale;
+			_card.Position = ((screen - size * scale) / 2f).Round();
 		}
 
 		protected LineEdit Field(string placeholder, bool secret = false, string text = "")
 		{
 			var e = new LineEdit { PlaceholderText = placeholder, Secret = secret, Text = text, CustomMinimumSize = new Vector2(0, 42) };
-			e.AddThemeFontSizeOverride("font_size", 20);
+			e.AddThemeFontSizeOverride("font_size", 16);
 			Form.AddChild(e);
 			Inputs.Add(e);
 			return e;
@@ -69,11 +86,25 @@ namespace Openesport.Menus
 
 		protected Button Action(string text, Action pressed, bool main = false)
 		{
-			var b = new Button { Text = text, CustomMinimumSize = new Vector2(0, main ? 48 : 40), ThemeTypeVariation = main ? "MenuPrimary" : "Button" };
+			var b = new Button { Text = text, CustomMinimumSize = new Vector2(0, main ? 46 : 34), ThemeTypeVariation = main ? "MenuPrimary" : "Button", Flat = !main };
+			if (!main)
+			{
+				// les actions secondaires sont de simples liens : un seul vrai bouton ressort
+				b.AddThemeFontSizeOverride("font_size", 16);
+				b.AddThemeColorOverride("font_color", MenuStyle.Muted);
+				Tight(b);
+			}
 			b.Pressed += pressed;
 			Form.AddChild(b);
 			Inputs.Add(b);
 			return b;
+		}
+
+		/// <summary>Bouton ou case sans cadre ni marges hautes (celles du thème le grossissent).</summary>
+		protected static void Tight(Control c)
+		{
+			var style = new StyleBoxEmpty { ContentMarginTop = 4, ContentMarginBottom = 4 };
+			foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed", "disabled" }) c.AddThemeStyleboxOverride(state, style);
 		}
 
 		protected void Say(string text, bool error = false)
@@ -110,6 +141,9 @@ namespace Openesport.Menus
 			_login = Field(I18n.T("Identifiant"), text: AccountClient.LastLogin);
 			_password = Field(I18n.T("Mot de passe"), secret: true);
 			_remember = new CheckBox { Text = I18n.T("Rester connecté sur cet ordinateur"), ButtonPressed = true };
+			_remember.AddThemeFontSizeOverride("font_size", 16);
+			_remember.AddThemeConstantOverride("h_separation", 8);
+			Tight(_remember);
 			Form.AddChild(_remember);
 			Inputs.Add(_remember);
 			_login.TextSubmitted += _ => _password.GrabFocus();

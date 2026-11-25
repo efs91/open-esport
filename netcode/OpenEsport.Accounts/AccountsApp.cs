@@ -44,6 +44,8 @@ namespace OpenEsport.Accounts
 	}
 	/// <summary>Équipe de tournoi : le joueur invité ou retiré (nom de compte), l'équipe dont on accepte ou refuse l'invitation (0 = la première).</summary>
 	public sealed class TournamentTeamRequest { public string Login { get; set; } public int Reference { get; set; } }
+	/// <summary>Modèle de tournoi : enregistrement (identifiant 0 : nouveau) ou changement de visibilité (privé, partagé).</summary>
+	public sealed class TemplateRequest { public long Id { get; set; } public string Name { get; set; } public bool Shared { get; set; } public TournamentConfig Config { get; set; } }
 	public sealed class MatchReportRequest { public long TournamentId { get; set; } public string Key { get; set; } public int ScoreA { get; set; } public int ScoreB { get; set; } }
 	public sealed class RaceReport { public long TournamentId { get; set; } public int Race { get; set; } public int Lobby { get; set; } public System.Collections.Generic.List<PlayerResult> Players { get; set; } }
 	public sealed class PartyRequest { public string Login { get; set; } public long PartyId { get; set; } public string Host { get; set; } public int Port { get; set; } public string Mode { get; set; } public int TeamSize { get; set; } }
@@ -85,6 +87,7 @@ namespace OpenEsport.Accounts
 			var comp = ManageCompLink.FromEnvironment();
 			string mcUrl = o.ManageCompUrl ?? Environment.GetEnvironmentVariable("MANAGECOMP_URL"), mcKey = o.ManageCompKey ?? Environment.GetEnvironmentVariable("MANAGECOMP_API_KEY");
 			var tournaments = new TournamentService(store, new ManageCompApi(o.ManageCompHandler != null ? new System.Net.Http.HttpClient(o.ManageCompHandler) : new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(15) }, mcUrl, mcKey));
+			var templates = new TournamentTemplates(store);
 			var seen = new ConcurrentDictionary<long, DateTime>();
 			var builder = WebApplication.CreateBuilder();
 			builder.Logging.ClearProviders();
@@ -260,6 +263,36 @@ namespace OpenEsport.Accounts
 					"cancel" => await tournaments.Cancel(id, me),
 					_ => TournamentResult.Fail("Action inconnue."),
 				};
+				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
+			});
+
+			// modèles de tournoi : ceux du jeu, les siens, ceux que les autres ont partagés
+			app.MapGet("/api/tournament-templates", (HttpContext ctx) => Results.Json(templates.List(Account(ctx))));
+			app.MapPost("/api/tournament-templates", async (HttpContext ctx) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				TemplateRequest req;
+				try { req = await ctx.Request.ReadFromJsonAsync<TemplateRequest>() ?? new TemplateRequest(); }
+				catch (System.Text.Json.JsonException) { return Error(400, "Configuration illisible."); }
+				var r = templates.Save(me, req.Id, req.Name, req.Shared, req.Config);
+				return r.Error != null ? Error(400, r.Error) : Results.Json(new { id = r.Id });
+			});
+			app.MapPost("/api/tournament-templates/{id:long}/share", async (HttpContext ctx, long id) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				TemplateRequest req;
+				try { req = await ctx.Request.ReadFromJsonAsync<TemplateRequest>() ?? new TemplateRequest(); }
+				catch (System.Text.Json.JsonException) { return Error(400, "Demande illisible."); }
+				var r = templates.Share(me, id, req.Shared);
+				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
+			});
+			app.MapDelete("/api/tournament-templates/{id:long}", (HttpContext ctx, long id) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				var r = templates.Delete(me, id);
 				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
 			});
 
@@ -465,7 +498,7 @@ namespace OpenEsport.Accounts
 				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
 				var report = await ctx.Request.ReadFromJsonAsync<RaceReport>();
 				if (report?.Players == null) return Error(400, "Rapport invalide.");
-				var r = await tournaments.ReportRace(report.TournamentId, report.Race, report.Lobby, report.Players.Select(p => (p.AccountId, p.Placement)).ToList());
+				var r = await tournaments.ReportRace(report.TournamentId, report.Race, report.Lobby, report.Players.Select(p => (p.AccountId, p.Placement, p.Kills)).ToList());
 				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
 			});
 

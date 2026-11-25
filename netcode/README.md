@@ -219,26 +219,34 @@ Carte « Relais » du Deathmatch : `python tools/map/gen_relais_map.py` (premier
   1. **Configuration** (`POST /api/tournaments` `{config, participate}`, modifiable jusqu'au départ par `PUT /api/tournaments/{id}`, voir `TournamentConfig`) :
      inscription **en solo ou par équipes de 2 à 5**, inscrits mini / maxi, départ **à heure fixe** (lancé automatiquement, annulé s'il manque des inscrits)
      ou **par l'organisateur** (heure indicative), période d'inscription (dès la création par défaut, jusqu'à un an à l'avance), **check-in** (5 à 60 min avant un départ fixe :
-     sans confirmation, l'équipe est retirée), et jusqu'à 6 **phases**, chacune dans son **mode de jeu** :
-     - **Battle Royale** : série de manches en lobbys (manches, joueurs ou équipes par lobby — 30 joueurs au plus —, points par place, points d'abandon) ;
-     - **Capture du drapeau** : série de matchs à deux équipes (un lobby = un match, 1re place au vainqueur, 2e au perdant ; une équipe seule dans son lobby est exemptée et gagne),
-       ou poules et tableau entre équipes inscrites ; prises pour gagner un match ;
-     - **1 VS 1** (inscription en solo) : poules et tableau, manches pour gagner un match, équipement au hasard, choisi ou imposé (`DuelRules`).
-     Équipes d'une phase : celles de l'inscription, ou **tirées au sort à chaque manche** parmi des inscrits en solo (Battle Royale en duos ou trios, Capture du drapeau).
-     Sélections : qualifiés au total ou par lobby / poule ; divisions : répartition « par niveau ». Le tableau est toujours la dernière phase.
+     sans confirmation, l'équipe est retirée), et jusqu'à 8 **étapes** (`PhaseConfig`), chacune avec son déroulement et son **mode de jeu** :
+     - **série de manches** (`lobby`) : points par place et par élimination, additionnés. Battle Royale (30 joueurs au plus par lobby), Deathmatch (solo, 10 par lobby),
+       ou un mode à deux équipes (un lobby = un match, points au vainqueur et au perdant ; une équipe seule est exemptée et gagne) ;
+     - **poules** (`pools`), **tableau** (`table`) et **poules de division** (`divisions` : D1, D2…, montées et descentes d'une étape de ce type à la suivante) :
+       1 VS 1 (solo) et modes à deux équipes (Team Deathmatch, Sabotage, Contrôle, Capture du drapeau), en 1, 3 ou 5 parties par match (`BestOf`) ;
+     - **séparation en divisions** (`split`) : le classement est coupé en 2 à 8 divisions, à parts égales ou de tailles choisies. La première continue dans ce tournoi,
+       chacune des autres devient un tournoi rattaché (`parent`, `division`), comme dans ManageComp, et joue la suite de la formule avec ses inscrits.
+     Équipes d'une étape : celles de l'inscription, ou **tirées au sort à chaque manche** parmi des inscrits en solo (séries).
+     Sélections : qualifiés au total, ou par lobby dans une série ; répartition des lobbys équilibrée ou « par niveau ».
+     Points par élimination : ManageComp ne connaît que des places, il reçoit un barème « une place = un score » (`ManageCompApi.EncodedScale`) ; les vraies places
+     et éliminations sont gardées dans `tournament_results`.
+     **Modèles** (`TournamentTemplates`, `/api/tournament-templates`) : ceux du jeu, ceux du joueur — privés d'office, publics s'il le veut — et ceux que les autres ont partagés.
   2. **Équipes par invitation** : le chef s'inscrit (`/join`), puis invite ses coéquipiers par leur nom (`/invite {login}`) ; chacun voit l'invitation dans son jeu
      (encart du menu, page du tournoi) et l'accepte (`/accept {reference}`) ou la refuse (`/decline`). Le chef retire un joueur ou annule une invitation (`/kick {login}`) ;
      un coéquipier qui part (`/leave`) ne fait partir que lui, le chef qui part retire toute l'équipe. Le groupe en jeu n'a plus rien à voir avec l'inscription.
      Avant le départ, une équipe n'existe que dans le jeu (référence négative) ; au départ, les équipes incomplètes ou absentes au check-in sont retirées,
      les autres sont inscrites dans ManageComp (nom « a & b »), dans l'ordre d'inscription.
-  3. **Départ** (`/start` ou automatique, minuterie de 30 s) : la formule ManageComp est construite d'après la configuration du moment (appel → phases → classement général), la première phase est composée.
-  4. **Séries de manches** (Battle Royale, Capture du drapeau) : « Jouer ma manche » → matchmaking (`MM?…|taille|mode|…|T<tournoi>:<manche>:<lobby>`, la manche a un numéro global)
-     → serveur réservé au lobby (`--mode --tournament --race --lobby`), complété par des bots. Le serveur lit la partie (`/internal/tournament/{id}/lobby/{n}` : comptes, mode, taille
-     des équipes, prises pour gagner, et les équipes : `groups` en battle royale — équipe inscrite ou tirée au sort —, `sides` en Capture du drapeau) ; si le mode ne correspond pas,
-     il s'arrête. Il rapporte les places (`/internal/tournament-race`) ; un inscrit du lobby qui n'a pas joué compte comme abandon. Une phase finie, ses qualifiés passent à la suivante.
-  5. **Matchs** (poules, tableau) : « Jouer mon match » (`/api/tournaments/{id}/me`, clé `p<poule>m<match>` ou `t<jeu>n<noeud>`) → matchmaking (`MM?…|TD<tournoi>:<clé>`)
-     → serveur 1 VS 1, Capture du drapeau ou match à mort (anciens duels) réservé aux deux camps, sans bots (`/internal/tournament/{id}/match/{clé}` : camps, mode, score, équipement).
-     Un camp absent après 120 s perd par forfait ; une égalité n'est pas enregistrée (le match reste à jouer) ; le score est saisi dans ManageComp (`/internal/tournament-match`).
+  3. **Départ** (`/start` ou automatique, minuterie de 30 s) : la formule ManageComp est construite d'après la configuration du moment (appel → phases → classement général), la première étape est composée. À la fin de l'appel, ManageComp renumérote les participants : chacun est retrouvé par son nom.
+  4. **Séries de manches** : « Jouer ma manche » → matchmaking (`MM?…|taille|mode|…|T<tournoi>:<manche>:<lobby>`, la manche a un numéro global)
+     → serveur réservé au lobby (`--mode --tournament --race --lobby`), complété par des bots en Battle Royale et avec des équipes tirées au sort (`bots`), sinon entre inscrits. Le serveur lit la partie (`/internal/tournament/{id}/lobby/{n}` : comptes, mode, taille
+     des équipes, score à atteindre, et les équipes : `groups` en battle royale — équipe inscrite ou tirée au sort —, `sides` dans les modes à deux équipes) ; si le mode ne correspond pas,
+     il s'arrête. Il rapporte les places et les éliminations (`/internal/tournament-race`) ; un inscrit du lobby qui n'a pas joué compte comme abandon. Une phase finie, ses qualifiés passent à la suivante.
+  5. **Matchs** (poules, tableau) : « Jouer mon match » (`/api/tournaments/{id}/me`, clé `p<poule>m<match>` ou `t<jeu>n<noeud>`, précédée de `f<étape>` et suivie de `g<partie>` au besoin) → matchmaking (`MM?…|TD<tournoi>:<clé>`)
+     → serveur du mode de l'étape réservé aux deux camps, sans bots (`/internal/tournament/{id}/match/{clé}` : camps, mode, score, équipement).
+     Un camp absent après 120 s perd par forfait ; une égalité n'est pas enregistrée (le match reste à jouer) ; le score est saisi dans ManageComp (`/internal/tournament-match`), après la dernière partie si le match en compte plusieurs.
+  6. **Déroulé** : `GET /api/tournaments/{id}` renvoie aussi `flow` (résultats de chaque étape : lobbys, poules, tours du tableau) et `divisions`. Un tableau de ManageComp
+     ne montre que trois tours et un seul tableau à la fois : `ManageCompApi.Matches` les fait défiler.
+  Tests contre un vrai ManageComp local : `OE_MANAGECOMP_TEST_URL` et `OE_MANAGECOMP_TEST_KEY` (`TournamentLiveTests`).
   Les tournois publiés directement dans ManageComp apparaissent aussi dans l'encart du menu (`/api/tournaments`, champ `tournaments`).
 
 ### Classement

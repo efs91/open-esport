@@ -82,6 +82,8 @@ namespace OpenEsport.Server
 			public HashSet<long> Accounts = new HashSet<long>();
 			public string Mode = "br", Loadout = "";
 			public int TeamSize = 1, ScoreLimit;
+			/// <summary>Des bots complètent la partie (non : on joue entre inscrits ; null : réglage du serveur).</summary>
+			public bool? Bots;
 			public Dictionary<long, long> Groups = new Dictionary<long, long>();
 			public Dictionary<long, int> Sides = new Dictionary<long, int>();
 
@@ -93,6 +95,7 @@ namespace OpenEsport.Server
 				if (root.TryGetProperty("loadout", out var l) && l.ValueKind == JsonValueKind.String) g.Loadout = l.GetString();
 				if (root.TryGetProperty("teamSize", out var ts) && ts.ValueKind == JsonValueKind.Number) g.TeamSize = ts.GetInt32();
 				if (root.TryGetProperty("scoreLimit", out var sl) && sl.ValueKind == JsonValueKind.Number) g.ScoreLimit = sl.GetInt32();
+				if (root.TryGetProperty("bots", out var bots) && bots.ValueKind is JsonValueKind.True or JsonValueKind.False) g.Bots = bots.GetBoolean();
 				if (root.TryGetProperty("accounts", out var acc)) foreach (var a in acc.EnumerateArray()) g.Accounts.Add(a.GetInt64());
 				// match à deux camps : « a » et « b »
 				if (root.TryGetProperty("a", out var sa)) foreach (var a in sa.EnumerateArray()) { g.Sides[a.GetInt64()] = 0; g.Accounts.Add(a.GetInt64()); }

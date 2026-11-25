@@ -12,6 +12,9 @@ namespace OpenEsport.Accounts
 		public string Config = "";
 		/// <summary>Phase en cours (0 = la première) et numéro global de sa première manche (battle royale).</summary>
 		public int Phase, RaceBase;
+		/// <summary>Division de ce tournoi après une séparation (1, 2… ; 0 : pas de séparation) et le tournoi dont elle est issue (0 : aucun).</summary>
+		public int Division;
+		public long Parent;
 		/// <summary>Raison d'une annulation, ou autre remarque à afficher.</summary>
 		public string Note = "";
 	}
@@ -25,15 +28,26 @@ namespace OpenEsport.Accounts
 	/// <summary>Invitation dans une équipe de tournoi : l'invité, l'équipe (référence), le chef qui invite.</summary>
 	public readonly record struct TournamentInvite(long Account, int Reference, long Inviter, long Created);
 
+	/// <summary>Résultat d'un inscrit dans une manche : place (0 : abandon ou absent), éliminations, points.</summary>
+	public readonly record struct RaceResult(int Race, int Reference, int Lobby, int Place, int Kills, int Points);
+
+	/// <summary>Un modèle de tournoi enregistré par un joueur (privé, ou partagé).</summary>
+	public sealed class TemplateRow
+	{
+		public long Id, Owner, Updated;
+		public string Name, Config;
+		public bool Public;
+	}
+
 	public sealed partial class AccountStore
 	{
-		private const string TournamentColumns = "id, contest, title, mode, team_size, races, lobby_size, start_at, owner, state, race, score_limit, config, phase, race_base, note";
+		private const string TournamentColumns = "id, contest, title, mode, team_size, races, lobby_size, start_at, owner, state, race, score_limit, config, phase, race_base, note, parent, division";
 
 		private static TournamentRow ReadTournament(Microsoft.Data.Sqlite.SqliteDataReader r) => new TournamentRow
 		{
 			Id = r.GetInt64(0), Contest = r.GetString(1), Title = r.GetString(2), Mode = r.GetString(3), TeamSize = r.GetInt32(4), Races = r.GetInt32(5),
 			LobbySize = r.GetInt32(6), StartAt = r.GetInt64(7), Owner = r.GetInt64(8), State = r.GetString(9), Race = r.GetInt32(10), ScoreLimit = r.GetInt32(11),
-			Config = r.GetString(12), Phase = r.GetInt32(13), RaceBase = r.GetInt32(14), Note = r.GetString(15)
+			Config = r.GetString(12), Phase = r.GetInt32(13), RaceBase = r.GetInt32(14), Note = r.GetString(15), Parent = r.GetInt64(16), Division = r.GetInt32(17)
 		};
 
 		public long CreateTournament(string contest, TournamentConfig cfg, long owner) => Run(c =>
@@ -62,7 +76,76 @@ namespace OpenEsport.Accounts
 		/// <summary>Tournois pas encore commencés à départ fixe dont l'heure est passée (à lancer ou annuler).</summary>
 		public List<TournamentRow> TournamentsDue(long now) => Run(c => Query(c, "SELECT " + TournamentColumns + " FROM tournaments WHERE state = 'open' AND start_at <= @t", ReadTournament, ("@t", now)));
 
-		public int OpenTournamentsOf(long owner) => Run(c => Count(c, "SELECT COUNT(*) FROM tournaments WHERE owner = @o AND state NOT IN ('done', 'cancelled')", ("@o", owner)));
+		public int OpenTournamentsOf(long owner) => Run(c => Count(c, "SELECT COUNT(*) FROM tournaments WHERE owner = @o AND parent = 0 AND state NOT IN ('done', 'cancelled')", ("@o", owner)));
+
+		/// <summary>Le tournoi d'une division issue d'une séparation : déjà en cours, rattaché au tournoi d'origine.</summary>
+		public long CreateDivision(long parent, int division, string contest, TournamentConfig cfg, long owner)
+		{
+			long id = CreateTournament(contest, cfg, owner);
+			return Run(c => { Exec(c, "UPDATE tournaments SET state = 'running', parent = @p, division = @d WHERE id = @i", ("@p", parent), ("@d", division), ("@i", id)); return id; });
+		}
+
+		public void SetTournamentDivision(long id, int division) => Run(c => { Exec(c, "UPDATE tournaments SET division = @d WHERE id = @i", ("@d", division), ("@i", id)); return 0; });
+
+		/// <summary>Les divisions d'un tournoi séparé (le tournoi d'origine compris), de la première à la dernière ; vide s'il ne l'est pas.</summary>
+		public List<TournamentRow> TournamentDivisions(TournamentRow t)
+		{
+			if (t.Division == 0) return new List<TournamentRow>();
+			long root = t.Parent != 0 ? t.Parent : t.Id;
+			return Run(c => Query(c, "SELECT " + TournamentColumns + " FROM tournaments WHERE id = @r OR parent = @r ORDER BY division, id", ReadTournament, ("@r", root)));
+		}
+
+		/// <summary>Les inscrits d'une division quittent le tournoi d'origine pour le sien, avec leur référence dans la nouvelle compétition.</summary>
+		public void MoveTournamentEntry(long from, int fromRef, long to, int toRef) => Run(c =>
+		{
+			Exec(c, "UPDATE tournament_players SET tid = @t, ref = @n WHERE tid = @f AND ref = @r", ("@t", to), ("@n", toRef), ("@f", from), ("@r", fromRef));
+			return 0;
+		});
+
+		/// <summary>ManageComp a renuméroté les participants : nouvelle référence de chaque inscrit (les deux numérotations se chevauchent).</summary>
+		public void RemapTournamentEntries(long id, IReadOnlyDictionary<int, int> references) => Run(c =>
+		{
+			foreach (var kv in references) Exec(c, "UPDATE tournament_players SET ref = @n WHERE tid = @i AND ref = @o", ("@n", -1_000_000 - kv.Value), ("@i", id), ("@o", kv.Key));
+			Exec(c, "UPDATE tournament_players SET ref = -1000000 - ref WHERE tid = @i AND ref <= -1000000", ("@i", id));
+			return 0;
+		});
+
+		public void SetRaceResult(long id, RaceResult r) => Run(c =>
+		{
+			Exec(c, "INSERT OR REPLACE INTO tournament_results(tid, race, ref, lobby, place, kills, points) VALUES(@i, @r, @f, @l, @p, @k, @s)",
+				("@i", id), ("@r", r.Race), ("@f", r.Reference), ("@l", r.Lobby), ("@p", r.Place), ("@k", r.Kills), ("@s", r.Points));
+			return 0;
+		});
+
+		public List<RaceResult> RaceResults(long id) => Run(c => Query(c, "SELECT race, ref, lobby, place, kills, points FROM tournament_results WHERE tid = @i", r => new RaceResult(r.GetInt32(0), r.GetInt32(1), r.GetInt32(2), r.GetInt32(3), r.GetInt32(4), r.GetInt32(5)), ("@i", id)));
+
+		public void AddMatchGame(long id, int phase, string match, int game, int a, int b) => Run(c =>
+		{
+			Exec(c, "INSERT OR REPLACE INTO tournament_games(tid, phase, match, game, a, b) VALUES(@i, @p, @m, @g, @a, @b)", ("@i", id), ("@p", phase), ("@m", match), ("@g", game), ("@a", a), ("@b", b));
+			return 0;
+		});
+
+		/// <summary>Les parties déjà jouées des matchs d'un tournoi : (phase, match, score A, score B), dans l'ordre.</summary>
+		public List<(int phase, string match, int a, int b)> MatchGames(long id) => Run(c => Query(c, "SELECT phase, match, a, b FROM tournament_games WHERE tid = @i ORDER BY phase, match, game", r => (r.GetInt32(0), r.GetString(1), r.GetInt32(2), r.GetInt32(3)), ("@i", id)));
+
+		// ------------------------------------------------------------------ modèles
+
+		private static TemplateRow ReadTemplate(Microsoft.Data.Sqlite.SqliteDataReader r) => new TemplateRow { Id = r.GetInt64(0), Owner = r.GetInt64(1), Name = r.GetString(2), Config = r.GetString(3), Public = r.GetInt32(4) != 0, Updated = r.GetInt64(5) };
+		private const string TemplateColumns = "id, owner, name, config, public, updated";
+
+		public TemplateRow Template(long id) => Run(c => Query(c, "SELECT " + TemplateColumns + " FROM tournament_templates WHERE id = @i", ReadTemplate, ("@i", id)).FirstOrDefault());
+		public List<TemplateRow> TemplatesOf(long owner) => Run(c => Query(c, "SELECT " + TemplateColumns + " FROM tournament_templates WHERE owner = @o ORDER BY name COLLATE NOCASE", ReadTemplate, ("@o", owner)));
+		/// <summary>Modèles partagés par les autres joueurs, du plus récent au plus ancien.</summary>
+		public List<TemplateRow> PublicTemplates(long except) => Run(c => Query(c, "SELECT " + TemplateColumns + " FROM tournament_templates WHERE public = 1 AND owner <> @o ORDER BY updated DESC LIMIT 100", ReadTemplate, ("@o", except)));
+
+		public long SaveTemplate(long id, long owner, string name, string config, bool shared) => Run(c =>
+		{
+			if (id > 0) { Exec(c, "UPDATE tournament_templates SET name = @n, config = @c, public = @p, updated = @u WHERE id = @i", ("@n", name), ("@c", config), ("@p", shared ? 1 : 0), ("@u", Now()), ("@i", id)); return id; }
+			Exec(c, "INSERT INTO tournament_templates(owner, name, config, public, updated) VALUES(@o, @n, @c, @p, @u)", ("@o", owner), ("@n", name), ("@c", config), ("@p", shared ? 1 : 0), ("@u", Now()));
+			return LastId(c);
+		});
+
+		public void DeleteTemplate(long id) => Run(c => { Exec(c, "DELETE FROM tournament_templates WHERE id = @i", ("@i", id)); return 0; });
 
 		public void SetTournamentState(long id, string state, int race) => Run(c => { Exec(c, "UPDATE tournaments SET state = @s, race = @r WHERE id = @i", ("@s", state), ("@r", race), ("@i", id)); return 0; });
 

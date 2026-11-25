@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenEsport.Accounts
@@ -32,11 +35,16 @@ namespace OpenEsport.Accounts
 	/// elles sont inscrites dans ManageComp au lancement.
 	/// </para>
 	/// <para>
-	/// Cycle : <c>open</c> (inscriptions selon la période choisie, check-in avant le départ) → <c>running</c> (phase après phase, chacune dans son mode :
-	/// séries de manches de battle royale ou de Capture du drapeau, poules et tableau de 1 VS 1 ou de Capture du drapeau ; les qualifiés d'une phase passent
-	/// à la suivante) → <c>done</c>. <c>cancelled</c> : annulé par l'organisateur, ou au départ automatique faute d'inscrits.
+	/// Cycle : <c>open</c> (inscriptions selon la période choisie, check-in avant le départ) → <c>running</c> (étape après étape, chacune dans son mode et son
+	/// déroulement : séries, poules, poules de division, tableaux ; les qualifiés d'une étape passent à la suivante) → <c>done</c>.
+	/// <c>cancelled</c> : annulé par l'organisateur, ou au départ automatique faute d'inscrits.
 	/// </para>
-	/// Les manches des séries ont un numéro global (toutes phases confondues) : c'est lui qui identifie la partie réservée d'un lobby.
+	/// <para>
+	/// Une séparation en divisions donne, comme dans ManageComp, une compétition par division : la première continue dans ce tournoi, chacune des autres
+	/// devient un tournoi rattaché, déjà en cours, qui joue la suite de la formule avec ses inscrits.
+	/// </para>
+	/// Les manches des séries ont un numéro global (toutes étapes confondues) : c'est lui qui identifie la partie réservée d'un lobby. Un match est désigné
+	/// par la clé de ManageComp, précédée de son étape et suivie du numéro de la partie s'il se joue en plusieurs (<c>f1p0m2g1</c>).
 	/// </summary>
 	public sealed class TournamentService
 	{
@@ -48,6 +56,17 @@ namespace OpenEsport.Accounts
 		public bool Configured => _api.Configured;
 
 		public TournamentService(AccountStore store, ManageCompApi api) { _store = store; _api = api; }
+
+		/// <summary>Une opération à la fois sur un tournoi en cours : deux lobbys qui finissent ensemble ne font pas avancer la série deux fois.</summary>
+		private readonly ConcurrentDictionary<long, SemaphoreSlim> _gates = new ConcurrentDictionary<long, SemaphoreSlim>();
+
+		private async Task<TournamentResult> Exclusive(long tournament, Func<Task<TournamentResult>> body)
+		{
+			var gate = _gates.GetOrAdd(tournament, _ => new SemaphoreSlim(1));
+			await gate.WaitAsync();
+			try { return await body(); }
+			finally { _flows.TryRemove(tournament, out _); gate.Release(); }
+		}
 
 		private static string Date(long unix) => DateTimeOffset.FromUnixTimeSeconds(unix).ToString("dd/MM/yyyy");
 		public static TournamentConfig ConfigOf(TournamentRow t) => TournamentConfig.FromJson(t.Config) ?? TournamentConfig.Legacy(t);
@@ -251,6 +270,10 @@ namespace OpenEsport.Accounts
 			if (t.Owner != who) return TournamentResult.Fail("Seul l'organisateur peut annuler le tournoi.");
 			if (t.State == "done" || t.State == "cancelled") return TournamentResult.Fail("Le tournoi est déjà terminé.");
 			await CancelCore(t, "Annulé par l'organisateur.");
+			// annuler le tournoi d'origine annule aussi les divisions qui en sont issues
+			if (t.Parent == 0)
+				foreach (var d in _store.TournamentDivisions(t))
+					if (d.Id != t.Id && d.State == "running") await CancelCore(d, "Annulé par l'organisateur.");
 			return TournamentResult.Ok(t.Id);
 		}
 
@@ -262,7 +285,7 @@ namespace OpenEsport.Accounts
 		}
 
 		/// <summary>Lancement par l'organisateur (départ manuel, ou plus tôt que l'heure prévue).</summary>
-		public Task<TournamentResult> Start(long tournament, long who) => StartCore(tournament, who, automatic: false);
+		public Task<TournamentResult> Start(long tournament, long who) => Exclusive(tournament, () => StartCore(tournament, who, automatic: false));
 
 		/// <summary>Retire une équipe avant le départ (dans ManageComp aussi si elle y était déjà : anciens tournois).</summary>
 		private async Task RemoveEntry(TournamentRow t, int reference, IEnumerable<TournamentEntry> members)
@@ -314,36 +337,44 @@ namespace OpenEsport.Accounts
 				_store.SetTournamentState(t.Id, "running", 0);
 				_store.SetTournamentPhase(t.Id, 0, 0);
 				await EnterNextPhase(t.Id, cfg, phase: 0, raceBase: 0);
-				await AdvanceLobbies(t.Id);
+				await Settle(t.Id);
 				return TournamentResult.Ok(t.Id);
 			}
 			catch (ManageCompException e) { return TournamentResult.Fail(e.Message); }
 		}
 
 		/// <summary>
-		/// « Tour suivant » jusqu'à la phase jouée <paramref name="phase"/> (en passant la composition des poules), puis la règle : lobbys composés
-		/// d'après le nombre de qualifiés, ou poules / tableau réglés. Classement général atteint : le tournoi est terminé.
+		/// « Tour suivant » jusqu'à l'étape <paramref name="phase"/> (en réglant au passage la composition des poules ou des divisions), puis la règle :
+		/// lobbys composés d'après le nombre de qualifiés, poules ou tableau. Une séparation crée aussitôt les tournois des divisions et passe à la suite.
+		/// Classement général atteint : le tournoi est terminé.
 		/// </summary>
 		private async Task EnterNextPhase(long tournament, TournamentConfig cfg, int phase, int raceBase)
 		{
 			var t = _store.Tournament(tournament);
 			var playable = await _api.PlayableStages(t.Contest);
 			if (phase >= playable.Count || phase >= cfg.Phases.Count) { _store.SetTournamentState(t.Id, "done", t.Race); return; }
-			int target = playable[phase].index;
-			for (int guard = 0; guard < 6; guard++)
-			{
-				var (_, current) = await _api.CurrentStage(t.Contest);
-				if (current >= target) break;
-				await _api.Next(t.Contest);
-			}
+			var (target, kind) = playable[phase];
 			var p = cfg.Phases[phase];
-			switch (playable[phase].kind)
+			for (int guard = 0; guard < 10; guard++)
+			{
+				var (currentKind, current) = await _api.CurrentStage(t.Contest);
+				if (current >= target) break;
+				if (currentKind == "divisions") await _api.ConfigureDivisions(t.Contest, current, p);
+				else if (currentKind == "pool_allocator" && kind == "pool_supervisor" && p.PoolSize > 0) await _api.ConfigurePoolSize(t.Contest, current, p.PoolSize);
+				var before = currentKind == "checkin" ? await _api.CheckinNames(t.Contest) : null;
+				await _api.Next(t.Contest);
+				if (before == null) continue;
+				// à la fin de l'appel, ManageComp renumérote les participants (par ordre alphabétique) : chacun est retrouvé par son nom
+				var after = await _api.CheckinNames(t.Contest);
+				_store.RemapTournamentEntries(t.Id, before.Where(x => after.ContainsKey(x.Key)).ToDictionary(x => x.Value, x => after[x.Key]));
+			}
+			switch (kind)
 			{
 				case "lobby":
 					int n = await _api.LobbyCompetitors(t.Contest, target);
 					if (n <= 0) n = Entries(t.Id);
 					await _api.ConfigureLobby(t.Contest, target, p, (n + p.LobbySize - 1) / p.LobbySize);
-					// Capture du drapeau entre équipes inscrites : une équipe seule dans son lobby (nombre impair) est exemptée, elle gagne ses matchs
+					// deux équipes inscrites par lobby : une équipe seule dans le sien (nombre impair) est exemptée, elle gagne ses matchs
 					if (p.TwoSideLobby && !p.RandomTeams)
 					{
 						var data = await _api.StageData(t.Contest, target);
@@ -351,14 +382,50 @@ namespace OpenEsport.Accounts
 						{
 							var rows = l.GetProperty("rows").EnumerateArray().ToList();
 							if (rows.Count != 1) continue;
-							for (int race = 0; race < p.Races; race++) await _api.SetFinish(t.Contest, target, l.GetProperty("index").GetInt32(), race, rows[0].GetProperty("reference").GetInt32(), 1);
+							int lobby = l.GetProperty("index").GetInt32(), reference = rows[0].GetProperty("reference").GetInt32();
+							for (int race = 0; race < p.Races; race++)
+							{
+								await _api.SetFinish(t.Contest, target, lobby, race, reference, 1);
+								_store.SetRaceResult(t.Id, new RaceResult(raceBase + race, reference, lobby, 1, 0, ManageCompApi.RacePoints(p, 1, 0)));
+							}
 						}
 					}
 					break;
+				case "divisions":
 				case "pool_supervisor": await _api.ConfigurePools(t.Contest, target, p); break;
 				case "table": await _api.ConfigureTable(t.Contest, target, p); break;
+				case "splitting":
+					await Split(t, cfg, phase, target);
+					await EnterNextPhase(tournament, cfg, phase + 1, raceBase);
+					return;
 			}
 			_store.SetTournamentPhase(t.Id, phase, raceBase);
+		}
+
+		/// <summary>Séparation en divisions : ManageComp crée une compétition par division (sauf la première), le jeu un tournoi rattaché à chacune, avec ses inscrits.</summary>
+		private async Task Split(TournamentRow t, TournamentConfig cfg, int phase, int stage)
+		{
+			var (names, players) = await _api.ConfigureSplit(t.Contest, stage, cfg.Phases[phase]);
+			var before = (await _api.Contests()).Select(c => c.id).ToHashSet();
+			await _api.Next(t.Contest);
+			var created = (await _api.Contests()).Where(c => !before.Contains(c.id)).ToList();
+			for (int i = 0; i < names.Count; i++)
+			{
+				var members = players.Where(x => x.Value.division == i + 1).ToList();
+				if (members.Count == 0) continue;
+				string contest = created.FirstOrDefault(c => c.name.EndsWith(" - " + names[i], StringComparison.Ordinal)).id;
+				if (contest == null) throw new ManageCompException($"ManageComp : la compétition de « {names[i]} » est introuvable.");
+				var child = cfg.Copy();
+				child.Phases = cfg.Phases.Skip(phase + 1).ToList();
+				child.Title = cfg.Title;
+				long id = _store.CreateDivision(t.Parent != 0 ? t.Parent : t.Id, i + 2, contest, child, t.Owner);
+				var refs = await _api.CheckinNames(contest);
+				foreach (var (reference, (_, name)) in members)
+					if (refs.TryGetValue(name, out int moved)) _store.MoveTournamentEntry(t.Id, reference, id, moved);
+				await EnterNextPhase(id, child, 0, 0);
+				await Settle(id);
+			}
+			if (names.Count > 0 && players.Values.Any(x => x.division > 0)) _store.SetTournamentDivision(t.Id, Math.Max(1, t.Division));
 		}
 
 		/// <summary>Toutes les 30 s : les tournois à départ fixe dont l'heure est venue sont lancés (ou annulés faute d'inscrits).</summary>
@@ -366,12 +433,12 @@ namespace OpenEsport.Accounts
 		{
 			if (!_api.Configured) return;
 			foreach (var t in _store.TournamentsDue(AccountStore.Now()))
-				if (ConfigOf(t).FixedStart) await StartCore(t.Id, t.Owner, automatic: true);
+				if (ConfigOf(t).FixedStart) await Exclusive(t.Id, () => StartCore(t.Id, t.Owner, automatic: true));
 		}
 
-		// ------------------------------------------------------------------ séries de manches (battle royale, Capture du drapeau)
+		// ------------------------------------------------------------------ séries de manches
 
-		/// <summary>Phase de lobbys en cours (son indice ManageComp et sa configuration), ou null.</summary>
+		/// <summary>Étape de lobbys en cours (son indice ManageComp et sa configuration), ou null.</summary>
 		private async Task<(int stage, PhaseConfig phase)?> CurrentLobby(TournamentRow t)
 		{
 			var cfg = ConfigOf(t);
@@ -382,12 +449,16 @@ namespace OpenEsport.Accounts
 			return (playable[t.Phase].index, phase);
 		}
 
+		/// <summary>Places d'une manche, sans les éliminations.</summary>
+		public Task<TournamentResult> ReportRace(long tournament, int race, int lobby, IReadOnlyList<(long account, int place)> placements)
+			=> ReportRace(tournament, race, lobby, placements.Select(p => (p.account, p.place, 0)).ToList());
+
 		/// <summary>
-		/// Le serveur d'une partie de tournoi rapporte les places d'une manche (1 = vainqueur). Seule la manche en cours est acceptée ; les places sont
-		/// saisies dans le lobby de chaque joueur, et les inscrits du lobby qui n'ont pas joué comptent comme abandon. Quand tous les lobbys ont joué
-		/// la dernière manche de la phase, les qualifiés passent à la suivante.
+		/// Le serveur d'une partie de tournoi rapporte les places (1 = vainqueur) et les éliminations d'une manche. Seule la manche en cours est acceptée ;
+		/// les résultats sont saisis dans le lobby de chaque joueur, et les inscrits du lobby qui n'ont pas joué comptent comme abandon. Quand tous les lobbys
+		/// ont joué la dernière manche de l'étape, les qualifiés passent à la suivante.
 		/// </summary>
-		public async Task<TournamentResult> ReportRace(long tournament, int race, int lobby, IReadOnlyList<(long account, int place)> placements)
+		public Task<TournamentResult> ReportRace(long tournament, int race, int lobby, IReadOnlyList<(long account, int place, int kills)> results) => Exclusive(tournament, async () =>
 		{
 			var t = _store.Tournament(tournament);
 			if (t == null) return TournamentResult.Fail("Tournoi introuvable.");
@@ -399,60 +470,72 @@ namespace OpenEsport.Accounts
 				if (current == null) return TournamentResult.Fail("Pas de série de manches en cours.");
 				var (stage, phase) = current.Value;
 				int local = race - t.RaceBase;
-				// une équipe : sa meilleure place (tous ses joueurs ont la même en battle royale et en Capture du drapeau)
-				var places = new Dictionary<int, int>();
-				foreach (var (account, place) in placements)
+				// une équipe : sa meilleure place (tous ses joueurs ont la même dans les modes par équipes) et le total de ses éliminations
+				var teams = new Dictionary<int, (int place, int kills)>();
+				foreach (var (account, place, kills) in results)
 					if (refs.TryGetValue(account, out int reference) && place > 0)
-						places[reference] = places.TryGetValue(reference, out int had) ? Math.Min(had, place) : place;
+						teams[reference] = teams.TryGetValue(reference, out var had) ? (Math.Min(had.place, place), had.kills + kills) : (place, kills);
 				var data = await _api.StageData(t.Contest, stage);
 				var rows = data.GetProperty("lobbies").EnumerateArray().Where(l => l.GetProperty("index").GetInt32() == lobby).SelectMany(l => l.GetProperty("rows").EnumerateArray()).ToList();
 				foreach (var row in rows)
 				{
 					int reference = row.GetProperty("reference").GetInt32();
-					if (RaceFilled(row, local) && !places.ContainsKey(reference)) continue;
-					await _api.SetFinish(t.Contest, stage, lobby, local, reference, places.TryGetValue(reference, out int place) ? place : 0);       // absent : abandon
+					bool played = teams.TryGetValue(reference, out var r);
+					if (RaceFilled(row, local) && !played) continue;
+					await _api.SetFinish(t.Contest, stage, lobby, local, reference, played ? ManageCompApi.EncodedPlace(phase, r.place, r.kills) : 0);       // absent : abandon
+					_store.SetRaceResult(t.Id, new RaceResult(race, reference, lobby, played ? r.place : 0, r.kills, played ? ManageCompApi.RacePoints(phase, r.place, r.kills) : phase.AbandonPoints));
 				}
-				await AdvanceLobbies(t.Id);
+				await Settle(t.Id);
 				return TournamentResult.Ok(t.Id);
 			}
 			catch (ManageCompException e) { return TournamentResult.Fail(e.Message); }
-		}
+		});
 
 		/// <summary>
-		/// Avance la série en cours tant que ses manches sont jouées dans tous les lobbys : manche suivante, puis phase suivante (ou la fin).
-		/// Les exemptés ont leurs places d'avance : plusieurs pas peuvent s'enchaîner.
+		/// Fait avancer le tournoi tant que c'est possible : manche suivante d'une série jouée dans tous ses lobbys, étape suivante quand celle en cours est
+		/// terminée, fin du tournoi. Les exemptés ont leurs places d'avance : plusieurs pas peuvent s'enchaîner.
 		/// </summary>
-		private async Task AdvanceLobbies(long tournament)
+		private async Task Settle(long tournament)
 		{
 			for (int guard = 0; guard < 64; guard++)
 			{
 				var t = _store.Tournament(tournament);
 				if (t == null || t.State != "running") return;
-				var current = await CurrentLobby(t);
-				if (current == null) return;
-				var (stage, phase) = current.Value;
-				int local = t.Race - t.RaceBase;
-				var data = await _api.StageData(t.Contest, stage);
-				bool allDone = data.GetProperty("lobbies").EnumerateArray().All(l => l.GetProperty("rows").EnumerateArray().All(r => RaceFilled(r, local)));
-				if (!allDone) return;
-				_store.SetTournamentState(t.Id, "running", t.Race + 1);
-				if (local + 1 < phase.Races) continue;
-				// phase finie : la suivante (ou la fin)
 				var cfg = ConfigOf(t);
-				if (t.Phase + 1 >= cfg.Phases.Count) { await FinishContest(t); return; }
-				await EnterNextPhase(t.Id, cfg, t.Phase + 1, t.Race + 1);
+				var phase = PhaseOf(t, cfg);
+				if (phase == null) return;
+				int race = t.Race;
+				if (phase.IsLobby)
+				{
+					var current = await CurrentLobby(t);
+					if (current == null) return;
+					int local = t.Race - t.RaceBase;
+					var data = await _api.StageData(t.Contest, current.Value.stage);
+					if (!data.GetProperty("lobbies").EnumerateArray().All(l => l.GetProperty("rows").EnumerateArray().All(r => RaceFilled(r, local)))) return;
+					_store.SetTournamentState(t.Id, "running", ++race);
+					if (local + 1 < phase.Races) continue;
+				}
+				else if ((await _api.PendingMatches(t.Contest)).Count > 0) return;
+				// étape finie : la suivante (ou la fin)
+				if (t.Phase + 1 >= cfg.Phases.Count)
+				{
+					if (await FinishContest(t) || phase.IsLobby) _store.SetTournamentState(t.Id, "done", race);
+					return;
+				}
+				await EnterNextPhase(t.Id, cfg, t.Phase + 1, race);
 			}
 		}
 
-		/// <summary>Dernière phase jouée : « Tour suivant » jusqu'au classement général, le tournoi est terminé.</summary>
-		private async Task FinishContest(TournamentRow t)
+		/// <summary>Dernière étape jouée : « Tour suivant » jusqu'au classement général. Faux s'il n'est pas atteint.</summary>
+		private async Task<bool> FinishContest(TournamentRow t)
 		{
 			for (int guard = 0; guard < 3; guard++)
 			{
 				string next = await _api.TryAdvance(t.Contest);
-				if (next == null || next == "classification") break;
+				if (next == "classification") return true;
+				if (next == null) return false;
 			}
-			_store.SetTournamentState(t.Id, "done", _store.Tournament(t.Id).Race);
+			return false;
 		}
 
 		private static bool RaceFilled(JsonElement row, int race)
@@ -493,7 +576,8 @@ namespace OpenEsport.Accounts
 
 		/// <summary>
 		/// La partie d'un lobby pour son serveur : comptes admis, mode, taille des équipes en jeu, score à atteindre, et les équipes —
-		/// battle royale : un groupe par équipe inscrite ou tirée au sort ; Capture du drapeau : le camp de chacun (deux équipes inscrites, ou tirage).
+		/// battle royale : un groupe par équipe inscrite ou tirée au sort ; modes à deux équipes : le camp de chacun (deux équipes inscrites, ou tirage).
+		/// Des bots complètent le battle royale et les équipes tirées au sort ; ailleurs, on joue entre inscrits.
 		/// </summary>
 		public async Task<object> LobbyGame(long tournament, int lobby)
 		{
@@ -510,7 +594,7 @@ namespace OpenEsport.Accounts
 			var groups = new Dictionary<string, long>();
 			var sides = new Dictionary<string, int>();
 			long seed = t.Id * 1_000_003L + t.Race * 1_009L + lobby;
-			if (phase.GameMode == "ctf")
+			if (phase.TwoTeams)
 			{
 				if (phase.RandomTeams)
 				{
@@ -530,10 +614,32 @@ namespace OpenEsport.Accounts
 			}
 			else if (cfg.TeamSize > 1)
 				foreach (var a in accounts) groups[a.ToString()] = refOf[a];
-			return new { race = t.Race, races = t.Races, mode = phase.GameMode, teamSize, scoreLimit = phase.GameMode == "ctf" ? phase.MaxScore : 0, accounts, groups, sides };
+			return new { race = t.Race, races = t.Races, mode = phase.GameMode, teamSize, scoreLimit = phase.GameMode == "br" ? 0 : phase.MaxScore, bots = phase.GameMode == "br" || phase.RandomTeams, accounts, groups, sides };
 		}
 
 		// ------------------------------------------------------------------ matchs (poules, tableau)
+
+		private static readonly Regex KeyPattern = new Regex(@"^(?:f(\d+))?(p\d+m\d+|t\d+n\d+)(?:g(\d+))?$", RegexOptions.Compiled);
+
+		/// <summary>La clé d'une partie : l'étape (sauf la première), le match, et le numéro de la partie à jouer (sauf la première).</summary>
+		private string GameKey(TournamentRow t, string match)
+		{
+			int played = GamesOf(t, match).Count;
+			return (t.Phase > 0 ? "f" + t.Phase : "") + match + (played > 0 ? "g" + played : "");
+		}
+
+		/// <summary>Les parties déjà jouées d'un match de l'étape en cours.</summary>
+		private List<(int a, int b)> GamesOf(TournamentRow t, string match) => _store.MatchGames(t.Id).Where(g => g.phase == t.Phase && g.match == match).Select(g => (g.a, g.b)).ToList();
+
+		/// <summary>Le match que désigne la clé d'une partie, si c'est bien la prochaine partie de ce match ; sinon null.</summary>
+		private async Task<DuelMatch> MatchOf(TournamentRow t, string key)
+		{
+			var k = KeyPattern.Match(key ?? "");
+			if (!k.Success) return null;
+			string match = k.Groups[2].Value;
+			if (GameKey(t, match) != key) return null;
+			return (await _api.PendingMatches(t.Contest)).FirstOrDefault(x => x.Key == match);
+		}
 
 		/// <summary>Le match en attente d'un joueur (le premier dans l'ordre de ManageComp), ou null s'il n'a rien à jouer pour l'instant.</summary>
 		public async Task<MyMatch> NextMatch(long tournament, long account)
@@ -549,7 +655,7 @@ namespace OpenEsport.Accounts
 				var m = (await _api.PendingMatches(t.Contest)).FirstOrDefault(x => x.RefA == mine || x.RefB == mine);
 				if (m == null) return null;
 				bool a = m.RefA == mine;
-				return new MyMatch { Key = m.Key, Side = a ? 0 : 1, Mine = a ? m.NameA : m.NameB, Opponent = a ? m.NameB : m.NameA };
+				return new MyMatch { Key = GameKey(t, m.Key), Side = a ? 0 : 1, Mine = a ? m.NameA : m.NameB, Opponent = a ? m.NameB : m.NameA };
 			}
 			catch (ManageCompException) { return null; }
 		}
@@ -564,48 +670,49 @@ namespace OpenEsport.Accounts
 			if (phase == null || phase.IsLobby) return null;
 			try
 			{
-				var m = (await _api.PendingMatches(t.Contest)).FirstOrDefault(x => x.Key == key);
+				var m = await MatchOf(t, key);
 				if (m == null) return null;
 				var players = _store.TournamentEntries(t.Id);
 				return new
 				{
 					a = players.Where(p => p.Reference == m.RefA).Select(p => p.Account).ToList(), b = players.Where(p => p.Reference == m.RefB).Select(p => p.Account).ToList(),
-					scoreLimit = phase.MaxScore, teamSize = phase.PlayTeamSize(cfg.TeamSize), mode = phase.GameMode, loadout = phase.GameMode == "1v1" ? phase.Loadout : "",
+					scoreLimit = phase.MaxScore, teamSize = phase.PlayTeamSize(cfg.TeamSize), mode = phase.GameMode, loadout = phase.GameMode == "1v1" ? phase.Loadout : "", bots = false,
 				};
 			}
 			catch (ManageCompException) { return null; }
 		}
 
-		/// <summary>Le serveur rapporte le score d'un match (camp A = camp 0). Une égalité n'est pas enregistrée (le match reste à jouer). Phase terminée : la suivante.</summary>
-		public async Task<TournamentResult> ReportMatch(long tournament, string key, int scoreA, int scoreB)
+		/// <summary>
+		/// Le serveur rapporte le score d'une partie d'un match (camp A = camp 0). Une égalité n'est pas enregistrée (la partie reste à jouer). Un match en
+		/// plusieurs parties est saisi dans ManageComp quand un camp en a gagné assez. Étape terminée : la suivante.
+		/// </summary>
+		public Task<TournamentResult> ReportMatch(long tournament, string key, int scoreA, int scoreB) => Exclusive(tournament, async () =>
 		{
 			var t = _store.Tournament(tournament);
 			if (t == null) return TournamentResult.Fail("Tournoi introuvable.");
 			if (t.State != "running") return TournamentResult.Fail("Le tournoi n'est pas en cours.");
 			var cfg = ConfigOf(t);
 			var phase = PhaseOf(t, cfg);
-			if (phase == null || phase.IsLobby) return TournamentResult.Fail("La phase en cours se joue en série de manches, pas en matchs.");
+			if (phase == null || !phase.IsMatches) return TournamentResult.Fail("La phase en cours se joue en série de manches, pas en matchs.");
 			try
 			{
-				var m = (await _api.PendingMatches(t.Contest)).FirstOrDefault(x => x.Key == key);
+				var m = await MatchOf(t, key);
 				if (m == null) return TournamentResult.Fail("Ce match n'est pas à jouer (déjà saisi ?).");
-				await _api.ScoreMatch(t.Contest, m, scoreA, scoreB);
-				// phase terminée : poules → (poules) → tableau → classement
-				if ((await _api.PendingMatches(t.Contest)).Count > 0) return TournamentResult.Ok(t.Id);
-				var (kind, _) = await _api.CurrentStage(t.Contest);
-				if (kind == "table" || t.Phase + 1 >= cfg.Phases.Count)
+				if (scoreA == scoreB) return TournamentResult.Fail("Égalité : le match est à rejouer.");
+				if (phase.BestOf > 1)
 				{
-					// dernière phase (le tableau est toujours la dernière) : « Tour suivant » n'aboutit qu'une fois tous ses tours joués
-					string next = await _api.TryAdvance(t.Contest);
-					if (next == "classification") _store.SetTournamentState(t.Id, "done", t.Race);
-					return TournamentResult.Ok(t.Id);
+					var games = GamesOf(t, m.Key);
+					games.Add((scoreA, scoreB));
+					int winsA = games.Count(g => g.a > g.b), winsB = games.Count(g => g.b > g.a);
+					if (Math.Max(winsA, winsB) >= phase.WinsNeeded) await _api.ScoreMatch(t.Contest, m, winsA, winsB);
+					_store.AddMatchGame(t.Id, t.Phase, m.Key, games.Count - 1, scoreA, scoreB);
 				}
-				await EnterNextPhase(t.Id, cfg, t.Phase + 1, t.Race);
-				await AdvanceLobbies(t.Id);
+				else await _api.ScoreMatch(t.Contest, m, scoreA, scoreB);
+				await Settle(t.Id);
 				return TournamentResult.Ok(t.Id);
 			}
 			catch (ManageCompException e) { return TournamentResult.Fail(e.Message); }
-		}
+		});
 
 		/// <summary>Ce que le joueur doit jouer maintenant (manche d'une série avec son lobby, ou match) ; null s'il n'y a rien à jouer.</summary>
 		public async Task<object> MyRace(long tournament, long account)
@@ -653,7 +760,8 @@ namespace OpenEsport.Accounts
 			return new
 			{
 				id = t.Id, title = t.Title, description = cfg.Description, mode = cfg.Format, teamSize = cfg.TeamSize, state = t.State, note = t.Note,
-				modes = cfg.Phases.Select(p => p.GameMode).Distinct().ToList(),
+				modes = cfg.Phases.Where(p => !p.IsSplit).Select(p => p.GameMode).Distinct().ToList(), division = t.Division, parent = t.Parent, myReference = mine.Reference,
+				match = phase != null && phase.IsMatches,
 				startAt = cfg.StartAt, startMode = cfg.StartMode, registrationOpensAt = cfg.RegistrationOpensAt, registrationClosesAt = cfg.ClosesAt, checkInMinutes = cfg.CheckInMinutes,
 				checkInOpensAt = cfg.CheckInOpensAt, minEntries = cfg.MinEntries, maxEntries = cfg.MaxEntries, registrationOpen,
 				owner = login(t.Owner), isOwner = viewer != 0 && t.Owner == viewer,
@@ -672,6 +780,8 @@ namespace OpenEsport.Accounts
 			if (!string.IsNullOrWhiteSpace(p.Name)) return p.Name;
 			if (p.Kind == "pools") return "Poules";
 			if (p.Kind == "table") return "Tableau";
+			if (p.Kind == "divisions") return "Poules de division";
+			if (p.Kind == "split") return "Séparation en divisions";
 			if (cfg.Phases.Count > 1 && index == cfg.Phases.Count - 1) return "Finale";
 			return cfg.Phases.Count > 1 ? $"Phase {index + 1}" : "Manches";
 		}
@@ -695,7 +805,8 @@ namespace OpenEsport.Accounts
 				name = string.Join(" & ", g.Select(e => login(e.Account))), checkedIn = g.Any(e => e.CheckedIn), complete = g.Count() >= cfg.TeamSize,
 				invites = invites.Where(i => i.Reference == g.Key).Select(i => login(i.Account)).ToList(),
 			});
-			return new { summary = Summary(t, viewer, login, entries, invites), config = cfg, teams, standings };
+			var divisions = _store.TournamentDivisions(t).Select(d => new { id = d.Id, division = d.Division, state = d.State, mine = viewer != 0 && _store.TournamentEntries(d.Id).Any(e => e.Account == viewer) }).ToList();
+			return new { summary = Summary(t, viewer, login, entries, invites), config = cfg, teams, standings, divisions, flow = await Flow(t, cfg) };
 		}
 
 		/// <summary>
@@ -713,17 +824,119 @@ namespace OpenEsport.Accounts
 					var playable = await _api.PlayableStages(t.Contest);
 					if (playable.Count > 0) return LobbyRanking(await _api.StageData(t.Contest, playable[0].index));
 				}
-				var data = await _api.FinalRanking(t.Contest);
-				foreach (var r in data.GetProperty("classification").GetProperty("rows").EnumerateArray())
-				{
-					try { var cells = r.GetProperty("cells"); list.Add(new { place = cells[0].GetString(), name = cells[2].GetString(), detail = "" }); }
-					catch (Exception e) when (e is KeyNotFoundException || e is InvalidOperationException || e is IndexOutOfRangeException) { }
-				}
+				foreach (var (place, name) in await _api.FinalRanking(t.Contest)) list.Add(new { place, name, detail = "" });
 				return list;
 			}
 			var current = await CurrentLobby(t);
 			if (current != null) return LobbyRanking(await _api.StageData(t.Contest, current.Value.stage));
 			return list;
+		}
+
+		private readonly ConcurrentDictionary<long, (DateTime until, List<object> flow)> _flows = new ConcurrentDictionary<long, (DateTime, List<object>)>();
+		private const double FlowSeconds = 8;
+
+		/// <summary>
+		/// Le déroulé d'un tournoi lancé : pour chaque étape, son état et ses résultats — lobbys (classement et manches de chacun), poules (classement et matchs)
+		/// ou tours d'un tableau. Gardé quelques secondes : beaucoup de joueurs le regardent en même temps, et un résultat reçu l'efface.
+		/// </summary>
+		private async Task<List<object>> Flow(TournamentRow t, TournamentConfig cfg)
+		{
+			if ((t.State != "running" && t.State != "done") || !_api.Configured) return new List<object>();
+			if (_flows.TryGetValue(t.Id, out var known) && known.until > DateTime.UtcNow) return known.flow;
+			var list = new List<object>();
+			try
+			{
+				var playable = await _api.PlayableStages(t.Contest);
+				var results = _store.RaceResults(t.Id).ToDictionary(r => (r.Race, r.Reference));
+				var games = _store.MatchGames(t.Id).GroupBy(g => (g.phase, g.match)).ToDictionary(g => g.Key, g => g.Select(x => x.a + "-" + x.b).ToList());
+				for (int i = 0, raceBase = 0; i < cfg.Phases.Count && i < playable.Count; i++)
+				{
+					var p = cfg.Phases[i];
+					string state = t.State == "done" || i < t.Phase ? "done" : i == t.Phase ? "current" : "upcoming";
+					var groups = new List<object>();
+					if (state != "upcoming")
+					{
+						if (p.IsLobby) groups = LobbyFlow(await _api.StageData(t.Contest, playable[i].index), p, raceBase, results);
+						else if (p.IsMatches)
+						{
+							string kind = p.Kind == "table" ? "table" : "pool_supervisor";
+							var matches = await _api.Matches(t.Contest, playable[i].index, kind);
+							var rows = kind == "table" ? null : PoolRows(await _api.StageData(t.Contest, playable[i].index));
+							groups = MatchFlow(matches, rows, p, i, games);
+						}
+					}
+					list.Add(new { index = i, state, groups });
+					if (p.IsLobby) raceBase += p.Races;
+				}
+			}
+			catch (ManageCompException) { return list; }
+			_flows[t.Id] = (DateTime.UtcNow.AddSeconds(FlowSeconds), list);
+			return list;
+		}
+
+		private static List<object> LobbyFlow(JsonElement data, PhaseConfig p, int raceBase, Dictionary<(int, int), RaceResult> results)
+		{
+			var groups = new List<object>();
+			foreach (var l in data.GetProperty("lobbies").EnumerateArray())
+			{
+				var rows = new List<(int place, object row)>();
+				foreach (var r in l.GetProperty("rows").EnumerateArray())
+				{
+					int reference = r.GetProperty("reference").GetInt32();
+					var races = new List<object>();
+					for (int k = 0; k < p.Races; k++)
+						races.Add(results.TryGetValue((raceBase + k, reference), out var x) ? new { place = x.Place, kills = x.Kills, points = x.Points }
+							: RaceFilled(r, k) ? new { place = r.GetProperty("finishes")[k].ValueKind == JsonValueKind.Number ? r.GetProperty("finishes")[k].GetInt32() : 0, kills = 0, points = 0 } : null);
+					int place = r.TryGetProperty("place", out var pl) && pl.ValueKind == JsonValueKind.Number ? pl.GetInt32() : 0;
+					int points = r.TryGetProperty("standing", out var st) && st.TryGetProperty("points", out var pts) ? pts.GetInt32() : 0;
+					string name = r.TryGetProperty("name", out var nm) ? nm.GetString() : "";
+					rows.Add((place, new { place, name, reference, points, races }));
+				}
+				groups.Add(new { type = "lobby", number = l.GetProperty("index").GetInt32() + 1, rows = rows.OrderBy(x => x.place == 0 ? int.MaxValue : x.place).Select(x => x.row).ToList() });
+			}
+			return groups;
+		}
+
+		/// <summary>Les lignes de chaque poule : place, nom, victoires, différence.</summary>
+		private static Dictionary<int, List<object>> PoolRows(JsonElement data)
+		{
+			var result = new Dictionary<int, List<object>>();
+			foreach (var pool in data.GetProperty("pools").EnumerateArray())
+			{
+				var rows = new List<(int place, object row)>();
+				if (pool.TryGetProperty("rows", out var list) && list.ValueKind == JsonValueKind.Array)
+					foreach (var r in list.EnumerateArray())
+					{
+						int place = 0, wins = 0; string diff = "";
+						if (r.TryGetProperty("dashboard", out var d) && d.ValueKind == JsonValueKind.Object)
+						{
+							int.TryParse(d.GetProperty("rank").ToString(), out place); int.TryParse(d.GetProperty("victories").ToString(), out wins);
+							diff = d.GetProperty("indice").ToString();
+						}
+						rows.Add((place, new { place, name = r.GetProperty("name").GetString(), reference = r.GetProperty("reference").GetInt32(), points = wins, diff }));
+					}
+				result[pool.GetProperty("index").GetInt32()] = rows.OrderBy(x => x.place == 0 ? int.MaxValue : x.place).Select(x => x.row).ToList();
+			}
+			return result;
+		}
+
+		private static List<object> MatchFlow(List<DuelMatch> matches, Dictionary<int, List<object>> poolRows, PhaseConfig p, int phase, Dictionary<(int, string), List<string>> games)
+		{
+			string Score(string text) => !text.StartsWith("V", StringComparison.Ordinal) ? text : text.Length > 1 ? text.Substring(1) : p.MatchScore.ToString();
+			object Json(DuelMatch m) => new
+			{
+				a = m.NameA, b = m.NameB, refA = m.RefA, refB = m.RefB, scoreA = Score(m.ScoreA), scoreB = Score(m.ScoreB), winner = m.Winner,
+				games = games.TryGetValue((phase, m.Key), out var g) ? g : new List<string>(),
+			};
+			if (poolRows != null)
+				return poolRows.OrderBy(x => x.Key).Select(x =>
+				{
+					var own = matches.Where(m => m.Pool == x.Key).ToList();
+					return (object)new { type = "pool", number = x.Key + 1, division = own.Count > 0 ? own[0].Division : 0, rows = x.Value, matches = own.Select(Json).ToList() };
+				}).ToList();
+			// tableau : du premier tour à la finale, puis les matchs de classement
+			return matches.GroupBy(m => (m.Place, m.RoundSize)).OrderBy(g => g.Key.Place).ThenByDescending(g => g.Key.RoundSize)
+				.Select(g => (object)new { type = "round", size = g.Key.RoundSize, place = g.Key.Place, matches = g.Select(Json).ToList() }).ToList();
 		}
 
 		private static List<object> LobbyRanking(JsonElement data)

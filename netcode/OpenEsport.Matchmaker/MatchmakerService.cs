@@ -323,12 +323,12 @@ namespace OpenEsport.Matchmaker
 		}
 
 		/// <summary>
-		/// La partie d'une manche de tournoi : le serveur du lobby s'il existe, sinon on le lance — battle royale, ou Capture du drapeau (deux équipes),
-		/// avec les joueurs du lobby complétés par des bots.
+		/// La partie d'une manche de tournoi : le serveur du lobby s'il existe, sinon on le lance — battle royale, deathmatch, ou un mode à deux équipes.
+		/// Le service de comptes dit au serveur s'il complète le lobby avec des bots.
 		/// </summary>
 		private string HandleTournamentRequest(long tournament, int race, int lobby, GameMode mode, int teamSize)
 		{
-			if (mode != GameMode.BattleRoyale && mode != GameMode.CaptureTheFlag) return Matchmaking.ReplyTag + "ERR|Mode de jeu inattendu pour une manche de tournoi";
+			if (mode == GameMode.Duel) return Matchmaking.ReplyTag + "ERR|Mode de jeu inattendu pour une manche de tournoi";
 			lock (_servers)
 			{
 				var existing = _servers.FirstOrDefault(s => s.Spec.Tournament == tournament && s.Spec.TournamentRace == race && s.Spec.TournamentLobby == lobby);
@@ -338,7 +338,7 @@ namespace OpenEsport.Matchmaker
 				if (port < 0) return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant";
 				var spec = new ServerSpec
 				{
-					Name = $"open-esport-tournoi-{Modes.Get(mode).Key}-{tournament}-{race}-{lobby}-{port}", Port = port, Mode = mode, TeamSize = teamSize, Players = mode == GameMode.BattleRoyale ? _opt.Players : 2 * teamSize,
+					Name = $"open-esport-tournoi-{Modes.Get(mode).Key}-{tournament}-{race}-{lobby}-{port}", Port = port, Mode = mode, TeamSize = teamSize, Players = mode == GameMode.BattleRoyale ? _opt.Players : mode == GameMode.Deathmatch ? Modes.Get(mode).PlayersFor(1) : 2 * teamSize,
 					MinPlayers = _opt.MinPlayers, LobbyCountdown = _opt.LobbyCountdown, IdleExitSeconds = _opt.IdleExitSeconds, Zones = _opt.Zones,
 					Tournament = tournament, TournamentRace = race, TournamentLobby = lobby
 				};
@@ -352,11 +352,11 @@ namespace OpenEsport.Matchmaker
 
 		/// <summary>
 		/// Un match de poule ou de tableau : un serveur réservé aux deux camps (<paramref name="teamSize"/> joueurs chacun), sans bots —
-		/// 1 VS 1, Capture du drapeau, ou match à mort par équipe (anciens tournois en duels).
+		/// 1 VS 1, Team Deathmatch, Capture du drapeau, Sabotage ou Contrôle.
 		/// </summary>
 		private string HandleDuelRequest(long tournament, string key, GameMode mode, int teamSize)
 		{
-			if (mode != GameMode.Duel && mode != GameMode.CaptureTheFlag && mode != GameMode.TeamDeathmatch) return Matchmaking.ReplyTag + "ERR|Mode de jeu inattendu pour un match de tournoi";
+			if (!Modes.Get(mode).TwoTeams) return Matchmaking.ReplyTag + "ERR|Mode de jeu inattendu pour un match de tournoi";
 			if (mode == GameMode.Duel) teamSize = 1;
 			lock (_servers)
 			{

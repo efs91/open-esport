@@ -154,8 +154,9 @@ namespace OpenEsport.Server
 			}
 			_mode.OnStart();
 			BroadcastRoster();
-			// duel de tournoi : un camp qui ne s'est pas présenté perd par forfait (score limite à zéro)
-			if (!string.IsNullOrEmpty(_opt.TournamentMatch) && _opt.ScoreLimit > 0)
+			// partie de tournoi entre inscrits : un camp qui ne s'est pas présenté perd par forfait (score limite à zéro) ; en deathmatch, celui qui est seul gagne
+			if (_opt.Tournament > 0 && !_opt.FillBots && !_mode.Info.TwoTeams && _humans.Count == 1) EndModal(_humans[0].Team);
+			if ((!string.IsNullOrEmpty(_opt.TournamentMatch) || (_opt.Tournament > 0 && !_opt.FillBots)) && _mode.Info.TwoTeams && _opt.ScoreLimit > 0)
 				for (int side = 0; side < 2; side++)
 					if (!_humans.Any(h => h.Team == side) && _humans.Any(h => h.Team == 1 - side)) { _mode.Score[1 - side] = _opt.ScoreLimit; Log($"Forfait : le camp {side} est absent"); EndModal((byte)(1 - side)); }
 			Log($"Départ de la partie {Modes.Label(_opt.Mode, _m.TeamSize)} : {_players.Count} joueurs ({_humans.Count} humains, {BotCount} bots)");
@@ -329,7 +330,7 @@ namespace OpenEsport.Server
 		{
 			private readonly bool _ffa;
 			public ScoreMode(GameServer s, ModeInfo info, bool ffa) : base(s, info) { _ffa = ffa; }
-			private int Target => S._opt.ScoreLimit > 0 && !_ffa ? S._opt.ScoreLimit : (int)GameBalance.F(_ffa ? "mode.dmKills" : "mode.tdmKills");
+			private int Target => S._opt.ScoreLimit > 0 ? S._opt.ScoreLimit : (int)GameBalance.F(_ffa ? "mode.dmKills" : "mode.tdmKills");
 
 			public override void OnStart()
 			{
@@ -412,6 +413,7 @@ namespace OpenEsport.Server
 			public override void OnKill(ServerPlayer killer, ServerPlayer victim, byte weapon) => S.ReleaseSeat(victim);
 			public override void OnPlayerLeft(ServerPlayer p) => S.ReleaseSeat(p);
 
+			private int Target => S._opt.ScoreLimit > 0 ? S._opt.ScoreLimit : (int)GameBalance.F("mode.controlScore");
 			public int Held(int team) { int n = 0; for (int i = 0; i < 5; i++) if (_owner[i] == team) n++; return n; }
 
 			public override void Tick(float dt)
@@ -443,7 +445,7 @@ namespace OpenEsport.Server
 					int h0 = Held(0), h1 = Held(1);
 					if (h0 > h1) Score[0] += h0 - h1; else if (h1 > h0) Score[1] += h1 - h0;
 				}
-				int target = (int)GameBalance.F("mode.controlScore");
+				int target = Target;
 				if (Score[0] >= target || Score[1] >= target) { S.EndModal((byte)(Score[0] >= Score[1] ? 0 : 1)); return; }
 				if (TimeLeft <= 0f) { TimeLeft = 0f; S.EndModal(Score[0] == Score[1] ? (byte)255 : (byte)(Score[0] > Score[1] ? 0 : 1)); }
 			}
@@ -451,7 +453,7 @@ namespace OpenEsport.Server
 			public override void FillState(ref ModeState st, ServerPlayer viewer)
 			{
 				st.Vehicles = S._vehicles;
-				st.Target = (ushort)GameBalance.F("mode.controlScore");
+				st.Target = (ushort)Target;
 				for (int i = 0; i < 5; i++) st.Points[i] = new ControlPointState { Owner = _owner[i], Progress = (sbyte)Math.Clamp((int)_progress[i], -100, 100), Contested = _contested[i] };
 			}
 
@@ -657,7 +659,7 @@ namespace OpenEsport.Server
 
 			public SabotageMode(GameServer s, ModeInfo info) : base(s, info) { }
 
-			private int RoundsToWin => (int)GameBalance.F("sabotage.roundsToWin");
+			private int RoundsToWin => S._opt.ScoreLimit > 0 ? S._opt.ScoreLimit : (int)GameBalance.F("sabotage.roundsToWin");
 			/// <summary>Camp d'un joueur : 1 = attaquants, 0 = défenseurs. Les bleus attaquent d'abord ; les camps s'échangent à la mi-temps.</summary>
 			public override int SideOf(ServerPlayer p) => (p.Team == 0 ? 1 : 0) ^ _swapped;
 			private int TeamOfSide(int side) => (side ^ _swapped) == 1 ? 0 : 1;

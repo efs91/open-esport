@@ -89,6 +89,14 @@ namespace OpenEsport.Accounts
 				AddColumn(c, "tournaments", "phase", "INTEGER NOT NULL DEFAULT 0");
 				AddColumn(c, "tournaments", "race_base", "INTEGER NOT NULL DEFAULT 0");
 				AddColumn(c, "tournaments", "note", "TEXT NOT NULL DEFAULT ''");
+				// divisions : un tournoi séparé en divisions donne un tournoi par division, rattaché au premier
+				AddColumn(c, "tournaments", "parent", "INTEGER NOT NULL DEFAULT 0");
+				AddColumn(c, "tournaments", "division", "INTEGER NOT NULL DEFAULT 0");
+				// résultats des manches d'une série (place, éliminations, points) et parties d'un match en plusieurs parties
+				Exec(c, "CREATE TABLE IF NOT EXISTS tournament_results(tid INTEGER NOT NULL, race INTEGER NOT NULL, ref INTEGER NOT NULL, lobby INTEGER NOT NULL, place INTEGER NOT NULL, kills INTEGER NOT NULL, points INTEGER NOT NULL, PRIMARY KEY(tid, race, ref))");
+				Exec(c, "CREATE TABLE IF NOT EXISTS tournament_games(tid INTEGER NOT NULL, phase INTEGER NOT NULL, match TEXT NOT NULL, game INTEGER NOT NULL, a INTEGER NOT NULL, b INTEGER NOT NULL, PRIMARY KEY(tid, phase, match, game))");
+				// modèles de tournoi : privés, ou partagés avec les autres joueurs
+				Exec(c, "CREATE TABLE IF NOT EXISTS tournament_templates(id INTEGER PRIMARY KEY AUTOINCREMENT, owner INTEGER NOT NULL, name TEXT NOT NULL, config TEXT NOT NULL, public INTEGER NOT NULL DEFAULT 0, updated INTEGER NOT NULL)");
 				AddColumn(c, "tournament_players", "checked_in", "INTEGER NOT NULL DEFAULT 0");
 				AddColumn(c, "tournament_players", "captain", "INTEGER NOT NULL DEFAULT 0");
 				// invitations dans une équipe de tournoi : le chef propose, l'invité accepte ou refuse

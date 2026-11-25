@@ -112,6 +112,21 @@ namespace OpenEsport.Tests
 		}
 
 		[Fact]
+		public void Tournament_Score_Limit_Rules_Deathmatch_Control_And_Sabotage()
+		{
+			foreach (var mode in new[] { GameMode.Control, GameMode.Sabotage })
+			{
+				using var r = Make(mode, 5, humans: 2, more: o => o.ScoreLimit = 3);
+				Assert.Equal(3, Join(r, 2)[0].C.Mode.Target);
+			}
+			using var rig = Make(GameMode.Deathmatch, 1, humans: 2, more: o => o.ScoreLimit = 2);
+			var p = Join(rig, 2);
+			Assert.Equal(2, p[0].C.Mode.Target);
+			for (int i = 0; i < 2; i++) { rig.OnServer(() => rig.Server.AdminKill(p[0].C.PlayerId, p[1].C.PlayerId)); RunUntil(rig, () => SP(rig, p[1]).Alive || rig.Server.Phase == MatchPhase.Over, 6); }
+			Assert.Equal(MatchPhase.Over, rig.Server.Phase);
+		}
+
+		[Fact]
 		public void Control_Points_Are_Captured_Contested_And_Score_The_Difference()
 		{
 			Balance(("mode.controlCaptureSeconds", 1), ("mode.controlTickSeconds", 0.25));

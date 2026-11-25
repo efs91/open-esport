@@ -58,7 +58,9 @@ namespace Openesport.Utils
 			"Les inscriptions doivent fermer au plus tard au départ.",
 			"Les inscriptions doivent ouvrir avant le départ.",
 			"Phase {0} : {1}",
-			"le tableau (élimination directe) est forcément la dernière phase.",
+			"une séparation en divisions se place après une étape jouée.",
+			"une séparation en divisions est suivie d'au moins une étape.",
+			"une division compte au moins deux participants.",
 			"points par place : au plus {0} valeurs, de 0 à 100.",
 			"Tu organises déjà {0} tournois : termine-en un d'abord.",
 			"Le tournoi a commencé : sa configuration ne change plus.",
@@ -95,6 +97,11 @@ namespace Openesport.Utils
 			"Pas de manche à jouer pour toi.",
 			"ManageComp est injoignable : {0}",
 			"{0} pts · lobby {1}",
+
+			// tournois : modèles
+			"Le nom d'un modèle doit faire entre 3 et 40 caractères.",
+			"Ce modèle n'existe plus.",
+			"Tu as déjà {0} modèles : supprimes-en un d'abord.",
 		};
 	}
 }

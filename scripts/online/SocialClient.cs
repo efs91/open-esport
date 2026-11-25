@@ -59,7 +59,10 @@ namespace Openesport.Online
 		public int PhaseRace { get; set; }
 		public int PhaseRaces { get; set; }
 		public int LobbySize { get; set; }
-		/// <summary>Modes de jeu des phases (br, ctf, 1v1, tdm) ; mode et déroulement (lobby, pools, table) de la phase en cours.</summary>
+		/// <summary>Division de ce tournoi après une séparation (0 : pas de séparation) ; ma référence dans la compétition (0 : pas inscrit).</summary>
+		public int Division { get; set; }
+		public int MyReference { get; set; }
+		/// <summary>Modes de jeu des phases (br, dm, 1v1, tdm, ctf, sab, ctl) ; mode et déroulement (lobby, pools, table, divisions) de la phase en cours.</summary>
 		public List<string> Modes { get; set; } = new List<string>();
 		public string PhaseMode { get; set; } = "";
 		public string PhaseKind { get; set; } = "";
@@ -88,11 +91,15 @@ namespace Openesport.Online
 	/// <summary>Une invitation reçue : l'équipe (référence) et son chef.</summary>
 	public sealed class TournamentInvitationDto { public int Reference { get; set; } public string Captain { get; set; } }
 
-	/// <summary>Une phase d'un tournoi (même forme que côté service) : mode de jeu, série de lobbys, poules ou tableau, équipes inscrites ou tirées au sort.</summary>
+	/// <summary>
+	/// Une étape d'un tournoi (même forme que côté service) : mode de jeu, déroulement (série de lobbys, poules, tableau, poules de division,
+	/// séparation en divisions), équipes inscrites ou tirées au sort.
+	/// </summary>
 	public sealed class PhaseConfigDto
 	{
+		/// <summary>lobby, pools, table, divisions, split.</summary>
 		public string Kind { get; set; } = "lobby";
-		/// <summary>br, ctf, 1v1 (tdm : anciens tournois en duels).</summary>
+		/// <summary>br, dm, 1v1, tdm, ctf, sab, ctl (vide pour une séparation).</summary>
 		public string Mode { get; set; } = "br";
 		/// <summary>entry : équipes inscrites ; random : tirées au sort à chaque manche (inscription en solo), de <see cref="TeamSize"/> joueurs.</summary>
 		public string Teams { get; set; } = "entry";
@@ -104,11 +111,24 @@ namespace Openesport.Online
 		public int LobbySize { get; set; } = 20;
 		public List<int> Scale { get; set; } = new List<int> { 12, 9, 7, 5, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1 };
 		public int AbandonPoints { get; set; }
+		/// <summary>Points par élimination (battle royale, deathmatch).</summary>
+		public int KillPoints { get; set; }
+		/// <summary>Parties d'un match (1, 3 ou 5) ; participants par poule (0 : automatique).</summary>
+		public int BestOf { get; set; } = 1;
+		public int PoolSize { get; set; }
+		/// <summary>Divisions : nombre, participants de chacune (vide : parts égales), montées et descentes, répartition de départ (ranking, random).</summary>
+		public int Divisions { get; set; } = 2;
+		public List<int> Sizes { get; set; } = new List<int>();
+		public int Up { get; set; } = 1;
+		public int Down { get; set; } = 1;
+		public string Start { get; set; } = "ranking";
 		public string Distribution { get; set; } = "balanced";
 		public string QualifyMode { get; set; } = "total";
 		public int Qualified { get; set; }
 		public int MaxScore { get; set; } = 10;
 		public string Places { get; set; } = "third";
+
+		public PhaseConfigDto Copy() => JsonSerializer.Deserialize<PhaseConfigDto>(JsonSerializer.Serialize(this));
 	}
 
 	/// <summary>Configuration complète d'un tournoi (page de création et de modification).</summary>
@@ -126,7 +146,57 @@ namespace Openesport.Online
 		public long RegistrationClosesAt { get; set; }
 		public int CheckInMinutes { get; set; } = 15;
 		public List<PhaseConfigDto> Phases { get; set; } = new List<PhaseConfigDto>();
+
+		/// <summary>Une copie indépendante : modifier un modèle choisi ne change pas le modèle.</summary>
+		public TournamentConfigDto Copy() => JsonSerializer.Deserialize<TournamentConfigDto>(JsonSerializer.Serialize(this));
 	}
+
+	/// <summary>Un modèle de tournoi : du jeu (<see cref="Id"/> 0), à soi (privé ou partagé), ou partagé par un autre joueur.</summary>
+	public sealed class TournamentTemplateDto
+	{
+		public long Id { get; set; }
+		public string Name { get; set; } = "";
+		public string Owner { get; set; } = "";
+		public bool Mine { get; set; }
+		public bool Shared { get; set; }
+		public TournamentConfigDto Config { get; set; }
+	}
+	public sealed class TournamentTemplatesDto
+	{
+		public List<TournamentTemplateDto> BuiltIn { get; set; } = new List<TournamentTemplateDto>();
+		public List<TournamentTemplateDto> Mine { get; set; } = new List<TournamentTemplateDto>();
+		public List<TournamentTemplateDto> Shared { get; set; } = new List<TournamentTemplateDto>();
+	}
+
+	// ---- déroulé d'un tournoi lancé : les résultats de chaque étape
+	public sealed class FlowRaceDto { public int Place { get; set; } public int Kills { get; set; } public int Points { get; set; } }
+	public sealed class FlowRowDto { public int Place { get; set; } public string Name { get; set; } public int Reference { get; set; } public int Points { get; set; } public string Diff { get; set; } public List<FlowRaceDto> Races { get; set; } = new List<FlowRaceDto>(); }
+	public sealed class FlowMatchDto
+	{
+		public string A { get; set; }
+		public string B { get; set; }
+		public int RefA { get; set; }
+		public int RefB { get; set; }
+		public string ScoreA { get; set; } = "";
+		public string ScoreB { get; set; } = "";
+		/// <summary>0 : A gagne ; 1 : B ; -1 : à jouer.</summary>
+		public int Winner { get; set; } = -1;
+		/// <summary>Parties jouées d'un match en plusieurs parties (« 13-7 »).</summary>
+		public List<string> Games { get; set; } = new List<string>();
+	}
+	/// <summary>Un lobby, une poule, ou un tour de tableau (type lobby, pool, round).</summary>
+	public sealed class FlowGroupDto
+	{
+		public string Type { get; set; }
+		public int Number { get; set; }
+		public int Division { get; set; }
+		public int Size { get; set; }
+		public int Place { get; set; } = 1;
+		public List<FlowRowDto> Rows { get; set; } = new List<FlowRowDto>();
+		public List<FlowMatchDto> Matches { get; set; } = new List<FlowMatchDto>();
+	}
+	public sealed class FlowPhaseDto { public int Index { get; set; } public string State { get; set; } public List<FlowGroupDto> Groups { get; set; } = new List<FlowGroupDto>(); }
+	public sealed class TournamentDivisionDto { public long Id { get; set; } public int Division { get; set; } public string State { get; set; } public bool Mine { get; set; } }
 
 	public sealed class TournamentTeamDto { public string Name { get; set; } public bool CheckedIn { get; set; } public bool Complete { get; set; } = true; public List<string> Invites { get; set; } = new List<string>(); }
 	public sealed class StandingDto { public string Place { get; set; } public string Name { get; set; } public string Detail { get; set; } }
@@ -138,6 +208,9 @@ namespace Openesport.Online
 		public TournamentConfigDto Config { get; set; }
 		public List<TournamentTeamDto> Teams { get; set; } = new List<TournamentTeamDto>();
 		public List<StandingDto> Standings { get; set; } = new List<StandingDto>();
+		/// <summary>Les divisions du tournoi, s'il a été séparé ; le déroulé, étape par étape, une fois lancé.</summary>
+		public List<TournamentDivisionDto> Divisions { get; set; } = new List<TournamentDivisionDto>();
+		public List<FlowPhaseDto> Flow { get; set; } = new List<FlowPhaseDto>();
 	}
 	public sealed class TournamentsDto
 	{
@@ -229,6 +302,28 @@ namespace Openesport.Online
 		}
 
 		public static async Task<(string error, TournamentDetailsDto details)> TournamentDetailsAsync(long id) => await Get<TournamentDetailsDto>(HttpMethod.Get, $"/api/tournaments/{id}");
+
+		/// <summary>Les modèles de tournoi : du jeu, les siens, ceux que les autres ont rendus publics.</summary>
+		public static Task<(string error, TournamentTemplatesDto templates)> TemplatesAsync() => Get<TournamentTemplatesDto>(HttpMethod.Get, "/api/tournament-templates");
+
+		/// <summary>Enregistre une configuration comme modèle, privé ou public ; un modèle à soi du même nom est remplacé.</summary>
+		public static async Task<string> SaveTemplateAsync(string name, bool shared, TournamentConfigDto config)
+		{
+			var (code, body) = await AccountClient.SendAsync(HttpMethod.Post, "/api/tournament-templates", new { name, shared, config });
+			return code == 200 ? null : AccountClient.ErrorOf(code, body);
+		}
+
+		public static async Task<string> ShareTemplateAsync(long id, bool shared)
+		{
+			var (code, body) = await AccountClient.SendAsync(HttpMethod.Post, $"/api/tournament-templates/{id}/share", new { shared });
+			return code == 200 ? null : AccountClient.ErrorOf(code, body);
+		}
+
+		public static async Task<string> DeleteTemplateAsync(long id)
+		{
+			var (code, body) = await AccountClient.SendAsync(HttpMethod.Delete, $"/api/tournament-templates/{id}");
+			return code == 200 ? null : AccountClient.ErrorOf(code, body);
+		}
 
 		/// <summary>join, leave, checkin ; start et cancel (organisateur) ; invite et kick (chef d'équipe, <paramref name="login"/>) ; accept et decline (invité, <paramref name="reference"/> : l'équipe).</summary>
 		public static async Task<string> TournamentActionAsync(long id, string action, string login = null, int reference = 0)

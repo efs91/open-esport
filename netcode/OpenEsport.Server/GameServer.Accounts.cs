@@ -68,6 +68,7 @@ namespace OpenEsport.Server
 				return;
 			}
 			if (game.ScoreLimit > 0) _opt.ScoreLimit = game.ScoreLimit;
+			if (game.Bots == false) _opt.FillBots = false;
 			if (_opt.Mode == GameMode.Duel && DuelRules.TryParsePolicy(game.Loadout, out var policy, out var fixedLoadout)) { _opt.DuelPolicy = policy; _opt.DuelFixed = fixedLoadout; }
 			foreach (var kv in game.Sides) _tournamentSide[kv.Key] = kv.Value;
 			foreach (var kv in game.Groups) _tournamentGroup[kv.Key] = TournamentGroupBase + kv.Value;

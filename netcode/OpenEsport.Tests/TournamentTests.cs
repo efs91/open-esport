@@ -235,7 +235,6 @@ namespace OpenEsport.Tests
 			Assert.Contains("lobbys", Make(1, new PhaseConfig { Kind = "pools", Mode = "ctf", Teams = "random", TeamSize = 4, MaxScore = 3 }).Validate(now, true));
 			// battle royale par équipes : 30 joueurs au plus par lobby
 			Assert.Contains("équipes de 3", Make(3, new PhaseConfig { Kind = "lobby", Mode = "br", LobbySize = 20 }).Validate(now, true));
-			Assert.Contains("dernière phase", Make(1, new PhaseConfig { Kind = "table", Mode = "1v1", MaxScore = 3 }, new PhaseConfig { Kind = "lobby", Mode = "br" }).Validate(now, true));
 		}
 
 		[Fact]
@@ -329,7 +328,11 @@ namespace OpenEsport.Tests
 			Assert.StartsWith("MM!WAIT", mm.HandleRequest($"MM?|{OpenEsport.Core.Protocol.Version}|1|1v1|1|TD9:p0m1"));
 			Assert.Equal(OpenEsport.Core.GameMode.Duel, launcher.Launched[1].Mode);
 			Assert.Equal(2, launcher.Launched[1].Players);
-			Assert.StartsWith("MM!ERR", mm.HandleRequest($"MM?|{OpenEsport.Core.Protocol.Version}|1|dm|1|T9:3:1"));
+			Assert.StartsWith("MM!WAIT", mm.HandleRequest($"MM?|{OpenEsport.Core.Protocol.Version}|1|dm|1|T9:3:1"));
+			Assert.Equal(10, launcher.Launched[2].Players);
+			Assert.StartsWith("MM!WAIT", mm.HandleRequest($"MM?|{OpenEsport.Core.Protocol.Version}|5|sab|1|TD9:f1p0m1g2"));
+			Assert.Equal(10, launcher.Launched[3].Players);
+			Assert.StartsWith("MM!ERR", mm.HandleRequest($"MM?|{OpenEsport.Core.Protocol.Version}|1|1v1|1|T9:3:2"));      // le 1 VS 1 ne se joue pas en série
 		}
 
 		[Fact]
@@ -421,9 +424,9 @@ namespace OpenEsport.Tests
 			Assert.Contains("pool:1=V10", fake.Scored); Assert.Contains("pool:2=4", fake.Scored);
 			Assert.Equal("running", store.Tournament(t.Id).State);
 			var final = await svc.NextMatch(t.Id, b);
-			Assert.Equal("t0n2", final.Key);
+			Assert.Equal("f1t0n2", final.Key);
 			Assert.NotNull((await svc.ReportMatch(t.Id, "p0m0", 10, 1)).Error);                 // le match de poule est déjà joué
-			Assert.Null((await svc.ReportMatch(t.Id, "t0n2", 3, 10)).Error);
+			Assert.Null((await svc.ReportMatch(t.Id, "f1t0n2", 3, 10)).Error);
 			Assert.Contains("table:2=V10", fake.Scored);
 			Assert.Equal("done", store.Tournament(t.Id).State);
 		}
@@ -461,7 +464,7 @@ namespace OpenEsport.Tests
 			var svc = new TournamentService(store, new ManageCompApi(new HttpClient(new FakeManageComp { Races = 1 }), "http://fake", "clef-test"));
 			long Make(string l) => store.CreateAccount(l, new byte[] { 1 }, new byte[] { 1 }, 1);
 			long orga = Make("orga"), a = Make("alice"), b = Make("bob"), c = Make("carol");
-			var t = await svc.Create(orga, "BR en duo", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds(), 1, 20, "br", 2);
+			var t = await svc.Create(orga, "BR en duo", DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds(), 1, 15, "br", 2);
 			Assert.Null(t.Error);
 			Assert.Null((await svc.Join(t.Id, a, "alice")).Error);
 			Assert.Null(svc.Invite(t.Id, a, "bob").Error);

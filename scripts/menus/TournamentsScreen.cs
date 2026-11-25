@@ -46,8 +46,8 @@ namespace Openesport.Menus
 
 		public override void _Ready()
 		{
-			AddChild(MenuStyle.Backdrop(0.6f));
-			var margin = new MarginContainer();
+			AddChild(MenuStyle.Backdrop());
+			var margin = new MarginContainer { Theme = MenuStyle.SharedTheme };
 			margin.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			foreach (var side in new[] { "left", "right", "top", "bottom" }) margin.AddThemeConstantOverride("margin_" + side, 28);
 			AddChild(margin);
@@ -83,7 +83,7 @@ namespace Openesport.Menus
 			left.AddThemeConstantOverride("separation", 8);
 			body.AddChild(left);
 			_filter = new OptionButton();
-			foreach (var f in new[] { "À venir", "Mes tournois", "En cours", "Terminés" }) _filter.AddItem(I18n.T(f));
+			foreach (var f in new[] { /*T*/"À venir", /*T*/"Mes tournois", /*T*/"En cours", /*T*/"Terminés" }) _filter.AddItem(I18n.T(f));
 			_filter.ItemSelected += _ => RebuildList();
 			left.AddChild(_filter);
 			var listScroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
@@ -185,7 +185,7 @@ namespace Openesport.Menus
 			title.AddThemeFontSizeOverride("font_size", 26);
 			_right.AddChild(title);
 			if (!string.IsNullOrWhiteSpace(g.Description)) _right.AddChild(Text(g.Description));
-			if (!string.IsNullOrWhiteSpace(g.Note)) _right.AddChild(Warn(I18n.T(g.Note)));
+			if (!string.IsNullOrWhiteSpace(g.Note)) _right.AddChild(Warn(I18n.Server(g.Note)));
 
 			var info = new GridContainer { Columns = 2 };
 			info.AddThemeConstantOverride("h_separation", 18);
@@ -202,7 +202,7 @@ namespace Openesport.Menus
 			Row(g.TeamSize > 1 ? I18n.T("Équipes") : I18n.T("Inscrits"), g.TeamSize > 1
 				? I18n.T("{0} / {1}  (minimum {2}) — {3} complète(s)", g.Players, g.MaxEntries, g.MinEntries, g.CompleteEntries)
 				: I18n.T("{0} / {1}  (minimum {2})", g.Players, g.MaxEntries, g.MinEntries));
-			if (g.State == "running") Row(I18n.T("En cours"), (g.PhaseRaces > 0 ? I18n.T("{0} — manche {1}/{2}", I18n.T(g.PhaseName), g.PhaseRace, g.PhaseRaces) : I18n.T(g.PhaseName)) + "  ·  " + ModeLabel(g.PhaseMode));
+			if (g.State == "running") Row(I18n.T("En cours"), (g.PhaseRaces > 0 ? I18n.T("{0} — manche {1}/{2}", PhaseLabel(g), g.PhaseRace, g.PhaseRaces) : PhaseLabel(g)) + "  ·  " + ModeLabel(g.PhaseMode));
 			_right.AddChild(info);
 
 			_right.AddChild(Section(I18n.T("Phases")));
@@ -255,10 +255,10 @@ namespace Openesport.Menus
 
 			if (d.Standings.Count > 0)
 			{
-				_right.AddChild(Section(g.State == "done" ? I18n.T("Classement final") : I18n.T("Classement — {0}", I18n.T(g.PhaseName))));
+				_right.AddChild(Section(g.State == "done" ? I18n.T("Classement final") : I18n.T("Classement — {0}", PhaseLabel(g))));
 				var table = new GridContainer { Columns = 3 };
 				table.AddThemeConstantOverride("h_separation", 18);
-				foreach (var s in d.Standings.Take(100)) { table.AddChild(Text(s.Place)); table.AddChild(Text(s.Name)); table.AddChild(Muted(s.Detail ?? "")); }
+				foreach (var s in d.Standings.Take(100)) { table.AddChild(Text(s.Place)); table.AddChild(Text(s.Name)); table.AddChild(Muted(DetailLabel(s.Detail))); }
 				_right.AddChild(table);
 			}
 			_right.AddChild(Section(g.TeamSize > 1 ? I18n.T("Équipes inscrites ({0})", d.Teams.Count) : I18n.T("Inscrits ({0})", d.Teams.Count)));
@@ -330,6 +330,14 @@ namespace Openesport.Menus
 					? I18n.T("Ton équipe est incomplète : invite encore {0} joueur(s). Chacun doit accepter l'invitation dans son jeu. Une équipe incomplète au départ est retirée.", g.TeamSize - team.Members.Count)
 					: I18n.T("L'équipe de {0} est incomplète : une équipe incomplète au départ est retirée.", team.CaptainName)));
 		}
+
+		/// <summary>Nom de la phase en cours : celui de l'organisateur, sinon « Poules », « Tableau », « Finale », « Manches » ou « Phase n ».</summary>
+		public static string PhaseLabel(GameTournamentDto g)
+			=> g.PhaseName != null && g.PhaseName.StartsWith("Phase ") && int.TryParse(g.PhaseName.AsSpan(6), out int n) ? I18n.T("Phase {0}", n) : I18n.T(g.PhaseName ?? "");
+
+		/// <summary>Détail d'une ligne de classement (« 24 pts », « 24 pts · lobby 2 »).</summary>
+		private static string DetailLabel(string detail)
+			=> detail != null && detail.EndsWith(" pts") && int.TryParse(detail.AsSpan(0, detail.Length - 4), out int n) ? I18n.T("{0} pts", n) : I18n.Server(detail ?? "");
 
 		/// <summary>Mode d'une phase (anciens tournois : lobby = battle royale, poules et tableau = match à mort).</summary>
 		private static string ModeOf(PhaseConfigDto p) => string.IsNullOrEmpty(p.Mode) ? (p.Kind == "lobby" ? "br" : "tdm") : p.Mode;
@@ -437,7 +445,7 @@ namespace Openesport.Menus
 			_right.AddChild(title);
 
 			// ---- général
-			_right.AddChild(Section(I18n.T("Général")));
+			_right.AddChild(Section(I18n.T("Informations générales")));
 			var grid = Grid();
 			var name = new LineEdit { Text = f.Title, PlaceholderText = I18n.T("Nom du tournoi (3 à 60 caractères)"), MaxLength = 60, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			name.TextChanged += t => f.Title = t;
@@ -691,7 +699,7 @@ namespace Openesport.Menus
 		private void Clear() { foreach (var c in _right.GetChildren()) c.QueueFree(); }
 
 		private static string When(long unix) => unix <= 0 ? "—" : DateTimeOffset.FromUnixTimeSeconds(unix).ToLocalTime().ToString("dd/MM HH:mm");
-		private static string Full(long unix) => unix <= 0 ? "—" : DateTimeOffset.FromUnixTimeSeconds(unix).ToLocalTime().ToString("dd/MM/yyyy 'à' HH:mm");
+		private static string Full(long unix) => unix <= 0 ? "—" : DateTimeOffset.FromUnixTimeSeconds(unix).ToLocalTime().ToString("dd/MM/yyyy HH:mm");
 
 		/// <summary>« dans 3 j 4 h », « dans 25 min », « commencé ».</summary>
 		public static string Countdown(long unix)
@@ -707,7 +715,7 @@ namespace Openesport.Menus
 		public static string FormatLabel(GameTournamentDto g)
 		{
 			var modes = g.Modes != null && g.Modes.Count > 0 ? g.Modes : new List<string> { g.Mode == "duel" ? "tdm" : "br" };
-			return string.Join(" → ", modes.Select(ModeLabel)) + "  ·  " + I18n.T(Registration[Math.Clamp(g.TeamSize - 1, 0, Registration.Length - 1)]).ToLowerInvariant();
+			return string.Join(" → ", modes.Select(ModeLabel)) + "  ·  " + I18n.T(Registration[Math.Clamp(g.TeamSize - 1, 0, Registration.Length - 1)]);
 		}
 
 		public static string StateLabel(GameTournamentDto g) => g.State switch
@@ -731,7 +739,7 @@ namespace Openesport.Menus
 		private static LineEdit DateField(long unix, bool optional, string placeholder = null) => new LineEdit
 		{
 			Text = unix > 0 ? DateTimeOffset.FromUnixTimeSeconds(unix).ToLocalTime().ToString(DateFormat) : "",
-			PlaceholderText = placeholder ?? "JJ/MM/AAAA HH:MM", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+			PlaceholderText = placeholder ?? I18n.T("JJ/MM/AAAA HH:MM"), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
 		};
 
 		private static GridContainer Grid()

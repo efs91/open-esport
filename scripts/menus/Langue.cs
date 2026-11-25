@@ -10,6 +10,7 @@ namespace Openesport.Menus
 
         public override void _Ready()
         {
+            Theme = MenuStyle.SharedTheme;
             _retourButton = GetNode<Button>("CenterContainer/VBoxContainer/ButtonsContainer/RetourButton");
             _retourButton.Pressed += OnRetourPressed;
         }

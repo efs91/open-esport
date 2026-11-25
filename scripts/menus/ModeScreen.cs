@@ -30,7 +30,7 @@ namespace Openesport.Menus
 			_mode = MatchSettings.Mode;
 			_teamSize = MatchSettings.TeamSize;
 
-			var root = new Control();
+			var root = new Control { Theme = MenuStyle.SharedTheme };
 			root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(root);
 			root.AddChild(MenuStyle.Backdrop());
@@ -71,7 +71,7 @@ namespace Openesport.Menus
 			_sizes.AddThemeConstantOverride("separation", 8);
 			box.AddChild(_sizes);
 
-			var go = new Button { Text = I18n.T("Continuer : choisir mon personnage"), CustomMinimumSize = new Vector2(0, 52) };
+			var go = new Button { ThemeTypeVariation = "MenuPrimary", Text = I18n.T("Continuer : choisir mon personnage"), CustomMinimumSize = new Vector2(0, 52) };
 			go.AddThemeFontSizeOverride("font_size", 20);
 			go.Pressed += () => { MatchSettings.Mode = _mode; MatchSettings.TeamSize = _teamSize; var next = OnContinue; QueueFree(); next?.Invoke(); };
 			box.AddChild(go);

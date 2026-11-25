@@ -245,7 +245,7 @@ namespace Openesport.Online
 			if (d == null) return "ÉQUIPEMENT";
 			return d.Kind switch
 			{
-				ItemKind.Weapon => it.ItemId == ItemIds.C19 ? "PISTOLET" : it.ItemId == ItemIds.Smg45 || it.ItemId == ItemIds.Sawnoff ? "PROXIMITÉ" : "FUSILS",
+				ItemKind.Weapon => it.ItemId == ItemIds.C19 ? "PISTOLET" : it.ItemId == ItemIds.Smg45 || it.ItemId == ItemIds.Sawnoff || it.ItemId == ItemIds.Peacemaker ? "PROXIMITÉ" : "FUSILS",
 				ItemKind.Optic => "VISEURS",
 				ItemKind.Ammo => "MUNITIONS",
 				ItemKind.Grenade => "GRENADES",

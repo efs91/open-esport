@@ -27,6 +27,7 @@ namespace Openesport.Menus
 				("knife Animated", "DJMaesen", CcBy, "https://sketchfab.com/3d-models/knife-animated-f3140db917cc43389c14b5b2536c1dc8"),
 				("lmg animated", "DJMaesen", CcBy, "https://sketchfab.com/3d-models/lmg-animated-c02dc6663f344008a502148e751c9974"),
 				("sawnoff animated", "DJMaesen", CcBy, "https://sketchfab.com/3d-models/sawnoff-animated-806f8327bed34fc3b0e3911d01f0566d"),
+				("shotgun animated", "DJMaesen", CcBy, "https://sketchfab.com/3d-models/shotgun-animated-c3d3cf425869463a84d650c15e3af0d2"),
 				("fps animated smg", "DJMaesen", CcBy, "https://sketchfab.com/3d-models/fps-animated-smg-ea3dad7478624495a5a46f40127b0579"),
 				("animated pistol", "DJMaesen", CcBy, "https://sketchfab.com/3d-models/animated-pistol-bd896167e7ca44f19597d3afe6a8d83f"),
 				("sniper animated", "DJMaesen", CcBy, "https://sketchfab.com/3d-models/sniper-animated-b48999a250b2433da59f705c371a49b2"),
@@ -78,8 +79,8 @@ namespace Openesport.Menus
 
 		public override void _Ready()
 		{
-			AddChild(MenuStyle.Backdrop(0.6f));
-			var center = new CenterContainer();
+			AddChild(MenuStyle.Backdrop());
+			var center = new CenterContainer { Theme = MenuStyle.SharedTheme };
 			center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(center);
 

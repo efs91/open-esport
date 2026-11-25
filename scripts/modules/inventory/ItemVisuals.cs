@@ -321,7 +321,7 @@ void fragment() {
 			var local = ComputeLocalAabb(pivot);
 			if (local == null) { right = null; left = null; return holder; }
 			float longest = Mathf.Max(local.Value.Size.X, Mathf.Max(local.Value.Size.Y, local.Value.Size.Z));
-			float length = def.Id switch { "ak" => 0.95f, "lmg63" => 1.1f, "smg45" => 0.6f, "c19" => 0.24f, "p2020" => 0.22f, "sawnoff" => 0.75f, "sniper" => 1.3f, "knife" => 0.3f, _ => def.GroundSize > 0 ? def.GroundSize : 0.9f };
+			float length = def.Id switch { "ak" => 0.95f, "lmg63" => 1.1f, "smg45" => 0.6f, "c19" => 0.24f, "p2020" => 0.22f, "sawnoff" => 0.75f, "peacemaker" => 1.0f, "sniper" => 1.3f, "knife" => 0.3f, _ => def.GroundSize > 0 ? def.GroundSize : 0.9f };
 			if (longest > 0.0001f) pivot.Scale = Vector3.One * (length / longest);
 			var box = pivot.Transform * local.Value;
 			pivot.Position = -box.GetCenter();

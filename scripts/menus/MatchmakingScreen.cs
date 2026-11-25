@@ -45,7 +45,7 @@ namespace Openesport.Menus
 				_mode = Modes.TryParse(TournamentMode, out var tm) ? tm : Tournament.StartsWith("D") ? GameMode.TeamDeathmatch : GameMode.BattleRoyale;
 				_teamSize = _mode == GameMode.Duel ? 1 : Math.Clamp(TournamentTeamSize, 1, 5);
 			}
-			var root = new Control();
+			var root = new Control { Theme = MenuStyle.SharedTheme };
 			root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(root);
 			root.AddChild(MenuStyle.Backdrop());

@@ -21,7 +21,7 @@ namespace Openesport.Menus
 
 		private static string WeaponName(byte id) => id switch
 		{
-			ItemIds.Ak => "AK-74", ItemIds.Smg45 => "SMG-45", ItemIds.Lmg63 => "LMG-63", ItemIds.Sawnoff => I18n.T("Fusil à canon scié"), ItemIds.C19 => "C19", ItemIds.P2020 => "P2020", ItemIds.Sniper => "Sniper", _ => ""
+			ItemIds.Ak => "AK-74", ItemIds.Smg45 => "SMG-45", ItemIds.Lmg63 => "LMG-63", ItemIds.Sawnoff => I18n.T("Fusil à canon scié"), ItemIds.C19 => "C19", ItemIds.P2020 => "P2020", ItemIds.Sniper => "Sniper", ItemIds.Peacemaker => "PeaceMaker", _ => ""
 		};
 
 		private static string OpticName(byte id) => id switch
@@ -34,7 +34,7 @@ namespace Openesport.Menus
 			Input.MouseMode = Input.MouseModeEnum.Visible;
 			_selected = MatchSettings.Loadout;
 
-			var root = new Control();
+			var root = new Control { Theme = MenuStyle.SharedTheme };
 			root.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 			AddChild(root);
 			root.AddChild(MenuStyle.Backdrop());
@@ -76,7 +76,7 @@ namespace Openesport.Menus
 				grid.AddChild(b);
 			}
 
-			var go = new Button { Text = I18n.T("Jouer avec cet équipement"), CustomMinimumSize = new Vector2(0, 52) };
+			var go = new Button { ThemeTypeVariation = "MenuPrimary", Text = I18n.T("Jouer avec cet équipement"), CustomMinimumSize = new Vector2(0, 52) };
 			go.AddThemeFontSizeOverride("font_size", 20);
 			go.Pressed += () => { MatchSettings.Loadout = _selected; var next = OnContinue; QueueFree(); next?.Invoke(); };
 			box.AddChild(go);

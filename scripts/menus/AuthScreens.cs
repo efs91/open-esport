@@ -26,29 +26,19 @@ namespace Openesport.Menus
 		public override void _Ready()
 		{
 			Input.MouseMode = Input.MouseModeEnum.Visible;
-			var root = new Control();
+			var root = new Control { Theme = MenuStyle.SharedTheme };
 			root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(root);
 
 			// le décor du menu principal : image de fond, voile sombre, logo et titre
-			var bg = new TextureRect
-			{
-				Texture = GD.Load<Texture2D>("res://assets/textures/Menu/MenuBackgroug.png"),
-				ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
-				MouseFilter = Control.MouseFilterEnum.Ignore
-			};
-			bg.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-			root.AddChild(bg);
-			var veil = new ColorRect { Color = new Color(0, 0, 0, 0.45f), MouseFilter = Control.MouseFilterEnum.Ignore };
-			veil.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-			root.AddChild(veil);
+			root.AddChild(MenuStyle.Backdrop());
 
 			var center = new CenterContainer();
 			center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			root.AddChild(center);
 			Form = new VBoxContainer { CustomMinimumSize = new Vector2(400, 0) };
 			Form.AddThemeConstantOverride("separation", 14);
-			center.AddChild(Form);
+			center.AddChild(MenuStyle.Card(Form, margin: 28));
 
 			Form.AddChild(new TextureRect
 			{
@@ -79,7 +69,7 @@ namespace Openesport.Menus
 
 		protected Button Action(string text, Action pressed, bool main = false)
 		{
-			var b = new Button { Text = text, CustomMinimumSize = new Vector2(0, main ? 48 : 40), Flat = !main };
+			var b = new Button { Text = text, CustomMinimumSize = new Vector2(0, main ? 48 : 40), ThemeTypeVariation = main ? "MenuPrimary" : "Button" };
 			b.Pressed += pressed;
 			Form.AddChild(b);
 			Inputs.Add(b);

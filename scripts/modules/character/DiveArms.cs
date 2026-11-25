@@ -1,8 +1,8 @@
 using Godot;
 
 /// <summary>
-/// Bras en chute libre, posés par-dessus l'animation : tendus au-dessus de la tête quand on plonge (« avancer » maintenu),
-/// ramenés le long du corps, mains près des hanches, quand on relâche. Le passage de l'un à l'autre est progressif.
+/// Bras et jambes en chute libre, posés par-dessus l'animation : bras tendus au-dessus de la tête quand on plonge (« avancer » maintenu),
+/// ramenés le long du corps, mains près des hanches, quand on relâche. Le passage de l'un à l'autre est progressif. Jambes tendues, pointes de pieds allongées.
 /// Directions dans le repère du squelette (humanoïde Godot : +Y vers la tête, +Z vers l'avant du personnage).
 /// </summary>
 public partial class DiveArms : SkeletonModifier3D
@@ -25,6 +25,19 @@ public partial class DiveArms : SkeletonModifier3D
 		if (_weight <= 0f) return;
 		Pose(sk, "Left", -1f);
 		Pose(sk, "Right", 1f);
+		Leg(sk, "Left", -1f);
+		Leg(sk, "Right", 1f);
+	}
+
+	/// <summary>Jambe tendue dans l'axe du corps, un peu écartée de l'autre, pied allongé.</summary>
+	private void Leg(Skeleton3D sk, string name, float side)
+	{
+		int up = sk.FindBone(name + "UpperLeg"), lo = sk.FindBone(name + "LowerLeg"), foot = sk.FindBone(name + "Foot");
+		if (up < 0 || lo < 0 || foot < 0) return;
+		var leg = new Vector3(-0.05f * side, -1f, 0f).Normalized();
+		Aim(sk, up, leg);
+		Aim(sk, lo, leg);
+		Aim(sk, foot, new Vector3(-0.05f * side, -1f, 0.35f).Normalized());
 	}
 
 	/// <summary>Oriente le bras, l'avant-bras et la main d'un côté (side : −1 gauche, +1 droite) vers la direction voulue.</summary>

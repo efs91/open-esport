@@ -19,7 +19,7 @@ namespace OpenEsport.Core
 		public static readonly float[] Genders = { 0f, 1f };
 		public static readonly float[] Heights = { -1f, 0f, 1f };
 		/// <summary>Armes dont la prise change la pose des bras (dans l'ordre de la table ; avant elles : mains nues).</summary>
-		public static readonly byte[] HoldWeapons = { ItemIds.Knife, ItemIds.C19, ItemIds.P2020, ItemIds.Smg45, ItemIds.Ak, ItemIds.Lmg63, ItemIds.Sawnoff, ItemIds.Sniper };
+		public static readonly byte[] HoldWeapons = { ItemIds.Knife, ItemIds.C19, ItemIds.P2020, ItemIds.Smg45, ItemIds.Ak, ItemIds.Lmg63, ItemIds.Sawnoff, ItemIds.Sniper, ItemIds.Peacemaker };
 		public const int GaitFrames = 16;
 		public static readonly (BodyClip clip, int frames)[] Layout = { (BodyClip.Idle, 1), (BodyClip.Walk, GaitFrames), (BodyClip.Run, GaitFrames), (BodyClip.Slide, 1), (BodyClip.Air, 1), (BodyClip.CrouchIdle, 1), (BodyClip.CrouchWalk, GaitFrames) };
 		public static readonly string[] JointBones =
@@ -49,6 +49,7 @@ namespace OpenEsport.Core
 			WalkLength = r.ReadSingle(); WalkGroundSpeed = r.ReadSingle(); RunLength = r.ReadSingle(); RunGroundSpeed = r.ReadSingle();
 			CrouchLength = r.ReadSingle(); CrouchGroundSpeed = r.ReadSingle();
 			int count = Genders.Length * Heights.Length * (HoldWeapons.Length + 1) * FramesPerHold * Joints * 3;
+			if (stream.Length < stream.Position + count * 2L) return;          // table relevée avant l’ajout d’une arme : à refaire (tools/hitbox/bake_body_poses.gd)
 			var data = new short[count];
 			for (int i = 0; i < count; i++) data[i] = r.ReadInt16();
 			_data = data;

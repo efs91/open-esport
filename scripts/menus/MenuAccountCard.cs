@@ -72,7 +72,7 @@ namespace Openesport.Menus
 			else
 			{
 				_box.AddChild(Muted($"{m.ModeText}  ·  {m.Ago}"));
-				_box.AddChild(Line($"{m.Result}  ·  {m.Duration}  ·  {m.DeltaText} pts"));
+				_box.AddChild(Line($"{m.Result}  ·  {m.Duration}  ·  {I18n.T("{0} pts", m.DeltaText)}"));
 				_box.AddChild(Line(I18n.T("{0} élim.  ·  {1} morts  ·  {2} dégâts", m.Kills, m.Deaths, m.Damage.ToString("N0"))));
 			}
 

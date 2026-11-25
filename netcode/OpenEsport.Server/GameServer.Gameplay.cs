@@ -56,6 +56,7 @@ namespace OpenEsport.Server
 			if (p.Alive)
 			{
 				p.ShotCooldown -= dt;
+				p.HeldShotSeconds += dt;
 				if (p.UseId != 0) TickUse(p, dt);
 				if (p.Reloading)
 				{
@@ -144,8 +145,14 @@ namespace OpenEsport.Server
 				bool wantShoot = def.Automatic ? fire : (fire && !p.PrevFire);
 				// chargeur vide et détente tenue (même sans nouvel appui, arme semi-automatique comprise) : rechargement automatique
 				if (fire && !wantShoot && !p.Reloading && !def.Melee && def.MagazineSize > 0 && weapon.Magazine <= 0) StartReload(p);
+				if (!fire) p.HeldShots = 0;
+				// arme automatique : la deuxième balle attend que la détente soit vraiment tenue, pour qu'un clic bref n'en tire qu'une
+				if (p.HeldShots == 1 && p.HeldShotSeconds < def.TapSeconds) wantShoot = false;
 				if (wantShoot && !p.Reloading && p.ShotCooldown <= 0f)
+				{
+					if (p.HeldShots++ == 0) p.HeldShotSeconds = 0f;
 					Shoot(p, weapon, def, inp);
+				}
 			}
 			else if (p.Inventory.GrenadeInHand != 0)
 			{
@@ -172,14 +179,16 @@ namespace OpenEsport.Server
 			if (def == null || def.Melee || def.MagazineSize == 0 || w.Magazine >= Tiers.Magazine(def, w.Tier)) return;
 			if (p.Inventory.GetAmmo(def.AmmoType) <= 0) return;
 			p.Reloading = true;
-			p.ReloadLeft = def.ReloadSeconds * Tiers.Reload(w.Tier);
+			p.ReloadWeapon = w;
+			p.ReloadLeft = def.ReloadTime(Math.Min(Tiers.Magazine(def, w.Tier) - w.Magazine, p.Inventory.GetAmmo(def.AmmoType))) * Tiers.Reload(w.Tier);
+			if (def.ShellReload) p.ReloadLeft += MathF.Max(0f, p.ShotCooldown);      // la pompe finit son mouvement avant qu'on recharge
 		}
 
 		private void FinishReload(ServerPlayer p)
 		{
 			p.Reloading = false;
 			var w = p.Inventory.Active;
-			if (w == null) return;
+			if (w == null || w != p.ReloadWeapon) return;
 			var def = WeaponDefs.Get(w.WeaponId);
 			int taken = p.Inventory.TakeAmmo(def.AmmoType, Tiers.Magazine(def, w.Tier) - w.Magazine);
 			w.Magazine += taken;
@@ -208,11 +217,24 @@ namespace OpenEsport.Server
 			if (viewTick > _tick) viewTick = _tick;
 			if (_tick - viewTick > Protocol.MaxRewindTicks) viewTick = _tick - Protocol.MaxRewindTicks;
 
-			float spreadTan = def.Melee ? 0f : MathF.Tan(def.SpreadDegrees * Tiers.Spread(weapon.Tier) * MathF.PI / 180f);
+			float spreadTan = def.Melee ? 0f : MathF.Tan(def.Spread(inp.Has(Buttons.Aim)) * Tiers.Spread(weapon.Tier) * MathF.PI / 180f);
 			for (int pellet = 0; pellet < def.Pellets; pellet++)
 			{
 				var rng = new FastRng((uint)(p.Id * 73856093u) ^ (_tick * 19349663u) ^ ((uint)pellet * 83492791u) | 1u);
-				Vec3 dir = (fwd + right * (rng.NextSigned() * spreadTan) + up * (rng.NextSigned() * spreadTan)).Normalized();
+				float sx, su;
+				if (def.Pellets > 1)
+				{
+					// plombs : un au centre, la moitié des autres en petite couronne autour, le reste en grande couronne. Le cœur du tir touche ce qu'on vise,
+					// les plombs du bord se dispersent ; un peu d'aléa, mais le groupé est le même d'un tir à l'autre (une seule couronne laissait un trou au milieu)
+					int inner = def.Pellets / 2, outer = def.Pellets - 1 - inner;
+					bool core = pellet <= inner;
+					float angle = (pellet == 0 ? 0f : core ? (pellet - 1 + 0.3f * rng.NextSigned()) / inner : 0.5f + (pellet - 1 - inner + 0.3f * rng.NextSigned()) / Math.Max(1, outer)) * MathF.Tau
+						+ _tick % 64 * (MathF.Tau / 64f);
+					float radius = pellet == 0 ? 0f : spreadTan * (core ? 0.35f : 0.9f) * (1f + 0.15f * rng.NextSigned());
+					sx = MathF.Cos(angle) * radius; su = MathF.Sin(angle) * radius;
+				}
+				else { sx = rng.NextSigned() * spreadTan; su = rng.NextSigned() * spreadTan; }
+				Vec3 dir = (fwd + right * sx + up * su).Normalized();
 
 				// armes à feu : une vraie balle (temps de vol, chute) ; seul le couteau touche instantanément
 				if (!def.Melee) { SpawnProjectile(p, weapon.WeaponId, def.Damage * Tiers.Damage(weapon.Tier), def, origin, dir, viewTick); continue; }
@@ -264,11 +286,43 @@ namespace OpenEsport.Server
 			int shieldInfo = Math.Clamp(victim.Inventory.ShieldTier + 1, 0, 7) | (absorbed > 0f ? 0x10 : 0) | (shieldBefore > 0f && victim.Shield <= 0f ? 0x20 : 0);
 			float height = zone == HitZone.Head ? 1.65f : zone == HitZone.Torso ? 1.2f : 0.6f;
 			if (victim.State.Stance == Stance.Crouching || victim.State.Stance == Stance.Sliding) height *= 0.65f;
-			SendEvent(attacker, new ServerEvent { Type = EventType.HitConfirm, A = victim.Id, B = (ushort)shieldInfo, C = dmg, D = (byte)((byte)zone | (killed ? 0x80 : 0)),
-				Pos = new Vec3(victim.State.Pos.X, victim.State.Pos.Y + height, victim.State.Pos.Z) });
+			var confirm = new ServerEvent { Type = EventType.HitConfirm, A = victim.Id, B = (ushort)shieldInfo, C = dmg, D = (byte)((byte)zone | (killed ? 0x80 : 0)),
+				Pos = new Vec3(victim.State.Pos.X, victim.State.Pos.Y + height, victim.State.Pos.Z) };
+			if (WeaponDefs.Get(weaponId)?.Pellets > 1) AddPelletHit(attacker, confirm, damage);
+			else SendEvent(attacker, confirm);
 			SendEvent(victim, new ServerEvent { Type = EventType.Damaged, A = attacker.Id, C = dmg, D = (byte)(killed ? 1 : 0), Pos = attacker.State.Pos });
 			if (attacker.Team != victim.Team) NotifyTeam(attacker.Team, EventType.TeamHit, victim.Id);
 			if (killed) Kill(attacker, victim, weaponId);
+		}
+
+		// plombs d'un même tir sur une même cible, sur deux ticks (ils n'arrivent pas tous ensemble) : le tireur reçoit un seul total au lieu d'un nombre par plomb
+		private readonly List<(ServerPlayer attacker, ServerEvent confirm, float damage, uint tick)> _pelletHits = new();
+
+		private void AddPelletHit(ServerPlayer attacker, ServerEvent confirm, float damage)
+		{
+			for (int i = 0; i < _pelletHits.Count; i++)
+			{
+				var (a, e, d, since) = _pelletHits[i];
+				if (a != attacker || e.A != confirm.A) continue;
+				if ((confirm.D & 3) >= (e.D & 3)) e.Pos = confirm.Pos;
+				e.B = (ushort)((e.B & 0x0F) | ((e.B | confirm.B) & 0x30));
+				e.D = (byte)(Math.Max(e.D & 3, confirm.D & 3) | ((e.D | confirm.D) & 0x80));
+				_pelletHits[i] = (a, e, d + damage, since);
+				return;
+			}
+			_pelletHits.Add((attacker, confirm, damage, _tick));
+		}
+
+		private void FlushPelletHits()
+		{
+			for (int i = 0; i < _pelletHits.Count; i++)
+			{
+				var (attacker, e, damage, since) = _pelletHits[i];
+				if (since == _tick) continue;
+				e.C = (byte)Math.Clamp((int)MathF.Round(damage), 0, 255);
+				SendEvent(attacker, e);
+				_pelletHits.RemoveAt(i--);
+			}
 		}
 
 		private void Kill(ServerPlayer killer, ServerPlayer victim, byte weaponId)

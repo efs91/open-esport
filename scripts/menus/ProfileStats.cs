@@ -154,7 +154,7 @@ namespace Openesport.Menus
 			Row(I18n.T("Éliminations"), m.Kills.ToString());
 			Row(I18n.T("Morts"), m.Deaths.ToString());
 			Row(I18n.T("Dégâts infligés"), m.Damage.ToString("N0"));
-			Row(I18n.T("Score du mode"), $"{m.Rating} pts  ({m.DeltaText})");
+			Row(I18n.T("Score du mode"), $"{I18n.T("{0} pts", m.Rating)}  ({m.DeltaText})");
 			sb.AppendLine("[/table]");
 			sb.AppendLine();
 		}

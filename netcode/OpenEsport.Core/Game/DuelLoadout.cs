@@ -126,6 +126,7 @@ namespace OpenEsport.Core
 			new DuelChoice("lmg", "LMG-63", ItemIds.Lmg63),
 			new DuelChoice("pompe", "Fusil à canon scié", ItemIds.Sawnoff),
 			new DuelChoice("sniper", "Sniper", ItemIds.Sniper),
+			new DuelChoice("peacemaker", "PeaceMaker", ItemIds.Peacemaker),
 		};
 
 		public static readonly DuelChoice[] Optics =
@@ -170,7 +171,7 @@ namespace OpenEsport.Core
 		public static int[] OpticsFor(byte weapon) => weapon switch
 		{
 			ItemIds.Sniper => new[] { 4, 5 },
-			ItemIds.Sawnoff => new[] { 0, 1, 2 },
+			ItemIds.Sawnoff or ItemIds.Peacemaker => new[] { 0, 1, 2 },
 			ItemIds.Smg45 or ItemIds.C19 or ItemIds.P2020 => new[] { 0, 1, 2, 3 },
 			_ => new[] { 1, 2, 3, 4 },
 		};

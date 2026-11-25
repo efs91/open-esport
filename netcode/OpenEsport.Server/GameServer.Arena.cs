@@ -206,7 +206,7 @@ namespace OpenEsport.Server
 				var ammoId = ItemDefs.AmmoItemFor(wd.AmmoType);
 				if (ammoId != ItemIds.None)
 				{
-					int want = wd.MagazineSize * ArenaRules.MagazinesWithWeapon - inv.GetAmmo(wd.AmmoType);
+					int want = wd.Reserve(ArenaRules.MagazinesWithWeapon) - inv.GetAmmo(wd.AmmoType);
 					if (want > 0) { var a = LootItem.Of(ammoId); a.Count = (ushort)want; _dropScratch.Clear(); inv.TryPickup(ref a, _dropScratch); }
 				}
 			}

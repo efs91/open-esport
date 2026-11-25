@@ -60,6 +60,12 @@ probabilités de contenu des coffres et précision des bots par niveau. Chaque v
 - Une ligne supprimée reprend sa valeur par défaut. Un nom inconnu ou une valeur invalide est signalé au démarrage.
 - Pour ajouter un réglage : une ligne dans `GameBalance` (`Define(...)`), puis lire sa valeur avec `GameBalance.Get("nom")`.
 
+**Fusils à pompe** : canon scié (8 plombs de 13, 2 cartouches qui s'enchaînent) et PeaceMaker (8 plombs de 13, 6 cartouches, pompe entre deux tirs, rechargement cartouche par cartouche :
+`ReloadSeconds` pour un chargeur vide, moins s'il en manque peu). `spread` / `aimSpread` : rayon du groupé à la hanche / en visée ; `falloffStart` / `falloffEnd` : les dégâts baissent de l'une à l'autre distance, jusqu'à zéro.
+Leur chargeur ne grandit pas avec le niveau. Les plombs d'un tir sur une même cible sont confirmés au tireur en un seul total.
+
+**Coup par coup** : `weapon.<arme>.tapSeconds` (armes automatiques) : durée d'appui avant la deuxième balle (AK : 0,15 s), un clic plus bref n'en tire qu'une.
+
 **Niveaux d'équipement** (clés `tier.*`) : classique (blanc), rare (bleu), épique (violet), légendaire (rouge). Chaque arme tirée au sol ou dans un coffre reçoit un
 niveau au hasard (poids 55 / 28 / 13 / 4 par défaut) ; ce niveau multiplie ses dégâts, la taille de son chargeur, sa durée de rechargement et sa dispersion
 (légendaire : +25 % de dégâts, chargeur +35 %, rechargement 22 % plus rapide, dispersion -30 %). Le niveau suit l'arme quand on la ramasse ou qu'on la lâche.
@@ -180,7 +186,7 @@ En Contrôle, chaque base dispose d’un hover monoplace et d’un mécha à cin
 L'équipement (deux armes avec leur viseur, une grenade, un soin ; munitions infinies) suit `--duel-loadout` :
 - `random` (défaut, partie normale) : tiré au hasard à chaque manche, le même pour les deux joueurs ;
 - `choice` : chacun choisit le sien au début de la partie (25 s, écran de choix, puis « Valider » ; sans choix, au hasard) et le garde pour toutes les manches ;
-- `fixed:arme,viseur,arme2,viseur2,grenade,soin` (ex. `fixed:ak,x2,smg,point,frag,soins`) : imposé pour toute la partie. Clés : armes `c19 p2020 smg ak lmg pompe sniper`, viseurs `aucun point holo x2 x4 x6`,
+- `fixed:arme,viseur,arme2,viseur2,grenade,soin` (ex. `fixed:ak,x2,smg,point,frag,soins`) : imposé pour toute la partie. Clés : armes `c19 p2020 smg ak lmg pompe sniper peacemaker`, viseurs `aucun point holo x2 x4 x6`,
   grenades `aucune frag flash collante feu`, soins `soins recharges grand-soin grande-recharge`.
 `--score-limit` règle le nombre de manches à gagner. Dans un tournoi, chaque phase de 1 VS 1 choisit la règle d'équipement et le nombre de manches.
 

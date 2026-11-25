@@ -48,16 +48,15 @@ namespace Openesport.Menus
 
 		public override void _Ready()
 		{
-			var back = new ColorRect { Color = new Color(0.05f, 0.06f, 0.09f, 1f) };
-			back.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-			AddChild(back);
+			AddChild(MenuStyle.Backdrop());
 
-			var center = new CenterContainer();
-			center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-			AddChild(center);
-
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(Mathf.Min(1000f, GetViewport().GetVisibleRect().Size.X - 60f), 0) };
-			center.AddChild(panel);
+			// toute la hauteur de l'écran, 1000 de large au plus : la liste prend la place qui reste et « Retour » est toujours visible, quelle que soit la fenêtre
+			var frame = new Control { Theme = MenuStyle.SharedTheme };
+			frame.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+			AddChild(frame);
+			float width = Mathf.Min(1000f, GetViewport().GetVisibleRect().Size.X - 60f);
+			var panel = new PanelContainer { AnchorLeft = 0.5f, AnchorRight = 0.5f, AnchorTop = 0f, AnchorBottom = 1f, OffsetLeft = -width / 2f, OffsetRight = width / 2f, OffsetTop = 24f, OffsetBottom = -24f };
+			frame.AddChild(panel);
 			var margin = new MarginContainer();
 			foreach (var side in new[] { "left", "right", "top", "bottom" }) margin.AddThemeConstantOverride("margin_" + side, 20);
 			panel.AddChild(margin);
@@ -102,7 +101,7 @@ namespace Openesport.Menus
 			column.AddChild(new HSeparator());
 
 			// la liste défile : « Retour » reste visible même dans une petite fenêtre
-			var scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, CustomMinimumSize = new Vector2(0, Mathf.Min(420f, GetViewport().GetVisibleRect().Size.Y - 220f)) };
+			var scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, SizeFlagsVertical = Control.SizeFlags.ExpandFill, CustomMinimumSize = new Vector2(0, 80f) };
 			var list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			list.AddThemeConstantOverride("separation", 6);
 			scroll.AddChild(list);

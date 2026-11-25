@@ -113,6 +113,9 @@ namespace OpenEsport.Server
 					}
 				}
 
+				// plombs : moins de force avec la distance
+				float damage = b.Damage * (WeaponDefs.Get(b.WeaponId)?.DamageAt(b.Travelled + bestT) ?? 1f);
+				if (damage <= 0f) { b.Active = false; continue; }      // plomb sans force : il ne touche plus rien
 				if (b.Cannon && (best != null || wall || hull != null))
 				{
 					var impact = b.Pos + dir * MathF.Max(0,bestT-.08f);
@@ -122,19 +125,19 @@ namespace OpenEsport.Server
 				}
 				if (best != null)
 				{
-					ApplyDamage(b.Owner, best, b.Damage * Hitboxes.Multiplier(bestZone) * BodyBalance.BulletDamage(best.Appearance, best.State.Vel), bestZone, b.WeaponId);
+					ApplyDamage(b.Owner, best, damage * Hitboxes.Multiplier(bestZone) * BodyBalance.BulletDamage(best.Appearance, best.State.Vel), bestZone, b.WeaponId);
 					b.Active = false;
 					continue;
 				}
 				if (hull != null)
 				{
-					HitVehicle(hull,b.Owner,b.Damage);
+					HitVehicle(hull,b.Owner,damage);
 					b.Active=false;
 					continue;
 				}
 				if (wall)
 				{
-					if (pane >= 0) HitWindow(pane, b.Damage);
+					if (pane >= 0) HitWindow(pane, damage);
 					b.Active = false;
 					continue;
 				}
@@ -143,6 +146,7 @@ namespace OpenEsport.Server
 				b.Travelled += len;
 				if (b.Travelled >= b.MaxDistance || b.Age >= BulletMaxSeconds) b.Active = false;
 			}
+			FlushPelletHits();
 		}
 	}
 }

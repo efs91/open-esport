@@ -1,4 +1,5 @@
 using Godot;
+using Openesport.Menus;
 using System;
 using System.Collections.Generic;
 using Openesport.Structures;
@@ -25,6 +26,10 @@ public partial class MenuManager : Control
 
     public override void _Ready()
     {
+        Theme = MenuStyle.SharedTheme;
+        GetNode<TextureRect>("Background").Texture = GD.Load<Texture2D>(MenuStyle.BackgroundPath);
+        GetNode<TextureRect>("Background").StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered;
+        GetNode<TextureRect>("Background").MouseFilter = MouseFilterEnum.Ignore;
         _logManager = GetNode<LogManager>(GlobalPaths.Managers.LOG_MANAGER);
         _accountLabel = new Label { HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = MouseFilterEnum.Ignore };
         _accountLabel.AddThemeFontSizeOverride("font_size", 22);
@@ -377,6 +382,7 @@ public partial class MenuManager : Control
         var container = GetNode<VBoxContainer>("MenuCenterContainer/MenuVBoxContainer/ButtonsContainer");
         foreach (var child in container.GetChildren())
         {
+            container.RemoveChild(child);
             child.QueueFree();
         }
 
@@ -434,7 +440,8 @@ public partial class MenuManager : Control
         float need = box.GetCombinedMinimumSize().Y;
         float have = GetViewportRect().Size.Y * 0.96f;
         box.PivotOffset = box.Size / 2f;
-        float s = need > have ? have / need : 1f;
+        float s = Mathf.Min(1f, Mathf.Min(have / Mathf.Max(need, 1f),
+            (GetViewportRect().Size.X - 32f) / Mathf.Max(box.GetCombinedMinimumSize().X, 1f)));
         box.Scale = new Vector2(s, s);
     }
 
@@ -458,89 +465,33 @@ public partial class MenuManager : Control
         }
     }
 
-    /// <summary>
-    /// Crée un bouton stylisé.
-    /// - Si une icône est fournie (IconPath non vide), le bouton sera carré et affichera uniquement l'icône en remplissant tout l'espace.
-    /// - Sinon, le bouton affichera le texte de l'élément.
-    /// </summary>
     private Button CreateStyledButton(MenuElement element)
     {
-        Button button = new Button();
-        // Taille minimale du bouton pour afficher texte et icône
-        button.CustomMinimumSize = new Vector2(250, 50);
-        // Utiliser la traduction pour le texte
-        button.Text = LocalizationManager.GetTranslation(element.Name);
-
-        // Si une icône est fournie, on la charge ; sinon, on utilise l'icône par défaut
-        string iconPath = !string.IsNullOrEmpty(element.IconPath) ? element.IconPath : "res://assets/textures/Menu/boutons/default_icon.png";
-        var icon = GD.Load<Texture2D>(iconPath);
-        if (icon != null)
+        string icon = element.Name switch
         {
-            button.Icon = icon;
-            button.ExpandIcon = false;
-
-            // Padding autour de l'icône
-            button.AddThemeConstantOverride("icon_margin_left", 8);
-            button.AddThemeConstantOverride("icon_margin_top", 4);
-            button.AddThemeConstantOverride("icon_margin_right", 12);
-            button.AddThemeConstantOverride("icon_margin_bottom", 4);
-
-            // Limiter la taille de l'icône à 1/15 de la largeur visible
-            float maxIconWidth = GetViewport().GetVisibleRect().Size.X / 15f;
-            float maxIconHeight = 48;
-
-            button.AddThemeConstantOverride("icon_max_width", (int)maxIconWidth);
-            button.AddThemeConstantOverride("icon_max_height", (int)maxIconHeight);
-        }
-        else
+            "MENU_ONLINE_GAMES" or "MENU_RESUME" => "play",
+            "MENU_CHARACTER" => "profile",
+            "MENU_SETTINGS" => "settings",
+            "MENU_SETTINGS_GRAPHICS" => "graphics",
+            "MENU_SETTINGS_KEYBOARD" => "controls",
+            "SETTINGS_LANGUAGE" => "language",
+            "MENU_CREDITS" => "credits",
+            "MENU_LOGOUT" or "MENU_LEAVE_GAME" => "logout",
+            "MENU_QUIT" => "quit",
+            _ => "menu"
+        };
+        string variant = element.Name switch
         {
-            _logManager.Warning($"[MenuManager] Icône non trouvée pour {element.Name} : {iconPath}");
-        }
-
-        // Style pour l'état normal
-        var normalStyle = new StyleBoxFlat();
-        normalStyle.BgColor = new Color(0.15f, 0.15f, 0.15f);
-        normalStyle.BorderColor = new Color(0.8f, 0.8f, 0.8f);
-        normalStyle.BorderWidthLeft = 2;
-        normalStyle.BorderWidthTop = 2;
-        normalStyle.BorderWidthRight = 2;
-        normalStyle.BorderWidthBottom = 2;
-        normalStyle.CornerRadiusTopLeft = 8;
-        normalStyle.CornerRadiusTopRight = 8;
-        normalStyle.CornerRadiusBottomLeft = 8;
-        normalStyle.CornerRadiusBottomRight = 8;
-        button.AddThemeStyleboxOverride("normal", normalStyle);
-
-        // Style pour l'état au survol
-        var hoverStyle = new StyleBoxFlat();
-        hoverStyle.BgColor = new Color(0.25f, 0.25f, 0.25f);
-        hoverStyle.BorderColor = new Color(1, 1, 1);
-        hoverStyle.BorderWidthLeft = 2;
-        hoverStyle.BorderWidthTop = 2;
-        hoverStyle.BorderWidthRight = 2;
-        hoverStyle.BorderWidthBottom = 2;
-        hoverStyle.CornerRadiusTopLeft = 8;
-        hoverStyle.CornerRadiusTopRight = 8;
-        hoverStyle.CornerRadiusBottomLeft = 8;
-        hoverStyle.CornerRadiusBottomRight = 8;
-        button.AddThemeStyleboxOverride("hover", hoverStyle);
-
-        // Style pour l'état pressé
-        var pressedStyle = new StyleBoxFlat();
-        pressedStyle.BgColor = new Color(0.1f, 0.1f, 0.1f);
-        pressedStyle.BorderColor = new Color(0.7f, 0.7f, 0.7f);
-        pressedStyle.BorderWidthLeft = 2;
-        pressedStyle.BorderWidthTop = 2;
-        pressedStyle.BorderWidthRight = 2;
-        pressedStyle.BorderWidthBottom = 2;
-        pressedStyle.CornerRadiusTopLeft = 8;
-        pressedStyle.CornerRadiusTopRight = 8;
-        pressedStyle.CornerRadiusBottomLeft = 8;
-        pressedStyle.CornerRadiusBottomRight = 8;
-        button.AddThemeStyleboxOverride("pressed", pressedStyle);
-
+            "MENU_ONLINE_GAMES" or "MENU_RESUME" => "MenuPrimary",
+            "MENU_QUIT" or "MENU_LEAVE_GAME" => "MenuDanger",
+            _ => "MenuNavigation"
+        };
+        var button = MenuStyle.NavigationButton(LocalizationManager.GetTranslation(element.Name), icon, variant);
+        // Additional modules can provide their own icon.
+        if (icon == "menu" && !string.IsNullOrEmpty(element.IconPath))
+            button.Icon = GD.Load<Texture2D>(element.IconPath);
+        button.Disabled = !element.Enabled;
         button.Pressed += () => OnElementPressed(element);
-
         return button;
     }
 
@@ -566,58 +517,12 @@ public partial class MenuManager : Control
         return container;
     }
 
-    private Button CreateBackButton()
-    {
-        Button button = new Button();
-        button.CustomMinimumSize = new Vector2(250, 50);
-        button.Text = LocalizationManager.GetTranslation("MENU_BACK");
-        ApplyCommonStyles(button, new MenuElement(-1, "MENU_BACK", MenuElementType.Button));
-        return button;
-    }
+    private Button CreateBackButton() => MenuStyle.NavigationButton(
+        LocalizationManager.GetTranslation("MENU_BACK"), "back");
 
     private void ApplyCommonStyles(Control control, MenuElement element)
     {
-        // Style pour l'état normal
-        var normalStyle = new StyleBoxFlat();
-        normalStyle.BgColor = new Color(0.15f, 0.15f, 0.15f);
-        normalStyle.BorderColor = new Color(0.8f, 0.8f, 0.8f);
-        normalStyle.BorderWidthLeft = 2;
-        normalStyle.BorderWidthTop = 2;
-        normalStyle.BorderWidthRight = 2;
-        normalStyle.BorderWidthBottom = 2;
-        normalStyle.CornerRadiusTopLeft = 8;
-        normalStyle.CornerRadiusTopRight = 8;
-        normalStyle.CornerRadiusBottomLeft = 8;
-        normalStyle.CornerRadiusBottomRight = 8;
-        control.AddThemeStyleboxOverride("normal", normalStyle);
-
-        // Style pour l'état au survol
-        var hoverStyle = new StyleBoxFlat();
-        hoverStyle.BgColor = new Color(0.25f, 0.25f, 0.25f);
-        hoverStyle.BorderColor = new Color(1, 1, 1);
-        hoverStyle.BorderWidthLeft = 2;
-        hoverStyle.BorderWidthTop = 2;
-        hoverStyle.BorderWidthRight = 2;
-        hoverStyle.BorderWidthBottom = 2;
-        hoverStyle.CornerRadiusTopLeft = 8;
-        hoverStyle.CornerRadiusTopRight = 8;
-        hoverStyle.CornerRadiusBottomLeft = 8;
-        hoverStyle.CornerRadiusBottomRight = 8;
-        control.AddThemeStyleboxOverride("hover", hoverStyle);
-
-        // Style pour l'état pressé
-        var pressedStyle = new StyleBoxFlat();
-        pressedStyle.BgColor = new Color(0.1f, 0.1f, 0.1f);
-        pressedStyle.BorderColor = new Color(0.7f, 0.7f, 0.7f);
-        pressedStyle.BorderWidthLeft = 2;
-        pressedStyle.BorderWidthTop = 2;
-        pressedStyle.BorderWidthRight = 2;
-        pressedStyle.BorderWidthBottom = 2;
-        pressedStyle.CornerRadiusTopLeft = 8;
-        pressedStyle.CornerRadiusTopRight = 8;
-        pressedStyle.CornerRadiusBottomLeft = 8;
-        pressedStyle.CornerRadiusBottomRight = 8;
-        control.AddThemeStyleboxOverride("pressed", pressedStyle);
+        control.Theme = MenuStyle.SharedTheme;
     }
 
     private OptionButton CreateStyledSelect(MenuElement element)
@@ -626,47 +531,7 @@ public partial class MenuManager : Control
         select.CustomMinimumSize = new Vector2(250, 50);
         select.Text = element.Name;
 
-        // Style pour l'état normal
-        var normalStyle = new StyleBoxFlat();
-        normalStyle.BgColor = new Color(0.15f, 0.15f, 0.15f);
-        normalStyle.BorderColor = new Color(0.8f, 0.8f, 0.8f);
-        normalStyle.BorderWidthLeft = 2;
-        normalStyle.BorderWidthTop = 2;
-        normalStyle.BorderWidthRight = 2;
-        normalStyle.BorderWidthBottom = 2;
-        normalStyle.CornerRadiusTopLeft = 8;
-        normalStyle.CornerRadiusTopRight = 8;
-        normalStyle.CornerRadiusBottomLeft = 8;
-        normalStyle.CornerRadiusBottomRight = 8;
-        select.AddThemeStyleboxOverride("normal", normalStyle);
-
-        // Style pour l'état au survol
-        var hoverStyle = new StyleBoxFlat();
-        hoverStyle.BgColor = new Color(0.25f, 0.25f, 0.25f);
-        hoverStyle.BorderColor = new Color(1, 1, 1);
-        hoverStyle.BorderWidthLeft = 2;
-        hoverStyle.BorderWidthTop = 2;
-        hoverStyle.BorderWidthRight = 2;
-        hoverStyle.BorderWidthBottom = 2;
-        hoverStyle.CornerRadiusTopLeft = 8;
-        hoverStyle.CornerRadiusTopRight = 8;
-        hoverStyle.CornerRadiusBottomLeft = 8;
-        hoverStyle.CornerRadiusBottomRight = 8;
-        select.AddThemeStyleboxOverride("hover", hoverStyle);
-
-        // Style pour l'état pressé
-        var pressedStyle = new StyleBoxFlat();
-        pressedStyle.BgColor = new Color(0.1f, 0.1f, 0.1f);
-        pressedStyle.BorderColor = new Color(0.7f, 0.7f, 0.7f);
-        pressedStyle.BorderWidthLeft = 2;
-        pressedStyle.BorderWidthTop = 2;
-        pressedStyle.BorderWidthRight = 2;
-        pressedStyle.BorderWidthBottom = 2;
-        pressedStyle.CornerRadiusTopLeft = 8;
-        pressedStyle.CornerRadiusTopRight = 8;
-        pressedStyle.CornerRadiusBottomLeft = 8;
-        pressedStyle.CornerRadiusBottomRight = 8;
-        select.AddThemeStyleboxOverride("pressed", pressedStyle);
+        select.Theme = MenuStyle.SharedTheme;
 
         // Ajouter les options avec drapeaux
         if (element.Properties.TryGetValue("options", out var optionsObj) && optionsObj is List<SelectOption> options)

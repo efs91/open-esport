@@ -92,6 +92,8 @@
   "weapon.ak.spread": 0.3,
   // Durée du rechargement (ak). [s] (défaut : 2.3)
   "weapon.ak.reloadSeconds": 2.3,
+  // Durée d'appui avant la deuxième balle (ak). [s] (défaut : 0.15)
+  "weapon.ak.tapSeconds": 0.15,
   // Dégâts par balle (lmg63). [PV] (défaut : 17)
   "weapon.lmg63.damage": 17,
   // Cadence de tir (lmg63). [coups/min] (défaut : 700)
@@ -104,20 +106,46 @@
   "weapon.lmg63.spread": 0.5,
   // Durée du rechargement (lmg63). [s] (défaut : 4.5)
   "weapon.lmg63.reloadSeconds": 4.5,
-  // Dégâts par balle (sawnoff). [PV] (défaut : 11)
-  "weapon.sawnoff.damage": 11,
-  // Cadence de tir (sawnoff). [coups/min] (défaut : 120)
-  "weapon.sawnoff.roundsPerMinute": 120,
+  // Dégâts par balle (sawnoff). [PV] (défaut : 13)
+  "weapon.sawnoff.damage": 13,
+  // Cadence de tir (sawnoff). [coups/min] (défaut : 240)
+  "weapon.sawnoff.roundsPerMinute": 240,
   // Taille du chargeur (sawnoff). [balles] (défaut : 2)
   "weapon.sawnoff.magazine": 2,
-  // Portée (sawnoff). [m] (défaut : 40)
-  "weapon.sawnoff.range": 40,
-  // Dispersion (sawnoff). [°] (défaut : 4)
-  "weapon.sawnoff.spread": 4,
+  // Portée (sawnoff). [m] (défaut : 30)
+  "weapon.sawnoff.range": 30,
+  // Dispersion (sawnoff). [°] (défaut : 4.5)
+  "weapon.sawnoff.spread": 4.5,
+  // Dispersion en visée (sawnoff). [°] (défaut : 2.2)
+  "weapon.sawnoff.aimSpread": 2.2,
+  // Distance à partir de laquelle les dégâts baissent (sawnoff). [m] (défaut : 6)
+  "weapon.sawnoff.falloffStart": 6,
+  // Distance à laquelle l'arme ne fait plus de dégâts (sawnoff). [m] (défaut : 30)
+  "weapon.sawnoff.falloffEnd": 30,
   // Nombre de plombs par tir (sawnoff). [plombs] (défaut : 8)
   "weapon.sawnoff.pellets": 8,
   // Durée du rechargement (sawnoff). [s] (défaut : 2.4)
   "weapon.sawnoff.reloadSeconds": 2.4,
+  // Dégâts par balle (peacemaker). [PV] (défaut : 13)
+  "weapon.peacemaker.damage": 13,
+  // Cadence de tir (peacemaker). [coups/min] (défaut : 66)
+  "weapon.peacemaker.roundsPerMinute": 66,
+  // Taille du chargeur (peacemaker). [balles] (défaut : 6)
+  "weapon.peacemaker.magazine": 6,
+  // Portée (peacemaker). [m] (défaut : 30)
+  "weapon.peacemaker.range": 30,
+  // Dispersion (peacemaker). [°] (défaut : 3.2)
+  "weapon.peacemaker.spread": 3.2,
+  // Dispersion en visée (peacemaker). [°] (défaut : 1.2)
+  "weapon.peacemaker.aimSpread": 1.2,
+  // Distance à partir de laquelle les dégâts baissent (peacemaker). [m] (défaut : 6)
+  "weapon.peacemaker.falloffStart": 6,
+  // Distance à laquelle l'arme ne fait plus de dégâts (peacemaker). [m] (défaut : 30)
+  "weapon.peacemaker.falloffEnd": 30,
+  // Nombre de plombs par tir (peacemaker). [plombs] (défaut : 8)
+  "weapon.peacemaker.pellets": 8,
+  // Durée du rechargement (peacemaker). [s] (défaut : 4.8)
+  "weapon.peacemaker.reloadSeconds": 4.8,
   // Dégâts par balle (fists). [PV] (défaut : 12)
   "weapon.fists.damage": 12,
   // Cadence de tir (fists). [coups/min] (défaut : 140)

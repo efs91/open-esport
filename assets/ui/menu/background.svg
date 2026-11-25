@@ -1,0 +1,9 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<path fill="#000000" d="M0 0h1920v1080H0z"/>
+<path fill="#e60032" d="M0 0h340l600 1080H0z"/>
+<path d="M340 0 940 1080" stroke="#ff3358" stroke-width="2"/>
+<g fill="none" stroke="#55d5ed">
+<path opacity=".1" d="M1400 0 800 1080M1700 0l-600 1080M1920 200l-490 880"/>
+<path opacity=".25" d="M1810 75h45v45M65 960v45h45"/>
+</g>
+</svg>

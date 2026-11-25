@@ -25,8 +25,8 @@ namespace Openesport.Menus
 		public override void _Ready()
 		{
 			_applied = G.Current;
-			AddChild(MenuStyle.Backdrop(0.6f));
-			var center = new CenterContainer();
+			AddChild(MenuStyle.Backdrop());
+			var center = new CenterContainer { Theme = MenuStyle.SharedTheme };
 			center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(center);
 			var column = new VBoxContainer();
@@ -75,7 +75,7 @@ namespace Openesport.Menus
 			var buttons = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
 			buttons.AddThemeConstantOverride("separation", 16);
 			column.AddChild(buttons);
-			_apply = new Button { Text = I18n.T("Appliquer"), CustomMinimumSize = new Vector2(200, 42), Disabled = true };
+			_apply = new Button { ThemeTypeVariation = "MenuPrimary", Text = I18n.T("Appliquer"), CustomMinimumSize = new Vector2(200, 42), Disabled = true };
 			_apply.Pressed += Apply;
 			buttons.AddChild(_apply);
 			var close = new Button { Text = I18n.T("Retour"), CustomMinimumSize = new Vector2(200, 42) };

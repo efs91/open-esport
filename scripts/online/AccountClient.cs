@@ -124,7 +124,7 @@ namespace Openesport.Online
 		internal static string ErrorOf(int code, string body)
 		{
 			if (code == 0) return body;
-			try { var e = JsonDocument.Parse(body).RootElement; if (e.TryGetProperty("error", out var m)) return I18n.T(m.GetString()); } catch { }
+			try { var e = JsonDocument.Parse(body).RootElement; if (e.TryGetProperty("error", out var m)) return I18n.Server(m.GetString()); } catch { }
 			return I18n.T("Erreur du service de comptes ({0}).", code);
 		}
 

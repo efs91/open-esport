@@ -36,7 +36,7 @@ namespace Openesport.Menus
 			CharacterKit.EnsureLoaded();
 			Input.MouseMode = Input.MouseModeEnum.Visible;
 
-			var root = new Control();
+			var root = new Control { Theme = MenuStyle.SharedTheme };
 			root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(root);
 			root.AddChild(MenuStyle.Backdrop());
@@ -117,7 +117,7 @@ namespace Openesport.Menus
 				box.AddChild(mode);
 			}
 
-			_choose = new Button { Text = OnPlay != null ? I18n.T("Jouer avec ce personnage") : I18n.T("Choisir ce personnage"), CustomMinimumSize = new Vector2(0, 48) };
+			_choose = new Button { ThemeTypeVariation = "MenuPrimary", Text = OnPlay != null ? I18n.T("Jouer avec ce personnage") : I18n.T("Choisir ce personnage"), CustomMinimumSize = new Vector2(0, 48) };
 			_choose.Pressed += () => ChooseIndex(Current());
 			box.AddChild(_choose);
 

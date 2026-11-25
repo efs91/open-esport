@@ -100,8 +100,10 @@ namespace Openesport.Online
 			worldRoot.AddChild(_damageNumbers);
 			_slideSound = new SlideSound { Name = "Glissade", Positional = false, VolumeDb = -4f };
 			AddChild(_slideSound);
+			_zipSound = new ZipSound { Name = "Tyrolienne", Positional = false };
+			AddChild(_zipSound);
 			// ambiance de la carte (bas mais permanent) et bruit de l'avion tant qu'on est à bord
-			_ambience = new AudioStreamPlayer { Name = "Ambiance", Stream = GameAudio.Looping("res://assets/sounds/background/background_forest_loop.ogg"), VolumeDb = -20f, Bus = "Master" };
+			_ambience = new AudioStreamPlayer { Name = "Ambiance", Stream = GameAudio.Looping("res://assets/sounds/background/background_forest_loop.ogg"), VolumeDb = AmbienceDb, Bus = "Master" };
 			AddChild(_ambience);
 			_ambience.Play();
 			_planeSound = new AudioStreamPlayer { Name = "Avion", Stream = GameAudio.Looping("res://assets/sounds/avion/avion_2.mp3"), VolumeDb = -6f, Bus = "Master" };
@@ -321,6 +323,9 @@ namespace Openesport.Online
 			}
 		}
 
+		/// <summary>Dernier coup de feu (ms) de chaque joueur armé d'un fusil à pompe : un seul son pour tous les plombs.</summary>
+		private readonly Dictionary<ushort, ulong> _pelletShots = new();
+
 		/// <summary>Une balle part : on la dessine depuis la bouche de l'arme, sur la même trajectoire que celle simulée par le serveur.</summary>
 		private void OnShot(ServerEvent e)
 		{
@@ -343,6 +348,13 @@ namespace Openesport.Online
 			if (d.Dot(dir) < 0.9f) d = dir;
 			ShotTracer.Spawn(_worldRoot, muzzle, d, ShotTracer.ColorFor(WeaponDefs.Get(e.C)?.AmmoType ?? 0), WeaponDefs.Get(e.C)?.Speed ?? 0f, (ShotAppearance)e.D);
 			if (e.D != 0) WalkerFired(e.A);
+			// un seul coup de feu pour tous les plombs d'une cartouche
+			if (WeaponDefs.Get(e.C)?.Pellets > 1)
+			{
+				ulong now = Time.GetTicksMsec();
+				if (_pelletShots.TryGetValue(e.A, out var last) && now - last < 100) return;
+				_pelletShots[e.A] = now;
+			}
 			if (e.C != 0) GameAudio.Shot(_worldRoot, muzzle, (WeaponDefs.Get(e.C)?.AmmoType ?? 0) == 1, e.A == Client.PlayerId);
 		}
 
@@ -404,7 +416,11 @@ namespace Openesport.Online
 			_prevView = _currView;
 			_currView = Client.ViewPosition;
 
-			_weapons.SetServerMagazine(Client.Magazine);
+			// chargeur et rechargement : seulement s'ils parlent bien de l'arme montrée en main
+			int magSlot = Client.MagazineSlot;
+			if (magSlot >= 0 && magSlot < _inventory.Weapons.Length && _inventory.Weapons[magSlot] is { } held && held == _weapons.HeldWeapon
+				&& held.ItemId == ItemDefs.Get(Client.MagazineWeapon)?.Name)
+				_weapons.SetServerState(Client.Magazine, Client.Reloading);
 			_hud.SetVitals(Client.Health, Client.Shield, Client.ShieldTier, Client.UsingItem, Client.UseProgress);
 			_hud.SetHint(VehicleHint() ?? (Client.Match.CanRevive ? (Client.Match.Revive > 0 ? I18n.T("Réanimation…") : I18n.T("Maintenir E : réanimer ton coéquipier")) : Client.Predicted.Stance == Stance.Climbing ? I18n.T("Escalade…") : Client.Predicted.Stance == Stance.Zipping ? I18n.T("Saut : se décrocher   —   tu peux tirer") : Client.ZiplineInReach ? I18n.T("E : prendre la tyrolienne") : _windowHint ?? BombHint()));
 			_weapons.SetUsingSupply(Client.UsingItem == 0 ? null : ItemDefs.Get(Client.UsingItem)?.Name);
@@ -686,6 +702,7 @@ namespace Openesport.Online
 		{
 			TrackResume((float)delta);
 			TickHold((float)delta);
+			if (!_ambience.Playing) _ambience.Play();      // toujours présente, quoi qu'il arrive au lecteur
 			bool inPlane = Client != null && Client.State == NetState.Playing && Client.Predicted.Stance == Stance.Plane;
 			if (inPlane != _planeSound.Playing) { if (inPlane) _planeSound.Play(); else _planeSound.Stop(); }
 			// chute libre : le vent, plus fort quand on tombe vite
@@ -695,9 +712,10 @@ namespace Openesport.Online
 			{
 				var fallVel = Client.Predicted.Vel;
 				float speed = Mathf.Clamp((fallVel.Length() - 20f) / 50f, 0f, 1f);
-				_fallSound.VolumeDb = Mathf.Lerp(_fallSound.VolumeDb, Mathf.Lerp(-10f, 0f, speed), Mathf.Min(1f, (float)delta * 3f));
+				_fallSound.VolumeDb = Mathf.Lerp(_fallSound.VolumeDb, Mathf.Lerp(-10f, 0f, speed) + (_diveHeld ? DiveWindDb : 0f), Mathf.Min(1f, (float)delta * 3f));
 			}
 			_slideSound?.Set(Client != null && Client.State == NetState.Playing && Client.Alive && Client.Predicted.Stance == Stance.Sliding);
+			_zipSound?.Set(Client != null && Client.State == NetState.Playing && Client.Alive && Client.Predicted.Stance == Stance.Zipping, Client != null && Client.Alive);
 			// à-coups : on évite les grandes pauses du ramasse-miettes et on journalise les images très longues (cause probable d'un lag d'une seconde)
 			if (delta > 0.2)
 			{
@@ -972,6 +990,11 @@ namespace Openesport.Online
 		private GrenadeView _grenadeView;
 		private DamageNumbers _damageNumbers;
 		private SlideSound _slideSound;
+		private ZipSound _zipSound;
+		/// <summary>Chute libre : le vent est plus fort (dB) tant qu'on plonge (« avancer » tenu).</summary>
+		private const float DiveWindDb = 8f;
+		/// <summary>Le fichier d'ambiance est enregistré très bas (-45 dB en moyenne) : il faut le remonter pour l'entendre.</summary>
+		private const float AmbienceDb = 5f;
 		private bool _diveHeld;
 		private float _diveSentPitch;
 		private AudioStreamPlayer _ambience, _planeSound, _fallSound;

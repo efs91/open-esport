@@ -92,7 +92,7 @@ namespace OpenEsport.Server
 				if (wd == null || wd.AmmoType == 0 || wd.MagazineSize <= 0) return;
 				var ammoId = ItemDefs.AmmoItemFor(wd.AmmoType);
 				if (ammoId == ItemIds.None) return;
-				int total = wd.MagazineSize * k.ReserveMagazines;
+				int total = wd.Reserve(k.ReserveMagazines);
 				for (int guard = 0; total > 0 && guard < 20; guard++)
 				{
 					var a = LootItem.Of(ammoId); a.Count = (ushort)Math.Min(total, ItemDefs.Get(ammoId).StackSize);

@@ -9,7 +9,7 @@ namespace OpenEsport.Core
 	public static class ItemIds
 	{
 		public const byte None = 0;
-		public const byte Knife = 1, C19 = 2, Smg45 = 3, Ak = 4, Lmg63 = 5, Sawnoff = 6, Sniper = 7, P2020 = 8;
+		public const byte Knife = 1, C19 = 2, Smg45 = 3, Ak = 4, Lmg63 = 5, Sawnoff = 6, Sniper = 7, P2020 = 8, Peacemaker = 9;
 		public const byte OpticHolo = 10, Optic4x = 11, Optic6x = 12, OpticRedDot = 13, Optic2x = 14;
 		public const byte Backpack2 = 20, Backpack3 = 21;
 		public const byte Ammo9mm = 30, AmmoRifle = 31, AmmoShell = 32, AmmoSniper = 33;
@@ -54,6 +54,7 @@ namespace OpenEsport.Core
 			Add(new ItemDef { Id = ItemIds.Ak, Name = "ak", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.Lmg63, Name = "lmg63", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.Sawnoff, Name = "sawnoff", Kind = ItemKind.Weapon, AcceptsOptic = true });
+			Add(new ItemDef { Id = ItemIds.Peacemaker, Name = "peacemaker", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.Sniper, Name = "sniper", Kind = ItemKind.Weapon, AcceptsOptic = true });
 			Add(new ItemDef { Id = ItemIds.OpticHolo, Name = "optic_holo", Kind = ItemKind.Optic });
 			Add(new ItemDef { Id = ItemIds.Optic4x, Name = "optic_4x", Kind = ItemKind.Optic });
@@ -198,7 +199,9 @@ namespace OpenEsport.Core
 		public const double SniperShare = 0.08;
 
 		/// <summary>Une arme à feu au hasard : le sniper est rare, les autres armes se partagent le reste à parts égales.</summary>
-		public static byte RollWeapon(Random rng) => rng.NextDouble() < SniperShare ? ItemIds.Sniper : (byte)(ItemIds.C19 + rng.Next(5));
+		public static byte RollWeapon(Random rng) => rng.NextDouble() < SniperShare ? ItemIds.Sniper : CommonWeapons[rng.Next(CommonWeapons.Length)];
+
+		private static readonly byte[] CommonWeapons = { ItemIds.C19, ItemIds.Smg45, ItemIds.Ak, ItemIds.Lmg63, ItemIds.Sawnoff, ItemIds.Peacemaker };
 
 		public static byte Roll(Random rng)
 		{

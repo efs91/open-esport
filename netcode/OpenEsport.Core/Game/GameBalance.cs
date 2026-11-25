@@ -83,6 +83,13 @@ namespace OpenEsport.Core
 				if (w.MagazineSize > 0) Define($"weapon.{n}.magazine", w.MagazineSize, "balles", $"Taille du chargeur ({n}).", integer: true);
 				Define($"weapon.{n}.range", w.Range, "m", $"Portée ({n}).");
 				if (w.SpreadDegrees > 0) Define($"weapon.{n}.spread", w.SpreadDegrees, "°", $"Dispersion ({n}).");
+				if (w.AimSpreadDegrees > 0) Define($"weapon.{n}.aimSpread", w.AimSpreadDegrees, "°", $"Dispersion en visée ({n}).");
+				if (w.FalloffEnd > 0)
+				{
+					Define($"weapon.{n}.falloffStart", w.FalloffStart, "m", $"Distance à partir de laquelle les dégâts baissent ({n}).");
+					Define($"weapon.{n}.falloffEnd", w.FalloffEnd, "m", $"Distance à laquelle l'arme ne fait plus de dégâts ({n}) ; 0 = pas de perte.");
+				}
+				if (w.Automatic && !w.Melee) Define($"weapon.{n}.tapSeconds", w.TapSeconds, "s", $"Durée d'appui avant la deuxième balle ({n}) : un clic plus bref n'en tire qu'une ; 0 = rafale tout de suite.");
 				if (w.Pellets > 1) Define($"weapon.{n}.pellets", w.Pellets, "plombs", $"Nombre de plombs par tir ({n}).", integer: true);
 				if (w.ReloadSeconds > 0) Define($"weapon.{n}.reloadSeconds", w.ReloadSeconds, "s", $"Durée du rechargement ({n}).");
 				if (w.BulletSpeed > 0) Define($"weapon.{n}.bulletSpeed", w.BulletSpeed, "m/s", $"Vitesse de la balle ({n}) ; sans cette ligne, la vitesse commune bullet.speed.");

@@ -137,7 +137,8 @@ namespace OpenEsport.Core
 		{
 			new ShopItem { Code = 1, Name = "Pistolet C19", Price = 200, ItemId = ItemIds.C19 },
 			new ShopItem { Code = 2, Name = "Pistolet-mitrailleur SMG45", Price = 1200, ItemId = ItemIds.Smg45 },
-			new ShopItem { Code = 3, Name = "Fusil à pompe", Price = 1100, ItemId = ItemIds.Sawnoff },
+			new ShopItem { Code = 3, Name = "Fusil à canon scié", Price = 1100, ItemId = ItemIds.Sawnoff },
+			new ShopItem { Code = 26, Name = "PeaceMaker", Price = 1600, ItemId = ItemIds.Peacemaker },
 			new ShopItem { Code = 4, Name = "Fusil d'assaut AK", Price = 2700, ItemId = ItemIds.Ak },
 			new ShopItem { Code = 5, Name = "Mitrailleuse lourde LMG", Price = 5000, ItemId = ItemIds.Lmg63 },
 			new ShopItem { Code = 6, Name = "Bouclier blanc", Price = 650, ShieldTier = 0 },

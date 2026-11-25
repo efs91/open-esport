@@ -138,6 +138,8 @@ namespace Openesport.Inventory
 			Add(new ItemDefinition { Id = "ak", DisplayName = "AK-74", Type = ItemType.Weapon, ScenePath = Hands + "fps-ak/fps-ak.tscn", AcceptsOptic = true, OpticOffset = new Vector3(0, -0.05f, 0) });
 			Add(new ItemDefinition { Id = "lmg63", DisplayName = "LMG-63", Type = ItemType.Weapon, ScenePath = Hands + "fps-lmg63/fps-lmg63.tscn", AcceptsOptic = true, OpticAlong = 0.40f, OpticOffset = new Vector3(0, -0.065f, 0) });
 			Add(new ItemDefinition { Id = "sawnoff", DisplayName = "Fusil à canon scié", Type = ItemType.Weapon, ScenePath = Hands + "fps-sawnoff/fps-sawnoff.tscn", AcceptsOptic = true });
+			// Fusil à pompe PeaceMaker (assets/armes/shotgun_animated.glb, ressources : tools/build_peacemaker_viewmodel.gd) ; le viseur se pose sur la carcasse
+			Add(new ItemDefinition { Id = "peacemaker", DisplayName = "PeaceMaker", Type = ItemType.Weapon, ScenePath = Hands + "fps-peacemaker/fps-peacemaker.tscn", AcceptsOptic = true, OpticAlong = 0.33f, OpticOffset = new Vector3(0, -0.045f, 0) });
 
 			// Fusil de précision à verrou (kit fps-hands généré par tools/build_sniper_viewmodel.gd ; le modèle n'a pas de lunette : on monte les nôtres)
 			Add(new ItemDefinition { Id = "sniper", DisplayName = "Sniper", Type = ItemType.Weapon, ScenePath = Hands + "fps-sniper/fps-sniper.tscn", AcceptsOptic = true, OpticAlong = 0.45f, OpticOffset = new Vector3(0, -0.02f, 0) });

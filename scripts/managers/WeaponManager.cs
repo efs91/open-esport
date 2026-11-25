@@ -90,12 +90,25 @@ public partial class WeaponManager : Node3D
 
 	public bool IsAiming => _ads;
 
-	/// <summary>Chargeur de l'arme en main, tel que le serveur le compte.</summary>
-	public void SetServerMagazine(int magazine)
+	/// <summary>En ligne : le serveur recharge-t-il cette arme, et l'animation de ce rechargement a-t-elle déjà été lancée ?</summary>
+	private bool _serverReloading, _reloadShown;
+
+	/// <summary>Chargeur de l'arme en main et rechargement en cours, tels que le serveur les compte (à n'appeler que s'ils parlent de cette arme).</summary>
+	public void SetServerState(int magazine, bool reloading)
 	{
-		if (_weapon == null || _switching || magazine == _magazine) return;      // en plein changement d'arme, le chargeur reçu est celui de la nouvelle arme
-		_magazine = magazine;
-		EmitAmmo();
+		if (_weapon == null || _switching) return;
+		if (magazine != _magazine)
+		{
+			_magazine = magazine;
+			EmitAmmo();
+		}
+		_serverReloading = reloading;
+		if (reloading) return;
+		_reloadShown = false;
+		if (!_isReloading) return;
+		// rechargement fini (ou interrompu) côté serveur : l'arme est prête, même si l'animation n'était pas tout à fait terminée
+		_isReloading = false;
+		if (_stateMachine != null && _stateMachine.GetCurrentNode() == "reload") _stateMachine.Start("idle");
 	}
 
 	/// <summary>Remplace les bras du kit par ceux du personnage du joueur (peau et manche).</summary>
@@ -140,6 +153,17 @@ public partial class WeaponManager : Node3D
 
 	private int _maxMagazine;
 	private int _magazine;
+
+	/// <summary>Caractéristiques de l'arme en main (les mêmes que sur le serveur).</summary>
+	private OpenEsport.Core.WeaponDef _weaponDef;
+	/// <summary>Instant (ms) de l'appui sur la détente : une arme automatique attend un peu avant sa deuxième balle (clic bref = une balle).</summary>
+	private ulong _firePressedMs;
+
+	private static OpenEsport.Core.WeaponDef WeaponDefOf(WeaponSlotState state)
+	{
+		var item = state == null ? null : OpenEsport.Core.ItemDefs.ByName(state.ItemId);
+		return item == null ? null : OpenEsport.Core.WeaponDefs.Get(item.Id);
+	}
 
 	// Zoom
 	private float _baseFov = 75.0f;
@@ -391,7 +415,11 @@ public partial class WeaponManager : Node3D
 
 		_maxMagazine = _weapon.GetMeta("max_magazine", 0).As<int>();
 		// le niveau de l'arme agrandit le chargeur (comme sur le serveur) : sans cela on ne pourrait pas remplir au-delà de la valeur de base
-		if (_maxMagazine > 0 && state.Tier > 0)
+		_weaponDef = WeaponDefOf(state);
+		_serverReloading = _reloadShown = false;
+		if (Online && _weaponDef != null)
+			_maxMagazine = OpenEsport.Core.Tiers.Magazine(_weaponDef, (byte)Mathf.Clamp(state.Tier, 0, 3));      // en ligne : le chargeur du serveur, pas celui de la scène
+		else if (_maxMagazine > 0 && state.Tier > 0 && _weaponDef?.FixedMagazine != true)
 			_maxMagazine = Mathf.Max(1, Mathf.RoundToInt(_maxMagazine * OpenEsport.Core.GameBalance.TierMagazine[Mathf.Clamp(state.Tier, 0, 3)]));
 		_magazine = state.Magazine < 0 ? _maxMagazine : Mathf.Min(state.Magazine, _maxMagazine);
 		state.Magazine = _magazine;
@@ -687,6 +715,10 @@ public partial class WeaponManager : Node3D
 		if (!_canShoot)
 			return;
 
+		if (!_wasShooting) _firePressedMs = Time.GetTicksMsec();
+		else if (_isAuto && _weaponDef != null && Time.GetTicksMsec() - _firePressedMs < _weaponDef.TapSeconds * 1000f)
+			return;
+
 		// Pour les armes automatiques, on tire tant que le bouton est maintenu
 		// Pour les armes semi-automatiques, on ne tire qu'une fois par appui
 		if (_isAuto || !_wasShooting)
@@ -774,9 +806,10 @@ public partial class WeaponManager : Node3D
 		{
 			FinishHide();
 		}
-		else if (animName == "reload")
+		else if (animName.ToString().StartsWith("reload"))
 		{
 			_isReloading = false;
+			if (Online) return;      // le serveur dit quand le chargeur est plein
 			string ammoType = CurrentAmmoType();
 			int needed = Mathf.Max(_maxMagazine - _magazine, 0);
 			_magazine += AmmoSource != null ? AmmoSource.TakeAmmo(ammoType, needed) : 0;
@@ -790,7 +823,7 @@ public partial class WeaponManager : Node3D
 
 	private void OnAnimationStarted(StringName animName)
 	{
-		if (animName == "reload")
+		if (animName.ToString().StartsWith("reload"))
 		{
 			_isReloading = true;
 		}
@@ -798,6 +831,7 @@ public partial class WeaponManager : Node3D
 
 	public void Reload()
 	{
+		if (Online) return;      // en ligne, le serveur décide : l'animation part quand il annonce le rechargement (voir SetServerState)
 		if (_isReloading || !IsReadyForAction())
 		{
 			_logManager.Debug("Tentative de rechargement impossible : rechargement déjà en cours ou arme non disponible");
@@ -811,10 +845,31 @@ public partial class WeaponManager : Node3D
 			return;
 		}
 
+		BeginReload(ammoCount);
+	}
+
+	private void BeginReload(int ammoCount)
+	{
 		_isReloading = true;
 		if (_ads) _aimWanted = true;     // on reviendra en visée à la fin du rechargement
 		_ads = false;
+		PrepareReload(Mathf.Min(_maxMagazine - _magazine, ammoCount));
 		_stateMachine.Travel("reload");
+	}
+
+	/// <summary>L'animation dure comme le rechargement du serveur. Arme rechargée cartouche par cartouche : elle glisse autant de cartouches qu'il en manque (reload_1 à reload_6).</summary>
+	private void PrepareReload(int shells)
+	{
+		if (_weaponDef == null || _weaponDef.ReloadSeconds <= 0f || _animation?.TreeRoot is not AnimationNodeStateMachine machine || !machine.HasNode("reload") || machine.GetNode("reload") is not AnimationNodeAnimation node)
+			return;
+		if (_weaponDef.ShellReload)
+		{
+			string name = $"reload_{Mathf.Clamp(shells, 1, _weaponDef.MagazineSize)}";
+			if (_weapon.GetNodeOrNull<AnimationPlayer>("AnimationPlayer")?.HasAnimation(name) == true) node.Animation = name;
+		}
+		node.UseCustomTimeline = true;
+		node.StretchTimeScale = true;
+		node.TimelineLength = _weaponDef.ReloadTime(shells) * OpenEsport.Core.Tiers.Reload((byte)Mathf.Clamp(_state?.Tier ?? 0, 0, 3));
 	}
 
 	// ------------------------------------------------------------------
@@ -897,6 +952,12 @@ public partial class WeaponManager : Node3D
 
 		if (_weapon != null && !_switching)
 		{
+			// en ligne : le serveur recharge, on le montre dès que l'arme est prête à jouer l'animation
+			if (Online && _serverReloading && !_reloadShown && !_isReloading && IsReadyForAction())
+			{
+				_reloadShown = true;
+				BeginReload(Mathf.Max(1, GetReserve(CurrentAmmoType())));
+			}
 			// chargeur vide en tenant la détente (même en pleine rafale) : le rechargement part tout seul
 			if (_holdingFire && !_isMelee && !_isReloading && _maxMagazine > 0 && _magazine <= 0 && IsReadyForAction() && GetReserve(CurrentAmmoType()) > 0)
 				Reload();

@@ -58,6 +58,6 @@ namespace OpenEsport.Core
 
 		/// <summary>Taille du chargeur d'une arme de ce niveau.</summary>
 		public static int Magazine(WeaponDef def, byte tier)
-			=> def.MagazineSize <= 0 ? 0 : Math.Max(1, (int)Math.Round(def.MagazineSize * GameBalance.TierMagazine[Math.Min(tier, (byte)(Count - 1))]));
+			=> def.MagazineSize <= 0 ? 0 : def.FixedMagazine ? def.MagazineSize : Math.Max(1, (int)Math.Round(def.MagazineSize * GameBalance.TierMagazine[Math.Min(tier, (byte)(Count - 1))]));
 	}
 }

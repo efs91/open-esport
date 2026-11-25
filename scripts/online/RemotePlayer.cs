@@ -10,6 +10,8 @@ namespace Openesport.Online
 	public partial class RemotePlayer : Node3D
 	{
 		private SlideSound _slide;
+		private ZipSound _zipSound;
+		private bool _zipSeen;
 		private CharacterAnimator _animator;
 		private Label3D _label;
 		private Vector3 _lastPos;
@@ -67,6 +69,8 @@ namespace Openesport.Online
 			AddChild(_animator);
 			_slide = new SlideSound { Name = "Glissade" };
 			AddChild(_slide);
+			_zipSound = new ZipSound { Name = "Tyrolienne" };
+			AddChild(_zipSound);
 
 			_label = new Label3D
 			{
@@ -122,7 +126,7 @@ namespace Openesport.Online
 
 			bool dead = e.Has(EntityFlags.Dead);
 			Visible = !dead && e.Zip != 3;        // dans l'avion : pas sur la carte
-			if (dead) { _hasLast = false; _slide.Set(false); return; }
+			if (dead) { _hasLast = false; _slide.Set(false); _zipSound.Set(false, clicks: false); return; }
 
 			// la vitesse verticale n'est pas répliquée : on la déduit du déplacement, pour animer les sauts
 			if (_hasLast && delta > 0.0001f)
@@ -159,6 +163,8 @@ namespace Openesport.Online
 			if (e.Zip == 4) Noise(1.0, 120f);
 			if (e.Zip == 2) Noise(1.0, 20f);
 			_animator.SetZipline(zip);
+			_zipSound.Set(zip, clicks: _zipSeen);
+			_zipSeen = true;      // joueur vu pour la première fois déjà sur un câble : pas de bruit d'accroche
 			if (zip) Noise(1.0, 100f);                      // sur un câble : audible à 100 m, pas plus loin
 			_animator.SetUsing(e.Has(EntityFlags.Using), ItemDatabase.Get("heal_small"));   // le flacon exact n'est pas répliqué : un flacon générique
 			_animator.SetGait(e.Gait);

@@ -53,6 +53,9 @@ namespace OpenEsport.Server
 
 		// armes
 		public float ShotCooldown;
+		/// <summary>Balles tirées et durée depuis la première, tant que la détente reste enfoncée (armes automatiques).</summary>
+		public int HeldShots;
+		public float HeldShotSeconds;
 		/// <summary>Délai avant de pouvoir lancer une autre grenade, et temps d'aveuglement restant (flash).</summary>
 		public float GrenadeCooldown, BlindLeft;
 		/// <summary>Instant (tick) avant lequel un nouveau ping est refusé.</summary>
@@ -61,6 +64,8 @@ namespace OpenEsport.Server
 		public int PreGrenadeSlot = -1;
 		public bool Reloading;
 		public float ReloadLeft;
+		/// <summary>Arme en cours de rechargement : si elle n'est plus en main à la fin, le rechargement est perdu.</summary>
+		public WeaponSlot ReloadWeapon;
 		public int FireFlagTicks;
 		public int LastSlotCommand;
 		public bool PrevFire, PrevReload, PrevInteract;

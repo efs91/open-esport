@@ -48,6 +48,53 @@ namespace Openesport.Utils
 			"Jeton invalide.",
 			"Le mot de passe doit faire au moins 8 caractères.",
 			"Le mot de passe est trop long (128 caractères au plus).",
+
+			// tournois : configuration
+			"Le nom du tournoi doit faire entre 3 et 60 caractères.",
+			"Le minimum d'inscrits dépasse le maximum.",
+			"La date de début est déjà passée.",
+			"Un tournoi se programme au plus un an à l'avance.",
+			"Les inscriptions doivent fermer après leur ouverture.",
+			"Les inscriptions doivent fermer au plus tard au départ.",
+			"Les inscriptions doivent ouvrir avant le départ.",
+			"Phase {0} : {1}",
+			"le tableau (élimination directe) est forcément la dernière phase.",
+			"points par place : au plus {0} valeurs, de 0 à 100.",
+			"Tu organises déjà {0} tournois : termine-en un d'abord.",
+			"Le tournoi a commencé : sa configuration ne change plus.",
+			"Il y a déjà des inscrits : la taille des équipes ne peut plus changer.",
+			"Il y a déjà plus d'inscrits que ce maximum.",
+
+			// tournois : inscriptions et équipes
+			"Les inscriptions sont closes.",
+			"Les inscriptions ne sont pas encore ouvertes.",
+			"Le tournoi est complet.",
+			"Le tournoi a commencé : les équipes ne changent plus.",
+			"Aucun joueur ne porte ce nom.",
+			"Tu fais déjà partie de ton équipe.",
+			"{0} est déjà dans une équipe de ce tournoi.",
+			"Ton équipe est au complet ({0} joueurs, invitations en attente comprises).",
+			"Cette invitation n'existe plus.",
+			"Tu fais déjà partie d'une équipe de ce tournoi.",
+			"Cette équipe n'existe plus.",
+			"Cette équipe est déjà au complet.",
+			"Le tournoi a commencé : tu ne peux plus te désinscrire.",
+			"Le check-in ouvre {0} minutes avant le départ.",
+			"Tu n'es pas inscrit à ce tournoi.",
+
+			// tournois : déroulement
+			"Le tournoi a commencé.",
+			"Le tournoi a déjà commencé.",
+			"Le tournoi est déjà terminé.",
+			"Annulé par l'organisateur.",
+			"Annulé au départ : {0}",
+			"Aucun inscrit présent.",
+			"Pas assez d'inscrits présents ({0} sur {1} demandés).",
+			"{0} équipe(s) incomplète(s) retirée(s).",
+			"{0} équipe(s) incomplète(s) retirée(s) au départ.",
+			"Pas de manche à jouer pour toi.",
+			"ManageComp est injoignable : {0}",
+			"{0} pts · lobby {1}",
 		};
 	}
 }

@@ -655,6 +655,8 @@ namespace OpenEsport.Server
 			w.WriteBool(p.Alive);
 			w.WriteByte((byte)Math.Clamp(p.Inventory.Active?.Magazine ?? 0, 0, 255));
 			w.WriteBool(p.Reloading);
+			w.WriteBits((uint)(p.Inventory.ActiveSlot + 1), 2);      // à quelle arme se rapportent le chargeur et le rechargement ci-dessus
+			w.WriteByte(p.Inventory.Active?.WeaponId ?? 0);
 
 			Vec3 pos = p.State.Pos;
 			float radius = _m.InterestRadius;

@@ -99,6 +99,10 @@ namespace OpenEsport.Core
 		/// <summary>Chargeur de l'arme en main, tel que le serveur le compte.</summary>
 		public byte Magazine { get; private set; }
 		public bool Reloading { get; private set; }
+		/// <summary>Emplacement (-1 : aucun) et arme auxquels se rapportent <see cref="Magazine"/> et <see cref="Reloading"/> : pendant un changement d'arme, l'inventaire
+		/// et les instantanés n'arrivent pas ensemble.</summary>
+		public int MagazineSlot { get; private set; } = -1;
+		public byte MagazineWeapon { get; private set; }
 		public InventoryState Inventory { get; private set; } = new InventoryState();
 		/// <summary>Grenades et zones de feu proches, telles que le serveur vient de les décrire (liste vide : plus rien).</summary>
 		public List<GrenadeInfo> Grenades { get; private set; } = new List<GrenadeInfo>();
@@ -285,6 +289,8 @@ namespace OpenEsport.Core
 			bool alive = true;
 			byte magazine = 0;
 			bool reloading = false;
+			int magazineSlot = -1;
+			byte magazineWeapon = 0;
 			if (hasOwn)
 			{
 				lastProcessed = _reader.ReadUInt16();
@@ -297,6 +303,8 @@ namespace OpenEsport.Core
 				alive = _reader.ReadBool();
 				magazine = _reader.ReadByte();
 				reloading = _reader.ReadBool();
+				magazineSlot = (int)_reader.ReadBits(2) - 1;
+				magazineWeapon = _reader.ReadByte();
 			}
 			int removedCount = (int)_reader.ReadBits(8);
 			_scratchIds.Clear();
@@ -353,6 +361,8 @@ namespace OpenEsport.Core
 				Alive = alive;
 				Magazine = magazine;
 				Reloading = reloading;
+				MagazineSlot = magazineSlot;
+				MagazineWeapon = magazineWeapon;
 				Reconcile(lastProcessed, own, aliveChanged);
 			}
 		}

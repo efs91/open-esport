@@ -10,13 +10,18 @@ namespace Openesport.Menus
 	/// Encart en haut à gauche du menu principal : les tournois programmés (publiés dans ManageComp), le groupe de joueurs (invitations, membres)
 	/// et la liste d'amis avec ceux qui sont en ligne. Interroge le service de comptes toutes les quelques secondes tant qu'il est visible.
 	/// Quand le chef du groupe lance une partie, les autres membres la rejoignent automatiquement.
+	/// Les trois cadres sont là dès l'ouverture, avec un anneau de chargement ; chacun se remplit dès que ses données arrivent.
 	/// </summary>
 	public partial class MenuSocial : Control
 	{
 		private const double PollSeconds = 3.0, TournamentSeconds = 60.0;
 		private VBoxContainer _box;
-		private double _poll, _tournaments = TournamentSeconds;
-		private bool _busy, _showFriends = true;
+		private double _poll = PollSeconds, _tournaments = TournamentSeconds;
+		private bool _busyTournaments, _busyParty, _busyFriends, _showFriends = true;
+		/// <summary>Premier chargement de chaque cadre : fait, ou en échec (message affiché à la place de l'anneau, nouvel essai à chaque passage).</summary>
+		private bool _tournamentsReady, _partyReady, _friendsReady;
+		private string _tournamentsError, _partyError, _friendsError;
+		private string _login;
 		private string _signature = "", _message = "";
 		private int _joinedSeq;
 		private LineEdit _addField;
@@ -26,38 +31,88 @@ namespace Openesport.Menus
 			MouseFilter = MouseFilterEnum.Ignore;
 			SetAnchorsPreset(LayoutPreset.TopLeft);
 			OffsetLeft = 18; OffsetTop = 18; OffsetRight = 400; OffsetBottom = 700;
-			_box = new VBoxContainer { MouseFilter = MouseFilterEnum.Pass };
+			_box = new VBoxContainer { MouseFilter = MouseFilterEnum.Pass, CustomMinimumSize = new Vector2(300, 0) };      // largeur fixe : les cadres ne bougent pas en se remplissant
 			_box.AddThemeConstantOverride("separation", 8);
 			AddChild(_box);
 			_box.SetAnchorsPreset(LayoutPreset.TopWide);
 			VisibilityChanged += () => { if (IsVisibleInTree()) { _poll = PollSeconds; _tournaments = TournamentSeconds; } };
+			_login = AccountClient.LoggedIn ? AccountClient.Login : "";
+			Rebuild();
 		}
 
 		public override void _Process(double delta)
 		{
 			if (!IsVisibleInTree()) return;
 			_poll += delta; _tournaments += delta;
-			if (_busy || _poll < PollSeconds) return;
-			_poll = 0;
-			_ = Refresh();
-		}
-
-		private async System.Threading.Tasks.Task Refresh()
-		{
-			_busy = true;
-			try
+			// connexion ou changement de compte : tout est à recharger, tout de suite
+			string login = AccountClient.LoggedIn ? AccountClient.Login : "";
+			if (login != _login)
 			{
-				if (_tournaments >= TournamentSeconds) { _tournaments = 0; await SocialClient.RefreshTournamentsAsync(); }
-				if (AccountClient.LoggedIn)
-				{
-					await SocialClient.RefreshPartyAsync();
-					await SocialClient.RefreshFriendsAsync();
-				}
-				else SocialClient.Clear();
-				CheckPartyMatch();
+				_login = login;
+				SocialClient.Clear();
+				_tournamentsReady = _partyReady = _friendsReady = false;
+				_tournamentsError = _partyError = _friendsError = null;
+				_poll = PollSeconds; _tournaments = TournamentSeconds;
 				Rebuild();
 			}
-			finally { _busy = false; }
+			if (_poll < PollSeconds) return;
+			_poll = 0;
+			// les trois demandes partent ensemble : un cadre lent ne retarde pas les autres
+			if (!_busyTournaments && (_tournaments >= TournamentSeconds || !_tournamentsReady)) { _tournaments = 0; RefreshTournaments(); }
+			if (!AccountClient.LoggedIn) { SocialClient.Clear(); Rebuild(); return; }
+			if (!_busyParty) RefreshParty();
+			if (!_busyFriends) RefreshFriends();
+		}
+
+		private async void RefreshTournaments()
+		{
+			_busyTournaments = true;
+			string login = _login, error;
+			try { error = await SocialClient.RefreshTournamentsAsync(); }
+			finally { _busyTournaments = false; }
+			if (!IsInstanceValid(this)) return;
+			if (login != _login) { _poll = PollSeconds; return; }      // réponse pour l'ancien compte : on redemande
+			if (error == null) _tournamentsReady = true;
+			_tournamentsError = error;
+			Rebuild();
+		}
+
+		private async void RefreshParty()
+		{
+			_busyParty = true;
+			string login = _login, error;
+			try { error = await SocialClient.RefreshPartyAsync(); }
+			finally { _busyParty = false; }
+			if (!IsInstanceValid(this)) return;
+			if (login != _login) { _poll = PollSeconds; return; }      // réponse pour l'ancien compte : on redemande
+			if (error == null) _partyReady = true;
+			_partyError = error;
+			CheckPartyMatch();
+			Rebuild();
+		}
+
+		private async void RefreshFriends()
+		{
+			_busyFriends = true;
+			string login = _login, error;
+			try { error = await SocialClient.RefreshFriendsAsync(); }
+			finally { _busyFriends = false; }
+			if (!IsInstanceValid(this)) return;
+			if (login != _login) { _poll = PollSeconds; return; }      // réponse pour l'ancien compte : on redemande
+			if (error == null) _friendsReady = true;
+			_friendsError = error;
+			Rebuild();
+		}
+
+		/// <summary>Cadre pas encore rempli : son titre et l'anneau de chargement, ou le message si le service ne répond pas.</summary>
+		private void AddLoading(string title, string error)
+		{
+			var v = new VBoxContainer();
+			v.AddThemeConstantOverride("separation", 4);
+			v.AddChild(Title(title));
+			if (string.IsNullOrEmpty(error)) v.AddChild(new LoadingRing());
+			else v.AddChild(Muted(error));
+			_box.AddChild(MenuStyle.Card(v, margin: 12));
 		}
 
 		/// <summary>Le chef a publié une partie : les autres membres la rejoignent une seule fois.</summary>
@@ -82,14 +137,22 @@ namespace Openesport.Menus
 
 		private void Rebuild()
 		{
-			string sig = Signature() + _message + _showFriends + (DateTimeOffset.UtcNow.ToUnixTimeSeconds() / 60);      // les comptes à rebours avancent
+			string sig = Signature() + _message + _showFriends + _tournamentsReady + _partyReady + _friendsReady + _tournamentsError + _partyError + _friendsError + (DateTimeOffset.UtcNow.ToUnixTimeSeconds() / 60);      // les comptes à rebours avancent
 			if (sig == _signature) return;
 			// on ne reconstruit pas pendant la saisie d'un nom d'ami
 			if (_addField != null && IsInstanceValid(_addField) && _addField.HasFocus()) return;
 			_signature = sig;
 			foreach (var c in _box.GetChildren()) c.QueueFree();
 
-			// ---- tournois : rappels de ses tournois (date, check-in, manche à jouer), les prochains, la page dédiée
+			if (_tournamentsReady) BuildTournaments(); else AddLoading(I18n.T("Tournois"), _tournamentsError);
+			if (!AccountClient.LoggedIn) return;
+			if (_partyReady) BuildParty(); else AddLoading(I18n.T("Groupe"), _partyError);
+			if (_friendsReady) BuildFriends(); else AddLoading(I18n.T("Amis"), _friendsError);
+		}
+
+		/// <summary>Tournois : rappels de ses tournois (date, check-in, manche à jouer), les prochains, la page dédiée.</summary>
+		private void BuildTournaments()
+		{
 			var tv = new VBoxContainer();
 			tv.AddThemeConstantOverride("separation", 4);
 			tv.AddChild(Title(I18n.T("Tournois")));
@@ -114,7 +177,7 @@ namespace Openesport.Menus
 			foreach (var g in mine)
 			{
 				long id = g.Id;
-				string when = g.State == "running" ? (g.PhaseRaces > 0 ? I18n.T("en cours · {0} {1}/{2}", I18n.T(g.PhaseName), g.PhaseRace, g.PhaseRaces) : I18n.T("en cours · {0}", I18n.T(g.PhaseName)))
+				string when = g.State == "running" ? (g.PhaseRaces > 0 ? I18n.T("en cours · {0} {1}/{2}", TournamentsScreen.PhaseLabel(g), g.PhaseRace, g.PhaseRaces) : I18n.T("en cours · {0}", TournamentsScreen.PhaseLabel(g)))
 					: $"{DateTimeOffset.FromUnixTimeSeconds(g.StartAt).ToLocalTime():dd/MM HH:mm} · {TournamentsScreen.Countdown(g.StartAt)}";
 				var row = new HBoxContainer();
 				row.AddChild(Link($"★ {g.Title}\n{when}", () => OpenTournaments(id)));
@@ -145,9 +208,10 @@ namespace Openesport.Menus
 			string reminder = Reminder(mine);
 			if (reminder != null) tv.AddChild(Alert(reminder));
 			_box.AddChild(MenuStyle.Card(tv, margin: 12));
-			if (!AccountClient.LoggedIn) return;
+		}
 
-			// ---- groupe
+		private void BuildParty()
+		{
 			var gv = new VBoxContainer();
 			gv.AddThemeConstantOverride("separation", 4);
 			var party = SocialClient.Party.Party;
@@ -183,8 +247,11 @@ namespace Openesport.Menus
 			else if (SocialClient.Party.Invites.Count == 0) gv.AddChild(Muted(I18n.T("Invite un ami pour jouer en équipe.")));
 			if (!string.IsNullOrEmpty(_message)) gv.AddChild(Muted(_message));
 			_box.AddChild(MenuStyle.Card(gv, margin: 12));
+		}
 
-			// ---- amis
+		private void BuildFriends()
+		{
+			var party = SocialClient.Party.Party;
 			var fv = new VBoxContainer();
 			fv.AddThemeConstantOverride("separation", 4);
 			int online = SocialClient.Friends.Friends.Count(f => f.State == "friend" && f.Online);

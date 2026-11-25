@@ -4,7 +4,7 @@ using Openesport.Inventory;
 /// <summary>Vue de contrôle hors jeu : captures dans .godot/pose-review.</summary>
 public partial class CharacterPoseReview : Node3D
 {
-	private static readonly string[] Weapons = { "unarmed", "knife", "c19", "p2020", "smg45", "sniper", "ak", "lmg63", "sawnoff" };
+	private static readonly string[] Weapons = { "unarmed", "knife", "c19", "p2020", "smg45", "sniper", "ak", "lmg63", "sawnoff", "peacemaker" };
 	private CharacterAnimator _character;
 	private Vector3 _velocity;
 	private bool _onFloor = true, _sliding;

@@ -272,7 +272,7 @@ namespace OpenEsport.Matchmaker
 			}
 			if (!text.StartsWith(Matchmaking.RequestTag, StringComparison.Ordinal)) return;
 			string reply;
-			try { reply = HandleRequest(text); }
+			try { reply = HandleRequest(text, remote.Address); }
 			catch (Exception e) { Log("Demande invalide : " + e.Message); reply = Matchmaking.ReplyTag + "ERR|Demande invalide"; }
 			var bytes = Encoding.UTF8.GetBytes(reply);
 			_net.SendUnconnectedMessage(bytes, 0, bytes.Length, remote);
@@ -294,8 +294,29 @@ namespace OpenEsport.Matchmaker
 			}
 		}
 
+		/// <summary>Lancements de serveurs autorisés par adresse IP et par minute : une seule machine ne peut pas remplir la mémoire du VPS de serveurs vides.</summary>
+		public int LaunchesPerMinute = 10;
+		private readonly Dictionary<IPAddress, Queue<DateTime>> _launches = new Dictionary<IPAddress, Queue<DateTime>>();
+
+		/// <summary>Compte un lancement pour cette adresse, ou le refuse si elle en a déjà trop demandé dans la dernière minute (machine locale : jamais limitée).</summary>
+		private bool LaunchAllowed(IPAddress from)
+		{
+			if (from == null || IPAddress.IsLoopback(from)) return true;
+			var now = DateTime.UtcNow; var limit = now.AddMinutes(-1);
+			lock (_launches)
+			{
+				if (_launches.Count > 10000)
+					foreach (var k in _launches.Where(kv => kv.Value.Count == 0 || kv.Value.Last() < limit).Select(kv => kv.Key).ToList()) _launches.Remove(k);
+				if (!_launches.TryGetValue(from, out var q)) _launches[from] = q = new Queue<DateTime>();
+				while (q.Count > 0 && q.Peek() < limit) q.Dequeue();
+				if (q.Count >= LaunchesPerMinute) return false;
+				q.Enqueue(now);
+				return true;
+			}
+		}
+
 		/// <summary>Une demande de partie : salle d'attente du bon mode avec de la place, sinon lancement d'un serveur.</summary>
-		public string HandleRequest(string text)
+		public string HandleRequest(string text, IPAddress from = null)
 		{
 			var p = text.Split('|');
 			if (p.Length < 3 || p[0] != Matchmaking.RequestTag) return Matchmaking.ReplyTag + "ERR|Demande invalide";
@@ -316,12 +337,12 @@ namespace OpenEsport.Matchmaker
 				{
 					var d = p[5].Substring(2).Split(':');
 					if (d.Length != 2 || !long.TryParse(d[0], out long did) || did <= 0 || d[1].Length == 0 || d[1].Length > 12 || !d[1].All(char.IsLetterOrDigit)) return Matchmaking.ReplyTag + "ERR|Demande de duel invalide";
-					return HandleDuelRequest(did, d[1], mode, Math.Clamp(rawTeamSize, 1, 5));
+					return HandleDuelRequest(did, d[1], mode, Math.Clamp(rawTeamSize, 1, 5), from);
 				}
 				var t = p[5].Substring(1).Split(':');
 				if (t.Length != 3 || !long.TryParse(t[0], out long tid) || !int.TryParse(t[1], out int trace) || !int.TryParse(t[2], out int tlobby) || tid <= 0 || trace < 0 || tlobby < 0)
 					return Matchmaking.ReplyTag + "ERR|Demande de tournoi invalide";
-				return HandleTournamentRequest(tid, trace, tlobby, mode, Math.Clamp(rawTeamSize, 1, 5));
+				return HandleTournamentRequest(tid, trace, tlobby, mode, Math.Clamp(rawTeamSize, 1, 5), from);
 			}
 
 			lock (_servers)
@@ -341,6 +362,7 @@ namespace OpenEsport.Matchmaker
 				// 3) sinon on en lance un
 				int port = FreePort();
 				if (port < 0) return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant";
+				if (!LaunchAllowed(from)) { Log($"Trop de lancements depuis {from} : demande refusée"); return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant"; }
 				var spec = new ServerSpec
 				{
 					Name = $"open-esport-{Modes.Name(mode, teamSize)}-{port}", Port = port, Mode = mode, TeamSize = teamSize, Players = mode == GameMode.BattleRoyale ? _opt.Players : Modes.Get(mode).PlayersFor(teamSize),
@@ -358,7 +380,7 @@ namespace OpenEsport.Matchmaker
 		/// La partie d'une manche de tournoi : le serveur du lobby s'il existe, sinon on le lance — battle royale, deathmatch, ou un mode à deux équipes.
 		/// Le service de comptes dit au serveur s'il complète le lobby avec des bots.
 		/// </summary>
-		private string HandleTournamentRequest(long tournament, int race, int lobby, GameMode mode, int teamSize)
+		private string HandleTournamentRequest(long tournament, int race, int lobby, GameMode mode, int teamSize, IPAddress from)
 		{
 			if (mode == GameMode.Duel) return Matchmaking.ReplyTag + "ERR|Mode de jeu inattendu pour une manche de tournoi";
 			lock (_servers)
@@ -368,6 +390,7 @@ namespace OpenEsport.Matchmaker
 					return existing.Ready ? $"{Matchmaking.ReplyTag}OK|{_opt.PublicHost}|{existing.Spec.Port}|{existing.Humans}|{existing.Needed}|1" : Matchmaking.ReplyTag + "WAIT|Préparation de ta manche de tournoi…";
 				int port = FreePort();
 				if (port < 0) return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant";
+				if (!LaunchAllowed(from)) { Log($"Trop de lancements depuis {from} : demande refusée"); return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant"; }
 				var spec = new ServerSpec
 				{
 					Name = $"open-esport-tournoi-{Modes.Get(mode).Key}-{tournament}-{race}-{lobby}-{port}", Port = port, Mode = mode, TeamSize = teamSize, Players = mode == GameMode.BattleRoyale ? _opt.Players : mode == GameMode.Deathmatch ? Modes.Get(mode).PlayersFor(1) : 2 * teamSize,
@@ -386,7 +409,7 @@ namespace OpenEsport.Matchmaker
 		/// Un match de poule ou de tableau : un serveur réservé aux deux camps (<paramref name="teamSize"/> joueurs chacun), sans bots —
 		/// 1 VS 1, Team Deathmatch, Capture du drapeau, Sabotage ou Contrôle.
 		/// </summary>
-		private string HandleDuelRequest(long tournament, string key, GameMode mode, int teamSize)
+		private string HandleDuelRequest(long tournament, string key, GameMode mode, int teamSize, IPAddress from)
 		{
 			if (!Modes.Get(mode).TwoTeams) return Matchmaking.ReplyTag + "ERR|Mode de jeu inattendu pour un match de tournoi";
 			if (mode == GameMode.Duel) teamSize = 1;
@@ -397,6 +420,7 @@ namespace OpenEsport.Matchmaker
 					return existing.Ready ? $"{Matchmaking.ReplyTag}OK|{_opt.PublicHost}|{existing.Spec.Port}|{existing.Humans}|{existing.Needed}|{teamSize}" : Matchmaking.ReplyTag + "WAIT|Préparation de ton match de tournoi…";
 				int port = FreePort();
 				if (port < 0) return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant";
+				if (!LaunchAllowed(from)) { Log($"Trop de lancements depuis {from} : demande refusée"); return Matchmaking.ReplyTag + "ERR|Tous les serveurs sont occupés, réessaie dans un instant"; }
 				var spec = new ServerSpec
 				{
 					Name = $"open-esport-match-{Modes.Get(mode).Key}-{tournament}-{key}-{port}", Port = port, Mode = mode, TeamSize = teamSize, Players = teamSize * 2,

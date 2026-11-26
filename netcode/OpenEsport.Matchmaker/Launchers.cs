@@ -60,7 +60,9 @@ namespace OpenEsport.Matchmaker
 			var args = new List<string> { "run", "-d", "--name", s.Name,       // sans --rm : un serveur qui plante garde ses logs et son code de sortie jusqu'à ce que le matchmaking le retire (voir Diagnose)
 				"--label", "open-esport=1", "--label", "open-esport.mode=" + Modes.Name(s.Mode, s.TeamSize), "--label", "open-esport.port=" + s.Port,
 				"--cpus", Cpus, "--memory", Memory, "--restart", "no",
-				"-p", $"{s.Port}:{s.Port}/udp" };
+				"-p", $"{s.Port}:{s.Port}/udp",
+				// durcissement (aucun coût en partie) : aucun privilège système, pas d'élévation possible, nombre de processus borné, disque en lecture seule sauf /tmp
+				"--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--pids-limit", "512", "--read-only", "--tmpfs", "/tmp:rw,size=64m" };
 			if (!string.IsNullOrEmpty(Network)) { args.Add("--network"); args.Add(Network); }
 			if (!string.IsNullOrEmpty(AccountsUrl))
 			{

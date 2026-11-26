@@ -75,6 +75,8 @@ namespace OpenEsport.Server
 		private INav _nav;
 		/// <summary>Recherches de chemin permises pendant ce tick : elles sont étalées dans le temps pour ne pas gonfler un tick.</summary>
 		private int _pathBudget;
+		/// <summary>Journal des ticks trop longs : dans le dossier courant, ou dans /tmp si le disque est en lecture seule (conteneur durci).</summary>
+		private string _lagLog = "server_lag.log";
 
 		/// <summary>
 		/// Point vers lequel un bot doit marcher pour atteindre <paramref name="goal"/> : le but lui-même si la ligne droite est libre,

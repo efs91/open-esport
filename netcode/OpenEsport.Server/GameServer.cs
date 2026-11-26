@@ -282,7 +282,8 @@ namespace OpenEsport.Server
 				double F(long a, long b) => (b - a) * 1000.0 / Stopwatch.Frequency;
 				string line = $"[tick {_tick}] {ms:F1} ms (réseau {F(t0, tNet):F1}, bots {F(tNet, tBots):F1}, joueurs {F(tBots, tSim):F1}, le reste {F(tSim, tEnd):F1}) | joueurs {_players.Count}, bots {BotCount} | ramasse-miettes pendant le tick : {(GC.CollectionCount(2) + GC.CollectionCount(1) - gcBefore)} collectes | recherches de chemin restantes {_pathBudget}";
 				Log("[lag] " + line);
-				try { System.IO.File.AppendAllText("server_lag.log", DateTime.Now.ToString("HH:mm:ss.fff") + " " + line + Environment.NewLine); } catch { }
+				try { System.IO.File.AppendAllText(_lagLog, DateTime.Now.ToString("HH:mm:ss.fff") + " " + line + Environment.NewLine); }
+				catch { _lagLog = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "server_lag.log"); }      // conteneur en lecture seule : le journal passe dans /tmp
 			}
 			ReportIfDue();
 		}

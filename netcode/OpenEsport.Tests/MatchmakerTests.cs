@@ -98,6 +98,27 @@ namespace OpenEsport.Tests
 		}
 
 		[Fact]
+		public void One_Address_Cannot_Launch_More_Than_Its_Quota_Of_Servers_Per_Minute()
+		{
+			var (svc, launcher, cts, mm) = Start();
+			try
+			{
+				svc.LaunchesPerMinute = 2;
+				string v = Protocol.Version.ToString();
+				var attacker = System.Net.IPAddress.Parse("203.0.113.7");
+				Assert.StartsWith("MM!WAIT", svc.HandleRequest($"MM?|{v}|1|dm", attacker));
+				Assert.StartsWith("MM!WAIT", svc.HandleRequest($"MM?|{v}|4|sab", attacker));
+				Assert.StartsWith("MM!ERR", svc.HandleRequest($"MM?|{v}|2|tdm", attacker));          // quota atteint : pas de nouveau serveur
+				Assert.StartsWith("MM!ERR", svc.HandleRequest($"MM?|{v}|1|1v1|1|TD5:m1", attacker));
+				Assert.Equal(2, launcher.Launched.Count);
+				Assert.StartsWith("MM!WAIT", svc.HandleRequest($"MM?|{v}|1|dm", attacker));           // une salle déjà lancée se rejoint toujours
+				Assert.StartsWith("MM!WAIT", svc.HandleRequest($"MM?|{v}|2|tdm", System.Net.IPAddress.Parse("198.51.100.9")));      // une autre adresse n'est pas touchée
+				Assert.Equal(3, launcher.Launched.Count);
+			}
+			finally { cts.Cancel(); svc.StopAll(); }
+		}
+
+		[Fact]
 		public void Each_Mode_Gets_Its_Own_Named_Server_With_Its_Own_Team_Size_And_Player_Count()
 		{
 			var (svc, launcher, cts, mm) = Start();
@@ -166,7 +187,8 @@ namespace OpenEsport.Tests
 			Assert.Equal("open-esport-trio-27105", args[args.IndexOf("--name") + 1]);      // un nom explicite, jamais anonyme
 			Assert.Contains("27105:27105/udp", args);
 			Assert.Contains("open-esport=1", args);
-			Assert.DoesNotContain("--rm", args);      // le conteneur reste jusqu'à ce que le matchmaking le retire : on peut lire ses logs s'il plante
+			Assert.DoesNotContain("--rm", args);
+			Assert.Equal("ALL", args[args.IndexOf("--cap-drop") + 1]); Assert.Contains("--read-only", args); Assert.Contains("no-new-privileges", args);      // conteneur durci      // le conteneur reste jusqu'à ce que le matchmaking le retire : on peut lire ses logs s'il plante
 			var lNet = new DockerLauncher { Image = "open-esport-server:latest", Network = "open-esport" };
 			var netArgs = lNet.BuildRunArgs(new ServerSpec { Name = "open-esport-trio-27105", Port = 27105, TeamSize = 3, Players = 30, MinPlayers = 1, LobbyCountdown = 5, IdleExitSeconds = 120 });
 			Assert.Equal("open-esport", netArgs[netArgs.IndexOf("--network") + 1]);

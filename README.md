@@ -1,10 +1,10 @@
-# Open Esport 2025 FPS
+# Open Esport FPS
 
 [🇩🇪 Deutsch](README-lang/deutsch.md) [🇳🇱 Nederlands](README-lang/nederlands.md) [🇫🇷 Français](README-lang/français.md) [🇧🇬 Български](README-lang/български.md) [🇭🇷 Hrvatski](README-lang/hrvatski.md) [🇨🇿 Čeština](README-lang/čeština.md) [🇩🇰 Dansk](README-lang/dansk.md) [🇪🇪 Eesti](README-lang/eesti.md) [🇬🇷 Ελληνικά](README-lang/ελληνικά.md) [🇭🇺 Magyar](README-lang/magyar.md) [🇮🇪 Gaeilge](README-lang/gaeilge.md) [🇮🇹 Italiano](README-lang/italiano.md) [🇱🇻 Latviešu](README-lang/latviešu.md) [🇱🇹 Lietuvių](README-lang/lietuvių.md) [🇲🇹 Malti](README-lang/malti.md) [🇵🇱 Polski](README-lang/polski.md) [🇵🇹 Português](README-lang/português.md) [🇷🇴 Română](README-lang/română.md) [🇸🇰 Slovenčina](README-lang/slovenčina.md) [🇸🇮 Slovenščina](README-lang/slovenščina.md) [🇪🇸 Español](README-lang/español.md) [🇸🇪 Svenska](README-lang/svenska.md) [🇸🇦 العربية](README-lang/العربية.md)
 
 ## Description
 
-**Open Esport 2025** is an open source competitive FPS project developed with the **Godot 4** engine. It aims to provide a modular, extensible, and easily deployable foundation for creating modern esport experiences.
+**Open Esport** is an open source competitive FPS project developed with the **Godot 4** engine. It aims to provide a modular, extensible, and easily deployable foundation for creating modern esport experiences.
 
 The primary goal is to offer a **self-hosted** and **autonomous infrastructure**, independent from traditional publishers, in order to bypass limitations or policy changes imposed for commercial purposes.  
 The project is designed to be **compatible with modern deployment environments** (Docker, Kubernetes, Azure, AWS, ...), while remaining lightweight and easy to host locally.

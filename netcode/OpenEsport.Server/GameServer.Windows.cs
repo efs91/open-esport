@@ -15,6 +15,7 @@ namespace OpenEsport.Server
 			_world.SetWindow(index, state);
 			var change = WindowEvent(index);
 			foreach (var player in _humans) SendEvent(player, change);
+			SendToSpectators(change);
 		}
 
 		private void HitWindow(int index, float damage) => SetWindow(index, _world.Windows[index].Hit(damage));

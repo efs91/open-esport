@@ -29,18 +29,22 @@ namespace Openesport.Menus
 			var center = new CenterContainer { Theme = MenuStyle.SharedTheme };
 			center.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 			AddChild(center);
+			// compact : tout tient dans l'écran de référence (1152 × 648), boutons « Appliquer » et « Retour » compris ; au besoin, les réglages défilent
 			var column = new VBoxContainer();
-			column.AddThemeConstantOverride("separation", 12);
-			center.AddChild(MenuStyle.Card(column, 560f, 24));
+			column.AddThemeConstantOverride("separation", 8);
+			center.AddChild(MenuStyle.Card(column, 560f, 18));
 
 			var title = new Label { Text = I18n.T("Graphismes"), HorizontalAlignment = HorizontalAlignment.Center };
-			title.AddThemeFontSizeOverride("font_size", 30);
+			title.AddThemeFontSizeOverride("font_size", 24);
 			column.AddChild(title);
 
 			var grid = new GridContainer { Columns = 2 };
 			grid.AddThemeConstantOverride("h_separation", 24);
-			grid.AddThemeConstantOverride("v_separation", 10);
-			column.AddChild(grid);
+			grid.AddThemeConstantOverride("v_separation", 5);
+			_scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
+			_scroll.AddChild(grid);
+			column.AddChild(_scroll);
+			_grid = grid;
 
 			Section(grid, I18n.T("Affichage"));
 			Row(grid, I18n.T("Mode"), Options(new[] { I18n.T("Plein écran"), I18n.T("Fenêtre") }, G.Fullscreen ? 0 : 1, i => { G.Fullscreen = i == 0; Changed(); }));
@@ -69,25 +73,41 @@ namespace Openesport.Menus
 			Refresh();
 
 			var hint = new Label { Text = I18n.T("Machine peu puissante : baisse d'abord la résolution de rendu et les effets de lumière, puis les ombres."), AutowrapMode = TextServer.AutowrapMode.WordSmart, HorizontalAlignment = HorizontalAlignment.Center, Modulate = MenuStyle.Muted };
-			hint.AddThemeFontSizeOverride("font_size", 14);
+			hint.AddThemeFontSizeOverride("font_size", 13);
 			column.AddChild(hint);
 
 			var buttons = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
 			buttons.AddThemeConstantOverride("separation", 16);
 			column.AddChild(buttons);
-			_apply = new Button { ThemeTypeVariation = "MenuPrimary", Text = I18n.T("Appliquer"), CustomMinimumSize = new Vector2(200, 42), Disabled = true };
+			_apply = new Button { ThemeTypeVariation = "MenuPrimary", Text = I18n.T("Appliquer"), CustomMinimumSize = new Vector2(200, 38), Disabled = true };
 			_apply.Pressed += Apply;
 			buttons.AddChild(_apply);
-			var close = new Button { Text = I18n.T("Retour"), CustomMinimumSize = new Vector2(200, 42) };
+			var close = new Button { Text = I18n.T("Retour"), CustomMinimumSize = new Vector2(200, 38) };
 			close.Pressed += Close;
 			buttons.AddChild(close);
 			close.GrabFocus();
+			FitScroll();
+			CallDeferred(nameof(FitScroll));          // après la première mise en page (tailles des polices connues)
+			GetViewport().SizeChanged += FitScroll;
+		}
+
+		private ScrollContainer _scroll;
+		private GridContainer _grid;
+
+		public override void _ExitTree() { if (GetViewport() != null) GetViewport().SizeChanged -= FitScroll; }
+
+		/// <summary>La zone des réglages prend la hauteur de son contenu, sans dépasser ce que l'écran laisse après le titre et les boutons.</summary>
+		private void FitScroll()
+		{
+			if (_scroll == null || !IsInstanceValid(_scroll)) return;
+			float available = GetViewport().GetVisibleRect().Size.Y - 230f;
+			_scroll.CustomMinimumSize = new Vector2(_grid.GetCombinedMinimumSize().X, Mathf.Max(120f, Mathf.Min(_grid.GetCombinedMinimumSize().Y, available)));
 		}
 
 		private static void Section(GridContainer grid, string text)
 		{
 			var label = new Label { Text = text };
-			label.AddThemeFontSizeOverride("font_size", 20);
+			label.AddThemeFontSizeOverride("font_size", 18);
 			grid.AddChild(label);
 			grid.AddChild(new Control());
 		}
@@ -100,7 +120,7 @@ namespace Openesport.Menus
 
 		private OptionButton Options(string[] items, int selected, Action<int> onChange)
 		{
-			var b = new OptionButton { CustomMinimumSize = new Vector2(240, 36) };
+			var b = new OptionButton { CustomMinimumSize = new Vector2(240, 32) };
 			foreach (var item in items) b.AddItem(item);
 			b.Select(selected);
 			b.ItemSelected += i => { if (!_updating) onChange((int)i); };

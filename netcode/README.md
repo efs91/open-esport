@@ -242,11 +242,25 @@ Carte « Relais » du Deathmatch : `python tools/map/gen_relais_map.py` (premier
      des équipes, score à atteindre, et les équipes : `groups` en battle royale — équipe inscrite ou tirée au sort —, `sides` dans les modes à deux équipes) ; si le mode ne correspond pas,
      il s'arrête. Il rapporte les places et les éliminations (`/internal/tournament-race`) ; un inscrit du lobby qui n'a pas joué compte comme abandon. Une phase finie, ses qualifiés passent à la suivante.
   5. **Matchs** (poules, tableau) : « Jouer mon match » (`/api/tournaments/{id}/me`, clé `p<poule>m<match>` ou `t<jeu>n<noeud>`, précédée de `f<étape>` et suivie de `g<partie>` au besoin) → matchmaking (`MM?…|TD<tournoi>:<clé>`)
-     → serveur du mode de l'étape réservé aux deux camps, sans bots (`/internal/tournament/{id}/match/{clé}` : camps, mode, score, équipement).
+     → serveur du mode de l'étape réservé aux deux camps (`/internal/tournament/{id}/match/{clé}` : camps, mode, score, équipement, bots).
      Un camp absent après 120 s perd par forfait ; une égalité n'est pas enregistrée (le match reste à jouer) ; le score est saisi dans ManageComp (`/internal/tournament-match`), après la dernière partie si le match en compte plusieurs.
   6. **Déroulé** : `GET /api/tournaments/{id}` renvoie aussi `flow` (résultats de chaque étape : lobbys, poules, tours du tableau) et `divisions`. Un tableau de ManageComp
      ne montre que trois tours et un seul tableau à la fois : `ManageCompApi.Matches` les fait défiler.
-  Tests contre un vrai ManageComp local : `OE_MANAGECOMP_TEST_URL` et `OE_MANAGECOMP_TEST_KEY` (`TournamentLiveTests`).
+  7. **Bots** : chaque étape dit si ses parties sont complétées par des bots (`PhaseConfig.Bots`, vide : battle royale et équipes tirées au sort oui, le reste non)
+     et combien au plus (`MaxBots`, 0 : sans limite). Le serveur de partie lit `bots` et `maxBots` ; le matchmaking lance toujours les parties de tournoi avec `--fill-bots`.
+  8. **Lobby du tournoi** (`GET /api/tournaments/{id}/lobby?since=<dernier message>`, toutes les 3 s) : le détail (règles, classement provisoire, déroulé), les parties
+     en cours, le tchat (`POST /api/tournaments/{id}/chat`, 200 derniers messages gardés en mémoire, un message toutes les 2 s au plus, réservé aux inscrits et
+     aux observateurs) et les présents (ceux dont le jeu affiche le lobby). Le classement et le déroulé sont gardés 8 s : ManageComp n'est pas interrogé à chaque fois.
+     Le matchmaking rapporte toutes les 3 s ses parties de tournoi (`POST /internal/tournament-live` : manche et lobby ou match, état, joueurs, scores, adresse).
+     L'organisateur ouvre le check-in quand il veut (`POST /api/tournaments/{id}/opencheckin` ; `TournamentConfig.CheckInOpenedAt`).
+     Dans le jeu, `TournamentWatcher` tient la liste à jour (`GET /api/tournaments?rev=N` : « inchangé » si rien n'a été écrit depuis la révision N) et emmène les
+     inscrits au lobby 3 min avant le départ ; en partie, un bandeau prévient 30 s avant (F8 : se désinscrire et rester, F9 : partir tout de suite).
+  9. **Observateurs** (`TournamentConfig.Observers`, 20 au plus, l'organisateur l'est d'office) : depuis le lobby, « Regarder » une partie en cours. Le jeu se connecte
+     au serveur avec `MsgType.Spectate` (protocole 37) ; le serveur vérifie le jeton puis `/internal/tournament/{id}/observer/{compte}`. L'observateur n'a pas de
+     personnage (identifiant 0xFFFF) : il reçoit tous les joueurs de la carte (fréquence selon la distance au joueur suivi), le butin, les tirs, les grenades et
+     la zone autour du joueur suivi, le fil des éliminations et les scores ; `MsgType.Follow` change de joueur suivi. 16 observateurs au plus par partie.
+     Limites : ni l'inventaire ni la visée exacte du joueur suivi ; pas de différé ni de rediffusion.
+  Tests contre un vrai ManageComp local : `OE_MANAGECOMP_TEST_URL` et `OE_MANAGECOMP_TEST_KEY` (`TournamentLiveTests`). Lobby et observateurs : `TournamentLobbyTests`, `SpectatorTests`.
   Les tournois publiés directement dans ManageComp apparaissent aussi dans l'encart du menu (`/api/tournaments`, champ `tournaments`).
 
 ### Classement

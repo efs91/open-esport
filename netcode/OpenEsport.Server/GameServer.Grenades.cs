@@ -315,6 +315,7 @@ namespace OpenEsport.Server
 				if (dx * dx + dz * dz > GrenadeHearingRange * GrenadeHearingRange) continue;
 				q.Peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.ReliableOrdered);
 			}
+			SendNearSpectators(pos, GrenadeHearingRange, DeliveryMethod.ReliableOrdered);
 		}
 
 		/// <summary>Positions des grenades et zones de feu proches de chaque joueur : non fiable, 20 fois par seconde.</summary>
@@ -348,6 +349,7 @@ namespace OpenEsport.Server
 				Messages.WriteGrenades(_tmp, _grenadeSend);
 				q.Peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.Unreliable);
 			}
+			if (any || _grenadesWereSent) SendSpectatorGrenades(_grenadeView, GrenadeViewRange);
 			_grenadesWereSent = any;      // un dernier message vide quand il n'y a plus rien : les clients effacent leurs grenades
 		}
 

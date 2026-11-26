@@ -44,6 +44,8 @@ namespace OpenEsport.Accounts
 	}
 	/// <summary>Équipe de tournoi : le joueur invité ou retiré (nom de compte), l'équipe dont on accepte ou refuse l'invitation (0 = la première).</summary>
 	public sealed class TournamentTeamRequest { public string Login { get; set; } public int Reference { get; set; } }
+	/// <summary>Un message du tchat du lobby d'un tournoi.</summary>
+	public sealed class ChatRequest { public string Text { get; set; } }
 	/// <summary>Modèle de tournoi : enregistrement (identifiant 0 : nouveau) ou changement de visibilité (privé, partagé).</summary>
 	public sealed class TemplateRequest { public long Id { get; set; } public string Name { get; set; } public bool Shared { get; set; } public TournamentConfig Config { get; set; } }
 	public sealed class MatchReportRequest { public long TournamentId { get; set; } public string Key { get; set; } public int ScoreA { get; set; } public int ScoreB { get; set; } }
@@ -196,11 +198,30 @@ namespace OpenEsport.Accounts
 			});
 
 
-			// tournois annoncés (publiés dans ManageComp) : visibles sans compte, même depuis l'écran de connexion
-			app.MapGet("/api/tournaments", (HttpContext ctx) =>
+			// tournois annoncés (publiés dans ManageComp) : visibles sans compte, même depuis l'écran de connexion.
+			// Le jeu les interroge toutes les quelques secondes en donnant la révision qu'il connaît : rien n'a changé, la réponse tient en une ligne.
+			app.MapGet("/api/tournaments", (HttpContext ctx, long? rev) =>
 			{
+				long current = store.TournamentRevision;
+				if (rev == current) return Results.Json(new { unchanged = true, rev = current });
 				string Name(long id) => store.FindById(id)?.Login ?? "?";
-				return Results.Json(new { configured = tournaments.Configured, tournaments = comp.Tournaments(), games = tournaments.List(Account(ctx), Name) });
+				return Results.Json(new { rev = current, configured = tournaments.Configured, tournaments = comp.Tournaments(), games = tournaments.List(Account(ctx), Name) });
+			});
+			// lobby d'un tournoi : règles, déroulé, classement provisoire, parties en cours, tchat, présents
+			app.MapGet("/api/tournaments/{id:long}/lobby", async (HttpContext ctx, long id, long? since) =>
+			{
+				var l = await tournaments.Lobby(id, Account(ctx), since ?? 0, a => store.FindById(a)?.Login ?? "?");
+				return l == null ? Error(404, "Tournoi introuvable.") : Results.Json(l);
+			});
+			app.MapPost("/api/tournaments/{id:long}/chat", async (HttpContext ctx, long id) =>
+			{
+				long me = Account(ctx);
+				if (me == 0) return Error(401, "Session expirée : reconnecte-toi.");
+				ChatRequest req;
+				try { req = await ctx.Request.ReadFromJsonAsync<ChatRequest>() ?? new ChatRequest(); }
+				catch (System.Text.Json.JsonException) { return Error(400, "Message illisible."); }
+				var r = tournaments.Chat(id, me, req.Text);
+				return r.Error != null ? Error(400, r.Error) : Results.Json(new { ok = true });
 			});
 			app.MapGet("/api/tournaments/{id:long}", async (HttpContext ctx, long id) =>
 			{
@@ -260,6 +281,7 @@ namespace OpenEsport.Accounts
 					"leave" => await tournaments.Leave(id, me),
 					"start" => await tournaments.Start(id, me),
 					"checkin" => tournaments.CheckIn(id, me),
+					"opencheckin" => tournaments.OpenCheckIn(id, me),
 					"cancel" => await tournaments.Cancel(id, me),
 					_ => TournamentResult.Fail("Action inconnue."),
 				};
@@ -484,6 +506,22 @@ namespace OpenEsport.Accounts
 				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
 				var game = await tournaments.MatchGame(id, key);
 				return game == null ? Error(404, "Match introuvable ou déjà joué.") : Results.Json(game);
+			});
+			// le matchmaking rapporte les parties de tournoi qu'il fait tourner (lobby des tournois, observateurs)
+			app.MapPost("/internal/tournament-live", async (HttpContext ctx) =>
+			{
+				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
+				LiveReport report;
+				try { report = await ctx.Request.ReadFromJsonAsync<LiveReport>(); }
+				catch (System.Text.Json.JsonException) { return Error(400, "Rapport invalide."); }
+				tournaments.Room.ReportLive(report?.Games);
+				return Results.Json(new { ok = true });
+			});
+			// un serveur de partie de tournoi demande si ce compte peut regarder la partie (observateur ou organisateur)
+			app.MapGet("/internal/tournament/{id:long}/observer/{account:long}", (HttpContext ctx, long id, long account) =>
+			{
+				if (!ServerAuth(ctx)) return Error(403, "Clé de serveur invalide.");
+				return tournaments.IsObserver(store.Tournament(id), account) ? Results.Json(new { ok = true }) : Error(403, "Réservé aux observateurs du tournoi.");
 			});
 			app.MapPost("/internal/tournament-match", async (HttpContext ctx) =>
 			{

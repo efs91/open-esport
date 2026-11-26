@@ -155,6 +155,7 @@ namespace OpenEsport.Server
 			victim.State.Vel = Vec3.Zero;
 			var ev = new ServerEvent { Type = EventType.Downed, A = killer?.Id ?? victim.Id, B = victim.Id, C = weaponId };
 			for (int i = 0; i < _players.Count; i++) SendEvent(_players[i], ev);
+			SendToSpectators(ev);
 		}
 
 		private void EliminateCore(ServerPlayer victim, ServerPlayer killer, byte weaponId, bool announce)
@@ -172,6 +173,7 @@ namespace OpenEsport.Server
 			{
 				var feed = new ServerEvent { Type = EventType.KillFeed, A = credit?.Id ?? victim.Id, B = victim.Id, C = weaponId };      // mort dans la zone : l'auteur est la victime elle-même
 				for (int i = 0; i < _players.Count; i++) SendEvent(_players[i], feed);
+				SendToSpectators(feed);
 			}
 		}
 
@@ -297,6 +299,7 @@ namespace OpenEsport.Server
 				p.Peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, LiteNetLib.DeliveryMethod.ReliableOrdered);
 			}
 			SendModeStates();
+			SendSpectatorStatuses();
 		}
 
 		/// <summary>Réponse à la requête « STATUS » d'un matchmaking : OE|phase|humains|requis|taille d'équipe|places|compte à rebours|temps restant (s)|score 0|score 1.</summary>
@@ -308,6 +311,7 @@ namespace OpenEsport.Server
 		private void FinishMatch()
 		{
 			Log("Partie terminée : les joueurs sont renvoyés au menu");
+			DismissSpectators();
 			foreach (var h in _humans.ToArray())
 			{
 				try { _tmp.Reset(); Messages.WriteReject(_tmp, "Partie terminée"); h.Peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, LiteNetLib.DeliveryMethod.ReliableOrdered); h.Peer.Disconnect(); } catch { }

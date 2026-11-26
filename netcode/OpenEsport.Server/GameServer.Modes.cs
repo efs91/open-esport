@@ -196,6 +196,7 @@ namespace OpenEsport.Server
 			_mode.OnKill(killer, victim, weaponId);
 			var feed = new ServerEvent { Type = EventType.KillFeed, A = killer?.Id ?? victim.Id, B = victim.Id, C = weaponId };
 			for (int i = 0; i < _players.Count; i++) SendEvent(_players[i], feed);
+			SendToSpectators(feed);
 		}
 
 		private void ModalRespawns()

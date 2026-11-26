@@ -260,6 +260,7 @@ namespace OpenEsport.Server
 			StepGrenades(dt);
 			if (_lootDirty) RebuildLootGrid();
 
+			if (_tick % (uint)_m.SnapshotDivisor == 0) SendSpectatorSnapshots();
 			if (_tick % (uint)_m.SnapshotDivisor == 0 && _humans.Count > 0)
 			{
 				// les snapshots sont construits en parallèle (chaque joueur a ses propres tampons), puis envoyés
@@ -304,12 +305,13 @@ namespace OpenEsport.Server
 
 		private void OnConnectionRequest(ConnectionRequest request)
 		{
-			if (_humans.Count >= _m.MaxPlayers || (Phased && Phase == MatchPhase.Over)) { request.Reject(); return; }
+			if (_humans.Count >= _m.MaxPlayers + MaxSpectators || (Phased && Phase == MatchPhase.Over)) { request.Reject(); return; }
 			request.AcceptIfKey(Protocol.ConnectionKey);
 		}
 
 		private void OnPeerDisconnected(NetPeer peer, DisconnectInfo info)
 		{
+			if (peer.Tag is Spectator s) { RemoveSpectator(s); return; }
 			if (peer.Tag is not ServerPlayer p) return;
 			// connexion perdue (pas un départ volontaire) pendant la partie : le personnage attend son joueur
 			bool lost = info.Reason != DisconnectReason.RemoteConnectionClose && info.Reason != DisconnectReason.DisconnectPeerCalled;
@@ -404,8 +406,10 @@ namespace OpenEsport.Server
 				var player = peer.Tag as ServerPlayer;
 				switch (type)
 				{
-					case MsgType.Join: if (player == null) HandleJoin(peer); break;
-					case MsgType.Input: if (player != null) HandleInput(player); break;
+					case MsgType.Join: if (peer.Tag == null) HandleJoin(peer); break;
+					case MsgType.Spectate: if (peer.Tag == null) HandleSpectate(peer); break;
+					case MsgType.Follow: if (peer.Tag is Spectator follower) HandleFollow(follower); break;
+					case MsgType.Input: if (player != null) HandleInput(player); else if (peer.Tag is Spectator watcher) HandleSpectatorAck(watcher); break;
 					case MsgType.Command: if (player != null) HandleCommand(player); break;
 					case MsgType.Ping: if (player != null) HandlePing(player); break;
 				}
@@ -570,6 +574,7 @@ namespace OpenEsport.Server
 			_tmp.Reset();
 			Messages.WriteRoster(_tmp, entries);
 			foreach (var q in _humans) q.Peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.ReliableOrdered);
+			foreach (var s in _spectators) s.Peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.ReliableOrdered);
 		}
 
 		private void SendEvent(ServerPlayer to, ServerEvent e)

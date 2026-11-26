@@ -94,7 +94,8 @@ namespace OpenEsport.Matchmaker
 		private readonly EventBasedNetListener _listener = new EventBasedNetListener();
 		private readonly NetManager _net;
 		private readonly List<GameServerInfo> _servers = new List<GameServerInfo>();
-		private DateTime _nextProbe = DateTime.MinValue, _nextReport = DateTime.MinValue;
+		private DateTime _nextProbe = DateTime.MinValue, _nextReport = DateTime.MinValue, _nextLive = DateTime.MinValue;
+		private bool _liveSent;
 		/// <summary>Service de comptes : le matchmaking lui envoie chaque minute le nombre de joueurs en partie (statistiques d'utilisation). Vide : pas d'envoi.</summary>
 		public string AccountsUrl, AccountsKey;
 		private static readonly System.Net.Http.HttpClient Http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(10) };
@@ -121,6 +122,7 @@ namespace OpenEsport.Matchmaker
 				_net.PollEvents();
 				Probe();
 				ReportPlayers();
+				ReportLive();
 				Thread.Sleep(10);
 			}
 			_net.Stop();
@@ -204,6 +206,36 @@ namespace OpenEsport.Matchmaker
 				try
 				{
 					using var req = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Post, AccountsUrl.TrimEnd('/') + "/internal/telemetry/servers") { Content = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json") };
+					req.Headers.Add("X-Server-Key", AccountsKey);
+					using var _ = await Http.SendAsync(req);
+				}
+				catch (Exception) { }
+			});
+		}
+
+		/// <summary>
+		/// Toutes les 3 s : les parties de tournoi en cours (manche et lobby, ou match ; état, joueurs, scores ; adresse du serveur) au service de comptes,
+		/// qui les montre dans le lobby du tournoi et donne l'adresse aux observateurs. Rien à signaler : un dernier envoi vide, puis plus rien.
+		/// </summary>
+		private void ReportLive()
+		{
+			if (string.IsNullOrEmpty(AccountsUrl) || string.IsNullOrEmpty(AccountsKey) || DateTime.UtcNow < _nextLive) return;
+			_nextLive = DateTime.UtcNow.AddSeconds(3);
+			List<object> games;
+			lock (_servers)
+				games = _servers.Where(s => s.Ready && s.Spec.Tournament > 0).Select(s => (object)new
+				{
+					tournament = s.Spec.Tournament, race = s.Spec.TournamentRace, lobby = s.Spec.TournamentLobby, match = s.Spec.TournamentMatch ?? "", mode = Modes.Get(s.Spec.Mode).Key,
+					host = _opt.PublicHost, port = s.Spec.Port, phase = (int)s.Phase, humans = s.Humans, timeLeft = s.TimeLeft, score0 = s.Score0, score1 = s.Score1,
+				}).ToList();
+			if (games.Count == 0 && !_liveSent) return;
+			_liveSent = games.Count > 0;
+			string json = System.Text.Json.JsonSerializer.Serialize(new { games });
+			_ = System.Threading.Tasks.Task.Run(async () =>
+			{
+				try
+				{
+					using var req = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Post, AccountsUrl.TrimEnd('/') + "/internal/tournament-live") { Content = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json") };
 					req.Headers.Add("X-Server-Key", AccountsKey);
 					using var _ = await Http.SendAsync(req);
 				}

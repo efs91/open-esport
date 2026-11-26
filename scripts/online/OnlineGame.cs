@@ -147,8 +147,9 @@ namespace Openesport.Online
 			_hud.OnLeave = LeaveToMenu;
 			Client.ErrorLog = e => GD.PrintErr("[OnlineGame] erreur de traitement d'un paquet : " + e);
 			// reprise de partie : retenue tant qu'on y joue (voir MatchSettings.TryResume)
-			Client.Joined += () => { MatchSettings.RememberMatch(host, port); _resumeClock = 0f; };
-			Client.Connect(host, port, playerName, CharacterAppearance.Current.Pack(), AccountClient.Token);
+			Client.Joined += () => { if (!Spectating) MatchSettings.RememberMatch(host, port); _resumeClock = 0f; };
+			if (Spectating) Client.ConnectSpectator(host, port, AccountClient.Token);          // observateur d'un tournoi : on regarde sans jouer
+			else Client.Connect(host, port, playerName, CharacterAppearance.Current.Pack(), AccountClient.Token);
 		}
 
 		private float _resumeClock;
@@ -156,7 +157,7 @@ namespace Openesport.Online
 		/// <summary>Reprise de partie : présence notée toutes les 5 s ; oubliée en fin de partie.</summary>
 		private void TrackResume(float delta)
 		{
-			if (Client == null || Client.State != NetState.Playing) return;
+			if (Client == null || Client.State != NetState.Playing || Spectating) return;
 			if (Client.MatchKnown && Client.Match.Phase == MatchPhase.Over) { MatchSettings.ForgetMatch(); return; }
 			_resumeClock -= delta;
 			if (_resumeClock <= 0f) { _resumeClock = 5f; MatchSettings.TouchMatch(); }
@@ -272,7 +273,7 @@ namespace Openesport.Online
 			ShotTracer.WarmUp(_worldRoot);      // compile le shader des balles avant le premier tir
 			GameAudio.Shot(_worldRoot, new Vector3(0, -500f, 0), true, false);   // charge les sons de tir
 			RebuildRoster();
-			_hud.SetStatus(I18n.T("En ligne — équipe {0} — {1} joueurs max", Client.TeamId + 1, Client.MaxPlayers));
+			_hud.SetStatus(Spectating ? I18n.T("Observateur — tu regardes la partie sans y jouer") : I18n.T("En ligne — équipe {0} — {1} joueurs max", Client.TeamId + 1, Client.MaxPlayers));
 		}
 
 		private void RebuildRoster()
@@ -366,6 +367,7 @@ namespace Openesport.Online
 			using (LagTracer.Scope("Client.Poll")) Client.Poll();
 			if (Client.State == NetState.Failed) { _hud.SetStatus(I18n.T("Connexion impossible : {0}", I18n.T(Client.FailReason)), 0f); _disconnectReason ??= Client.FailReason; return; }
 			if (Client.State != NetState.Playing) return;
+			if (Spectating) { SpectatorPhysics(); return; }
 
 			bool inLobby = Client.MatchKnown && Client.Match.Phase == MatchPhase.Lobby;
 			bool active = Input.MouseMode == Input.MouseModeEnum.Captured && Client.Alive && !inLobby;
@@ -732,6 +734,7 @@ namespace Openesport.Online
 			}
 			if (Client == null || Client.State != NetState.Playing || !_hasView) return;
 			float alpha = (float)Engine.GetPhysicsInterpolationFraction();
+			if (Spectating) { SpectatorFrame(alpha, (float)delta); return; }
 			var v = Vec3.Lerp(_prevView, _currView, alpha);
 			// la position du serveur est celle des pieds ; l'origine du joueur est au centre de sa capsule, qui rétrécit accroupi
 			// ou en glissade : à hauteur fixe, la capsule flotterait, le contrôleur se croirait en l'air (« saut ») et couperait la glissade
@@ -1157,7 +1160,7 @@ namespace Openesport.Online
 						_remotes[e.Id] = remote;
 						if (Time.GetTicksMsec() - t0 > 40) GD.Print($"[lag] création d'un joueur : {Time.GetTicksMsec() - t0} ms");
 					}
-					bool friendly = e.Team == Client.TeamId;
+					bool friendly = e.Team == MyTeam;
 					var carrier = Client.Mode.Ride(e.Id, out _);
 					bool insideCabin = carrier != null && !carrier.Hover;
 					bool sameCabin = insideCabin && Array.IndexOf(carrier.Seats, Client.PlayerId) >= 0;
@@ -1252,7 +1255,7 @@ namespace Openesport.Online
 			var mates = new List<MateView>();
 			foreach (var r in Client.Roster)
 			{
-				if (r.Team != Client.TeamId || r.Id == Client.PlayerId) continue;
+				if (r.Team != MyTeam || r.Id == Client.PlayerId || r.Id == _follow) continue;
 				if (!_mateCache.TryGetValue(r.Id, out var mv)) mv = new MateView { Id = r.Id, Name = r.Name, Health = 100, Bot = r.IsBot };
 				mv.Name = r.Name; mv.Appearance ??= r.Appearance;
 				mates.Add(mv);

@@ -259,10 +259,13 @@ namespace Openesport.Menus
 						() => Confirm(g.Teams && captain ? I18n.T("Désinscrire toute ton équipe ?") : I18n.T("Te désinscrire de ce tournoi ?"), () => Act(SocialClient.TournamentActionAsync(id, "leave")))));
 				}
 				if (g.Joined && g.CheckInOpen && !g.CheckedIn) actions.AddChild(Action(I18n.T("✔ Confirmer ma présence"), () => Act(SocialClient.TournamentActionAsync(id, "checkin")), true));
-				if (g.State == "running" && g.Joined) actions.AddChild(Action(g.Duel ? I18n.T("▶ Jouer mon match") : I18n.T("▶ Jouer ma manche"), () => Play(id), true));
+				if ((g.State == "open" || g.State == "running") && (g.Joined || g.IsObserver))
+					actions.AddChild(Action(I18n.T("Rejoindre le lobby du tournoi"), () => TournamentLobbyScreen.Open(this, id), true));
+				if (g.State == "running" && g.Joined) actions.AddChild(Action(g.Duel ? I18n.T("▶ Jouer mon match") : I18n.T("▶ Jouer ma manche"), () => Play(id)));
 				if (g.IsOwner && g.State == "open")
 				{
 					actions.AddChild(Action(I18n.T("Modifier"), () => OpenEditor(d.Config, g.Id)));
+					if (!g.CheckInOpen) actions.AddChild(Action(I18n.T("Ouvrir le check-in maintenant"), () => Confirm(I18n.T("Ouvrir le check-in maintenant ? Les inscrits devront confirmer leur présence, sinon ils seront retirés au départ."), () => Act(SocialClient.TournamentActionAsync(id, "opencheckin")))));
 					actions.AddChild(Action(I18n.T("Lancer maintenant"), () => Confirm(I18n.T("Lancer le tournoi maintenant ? Les inscriptions seront closes."), () => Act(SocialClient.TournamentActionAsync(id, "start")))));
 				}
 				if (g.IsOwner && (g.State == "open" || g.State == "running"))
@@ -418,6 +421,8 @@ namespace Openesport.Menus
 			if (error != null) { onError?.Invoke(I18n.T(error)); return; }
 			if (!GodotObject.IsInstanceValid(from)) return;
 			from.GetTree().Root.GetNodeOrNull("TournamentsScreen")?.QueueFree();
+			from.GetTree().Root.GetNodeOrNull(TournamentLobbyScreen.NodeName)?.QueueFree();
+			TournamentWatcher.ReturnToLobby = id;          // la partie finie, on revient au lobby du tournoi
 			var screen = new MatchmakingScreen { Name = "MatchmakingScreen", Tournament = tag, TournamentTeamSize = teamSize, TournamentMode = mode };
 			screen.OnFound = (h, p) => SocialClient.JoinPartyGame?.Invoke(h, p, mode, teamSize);
 			from.GetTree().Root.AddChild(screen);

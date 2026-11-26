@@ -128,8 +128,16 @@ namespace OpenEsport.Accounts
 			}
 		}
 
+		/// <summary>Compteur des écritures touchant aux tournois : la liste des tournois du jeu n'est recalculée que s'il a bougé (le jeu l'interroge toutes les quelques secondes).</summary>
+		private static long _tournamentRevision = 1;
+		public long TournamentRevision => System.Threading.Interlocked.Read(ref _tournamentRevision);
+		/// <summary>Une modification faite hors de la base (configuration recalculée, joueurs en ligne) doit aussi rafraîchir la liste.</summary>
+		public void TouchTournaments() => System.Threading.Interlocked.Increment(ref _tournamentRevision);
+
 		private static void Exec(SqliteConnection c, string sql, params (string, object)[] args)
 		{
+			if (sql.IndexOf("tournament", StringComparison.OrdinalIgnoreCase) >= 0 && (sql.StartsWith("INSERT", StringComparison.OrdinalIgnoreCase) || sql.StartsWith("UPDATE", StringComparison.OrdinalIgnoreCase) || sql.StartsWith("DELETE", StringComparison.OrdinalIgnoreCase)))
+				System.Threading.Interlocked.Increment(ref _tournamentRevision);
 			using var cmd = c.CreateCommand();
 			cmd.CommandText = sql;
 			foreach (var (n, v) in args) cmd.Parameters.AddWithValue(n, v ?? DBNull.Value);

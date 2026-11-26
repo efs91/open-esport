@@ -11,6 +11,10 @@ namespace OpenEsport.Core
 		Command = 3,
 		/// <summary>Ping : le joueur désigne un endroit à son équipe. Octet de type (0 ici, 1 danger, 2 ennemi, 255 retirer), la position, puis l'adversaire désigné (type 2) ou l'auteur du ping à retirer (type 255) ; 0xFFFF = aucun.</summary>
 		Ping = 4,
+		/// <summary>Observateur d'une partie de tournoi : version du protocole et jeton du compte (le serveur vérifie qu'il est invité à observer). Il ne joue pas.</summary>
+		Spectate = 5,
+		/// <summary>Observateur : joueur à suivre (0xFFFF = le suivant).</summary>
+		Follow = 6,
 		// serveur -> client
 		JoinAccept = 10,
 		JoinReject = 11,
@@ -144,7 +148,7 @@ namespace OpenEsport.Core
 
 	public static class Protocol
 	{
-		public const ushort Version = 36;
+		public const ushort Version = 37;
 		/// <summary>Octets décrivant l'apparence d'un personnage (peau, morphologie, tenue) : le serveur les relaie sans les interpréter.</summary>
 		public const int AppearanceSize = 10;
 		public const string ConnectionKey = "open-esport-1";
@@ -237,6 +241,19 @@ namespace OpenEsport.Core
 			w.WriteString(name, 24);
 			WriteAppearance(w,appearance);
 			w.WriteString(token ?? "", 64);      // jeton de session du compte (le serveur le fait vérifier par le service de comptes)
+		}
+
+		public static void WriteSpectate(BitWriter w, string token)
+		{
+			w.WriteByte((byte)MsgType.Spectate);
+			w.WriteUInt16(Protocol.Version);
+			w.WriteString(token ?? "", 64);
+		}
+
+		public static void WriteFollow(BitWriter w, ushort player)
+		{
+			w.WriteByte((byte)MsgType.Follow);
+			w.WriteUInt16(player);
 		}
 
 		private const int MaxAppearanceSize = Protocol.AppearanceSize + 283;

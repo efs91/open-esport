@@ -68,7 +68,9 @@ namespace OpenEsport.Server
 				return;
 			}
 			if (game.ScoreLimit > 0) _opt.ScoreLimit = game.ScoreLimit;
-			if (game.Bots == false) _opt.FillBots = false;
+			// bots : selon l'étape du tournoi (sans réponse claire, un match se joue entre inscrits et une manche garde le réglage du serveur)
+			_opt.FillBots = _opt.FillBots && (game.Bots ?? string.IsNullOrEmpty(_opt.TournamentMatch));
+			if (_opt.FillBots && game.MaxBots > 0) _opt.MaxBots = game.MaxBots;
 			if (_opt.Mode == GameMode.Duel && DuelRules.TryParsePolicy(game.Loadout, out var policy, out var fixedLoadout)) { _opt.DuelPolicy = policy; _opt.DuelFixed = fixedLoadout; }
 			foreach (var kv in game.Sides) _tournamentSide[kv.Key] = kv.Value;
 			foreach (var kv in game.Groups) _tournamentGroup[kv.Key] = TournamentGroupBase + kv.Value;

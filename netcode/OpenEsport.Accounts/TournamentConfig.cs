@@ -78,6 +78,15 @@ namespace OpenEsport.Accounts
 		public int Down { get; set; } = 1;
 		public string Start { get; set; } = "ranking";
 
+		// ---- bots
+		/// <summary>Des bots complètent les parties de l'étape (vide : battle royale et équipes tirées au sort oui, le reste non — tournois créés avant ce réglage).</summary>
+		public bool? Bots { get; set; }
+		/// <summary>Bots au plus par partie (0 : autant qu'il faut pour remplir la partie).</summary>
+		public int MaxBots { get; set; }
+
+		/// <summary>Des bots complètent-ils les parties de l'étape ?</summary>
+		public bool FillBots => Bots ?? (GameMode == "br" || RandomTeams);
+
 		public bool IsLobby => Kind == "lobby";
 		public bool IsSplit => Kind == "split";
 		/// <summary>L'étape se joue en matchs (poules, tableau, poules de division).</summary>
@@ -110,7 +119,7 @@ namespace OpenEsport.Accounts
 	/// </summary>
 	public sealed class TournamentConfig
 	{
-		public const int MaxPhases = 8, MaxEntriesLimit = 100, MaxRaces = 12, MaxScale = 30, MaxBrPlayers = 30, MaxDmPlayers = 10, MaxDivisions = 8;
+		public const int MaxPhases = 8, MaxObservers = 20, MaxEntriesLimit = 100, MaxRaces = 12, MaxScale = 30, MaxBrPlayers = 30, MaxDmPlayers = 10, MaxDivisions = 8;
 		public static readonly int[] CheckInChoices = { 0, 5, 10, 15, 30, 60 };
 		public static readonly TimeSpan MaxAdvance = TimeSpan.FromDays(365);
 		public static readonly string[] GameModes = { "br", "dm", "1v1", "tdm", "ctf", "sab", "ctl" };
@@ -132,6 +141,10 @@ namespace OpenEsport.Accounts
 		public long RegistrationClosesAt { get; set; }
 		/// <summary>Check-in : les inscrits confirment leur présence dans les N minutes avant le départ ; sans confirmation, ils sont retirés. 0 = pas de check-in.</summary>
 		public int CheckInMinutes { get; set; }
+		/// <summary>Check-in ouvert à la main par l'organisateur (secondes Unix, 0 : non) : il vaut alors quelle que soit l'heure prévue.</summary>
+		public long CheckInOpenedAt { get; set; }
+		/// <summary>Observateurs invités par l'organisateur (noms de compte) : ils suivent le tournoi depuis son lobby et regardent les parties en cours.</summary>
+		public List<string> Observers { get; set; } = new List<string>();
 		public List<PhaseConfig> Phases { get; set; } = new List<PhaseConfig>();
 
 		public bool FixedStart => StartMode == "fixed";
@@ -141,7 +154,14 @@ namespace OpenEsport.Accounts
 		/// <summary>Fin de la période d'inscription effective.</summary>
 		public long ClosesAt => RegistrationClosesAt > 0 ? RegistrationClosesAt : StartAt;
 		/// <summary>Ouverture du check-in (0 : pas de check-in).</summary>
-		public long CheckInOpensAt => FixedStart && CheckInMinutes > 0 ? StartAt - CheckInMinutes * 60L : 0;
+		public long CheckInOpensAt
+		{
+			get
+			{
+				long planned = FixedStart && CheckInMinutes > 0 ? StartAt - CheckInMinutes * 60L : 0;
+				return CheckInOpenedAt > 0 && (planned == 0 || CheckInOpenedAt < planned) ? CheckInOpenedAt : planned;
+			}
+		}
 
 		private static readonly JsonSerializerOptions Json = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 		public string ToJson() => JsonSerializer.Serialize(this, Json);
@@ -177,7 +197,9 @@ namespace OpenEsport.Accounts
 			if (FixedStart && RegistrationClosesAt > StartAt) return "Les inscriptions doivent fermer au plus tard au départ.";
 			if (RegistrationOpensAt > StartAt) return "Les inscriptions doivent ouvrir avant le départ.";
 			if (!CheckInChoices.Contains(CheckInMinutes)) return "Durée de check-in non prévue.";
-			if (!FixedStart) CheckInMinutes = 0;          // départ par l'organisateur : il lance quand tout le monde est là
+			if (!FixedStart) CheckInMinutes = 0;          // départ par l'organisateur : il lance quand tout le monde est là (il peut ouvrir le check-in à la main)
+			Observers = (Observers ?? new List<string>()).Select(o => (o ?? "").Trim()).Where(o => o.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+			if (Observers.Count > MaxObservers) return $"Un tournoi compte au plus {MaxObservers} observateurs.";
 
 			if (Phases == null || Phases.Count == 0) Phases = DefaultPhases(Format);
 			if (Phases.Count > MaxPhases) return $"Un tournoi compte au plus {MaxPhases} phases.";
@@ -217,6 +239,9 @@ namespace OpenEsport.Accounts
 			if (p.Teams != "entry" && p.Teams != "random") return "choix des équipes inconnu.";
 			if (p.RandomTeams && p.TeamSize <= 1) p.Teams = "entry";          // tirage en équipes d'un joueur : chacun pour soi
 			p.Sizes ??= new List<int>();
+			if (p.MaxBots < 0 || p.MaxBots > 99) return "bots par partie : de 0 (sans limite) à 99.";
+			if (p.IsSplit) { p.Bots = null; p.MaxBots = 0; }
+			else if (p.Bots == false) p.MaxBots = 0;
 			if (p.IsSplit || p.Kind == "divisions")
 			{
 				if (p.Divisions < 2 || p.Divisions > MaxDivisions) return $"le nombre de divisions va de 2 à {MaxDivisions}.";

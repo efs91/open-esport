@@ -102,6 +102,20 @@ namespace Openesport.Utils
 			"Le nom d'un modèle doit faire entre 3 et 40 caractères.",
 			"Ce modèle n'existe plus.",
 			"Tu as déjà {0} modèles : supprimes-en un d'abord.",
+
+			// tournois : lobby, observateurs, bots
+			"Observateur inconnu : aucun joueur ne s'appelle « {0} ».",
+			"Un tournoi compte au plus {0} observateurs.",
+			"bots par partie : de 0 (sans limite) à 99.",
+			"Seul l'organisateur ouvre le check-in.",
+			"Le check-in est déjà ouvert.",
+			"Message vide.",
+			"Message illisible.",
+			"Doucement : un message toutes les deux secondes au plus.",
+			"Le tchat est réservé aux inscrits et aux observateurs du tournoi.",
+			"Seules les parties de tournoi se regardent.",
+			"Trop d'observateurs sur cette partie.",
+			"Réservé aux observateurs du tournoi.",
 		};
 	}
 }

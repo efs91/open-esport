@@ -65,7 +65,7 @@ namespace OpenEsport.Accounts
 			var gate = _gates.GetOrAdd(tournament, _ => new SemaphoreSlim(1));
 			await gate.WaitAsync();
 			try { return await body(); }
-			finally { _flows.TryRemove(tournament, out _); gate.Release(); }
+			finally { _flows.TryRemove(tournament, out _); _standings.TryRemove(tournament, out _); gate.Release(); }
 		}
 
 		private static string Date(long unix) => DateTimeOffset.FromUnixTimeSeconds(unix).ToString("dd/MM/yyyy");
@@ -94,8 +94,9 @@ namespace OpenEsport.Accounts
 		{
 			if (!_api.Configured) return TournamentResult.Fail("Les tournois ne sont pas encore ouverts sur ce serveur.");
 			if (cfg == null) return TournamentResult.Fail("Configuration manquante.");
-			string error = cfg.Validate(AccountStore.Now(), creating: true);
+			string error = cfg.Validate(AccountStore.Now(), creating: true) ?? ResolveObservers(cfg, owner);
 			if (error != null) return TournamentResult.Fail(error);
+			cfg.CheckInOpenedAt = 0;
 			if (_store.OpenTournamentsOf(owner) >= MaxOpenPerOwner) return TournamentResult.Fail($"Tu organises déjà {MaxOpenPerOwner} tournois : termine-en un d'abord.");
 			try
 			{
@@ -117,9 +118,50 @@ namespace OpenEsport.Accounts
 			if (Entries(t.Id) > 0 && cfg.TeamSize != old.TeamSize)
 				return TournamentResult.Fail("Il y a déjà des inscrits : la taille des équipes ne peut plus changer.");
 			if (cfg.RegistrationOpensAt <= 0) cfg.RegistrationOpensAt = old.RegistrationOpensAt;
-			string error = cfg.Validate(AccountStore.Now(), creating: cfg.StartAt != old.StartAt);
+			cfg.CheckInOpenedAt = old.CheckInOpenedAt;          // check-in ouvert à la main : il le reste
+			string error = cfg.Validate(AccountStore.Now(), creating: cfg.StartAt != old.StartAt) ?? ResolveObservers(cfg, t.Owner);
 			if (error != null) return TournamentResult.Fail(error);
 			if (Entries(t.Id) > cfg.MaxEntries) return TournamentResult.Fail("Il y a déjà plus d'inscrits que ce maximum.");
+			_store.UpdateTournament(t.Id, cfg);
+			return TournamentResult.Ok(t.Id);
+		}
+
+		/// <summary>Les observateurs invités doivent exister ; leurs noms sont remis tels que le compte les écrit (l'organisateur l'est d'office).</summary>
+		private string ResolveObservers(TournamentConfig cfg, long owner)
+		{
+			var names = new List<string>();
+			foreach (var o in cfg.Observers)
+			{
+				var a = _store.FindByLogin(o);
+				if (a == null) return $"Observateur inconnu : aucun joueur ne s'appelle « {o} ».";
+				if (a.Id != owner && !names.Contains(a.Login, StringComparer.OrdinalIgnoreCase)) names.Add(a.Login);
+			}
+			cfg.Observers = names;
+			return null;
+		}
+
+		/// <summary>L'organisateur, ou un observateur invité : il voit les parties en cours depuis le lobby du tournoi (et des divisions qui en sont issues).</summary>
+		public bool IsObserver(TournamentRow t, long account)
+		{
+			if (t == null || account == 0) return false;
+			if (t.Owner == account) return true;
+			string login = _store.FindById(account)?.Login;
+			if (login == null) return false;
+			var root = t.Parent != 0 ? _store.Tournament(t.Parent) ?? t : t;
+			return ConfigOf(root).Observers.Contains(login, StringComparer.OrdinalIgnoreCase) || ConfigOf(t).Observers.Contains(login, StringComparer.OrdinalIgnoreCase);
+		}
+
+		/// <summary>L'organisateur ouvre le check-in tout de suite, quelle que soit l'heure prévue (même sans check-in prévu : il devient obligatoire).</summary>
+		public TournamentResult OpenCheckIn(long tournament, long who)
+		{
+			var t = _store.Tournament(tournament);
+			if (t == null) return TournamentResult.Fail("Tournoi introuvable.");
+			if (t.Owner != who) return TournamentResult.Fail("Seul l'organisateur ouvre le check-in.");
+			if (t.State != "open") return TournamentResult.Fail("Le tournoi a commencé.");
+			var cfg = ConfigOf(t);
+			long now = AccountStore.Now();
+			if (cfg.CheckInOpensAt > 0 && cfg.CheckInOpensAt <= now) return TournamentResult.Fail("Le check-in est déjà ouvert.");
+			cfg.CheckInOpenedAt = now;
 			_store.UpdateTournament(t.Id, cfg);
 			return TournamentResult.Ok(t.Id);
 		}
@@ -614,7 +656,7 @@ namespace OpenEsport.Accounts
 			}
 			else if (cfg.TeamSize > 1)
 				foreach (var a in accounts) groups[a.ToString()] = refOf[a];
-			return new { race = t.Race, races = t.Races, mode = phase.GameMode, teamSize, scoreLimit = phase.GameMode == "br" ? 0 : phase.MaxScore, bots = phase.GameMode == "br" || phase.RandomTeams, accounts, groups, sides };
+			return new { race = t.Race, races = t.Races, mode = phase.GameMode, teamSize, scoreLimit = phase.GameMode == "br" ? 0 : phase.MaxScore, bots = phase.FillBots, maxBots = phase.FillBots ? phase.MaxBots : 0, accounts, groups, sides };
 		}
 
 		// ------------------------------------------------------------------ matchs (poules, tableau)
@@ -676,7 +718,7 @@ namespace OpenEsport.Accounts
 				return new
 				{
 					a = players.Where(p => p.Reference == m.RefA).Select(p => p.Account).ToList(), b = players.Where(p => p.Reference == m.RefB).Select(p => p.Account).ToList(),
-					scoreLimit = phase.MaxScore, teamSize = phase.PlayTeamSize(cfg.TeamSize), mode = phase.GameMode, loadout = phase.GameMode == "1v1" ? phase.Loadout : "", bots = false,
+					scoreLimit = phase.MaxScore, teamSize = phase.PlayTeamSize(cfg.TeamSize), mode = phase.GameMode, loadout = phase.GameMode == "1v1" ? phase.Loadout : "", bots = phase.FillBots && phase.GameMode != "1v1", maxBots = phase.FillBots ? phase.MaxBots : 0,
 				};
 			}
 			catch (ManageCompException) { return null; }
@@ -764,7 +806,7 @@ namespace OpenEsport.Accounts
 				match = phase != null && phase.IsMatches,
 				startAt = cfg.StartAt, startMode = cfg.StartMode, registrationOpensAt = cfg.RegistrationOpensAt, registrationClosesAt = cfg.ClosesAt, checkInMinutes = cfg.CheckInMinutes,
 				checkInOpensAt = cfg.CheckInOpensAt, minEntries = cfg.MinEntries, maxEntries = cfg.MaxEntries, registrationOpen,
-				owner = login(t.Owner), isOwner = viewer != 0 && t.Owner == viewer,
+				owner = login(t.Owner), isOwner = viewer != 0 && t.Owner == viewer, isObserver = IsObserver(t, viewer),
 				players = entries.Select(e => e.Reference).Distinct().Count(), completeEntries = entries.GroupBy(e => e.Reference).Count(g => g.Count() >= cfg.TeamSize),
 				joined = mine.Account != 0, checkedIn = mine.CheckedIn, myTeam, invitations,
 				phase = t.Phase, phases = cfg.Phases.Count, phaseName = phase == null ? "" : PhaseName(cfg, t.Phase), phaseMode = phase?.GameMode ?? "", phaseKind = phase?.Kind ?? "",
@@ -797,8 +839,12 @@ namespace OpenEsport.Accounts
 			var standings = new List<object>();
 			if ((t.State == "running" || t.State == "done") && _api.Configured)
 			{
-				try { standings = await Standings(t, cfg); }
-				catch (ManageCompException) { }
+				if (_standings.TryGetValue(t.Id, out var known) && known.until > DateTime.UtcNow) standings = known.rows;
+				else
+				{
+					try { standings = await Standings(t, cfg); _standings[t.Id] = (DateTime.UtcNow.AddSeconds(FlowSeconds), standings); }
+					catch (ManageCompException) { }
+				}
 			}
 			var teams = entries.GroupBy(e => e.Reference).Select(g => new
 			{
@@ -833,6 +879,8 @@ namespace OpenEsport.Accounts
 		}
 
 		private readonly ConcurrentDictionary<long, (DateTime until, List<object> flow)> _flows = new ConcurrentDictionary<long, (DateTime, List<object>)>();
+		/// <summary>Classement provisoire gardé quelques secondes, comme le déroulé : le lobby d'un tournoi l'affiche à tous ses joueurs.</summary>
+		private readonly ConcurrentDictionary<long, (DateTime until, List<object> rows)> _standings = new ConcurrentDictionary<long, (DateTime, List<object>)>();
 		private const double FlowSeconds = 8;
 
 		/// <summary>
@@ -925,7 +973,7 @@ namespace OpenEsport.Accounts
 			string Score(string text) => !text.StartsWith("V", StringComparison.Ordinal) ? text : text.Length > 1 ? text.Substring(1) : p.MatchScore.ToString();
 			object Json(DuelMatch m) => new
 			{
-				a = m.NameA, b = m.NameB, refA = m.RefA, refB = m.RefB, scoreA = Score(m.ScoreA), scoreB = Score(m.ScoreB), winner = m.Winner,
+				key = m.Key, a = m.NameA, b = m.NameB, refA = m.RefA, refB = m.RefB, scoreA = Score(m.ScoreA), scoreB = Score(m.ScoreB), winner = m.Winner,
 				games = games.TryGetValue((phase, m.Key), out var g) ? g : new List<string>(),
 			};
 			if (poolRows != null)
@@ -954,6 +1002,52 @@ namespace OpenEsport.Accounts
 				catch (Exception e) when (e is KeyNotFoundException || e is InvalidOperationException) { }
 			}
 			return list;
+		}
+
+		// ------------------------------------------------------------------ lobby du tournoi
+
+		/// <summary>Tchat, joueurs présents et parties en cours des lobbys de tournoi.</summary>
+		public readonly TournamentLobby Room = new TournamentLobby();
+
+		/// <summary>Peut écrire dans le tchat du lobby : un inscrit, un observateur, l'organisateur.</summary>
+		private bool Member(TournamentRow t, long account) => account != 0 && (IsObserver(t, account) || _store.TournamentEntries(t.Id).Any(e => e.Account == account));
+
+		/// <summary>
+		/// Le lobby d'un tournoi : le détail (règles, inscrits, classement provisoire, déroulé), les parties en cours (adresse des serveurs pour les observateurs),
+		/// le tchat depuis le message <paramref name="since"/>, les joueurs présents et les observateurs. Le spectateur du lobby y compte comme présent.
+		/// </summary>
+		public async Task<object> Lobby(long tournament, long viewer, long since, Func<long, string> login)
+		{
+			var t = _store.Tournament(tournament);
+			if (t == null) return null;
+			Room.Seen(t.Id, viewer);
+			var details = await Details(tournament, viewer, login);
+			bool observer = IsObserver(t, viewer);
+			var root = t.Parent != 0 ? _store.Tournament(t.Parent) ?? t : t;
+			var observers = new List<string> { login(t.Owner) };
+			observers.AddRange(ConfigOf(root).Observers.Concat(ConfigOf(t).Observers).Where(o => !observers.Contains(o, StringComparer.OrdinalIgnoreCase)).Distinct(StringComparer.OrdinalIgnoreCase));
+			var live = Room.Live(t.Id).OrderBy(g => g.Match).ThenBy(g => g.Race).ThenBy(g => g.Lobby).Select(g => new
+			{
+				race = g.Race, lobby = g.Lobby, match = g.Match, mode = g.Mode, phase = g.Phase, humans = g.Humans, timeLeft = g.TimeLeft, score0 = g.Score0, score1 = g.Score1,
+				host = observer ? g.Host : "", port = observer ? g.Port : 0,
+			}).ToList();
+			return new
+			{
+				details, live, observer, canChat = Member(t, viewer),
+				chat = Room.Lines(t.Id, since).Select(l => new { id = l.Id, at = l.At, login = l.Login, text = l.Text }).ToList(),
+				present = Room.Present(t.Id).Select(login).OrderBy(n => n, StringComparer.OrdinalIgnoreCase).ToList(),
+				observers,
+			};
+		}
+
+		/// <summary>Un message dans le tchat du lobby.</summary>
+		public TournamentResult Chat(long tournament, long account, string text)
+		{
+			var t = _store.Tournament(tournament);
+			if (t == null) return TournamentResult.Fail("Tournoi introuvable.");
+			if (!Member(t, account)) return TournamentResult.Fail("Le tchat est réservé aux inscrits et aux observateurs du tournoi.");
+			string error = Room.Post(t.Id, account, Login(account), text);
+			return error == null ? TournamentResult.Ok(t.Id) : TournamentResult.Fail(error);
 		}
 
 		public object List(long viewer, Func<long, string> login) => _store.Tournaments().Select(t => Summary(t, viewer, login, _store.TournamentEntries(t.Id), _store.TournamentInvites(t.Id))).ToList();

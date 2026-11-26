@@ -301,7 +301,7 @@ namespace Openesport.Menus
 				sizes.AddChild(chip);
 			}
 			Row(f.TeamSize > 1 ? I18n.T(Registration[f.TeamSize - 1]) : I18n.T("Inscription"), sizes);
-			Row(I18n.T("Maximum"), Number(2, 100, f.MaxEntries, v => { f.MaxEntries = v; if (f.MinEntries > v) f.MinEntries = v; }));
+			Row(f.TeamSize > 1 ? I18n.T("Équipes au maximum") : I18n.T("Joueurs au maximum"), Number(2, 100, f.MaxEntries, v => { f.MaxEntries = v; if (f.MinEntries > v) f.MinEntries = v; }));
 			if (_editing == 0)
 			{
 				var me = new CheckButton { Text = f.TeamSize > 1 ? I18n.T("Je participe aussi (je serai chef de mon équipe)") : I18n.T("Je participe aussi"), ButtonPressed = _participate };
@@ -311,6 +311,7 @@ namespace Openesport.Menus
 				me.Toggled += on => _participate = on;
 				_settings.AddChild(me);
 			}
+			BuildObservers();
 
 			BuildAdd();
 
@@ -328,6 +329,40 @@ namespace Openesport.Menus
 			_closesField = DateField(f.RegistrationClosesAt, true, I18n.T("au départ"));
 			Row(I18n.T("Clôture des inscriptions"), _closesField);
 			_settings.AddChild(Muted(I18n.T("Format des dates : JJ/MM/AAAA HH:MM (heure de ton ordinateur). Inscriptions possibles jusqu'à un an à l'avance. À heure fixe, le tournoi est annulé si le minimum d'inscrits présents n'est pas atteint ; le check-in retire les inscrits qui n'ont pas confirmé leur présence.")));
+		}
+
+		/// <summary>Observateurs : des joueurs du jeu (inscrits ou non) qui suivent le tournoi depuis son lobby et regardent les parties en cours.</summary>
+		private void BuildObservers()
+		{
+			var f = _form;
+			f.Observers ??= new List<string>();
+			var row = new HFlowContainer();
+			row.AddThemeConstantOverride("h_separation", 6);
+			row.AddThemeConstantOverride("v_separation", 6);
+			foreach (var o in f.Observers)
+			{
+				string who = o;
+				row.AddChild(TournamentFlow.Chip(who + "  ✕", true, MenuStyle.Cyan, () => { f.Observers.Remove(who); Refresh(); }, 13));
+			}
+			var field = new LineEdit { PlaceholderText = I18n.T("Nom d'un joueur"), MaxLength = 20, CustomMinimumSize = new Vector2(150, 0) };
+			Compact(field);
+			field.AddThemeFontSizeOverride("font_size", 14);
+			void Add()
+			{
+				string n = field.Text.Trim();
+				if (n.Length == 0 || f.Observers.Contains(n, StringComparer.OrdinalIgnoreCase) || f.Observers.Count >= 20) return;
+				f.Observers.Add(n);
+				Refresh();
+			}
+			field.TextSubmitted += _ => Add();
+			row.AddChild(field);
+			row.AddChild(TournamentFlow.Chip("+ " + I18n.T("Inviter"), false, MenuStyle.Cyan, Add, 13));
+			var box = new VBoxContainer();
+			box.AddThemeConstantOverride("separation", 4);
+			box.AddChild(TournamentFlow.Line(I18n.T("Observateurs"), 15));
+			box.AddChild(row);
+			box.AddChild(Muted(I18n.T("Ils suivent le tournoi depuis son lobby et regardent les parties en cours, sans jouer (ils peuvent aussi être inscrits). Tu l'es d'office.")));
+			_settings.AddChild(box);
 		}
 
 		/// <summary>Reprend les dates saisies avant de reconstruire la page.</summary>
@@ -496,6 +531,12 @@ namespace Openesport.Menus
 					Row(I18n.T("Montées"), Number(0, 20, p.Up, v => p.Up = v));
 					Row(I18n.T("Descentes"), Number(0, 20, p.Down, v => p.Down = v));
 				}
+			}
+			// bots : la partie est complétée (ou non), avec un maximum par partie
+			if (p.Mode != "1v1")
+			{
+				Row(I18n.T("Bots"), Options(new[] { I18n.T("Sans bots (entre inscrits)"), I18n.T("Compléter avec des bots") }, p.FillBots ? 1 : 0, j => { p.Bots = j == 1; if (j == 0) p.MaxBots = 0; Refresh(); }));
+				if (p.FillBots) Row(I18n.T("Bots au plus par partie"), Number(0, 99, p.MaxBots, v => p.MaxBots = v, " " + I18n.T("(0 = sans limite)")));
 			}
 			if (!last)
 			{

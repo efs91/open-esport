@@ -187,6 +187,8 @@ namespace Openesport.Online
 		}
 
 		/// <summary>Serveur attribué par le matchmaking pour la partie qui va démarrer.</summary>
+		/// <summary>Prochaine partie rejointe en observateur de ce tournoi (0 : on joue). Remis à zéro au lancement de la partie.</summary>
+		public static long SpectateTournament;
 		public static string AssignedHost;
 		public static int AssignedPort;
 	}

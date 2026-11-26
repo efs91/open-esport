@@ -44,7 +44,7 @@ namespace Openesport.Online
 		/// <summary>Menu de choix ouvert tout seul pendant l'étape de choix (tant que je n'ai pas validé), et annonces des manches.</summary>
 		private void UpdateDuel(ModeState m, MatchPhase phase)
 		{
-			bool picking = phase == MatchPhase.Playing && m.DuelPolicy == DuelPolicy.Choice && (DuelStage)m.Stage == DuelStage.Pick && !m.Picked;
+			bool picking = !Spectator && phase == MatchPhase.Playing && m.DuelPolicy == DuelPolicy.Choice && (DuelStage)m.Stage == DuelStage.Pick && !m.Picked;
 			if (picking && !(MenuOpen && _menuKind == "duel")) ToggleMenu("duel");
 			else if (!picking && MenuOpen && _menuKind == "duel") CloseMenu();
 			else if (picking && (m.Loadout.Pack() != _duelPrev.Loadout.Pack() || m.TimeLeft != _duelPrev.TimeLeft)) Rebuild();
@@ -63,45 +63,58 @@ namespace Openesport.Online
 					m.RoundWinner == 255 ? Gold : m.RoundWinner == m.MySide ? Green : Red, 2.5f, true);
 		}
 
-		/// <summary>Écran de choix : une ligne par catégorie (arme, viseur, grenade, soin), l'option retenue cochée, puis « Valider ».</summary>
+		/// <summary>
+		/// Écran de choix : une ligne par catégorie (arme, viseur, grenade, soin) avec son nom à gauche, l'option retenue cochée, puis « Valider ».
+		/// Compact : il tient en entier dans l'écran (1152 × 648 de référence), bouton « Valider » compris ; au besoin, la liste défile.
+		/// </summary>
 		private void BuildDuelPick()
 		{
 			var l = _last.Loadout;
 			var title = new Label { Text = I18n.T("Choisis ton équipement"), HorizontalAlignment = HorizontalAlignment.Center };
-			title.AddThemeFontSizeOverride("font_size", 26);
+			title.AddThemeFontSizeOverride("font_size", 22);
 			_menuBox.AddChild(title);
 			var info = new Label { Text = I18n.T("Tu le gardes pour toute la partie. Sans validation à temps, un équipement est tiré au hasard ({0} s).", _last.TimeLeft), AutowrapMode = TextServer.AutowrapMode.WordSmart, HorizontalAlignment = HorizontalAlignment.Center };
 			info.AddThemeColorOverride("font_color", new Color(0.7f, 0.73f, 0.78f));
+			info.AddThemeFontSizeOverride("font_size", 14);
 			_menuBox.AddChild(info);
-			Row(I18n.T("ARME 1"), DuelRules.Weapons, l.Weapon, 0);
-			Row(I18n.T("VISEUR DE L'ARME 1"), DuelRules.Optics, l.Optic, 1);
-			Row(I18n.T("ARME 2"), DuelRules.Weapons, l.Weapon2, 4);
-			Row(I18n.T("VISEUR DE L'ARME 2"), DuelRules.Optics, l.Optic2, 5);
-			Row(I18n.T("GRENADE"), DuelRules.Grenades, l.Grenade, 2);
-			Row(I18n.T("SOIN"), DuelRules.Heals, l.Heal, 3);
-			var ok = new Button { Text = I18n.T("Valider"), CustomMinimumSize = new Vector2(0, 48) };
-			ok.AddThemeFontSizeOverride("font_size", 20);
+			var scroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
+			var rows = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			rows.AddThemeConstantOverride("separation", 6);
+			scroll.AddChild(rows);
+			_menuBox.AddChild(scroll);
+			Row(rows, I18n.T("ARME 1"), DuelRules.Weapons, l.Weapon, 0);
+			Row(rows, I18n.T("VISEUR DE L'ARME 1"), DuelRules.Optics, l.Optic, 1);
+			Row(rows, I18n.T("ARME 2"), DuelRules.Weapons, l.Weapon2, 4);
+			Row(rows, I18n.T("VISEUR DE L'ARME 2"), DuelRules.Optics, l.Optic2, 5);
+			Row(rows, I18n.T("GRENADE"), DuelRules.Grenades, l.Grenade, 2);
+			Row(rows, I18n.T("SOIN"), DuelRules.Heals, l.Heal, 3);
+			var ok = new Button { Text = I18n.T("Valider"), CustomMinimumSize = new Vector2(0, 42) };
+			ok.AddThemeFontSizeOverride("font_size", 19);
 			ok.Pressed += () => { Send?.Invoke(CommandType.DuelPick, DuelRules.ConfirmPick); _last.Picked = true; CloseMenu(); };
 			_menuBox.AddChild(ok);
 		}
 
-		private void Row(string name, DuelChoice[] list, int selected, int category)
+		private void Row(VBoxContainer rows, string name, DuelChoice[] list, int selected, int category)
 		{
-			var label = new Label { Text = name };
-			label.AddThemeFontSizeOverride("font_size", 15);
+			var row = new HBoxContainer();
+			row.AddThemeConstantOverride("separation", 10);
+			var label = new Label { Text = name, CustomMinimumSize = new Vector2(150, 0), AutowrapMode = TextServer.AutowrapMode.WordSmart, VerticalAlignment = VerticalAlignment.Center };
+			label.AddThemeFontSizeOverride("font_size", 13);
 			label.AddThemeColorOverride("font_color", new Color(0.7f, 0.73f, 0.78f));
-			_menuBox.AddChild(label);
-			var flow = new HFlowContainer();
-			flow.AddThemeConstantOverride("h_separation", 6);
-			flow.AddThemeConstantOverride("v_separation", 6);
+			row.AddChild(label);
+			var flow = new HFlowContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			flow.AddThemeConstantOverride("h_separation", 5);
+			flow.AddThemeConstantOverride("v_separation", 5);
 			for (int i = 0; i < list.Length; i++)
 			{
 				int index = i;
-				var b = new Button { Text = (i == selected ? "✔  " : "") + I18n.T(list[i].Label), ToggleMode = true, ButtonPressed = i == selected, FocusMode = Control.FocusModeEnum.None, CustomMinimumSize = new Vector2(140, 34) };
+				var b = new Button { Text = (i == selected ? "✔ " : "") + I18n.T(list[i].Label), ToggleMode = true, ButtonPressed = i == selected, FocusMode = Control.FocusModeEnum.None, CustomMinimumSize = new Vector2(112, 30) };
+				b.AddThemeFontSizeOverride("font_size", 14);
 				b.Pressed += () => { Send?.Invoke(CommandType.DuelPick, DuelRules.PickArg(category, index)); };
 				flow.AddChild(b);
 			}
-			_menuBox.AddChild(flow);
+			row.AddChild(flow);
+			rows.AddChild(row);
 		}
 	}
 }

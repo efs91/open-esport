@@ -41,6 +41,9 @@ public partial class MenuManager : Control
         AddChild(_accountLabel);
         _social = new Openesport.Menus.MenuSocial { Name = "MenuSocial" };
         AddChild(_social);
+        // tournois : liste tenue à jour et passage obligatoire au lobby 3 min avant le départ, en menu comme en partie
+        if (GetTree().Root.GetNodeOrNull("TournamentWatcher") == null)
+            GetTree().Root.CallDeferred(Node.MethodName.AddChild, new Openesport.Menus.TournamentWatcher { Name = "TournamentWatcher" });
         // sous le nom du compte : classement général, dernière partie et lien vers le profil complet
         _accountCard = new Openesport.Menus.MenuAccountCard { Name = "MenuAccountCard", OpenProfile = () => ExecuteAction("open_character_panel") };
         AddChild(_accountCard);

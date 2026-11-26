@@ -77,6 +77,7 @@ namespace OpenEsport.Server
 		{
 			if (_zone == null) return;
 			var st = _zone.ToState(_tick);
+			foreach (var s in _spectators) { _tmp.Reset(); st.Write(_tmp); s.Peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, LiteNetLib.DeliveryMethod.ReliableOrdered); }
 			for (int i = 0; i < _humans.Count; i++)
 			{
 				var p = _humans[i];

@@ -43,6 +43,8 @@ namespace OpenEsport.Core
 		private bool _clockInit;
 
 		public NetState State { get; private set; } = NetState.Disconnected;
+		/// <summary>Observateur d'une partie de tournoi : il ne joue pas, il suit un joueur (voir <see cref="Follow"/>).</summary>
+		public bool Spectating { get; private set; }
 		public string FailReason { get; private set; } = "";
 
 		// session
@@ -156,6 +158,34 @@ namespace OpenEsport.Core
 			_listener.NetworkReceiveEvent += OnReceive;
 		}
 
+		/// <summary>Rejoint une partie de tournoi en observateur (organisateur ou observateur invité) : le serveur vérifie le compte du jeton.</summary>
+		public void ConnectSpectator(string host, int port, string token)
+		{
+			Spectating = true;
+			Connect(host, port, "", null, token);
+		}
+
+		/// <summary>Observateur : le joueur à suivre (0xFFFF : le suivant). Le serveur envoie alors ce qui se passe autour de lui.</summary>
+		public void Follow(ushort player)
+		{
+			if (State != NetState.Playing || !Spectating) return;
+			_writer.Reset();
+			Messages.WriteFollow(_writer, player);
+			_peer?.Send(_writer.Buffer, 0, _writer.ByteLength, DeliveryMethod.ReliableOrdered);
+		}
+
+		/// <summary>Observateur : un tick sans commande, qui acquitte les snapshots reçus et avance l'horloge d'affichage.</summary>
+		public void TickSpectator()
+		{
+			if (State != NetState.Playing) return;
+			_pending.Clear();
+			_writer.Reset();
+			Messages.WriteInputs(_writer, _lastSnapSeq, _recvBits, _pending);
+			_peer?.Send(_writer.Buffer, 0, _writer.ByteLength, DeliveryMethod.Sequenced);
+			ClientTick++;
+			AdvanceRenderClock();
+		}
+
 		public void Connect(string host, int port, string name, byte[] appearance = null, string token = null)
 		{
 			_joinToken = token;
@@ -181,7 +211,8 @@ namespace OpenEsport.Core
 		{
 			State = NetState.Joining;
 			_writer.Reset();
-			Messages.WriteJoin(_writer, _joinName, _joinAppearance, _joinToken);
+			if (Spectating) Messages.WriteSpectate(_writer, _joinToken);
+			else Messages.WriteJoin(_writer, _joinName, _joinAppearance, _joinToken);
 			peer.Send(_writer.Buffer, 0, _writer.ByteLength, DeliveryMethod.ReliableOrdered);
 		}
 
@@ -268,7 +299,7 @@ namespace OpenEsport.Core
 			TeamSize = m.TeamSize;
 			MaxPlayers = m.MaxPlayers;
 			Quant = new Quantizer(m.MinX, m.MinY, m.MinZ);
-			Predicted = Authoritative = m.Spawn;
+			Predicted = Authoritative = Spectating ? default : m.Spawn;          // l'observateur n'a pas de personnage
 			_latestServerTick = m.ServerTick;
 			_latestArrival = _clock.Elapsed.TotalSeconds;
 			_renderTick = m.ServerTick;
@@ -442,6 +473,7 @@ namespace OpenEsport.Core
 		public void Tick(float forward, float strafe, Buttons buttons, int slot, float yaw, float pitch)
 		{
 			if (State != NetState.Playing) return;
+			if (Spectating) { TickSpectator(); return; }          // un observateur n'envoie pas de commande
 
 			var input = PlayerInput.Create(_nextSeq++, forward, strafe, buttons, slot, yaw, pitch, ViewTick, InteractTarget);
 			if (Alive && Mode.Ride(PlayerId, out _) == null)

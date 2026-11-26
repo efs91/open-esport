@@ -148,9 +148,12 @@ namespace Openesport.Online
 		private static string Clock(int s) => $"{Math.Max(0, s) / 60}:{Math.Max(0, s) % 60:00}";
 		private string Side(int team) => $"[color=#{Hex(team == 0 ? Blue : Red)}]{(team == 0 ? I18n.T("Bleus") : I18n.T("Rouges"))}[/color]";
 
+		/// <summary>Observateur : on montre les scores et les annonces, jamais les menus (classe, boutique, choix de l'équipement).</summary>
+		public bool Spectator;
+
 		public override void _Input(InputEvent e)
 		{
-			if (e is not InputEventKey k || !k.Pressed || k.Echo) return;
+			if (Spectator || e is not InputEventKey k || !k.Pressed || k.Echo) return;
 			if (_last.Mode == GameMode.BattleRoyale || _phase == MatchPhase.Over) return;
 			if (k.Keycode == Key.B && _last.Mode == GameMode.Sabotage && _last.CanBuy) { ToggleMenu("buy"); GetViewport().SetInputAsHandled(); }
 			else if (k.Keycode == Key.C && HasClasses(_last.Mode)) { ToggleMenu("class"); GetViewport().SetInputAsHandled(); }
@@ -176,7 +179,7 @@ namespace Openesport.Online
 		/// <summary>Choix de la classe : proposé à l'arrivée dans la partie et à chaque mort ; refermé tout seul à la réapparition s'il s'était ouvert seul.</summary>
 		private void OfferClass(bool alive, MatchPhase phase)
 		{
-			if (!HasClasses(_last.Mode) || phase == MatchPhase.Over) { _wasAlive = alive; return; }
+			if (Spectator || !HasClasses(_last.Mode) || phase == MatchPhase.Over) { _wasAlive = alive; return; }
 			if (!_classOffered) { _classOffered = true; if (!MenuOpen) { ToggleMenu("class"); _autoMenu = true; } }
 			else if (_wasAlive && !alive && !MenuOpen) { ToggleMenu("class"); _autoMenu = true; }
 			else if (!_wasAlive && alive && _autoMenu && MenuOpen && _menuKind == "class") { CloseMenu(); }
@@ -206,7 +209,7 @@ namespace Openesport.Online
 			bool buy = _menuKind == "buy";
 			if (_menuKind == "duel")
 			{
-				_menu.OffsetLeft = -400; _menu.OffsetRight = 400; _menu.OffsetTop = -340; _menu.OffsetBottom = 340;
+				_menu.OffsetLeft = -470; _menu.OffsetRight = 470; _menu.OffsetTop = -300; _menu.OffsetBottom = 300;
 				BuildDuelPick();
 				return;
 			}

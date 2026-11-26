@@ -132,8 +132,10 @@ namespace Openesport.Modules
 			// pas de robot local : les autres joueurs viennent du serveur
 			_sceneManager.CurrentScene.GetNodeOrNull("AI_player")?.QueueFree();
 
-			Openesport.Utils.Telemetry.GameStarted($"{OpenEsport.Core.Modes.Get(Openesport.Online.MatchSettings.Mode).Key}:{Openesport.Online.MatchSettings.TeamSize}");
-			var game = new Openesport.Online.OnlineGame { Name = "OnlineGame" };
+			if (Openesport.Online.MatchSettings.SpectateTournament == 0) Openesport.Utils.Telemetry.GameStarted($"{OpenEsport.Core.Modes.Get(Openesport.Online.MatchSettings.Mode).Key}:{Openesport.Online.MatchSettings.TeamSize}");
+			long spectate = Openesport.Online.MatchSettings.SpectateTournament;
+			Openesport.Online.MatchSettings.SpectateTournament = 0;
+			var game = new Openesport.Online.OnlineGame { Name = "OnlineGame", Spectating = spectate != 0, SpectatedTournament = spectate };      // observateur : regarde sans jouer
 			_sceneManager.CurrentScene.AddChild(game);
 			game.Begin(player, _sceneManager.CurrentScene, host, port, name, Openesport.Online.OnlineGame.WorldPathFor(_mapPath));
 			_logManager.Info($"[{ModuleName}] Partie en ligne : {host}:{port} en tant que {name}");

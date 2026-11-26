@@ -84,6 +84,8 @@ namespace OpenEsport.Server
 			public int TeamSize = 1, ScoreLimit;
 			/// <summary>Des bots complètent la partie (non : on joue entre inscrits ; null : réglage du serveur).</summary>
 			public bool? Bots;
+			/// <summary>Bots au plus dans la partie (0 : sans limite).</summary>
+			public int MaxBots;
 			public Dictionary<long, long> Groups = new Dictionary<long, long>();
 			public Dictionary<long, int> Sides = new Dictionary<long, int>();
 
@@ -96,6 +98,7 @@ namespace OpenEsport.Server
 				if (root.TryGetProperty("teamSize", out var ts) && ts.ValueKind == JsonValueKind.Number) g.TeamSize = ts.GetInt32();
 				if (root.TryGetProperty("scoreLimit", out var sl) && sl.ValueKind == JsonValueKind.Number) g.ScoreLimit = sl.GetInt32();
 				if (root.TryGetProperty("bots", out var bots) && bots.ValueKind is JsonValueKind.True or JsonValueKind.False) g.Bots = bots.GetBoolean();
+				if (root.TryGetProperty("maxBots", out var mb) && mb.ValueKind == JsonValueKind.Number) g.MaxBots = mb.GetInt32();
 				if (root.TryGetProperty("accounts", out var acc)) foreach (var a in acc.EnumerateArray()) g.Accounts.Add(a.GetInt64());
 				// match à deux camps : « a » et « b »
 				if (root.TryGetProperty("a", out var sa)) foreach (var a in sa.EnumerateArray()) { g.Sides[a.GetInt64()] = 0; g.Accounts.Add(a.GetInt64()); }
@@ -120,6 +123,19 @@ namespace OpenEsport.Server
 				return TournamentGame.Parse(JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement);
 			}
 			catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException || e is JsonException) { Log($"Tournoi : service de comptes injoignable ({e.Message})"); return null; }
+		}
+
+		/// <summary>Ce compte peut-il regarder les parties de ce tournoi (organisateur ou observateur invité) ? Faux si le service ne répond pas.</summary>
+		public async Task<bool> CanObserveAsync(long tournament, long account)
+		{
+			try
+			{
+				using var req = new HttpRequestMessage(HttpMethod.Get, $"{_url}/internal/tournament/{tournament}/observer/{account}");
+				req.Headers.Add("X-Server-Key", _key);
+				using var res = await _http.SendAsync(req);
+				return res.IsSuccessStatusCode;
+			}
+			catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException) { Log($"Observateur : service de comptes injoignable ({e.Message})"); return false; }
 		}
 
 		/// <summary>Envoie les places d'une manche de tournoi (même principe que le rapport de partie : plusieurs essais).</summary>

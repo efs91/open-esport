@@ -25,7 +25,7 @@ namespace OpenEsport.Matchmaker
 				"--exit-when-over",
 				"--stats", "3600",
 			};
-			if (string.IsNullOrEmpty(s.TournamentMatch)) a.Add("--fill-bots");        // un match de tournoi se joue sans bots ; pour une manche, le service de comptes le dit au serveur
+			a.Add("--fill-bots");        // partie de tournoi : le service de comptes dit au serveur si l'étape accepte des bots (et combien)
 			if (!string.IsNullOrEmpty(s.Zones)) { a.Add("--zones"); a.Add(s.Zones); }
 			if (s.Tournament > 0) { a.Add("--tournament"); a.Add(s.Tournament.ToString(CultureInfo.InvariantCulture)); a.Add("--race"); a.Add(s.TournamentRace.ToString(CultureInfo.InvariantCulture)); a.Add("--lobby"); a.Add(s.TournamentLobby.ToString(CultureInfo.InvariantCulture)); if (!string.IsNullOrEmpty(s.TournamentMatch)) { a.Add("--match"); a.Add(s.TournamentMatch); } }
 			if (!proceduralWorld) { a.Add("--world"); a.Add(worldDir.TrimEnd('/', (char)92) + "/" + Modes.Get(s.Mode).MapFile); }

@@ -53,6 +53,8 @@ namespace Openesport.Online
 		public bool Joined { get; set; }
 		public bool CheckedIn { get; set; }
 		public bool IsOwner { get; set; }
+		/// <summary>Organisateur ou observateur invité : il regarde les parties en cours depuis le lobby du tournoi.</summary>
+		public bool IsObserver { get; set; }
 		public int Phase { get; set; }
 		public int Phases { get; set; }
 		public string PhaseName { get; set; }
@@ -127,6 +129,12 @@ namespace Openesport.Online
 		public int Qualified { get; set; }
 		public int MaxScore { get; set; } = 10;
 		public string Places { get; set; } = "third";
+		/// <summary>Des bots complètent les parties de l'étape (vide : battle royale et équipes tirées au sort oui, le reste non) ; au plus <see cref="MaxBots"/> par partie (0 : sans limite).</summary>
+		public bool? Bots { get; set; }
+		public int MaxBots { get; set; }
+
+		/// <summary>Des bots complètent-ils les parties ? (même règle que le service)</summary>
+		[System.Text.Json.Serialization.JsonIgnore] public bool FillBots => Bots ?? (Mode == "br" || Teams == "random");
 
 		public PhaseConfigDto Copy() => JsonSerializer.Deserialize<PhaseConfigDto>(JsonSerializer.Serialize(this));
 	}
@@ -145,6 +153,8 @@ namespace Openesport.Online
 		public long RegistrationOpensAt { get; set; }
 		public long RegistrationClosesAt { get; set; }
 		public int CheckInMinutes { get; set; } = 15;
+		/// <summary>Observateurs invités (noms de compte) : ils suivent le tournoi depuis son lobby et regardent les parties en cours.</summary>
+		public List<string> Observers { get; set; } = new List<string>();
 		public List<PhaseConfigDto> Phases { get; set; } = new List<PhaseConfigDto>();
 
 		/// <summary>Une copie indépendante : modifier un modèle choisi ne change pas le modèle.</summary>
@@ -173,6 +183,8 @@ namespace Openesport.Online
 	public sealed class FlowRowDto { public int Place { get; set; } public string Name { get; set; } public int Reference { get; set; } public int Points { get; set; } public string Diff { get; set; } public List<FlowRaceDto> Races { get; set; } = new List<FlowRaceDto>(); }
 	public sealed class FlowMatchDto
 	{
+		/// <summary>Clé du match dans ManageComp (p0m2, t1n3) : retrouve le match d'une partie en cours.</summary>
+		public string Key { get; set; } = "";
 		public string A { get; set; }
 		public string B { get; set; }
 		public int RefA { get; set; }
@@ -212,8 +224,40 @@ namespace Openesport.Online
 		public List<TournamentDivisionDto> Divisions { get; set; } = new List<TournamentDivisionDto>();
 		public List<FlowPhaseDto> Flow { get; set; } = new List<FlowPhaseDto>();
 	}
+	/// <summary>Une partie de tournoi en cours (rapportée par le matchmaking) : manche et lobby, ou match ; adresse du serveur pour les observateurs.</summary>
+	public sealed class LiveGameDto
+	{
+		public int Race { get; set; }
+		public int Lobby { get; set; }
+		public string Match { get; set; } = "";
+		public string Mode { get; set; } = "";
+		/// <summary>0 : salle d'attente, 1 : en cours, 2 : terminée.</summary>
+		public int Phase { get; set; }
+		public int Humans { get; set; }
+		public int TimeLeft { get; set; }
+		public int Score0 { get; set; }
+		public int Score1 { get; set; }
+		public string Host { get; set; } = "";
+		public int Port { get; set; }
+	}
+	public sealed class ChatLineDto { public long Id { get; set; } public long At { get; set; } public string Login { get; set; } = ""; public string Text { get; set; } = ""; }
+	/// <summary>Le lobby d'un tournoi : détail (règles, classement provisoire, déroulé), parties en cours, tchat, présents, observateurs.</summary>
+	public sealed class TournamentLobbyDto
+	{
+		public TournamentDetailsDto Details { get; set; }
+		public List<LiveGameDto> Live { get; set; } = new List<LiveGameDto>();
+		public List<ChatLineDto> Chat { get; set; } = new List<ChatLineDto>();
+		public List<string> Present { get; set; } = new List<string>();
+		public List<string> Observers { get; set; } = new List<string>();
+		public bool Observer { get; set; }
+		public bool CanChat { get; set; }
+	}
+
 	public sealed class TournamentsDto
 	{
+		/// <summary>Révision de la liste côté service : redonnée à la demande suivante, le service répond « inchangé » s'il n'y a rien de neuf.</summary>
+		public long Rev { get; set; }
+		public bool Unchanged { get; set; }
 		public bool Configured { get; set; }
 		public List<TournamentDto> Tournaments { get; set; } = new List<TournamentDto>();
 		/// <summary>Tournois organisés dans le jeu (inscription, manches, classement).</summary>
@@ -278,11 +322,30 @@ namespace Openesport.Online
 			return e;
 		}
 
-		public static async Task<string> RefreshTournamentsAsync()
+		/// <summary>Augmente à chaque nouvelle liste de tournois reçue (les écrans se reconstruisent quand il bouge).</summary>
+		public static int TournamentsVersion { get; private set; }
+		private static string _tournamentsLogin = "";
+
+		/// <summary>
+		/// Recharge la liste des tournois. Avec <paramref name="full"/> faux, on donne au service la révision connue : s'il n'y a rien de neuf, il répond
+		/// en une ligne et rien ne change ici (le jeu peut donc la demander toutes les quelques secondes).
+		/// </summary>
+		public static async Task<string> RefreshTournamentsAsync(bool full = true)
 		{
-			var (e, v) = await Get<TournamentsDto>(HttpMethod.Get, "/api/tournaments");
-			if (v != null) Tournaments = v;
+			string login = AccountClient.LoggedIn ? AccountClient.Login : "";
+			if (login != _tournamentsLogin) full = true;          // autre compte : la liste n'est plus la même (inscriptions, invitations)
+			var (e, v) = await Get<TournamentsDto>(HttpMethod.Get, "/api/tournaments" + (full || Tournaments.Rev == 0 ? "" : "?rev=" + Tournaments.Rev));
+			if (v != null && !v.Unchanged) { Tournaments = v; _tournamentsLogin = login; TournamentsVersion++; }
 			return e;
+		}
+
+		/// <summary>Le lobby d'un tournoi, avec les messages du tchat après <paramref name="since"/>.</summary>
+		public static Task<(string error, TournamentLobbyDto lobby)> LobbyAsync(long id, long since) => Get<TournamentLobbyDto>(HttpMethod.Get, $"/api/tournaments/{id}/lobby?since={since}");
+
+		public static async Task<string> ChatAsync(long id, string text)
+		{
+			var (code, body) = await AccountClient.SendAsync(HttpMethod.Post, $"/api/tournaments/{id}/chat", new { text });
+			return code == 200 ? null : AccountClient.ErrorOf(code, body);
 		}
 
 		/// <summary>Crée un tournoi d'après sa configuration ; <paramref name="participate"/> : l'organisateur s'inscrit aussi (en solo). Retourne (erreur, identifiant).</summary>
@@ -325,7 +388,7 @@ namespace Openesport.Online
 			return code == 200 ? null : AccountClient.ErrorOf(code, body);
 		}
 
-		/// <summary>join, leave, checkin ; start et cancel (organisateur) ; invite et kick (chef d'équipe, <paramref name="login"/>) ; accept et decline (invité, <paramref name="reference"/> : l'équipe).</summary>
+		/// <summary>join, leave, checkin ; start, cancel et opencheckin (organisateur) ; invite et kick (chef d'équipe, <paramref name="login"/>) ; accept et decline (invité, <paramref name="reference"/> : l'équipe).</summary>
 		public static async Task<string> TournamentActionAsync(long id, string action, string login = null, int reference = 0)
 		{
 			var (code, body) = await AccountClient.SendAsync(HttpMethod.Post, $"/api/tournaments/{id}/{action}", new { login, reference });

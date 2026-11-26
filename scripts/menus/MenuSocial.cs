@@ -8,16 +8,18 @@ namespace Openesport.Menus
 {
 	/// <summary>
 	/// Encart en haut à gauche du menu principal : les tournois programmés (publiés dans ManageComp), le groupe de joueurs (invitations, membres)
-	/// et la liste d'amis avec ceux qui sont en ligne. Interroge le service de comptes toutes les quelques secondes tant qu'il est visible.
+	/// et la liste d'amis avec ceux qui sont en ligne. Interroge le service de comptes toutes les quelques secondes tant qu'il est visible ;
+	/// les tournois viennent de <see cref="TournamentWatcher"/>, qui les tient à jour toutes les 3 secondes.
 	/// Quand le chef du groupe lance une partie, les autres membres la rejoignent automatiquement.
 	/// Les trois cadres sont là dès l'ouverture, avec un anneau de chargement ; chacun se remplit dès que ses données arrivent.
 	/// </summary>
 	public partial class MenuSocial : Control
 	{
-		private const double PollSeconds = 3.0, TournamentSeconds = 60.0;
+		private const double PollSeconds = 3.0;
 		private VBoxContainer _box;
-		private double _poll = PollSeconds, _tournaments = TournamentSeconds;
-		private bool _busyTournaments, _busyParty, _busyFriends, _showFriends = true;
+		private double _poll = PollSeconds;
+		private int _tournamentsVersion = -1;
+		private bool _busyParty, _busyFriends, _showFriends = true;
 		/// <summary>Premier chargement de chaque cadre : fait, ou en échec (message affiché à la place de l'anneau, nouvel essai à chaque passage).</summary>
 		private bool _tournamentsReady, _partyReady, _friendsReady;
 		private string _tournamentsError, _partyError, _friendsError;
@@ -35,7 +37,7 @@ namespace Openesport.Menus
 			_box.AddThemeConstantOverride("separation", 8);
 			AddChild(_box);
 			_box.SetAnchorsPreset(LayoutPreset.TopWide);
-			VisibilityChanged += () => { if (IsVisibleInTree()) { _poll = PollSeconds; _tournaments = TournamentSeconds; } };
+			VisibilityChanged += () => { if (IsVisibleInTree()) { _poll = PollSeconds; TournamentWatcher.RefreshNow(); } };
 			_login = AccountClient.LoggedIn ? AccountClient.Login : "";
 			Rebuild();
 		}
@@ -43,7 +45,7 @@ namespace Openesport.Menus
 		public override void _Process(double delta)
 		{
 			if (!IsVisibleInTree()) return;
-			_poll += delta; _tournaments += delta;
+			_poll += delta;
 			// connexion ou changement de compte : tout est à recharger, tout de suite
 			string login = AccountClient.LoggedIn ? AccountClient.Login : "";
 			if (login != _login)
@@ -52,29 +54,21 @@ namespace Openesport.Menus
 				SocialClient.Clear();
 				_tournamentsReady = _partyReady = _friendsReady = false;
 				_tournamentsError = _partyError = _friendsError = null;
-				_poll = PollSeconds; _tournaments = TournamentSeconds;
+				_poll = PollSeconds;
+				Rebuild();
+			}
+			// tournois : la liste tenue à jour par le veilleur ; on reconstruit dès qu'elle change
+			if (TournamentWatcher.Ready != _tournamentsReady || TournamentWatcher.Error != _tournamentsError || SocialClient.TournamentsVersion != _tournamentsVersion)
+			{
+				_tournamentsReady = TournamentWatcher.Ready; _tournamentsError = TournamentWatcher.Error; _tournamentsVersion = SocialClient.TournamentsVersion;
 				Rebuild();
 			}
 			if (_poll < PollSeconds) return;
 			_poll = 0;
-			// les trois demandes partent ensemble : un cadre lent ne retarde pas les autres
-			if (!_busyTournaments && (_tournaments >= TournamentSeconds || !_tournamentsReady)) { _tournaments = 0; RefreshTournaments(); }
+			// les deux demandes partent ensemble : un cadre lent ne retarde pas l'autre
 			if (!AccountClient.LoggedIn) { SocialClient.Clear(); Rebuild(); return; }
 			if (!_busyParty) RefreshParty();
 			if (!_busyFriends) RefreshFriends();
-		}
-
-		private async void RefreshTournaments()
-		{
-			_busyTournaments = true;
-			string login = _login, error;
-			try { error = await SocialClient.RefreshTournamentsAsync(); }
-			finally { _busyTournaments = false; }
-			if (!IsInstanceValid(this)) return;
-			if (login != _login) { _poll = PollSeconds; return; }      // réponse pour l'ancien compte : on redemande
-			if (error == null) _tournamentsReady = true;
-			_tournamentsError = error;
-			Rebuild();
 		}
 
 		private async void RefreshParty()
@@ -157,7 +151,7 @@ namespace Openesport.Menus
 			tv.AddThemeConstantOverride("separation", 4);
 			tv.AddChild(Title(I18n.T("Tournois")));
 			var all = SocialClient.Tournaments.Games;
-			var mine = all.Where(g => g.Joined && (g.State == "open" || g.State == "running")).OrderBy(g => g.StartAt).Take(3).ToList();
+			var mine = all.Where(g => (g.Joined || g.IsObserver) && (g.State == "open" || g.State == "running")).OrderBy(g => g.StartAt).Take(3).ToList();
 			var upcoming = all.Where(g => !g.Joined && g.State == "open").OrderBy(g => g.StartAt).Take(Math.Max(1, 3 - mine.Count)).ToList();
 			var published = SocialClient.Tournaments.Tournaments.Take(Math.Max(0, 3 - mine.Count - upcoming.Count)).ToList();
 			// invitations dans une équipe de tournoi : accepter ou refuser tout de suite
@@ -179,11 +173,14 @@ namespace Openesport.Menus
 				long id = g.Id;
 				string when = g.State == "running" ? (g.PhaseRaces > 0 ? I18n.T("en cours · {0} {1}/{2}", TournamentsScreen.PhaseLabel(g), g.PhaseRace, g.PhaseRaces) : I18n.T("en cours · {0}", TournamentsScreen.PhaseLabel(g)))
 					: $"{DateTimeOffset.FromUnixTimeSeconds(g.StartAt).ToLocalTime():dd/MM HH:mm} · {TournamentsScreen.Countdown(g.StartAt)}";
+				tv.AddChild(Link($"★ {g.Title}\n{when}", () => OpenTournaments(id)));
 				var row = new HBoxContainer();
-				row.AddChild(Link($"★ {g.Title}\n{when}", () => OpenTournaments(id)));
-				if (g.State == "running") row.AddChild(Small(g.Duel ? I18n.T("Jouer mon match") : I18n.T("Jouer"), () => TournamentsScreen.PlayTournament(this, id, e => { _message = e; _signature = ""; Rebuild(); })));
-				else if (g.CheckInOpen && !g.CheckedIn) row.AddChild(Small(I18n.T("Je suis présent"), () => Act(SocialClient.TournamentActionAsync(id, "checkin"))));
-				tv.AddChild(row);
+				row.AddThemeConstantOverride("separation", 6);
+				// le jour J : le lobby du tournoi (règles, déroulé, tchat, parties à jouer)
+				bool soon = g.State == "running" || g.CheckInOpen || g.StartAt - DateTimeOffset.UtcNow.ToUnixTimeSeconds() <= 3600;
+				if (soon) row.AddChild(Small(I18n.T("Rejoindre le lobby du tournoi"), () => TournamentLobbyScreen.Open(this, id)));
+				if (g.State == "open" && g.CheckInOpen && !g.CheckedIn) row.AddChild(Small(I18n.T("Je suis présent"), () => Act(SocialClient.TournamentActionAsync(id, "checkin"))));
+				if (row.GetChildCount() > 0) tv.AddChild(row);
 			}
 			if (upcoming.Count > 0) tv.AddChild(Muted(I18n.T("À venir")));
 			foreach (var g in upcoming)
@@ -299,16 +296,16 @@ namespace Openesport.Menus
 			var root = GetTree().Root;
 			root.GetNodeOrNull("TournamentsScreen")?.QueueFree();
 			var screen = new TournamentsScreen { Name = "TournamentsScreen", Focus = id, StartWithCreate = create };
-			screen.Closed += () => { _tournaments = TournamentSeconds; _signature = ""; };
+			screen.Closed += () => { TournamentWatcher.RefreshNow(); _signature = ""; };
 			root.AddChild(screen);
 		}
 
 		/// <summary>Rappel du moment : check-in ouvert, départ imminent, manche à jouer.</summary>
 		private static string Reminder(System.Collections.Generic.List<GameTournamentDto> mine)
 		{
-			foreach (var g in mine)
+			foreach (var g in mine.Where(x => x.Joined))
 			{
-				if (g.State == "running") return I18n.T("« {0} » est en cours : à toi de jouer !", g.Title);
+				if (g.State == "running") return I18n.T("« {0} » est en cours : rejoins son lobby pour jouer.", g.Title);
 				if (g.MyTeam != null && !g.MyTeam.Complete && g.State == "open")
 					return g.MyTeam.Captain ? I18n.T("Ton équipe pour « {0} » est incomplète ({1}/{2}) : invite tes coéquipiers depuis la page du tournoi.", g.Title, g.MyTeam.Members.Count, g.TeamSize)
 						: I18n.T("L'équipe de {0} pour « {1} » est incomplète ({2}/{3}).", g.MyTeam.CaptainName, g.Title, g.MyTeam.Members.Count, g.TeamSize);
@@ -323,7 +320,7 @@ namespace Openesport.Menus
 		{
 			string error = await task;
 			_message = error ?? "";
-			_tournaments = TournamentSeconds;          // la liste des tournois se recharge tout de suite
+			TournamentWatcher.RefreshNow();          // la liste des tournois se recharge tout de suite
 			_signature = "";
 			Rebuild();
 		}

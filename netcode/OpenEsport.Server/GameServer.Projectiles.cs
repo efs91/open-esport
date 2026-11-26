@@ -66,6 +66,7 @@ namespace OpenEsport.Server
 				if (dx * dx + dz * dz > ShotHearingRange * ShotHearingRange) continue;
 				q.Peer.Send(_tmp.Buffer, 0, _tmp.ByteLength, DeliveryMethod.Unreliable);
 			}
+			SendNearSpectators(shooter.State.Pos, ShotHearingRange, DeliveryMethod.Unreliable);
 		}
 
 		/// <summary>Avance toutes les balles d'un tick. À appeler après l'enregistrement de l'historique des joueurs.</summary>

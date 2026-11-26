@@ -69,6 +69,8 @@ namespace OpenEsport.Accounts
 			if (cfg == null) return TournamentResult.Fail("Configuration manquante.");
 			cfg = cfg.Copy();
 			cfg.Title = name;
+			cfg.Observers.Clear();          // un modèle ne garde ni les observateurs ni le check-in ouvert à la main d'un tournoi
+			cfg.CheckInOpenedAt = 0;
 			string error = cfg.ValidateTemplate();
 			if (error != null) return TournamentResult.Fail(error);
 			cfg.Title = "";
